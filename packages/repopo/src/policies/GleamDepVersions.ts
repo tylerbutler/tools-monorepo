@@ -1,4 +1,4 @@
-import type { PolicyShape } from "../policy.js";
+import type { FilePolicyDefinition } from "../policy.js";
 import {
 	defineGleamPolicy,
 	type GleamToml,
@@ -76,42 +76,40 @@ function checkSection(
  *
  * @public
  */
-export const GleamDepVersions: PolicyShape<GleamDepVersionsConfig> =
-	defineGleamPolicy({
-		name: "GleamDepVersions",
-		description:
-			"Prevents missing or overly loose version constraints in gleam.toml dependencies.",
-		handler: async (toml: GleamToml, { config }) => {
-			const requireVersions = config?.requireVersions ?? true;
-			const warnUnbounded = config?.warnUnbounded ?? false;
-			const errors: string[] = [];
+export const GleamDepVersions = defineGleamPolicy({
+	name: "GleamDepVersions",
+	description:
+		"Prevents missing or overly loose version constraints in gleam.toml dependencies.",
+	handler: async (toml: GleamToml, { config }) => {
+		const requireVersions = config?.requireVersions ?? true;
+		const warnUnbounded = config?.warnUnbounded ?? false;
+		const errors: string[] = [];
 
-			const sections = [
-				{ name: "dependencies", data: toml.dependencies },
-				{ name: "dev-dependencies", data: toml["dev-dependencies"] },
-			];
+		const sections = [
+			{ name: "dependencies", data: toml.dependencies },
+			{ name: "dev-dependencies", data: toml["dev-dependencies"] },
+		];
 
-			for (const { name, data } of sections) {
-				if (data && typeof data === "object") {
-					errors.push(
-						...checkSection(
-							name,
-							data as Record<string, unknown>,
-							requireVersions,
-							warnUnbounded,
-						),
-					);
-				}
+		for (const { name, data } of sections) {
+			if (data && typeof data === "object") {
+				errors.push(
+					...checkSection(
+						name,
+						data as Record<string, unknown>,
+						requireVersions,
+						warnUnbounded,
+					),
+				);
 			}
+		}
 
-			if (errors.length > 0) {
-				return {
-					error: errors.join("; "),
-					manualFix:
-						'Add specific version constraints (e.g., ">= 1.0.0 and < 2.0.0") to all dependencies.',
-				};
-			}
-
-			return true;
-		},
-	});
+		if (errors.length > 0) {
+			return errors.map((message) => ({
+				message,
+				manualFix:
+					'Add specific version constraints (e.g., ">= 1.0.0 and < 2.0.0") to all dependencies.',
+			}));
+		}
+		return [];
+	},
+}) satisfies FilePolicyDefinition<GleamDepVersionsConfig>;

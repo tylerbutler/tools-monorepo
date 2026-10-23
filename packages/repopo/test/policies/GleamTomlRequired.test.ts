@@ -50,8 +50,7 @@ describe("GleamTomlRequired", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should pass with gleam version when requireGleamVersion is true", async () => {
@@ -68,8 +67,7 @@ describe("GleamTomlRequired", () => {
 				resolve: false,
 				config: { requireGleamVersion: true },
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should pass with repository when requireRepository is true", async () => {
@@ -92,8 +90,7 @@ describe("GleamTomlRequired", () => {
 				resolve: false,
 				config: { requireRepository: true },
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -109,10 +106,11 @@ describe("GleamTomlRequired", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("name");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"name",
+				);
 			}
 		});
 
@@ -127,10 +125,11 @@ describe("GleamTomlRequired", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("version");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"version",
+				);
 			}
 		});
 
@@ -145,10 +144,11 @@ describe("GleamTomlRequired", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("name");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"name",
+				);
 			}
 		});
 
@@ -164,10 +164,11 @@ describe("GleamTomlRequired", () => {
 				resolve: false,
 				config: { requireGleamVersion: true },
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("gleam version constraint");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"gleam version constraint",
+				);
 			}
 		});
 
@@ -183,10 +184,11 @@ describe("GleamTomlRequired", () => {
 				resolve: false,
 				config: { requireRepository: true },
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("repository");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"repository",
+				);
 			}
 		});
 	});
@@ -208,8 +210,7 @@ describe("GleamTomlRequired", () => {
 				resolve: false,
 				config: { required: ["description"] },
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should fail with custom required fields when missing", async () => {
@@ -224,11 +225,14 @@ describe("GleamTomlRequired", () => {
 				resolve: false,
 				config: { required: ["description", "licences"] },
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("description");
-				expect(result.error).toContain("licences");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"description",
+				);
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"licences",
+				);
 			}
 		});
 	});

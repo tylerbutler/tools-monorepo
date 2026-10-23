@@ -28,9 +28,7 @@ export function createExcludedPolicyFileMap(
 	return new Map(
 		policies.map((configuredPolicy) => [
 			configuredPolicy.instanceId,
-			(configuredPolicy.excludeFiles ?? configuredPolicy.exclude)?.map(
-				exclusionRegex,
-			) ?? [],
+			configuredPolicy.exclude?.map(exclusionRegex) ?? [],
 		]),
 	);
 }

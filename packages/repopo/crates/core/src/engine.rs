@@ -1,11 +1,12 @@
-use anyhow::{Context, Result};
+use anyhow::Result;
 use colored::Colorize;
-use regex::{Regex, RegexBuilder};
-use std::collections::HashMap;
-use std::time::{Duration, Instant};
+use regex::RegexBuilder;
+use serde_json::Value;
 
 use crate::ipc::Sidecar;
-use crate::types::{HandlerResult, LoadConfigResponse, PolicyMeta};
+use crate::types::{
+    ExecutionUnit, FixStatus, Location, PolicyMeta, RunResults, Scope, SkipReason, SkippedWork,
+};
 
 fn format_manual_fix(instructions: &str) -> String {
     format!(
@@ -14,377 +15,332 @@ fn format_manual_fix(instructions: &str) -> String {
     )
 }
 
-fn log_manual_fix(result: &HandlerResult, fallback: Option<&str>) {
-    if let Some(instructions) = result.manual_fix().or(fallback).filter(|s| !s.is_empty()) {
-        eprintln!("{}", format_manual_fix(instructions));
-    }
+/// Native scheduling with sidecar calls restricted to individual policy units.
+pub struct CheckOptions<'a> {
+    pub files: Vec<String>,
+    pub git_root: &'a str,
+    pub config_path: Option<&'a str>,
+    pub fix: bool,
+    pub verbose: bool,
+    pub quiet: bool,
+    pub concurrency: usize,
+    pub json: bool,
 }
 
-/// A compiled policy ready for matching.
-struct CompiledPolicy {
-    meta: PolicyMeta,
-    match_regex: Regex,
-    exclude_regexes: Vec<Regex>,
-}
-
-/// Performance statistics for policy execution.
-struct PerfStats {
-    total_files: usize,
-    handler_times: HashMap<String, Duration>,
-    resolver_times: HashMap<String, Duration>,
-}
-
-impl PerfStats {
-    fn new() -> Self {
-        Self {
-            total_files: 0,
-            handler_times: HashMap::new(),
-            resolver_times: HashMap::new(),
-        }
-    }
-
-    fn record_handler(&mut self, policy_name: &str, duration: Duration) {
-        *self
-            .handler_times
-            .entry(policy_name.to_string())
-            .or_default() += duration;
-    }
-
-    fn record_resolver(&mut self, policy_name: &str, duration: Duration) {
-        *self
-            .resolver_times
-            .entry(policy_name.to_string())
-            .or_default() += duration;
-    }
-
-    fn log(&self, verbose: bool) {
-        if !verbose {
-            return;
-        }
-
-        eprintln!("\n{}", "Performance Statistics".bold());
-        eprintln!("  Files processed: {}", self.total_files);
-
-        if !self.handler_times.is_empty() {
-            eprintln!("  Handler execution times:");
-            let mut entries: Vec<_> = self.handler_times.iter().collect();
-            entries.sort_by(|a, b| b.1.cmp(a.1));
-            for (name, dur) in entries {
-                eprintln!("    {name}: {:.1}ms", dur.as_secs_f64() * 1000.0);
-            }
-        }
-
-        if !self.resolver_times.is_empty() {
-            eprintln!("  Resolver execution times:");
-            let mut entries: Vec<_> = self.resolver_times.iter().collect();
-            entries.sort_by(|a, b| b.1.cmp(a.1));
-            for (name, dur) in entries {
-                eprintln!("    {name}: {:.1}ms", dur.as_secs_f64() * 1000.0);
-            }
-        }
-    }
-}
-
-/// Build a Rust regex from a JS regex pattern and flags.
-fn compile_js_regex(pattern: &str, flags: &str) -> Result<Regex> {
-    let rust_pattern = if flags.contains('y') {
-        format!(r"\A(?:{pattern})")
+/// Compile the shared ASCII subset. Advanced JS syntax and Unicode/line-ending
+/// edge cases use only the match_files bridge, never a shared-run fallback.
+fn compile_pattern(pattern: &Value) -> Option<regex::Regex> {
+    let source = pattern
+        .as_str()
+        .or_else(|| pattern.get("source")?.as_str())?;
+    let flags = if pattern.is_string() {
+        "i"
     } else {
-        pattern.to_string()
+        pattern.get("flags")?.as_str()?
     };
-
-    RegexBuilder::new(&rust_pattern)
+    if !source.is_ascii() || flags.chars().any(|flag| !"dgimsuy".contains(flag)) {
+        return None;
+    }
+    let mut escaped = false;
+    let mut character_class = false;
+    for (offset, ch) in source.char_indices() {
+        if escaped {
+            if !".\\/^$()*+?|[]{}-dDsSwWbBnrtfvx".contains(ch) {
+                return None;
+            }
+            if ch == 'x'
+                && !source
+                    .get(offset + 1..offset + 3)
+                    .is_some_and(|digits| digits.bytes().all(|byte| byte.is_ascii_hexdigit()))
+            {
+                return None;
+            }
+            escaped = false;
+        } else if ch == '\\' {
+            escaped = true;
+        } else if ch == '[' {
+            if character_class {
+                return None;
+            }
+            character_class = true;
+        } else if ch == ']' {
+            if !character_class {
+                return None;
+            }
+            character_class = false;
+        } else if character_class && (ch == '&' || ch == '~') {
+            // Rust class set operations differ from legacy JavaScript classes.
+            return None;
+        }
+    }
+    if escaped
+        || character_class
+        || source.replace("(?:", "(").contains("(?")
+        || source.contains("--")
+        || source.contains(r"\b{")
+        || source.contains(r"\B{")
+        || source.contains("[]")
+        || source.contains("[^]")
+    {
+        return None;
+    }
+    let source = if flags.contains('y') {
+        format!(r"\A(?:{source})")
+    } else {
+        source.to_string()
+    };
+    RegexBuilder::new(&source)
         .case_insensitive(flags.contains('i'))
         .multi_line(flags.contains('m'))
         .dot_matches_new_line(flags.contains('s'))
         .build()
-        .with_context(|| format!("Failed to compile regex pattern: {pattern} (flags: {flags})"))
+        .ok()
 }
 
-/// Compile policy metadata into regex-ready policies.
-fn compile_policies(config: &LoadConfigResponse) -> Result<(Vec<CompiledPolicy>, Vec<Regex>)> {
-    let mut compiled = Vec::with_capacity(config.policies.len());
-
-    for meta in &config.policies {
-        let match_regex = compile_js_regex(&meta.match_pattern, &meta.match_flags)?;
-
-        let exclude_regexes: Vec<Regex> = meta
-            .exclude_files
-            .iter()
-            .map(|pattern| compile_js_regex(pattern.source(), pattern.flags()))
-            .collect::<Result<Vec<_>>>()
-            .with_context(|| {
-                format!(
-                    "Failed to compile exclude patterns for policy '{}'",
-                    meta.name
-                )
-            })?;
-
-        compiled.push(CompiledPolicy {
-            meta: meta.clone(),
-            match_regex,
-            exclude_regexes,
-        });
-    }
-
-    let global_excludes: Vec<Regex> = config
-        .exclude_files
-        .iter()
-        .map(|pattern| compile_js_regex(pattern.source(), pattern.flags()))
-        .collect::<Result<Vec<_>>>()
-        .context("Failed to compile global exclude patterns")?;
-
-    Ok((compiled, global_excludes))
-}
-
-/// Run the check engine using policy-first batching.
-///
-/// This is the main entry point for the Rust core. It:
-/// 1. Loads config from the Node sidecar
-/// 2. Compiles regexes
-/// 3. For each policy, collects matching files and runs a single batch IPC call
-/// 4. Reports results
-pub fn run_check(
-    sidecar: &mut Sidecar,
-    files: Vec<String>,
-    git_root: &str,
-    config_path: Option<&str>,
-    fix: bool,
-    verbose: bool,
-    quiet: bool,
-    concurrency: usize,
-) -> Result<bool> {
-    // Step 1: Load config from sidecar
-    if verbose {
-        eprintln!("Loading configuration...");
-    }
-
-    let config = sidecar.load_config(config_path, git_root)?;
-
-    if verbose {
-        eprintln!("{} policies loaded.", config.policies.len());
-        for p in &config.policies {
-            eprintln!("  - {}", p.name);
+fn match_pattern(sidecar: &mut Sidecar, pattern: &Value, files: &[String]) -> Result<Vec<bool>> {
+    let regex = compile_pattern(pattern);
+    let mut output = vec![false; files.len()];
+    let mut fallback = Vec::new();
+    let mut indices = Vec::new();
+    for (index, file) in files.iter().enumerate() {
+        if let Some(regex) = &regex
+            && file.is_ascii()
+            && !file.contains(['\n', '\r'])
+        {
+            output[index] = regex.is_match(file);
+        } else {
+            fallback.push(file.clone());
+            indices.push(index);
         }
     }
+    if !fallback.is_empty() {
+        let matches = sidecar.match_files(pattern.clone(), fallback)?;
+        anyhow::ensure!(
+            matches.len() == indices.len(),
+            "Invalid match response length"
+        );
+        for (index, matched) in indices.into_iter().zip(matches) {
+            output[index] = matched;
+        }
+    }
+    Ok(output)
+}
 
-    // Step 2: Compile regexes
-    let (compiled_policies, global_excludes) = compile_policies(&config)?;
+fn exclusions(sidecar: &mut Sidecar, patterns: &[Value], files: &[String]) -> Result<Vec<bool>> {
+    let mut excluded = vec![false; files.len()];
+    for pattern in patterns {
+        for (entry, matched) in excluded
+            .iter_mut()
+            .zip(match_pattern(sidecar, pattern, files)?)
+        {
+            *entry |= matched;
+        }
+    }
+    Ok(excluded)
+}
 
-    // Step 3: Filter to non-empty, non-globally-excluded files
-    let eligible_files: Vec<&String> = files
-        .iter()
-        .filter(|f| {
-            if f.is_empty() {
-                return false;
+fn skip(policy: &PolicyMeta, file: Option<&str>, reason: SkipReason) -> SkippedWork {
+    SkippedWork {
+        policy: policy.name.clone(),
+        policy_id: policy.instance_id.clone(),
+        reason,
+        location: file.map_or(Location::Repository { files: None }, |file| {
+            Location::File {
+                file: file.to_string(),
             }
-            if global_excludes.iter().any(|re| re.is_match(f)) {
-                if verbose {
-                    eprintln!("Excluded all handlers: {f}");
-                }
-                return false;
-            }
-            true
-        })
-        .collect();
+        }),
+    }
+}
 
-    let mut stats = PerfStats::new();
-    stats.total_files = eligible_files.len();
-    let mut had_failures = false;
-
-    if fix && !quiet {
+pub fn run_check(sidecar: &mut Sidecar, options: CheckOptions<'_>) -> Result<bool> {
+    let config = sidecar.load_config(options.config_path, options.git_root)?;
+    if options.verbose {
+        eprintln!("{} policies loaded.", config.policies.len());
+    }
+    if options.fix && !options.quiet {
         eprintln!("Resolving errors if possible.");
     }
-
-    // Step 4: Policy-first batching — one IPC call per policy
-    for (policy_id, policy) in compiled_policies.iter().enumerate() {
-        if policy.meta.scope == "repository" {
-            continue;
-        }
-        // Collect files matching this policy
-        let matching_files: Vec<String> = eligible_files
-            .iter()
-            .filter(|f| {
-                if !policy.match_regex.is_match(f) {
-                    return false;
-                }
-                if policy.exclude_regexes.iter().any(|re| re.is_match(f)) {
-                    if verbose {
-                        eprintln!("Excluded from '{}' policy: {f}", policy.meta.name);
-                    }
-                    return false;
-                }
-                true
-            })
-            .map(|f| f.to_string())
-            .collect();
-
-        if matching_files.is_empty() {
-            continue;
-        }
-
-        if verbose {
-            eprintln!(
-                "Policy '{}': checking {} files (batch)",
-                policy.meta.name,
-                matching_files.len()
-            );
-        }
-
-        // Batch handler call — single IPC round-trip for all files
-        let start = Instant::now();
-        let batch_results = sidecar
-            .run_handler_batch(policy_id, &matching_files, fix, concurrency)
-            .with_context(|| {
-                format!(
-                    "Error executing batch handler for policy '{}'",
-                    policy.meta.name
-                )
-            })?;
-        stats.record_handler(&policy.meta.name, start.elapsed());
-
-        // Collect files that need standalone resolver
-        let mut needs_resolver: Vec<String> = Vec::new();
-        let mut resolver_guidance = HashMap::new();
-
-        for (file, result) in &batch_results {
-            if result.is_pass() {
-                continue;
-            }
-
-            if result.is_fixed() {
-                if !quiet {
-                    eprintln!(
-                        "Resolved {} policy failure for file: {file}",
-                        policy.meta.name
-                    );
-                }
-                continue;
-            }
-
-            if result.is_fix_failed() {
-                had_failures = true;
-                let msg = format!("Error fixing {} policy failure in {file}", policy.meta.name);
-                eprintln!("{}", msg.yellow());
-                if let Some(err) = result.error_message() {
-                    eprintln!("\t{err}");
-                }
-                log_manual_fix(result, None);
-                continue;
-            }
-
-            // Failure — try standalone resolver if available, otherwise report
-            if fix && policy.meta.has_resolver {
-                needs_resolver.push(file.clone());
-                if let Some(instructions) = result.manual_fix() {
-                    resolver_guidance.insert(file.clone(), instructions.to_string());
-                }
-            } else {
-                had_failures = true;
-                let fixable = result.is_fixable();
-                let fixable_tag = if fixable {
-                    " (autofixable)".green().to_string()
-                } else {
-                    String::new()
-                };
-                let msg = format!(
-                    "'{}' policy failure{fixable_tag}: {file}",
-                    policy.meta.name.bold()
-                );
-                eprintln!("{}", msg);
-                if let Some(err) = result.error_message() {
-                    eprintln!("\t{err}");
-                }
-                log_manual_fix(result, None);
-            }
-        }
-
-        // Batch resolver call for failures that need fixing
-        if !needs_resolver.is_empty() {
-            if verbose {
-                eprintln!(
-                    "Policy '{}': resolving {} files (batch)",
-                    policy.meta.name,
-                    needs_resolver.len()
-                );
-            }
-
-            let start = Instant::now();
-            let resolver_results = sidecar
-                .run_resolver_batch(policy_id, &needs_resolver)
-                .with_context(|| {
-                    format!(
-                        "Error executing batch resolver for policy '{}'",
-                        policy.meta.name
-                    )
-                })?;
-            stats.record_resolver(&policy.meta.name, start.elapsed());
-
-            for (file, resolve_result) in &resolver_results {
-                if resolve_result.is_fixed() || resolve_result.is_pass() {
-                    if !quiet {
-                        eprintln!(
-                            "Resolved {} policy failure for file: {file}",
-                            policy.meta.name
-                        );
-                    }
-                } else {
-                    had_failures = true;
-                    let msg = format!("Error fixing {} policy failure in {file}", policy.meta.name);
-                    eprintln!("{}", msg.yellow());
-                    if let Some(err) = resolve_result.error_message() {
-                        eprintln!("\t{err}");
-                    }
-                    log_manual_fix(
-                        resolve_result,
-                        resolver_guidance.get(file).map(String::as_str),
-                    );
-                }
-            }
-        }
-    }
-
-    if config
+    sidecar.begin_run(options.fix)?;
+    let files = &options.files;
+    let globally_excluded = exclusions(sidecar, &config.exclude_files, files)?;
+    let mut result = RunResults::default();
+    result.perf_stats.count = files.len();
+    result.perf_stats.processed = globally_excluded
+        .iter()
+        .filter(|excluded| !**excluded)
+        .count();
+    let mut file_outputs: Vec<RunResults> =
+        (0..files.len()).map(|_| RunResults::default()).collect();
+    let mut stopped = vec![false; files.len()];
+    let mut routing = Vec::new();
+    for policy in config
         .policies
         .iter()
-        .any(|policy| policy.scope == "repository")
+        .filter(|policy| policy.scope == Scope::File)
     {
-        for result in sidecar.run_repository_policies(fix)? {
-            let finding = result.outcome;
-            let location = if finding.files.is_empty() {
-                "repository".to_string()
-            } else {
-                finding.files.join(", ")
-            };
-            if finding.fixed == Some(true) {
-                if !quiet {
-                    eprintln!("Resolved {} policy failure: {location}", result.policy_id);
+        let pattern = policy
+            .r#match
+            .as_ref()
+            .ok_or_else(|| anyhow::anyhow!("File policy missing match"))?;
+        let matches = match_pattern(sidecar, pattern, files)?;
+        let excluded = exclusions(sidecar, &policy.exclude, files)?;
+        routing.push((policy, matches, excluded));
+    }
+    let width = if options.fix { 1 } else { options.concurrency };
+    // A wave contains at most `width` files. Each file's policies remain ordered,
+    // and only read-only units in the same wave can execute concurrently.
+    for start in (0..files.len()).step_by(width) {
+        let end = files.len().min(start.saturating_add(width));
+        for (policy, matches, excluded) in &routing {
+            let mut units = Vec::new();
+            let mut indices = Vec::new();
+            for index in start..end {
+                if !matches[index] {
+                    continue;
                 }
-                continue;
+                if stopped[index] || globally_excluded[index] || excluded[index] {
+                    file_outputs[index].skipped.push(skip(
+                        policy,
+                        Some(&files[index]),
+                        if stopped[index] {
+                            SkipReason::FileFixError
+                        } else {
+                            SkipReason::Excluded
+                        },
+                    ));
+                } else {
+                    units.push(ExecutionUnit {
+                        policy_id: policy.instance_id.clone(),
+                        file: Some(files[index].clone()),
+                        files: None,
+                    });
+                    indices.push(index);
+                }
             }
-            had_failures = true;
-            let fixable = if finding.fixable == Some(true) {
-                " (autofixable)"
-            } else {
-                ""
-            };
-            eprintln!(
-                "'{}' policy failure{fixable}: {location}\n\t{}",
-                result.policy_id, finding.error
-            );
-            if let Some(manual_fix) = finding.manual_fix {
-                eprintln!("\t{manual_fix}");
+            if !units.is_empty() {
+                let outputs = sidecar.execute_units(units)?;
+                anyhow::ensure!(
+                    outputs.len() == indices.len(),
+                    "Invalid unit response length"
+                );
+                for (index, output) in indices.into_iter().zip(outputs) {
+                    stopped[index] |= options.fix && !output.errors.is_empty();
+                    file_outputs[index].append(output);
+                }
             }
         }
     }
-
-    // Step 5: Log performance stats
-    stats.log(verbose);
-
-    Ok(!had_failures)
+    for output in file_outputs {
+        result.append(output);
+    }
+    let file_error = stopped.iter().any(|stopped| *stopped);
+    let mut repository_error = false;
+    let mut inventory = None;
+    for policy in config
+        .policies
+        .iter()
+        .filter(|policy| policy.scope == Scope::Repository)
+    {
+        if file_error || repository_error {
+            result.skipped.push(skip(
+                policy,
+                None,
+                if file_error {
+                    SkipReason::FileFixError
+                } else {
+                    SkipReason::RepositoryFixError
+                },
+            ));
+            continue;
+        }
+        if inventory.is_none() || options.fix {
+            inventory = Some(crate::files::git_ls_files(options.git_root)?);
+        }
+        let files = inventory.as_ref().expect("Inventory explicitly loaded");
+        let global = exclusions(sidecar, &config.exclude_files, files)?;
+        let local = exclusions(sidecar, &policy.exclude, files)?;
+        let eligible = files
+            .iter()
+            .enumerate()
+            .filter(|(index, _)| !global[*index] && !local[*index])
+            .map(|(_, file)| file.clone())
+            .collect();
+        let mut outputs = sidecar.execute_units(vec![ExecutionUnit {
+            policy_id: policy.instance_id.clone(),
+            file: None,
+            files: Some(eligible),
+        }])?;
+        anyhow::ensure!(outputs.len() == 1, "Invalid repository response length");
+        let output = outputs.remove(0);
+        repository_error = options.fix && !output.errors.is_empty();
+        result.append(output);
+    }
+    if options.json {
+        println!("{}", serde_json::to_string(&result)?);
+    } else {
+        report_results(&result, options.verbose, options.quiet);
+    }
+    Ok(result.success())
 }
 
-/// List all configured policies.
+fn report_results(result: &RunResults, verbose: bool, quiet: bool) {
+    for finding in &result.findings {
+        let message = format!(
+            "{}: {}: {}",
+            finding.policy_id,
+            finding.location.display(),
+            finding.message
+        );
+        if finding.fix_status == Some(FixStatus::Fixed) {
+            if !quiet {
+                eprintln!("Resolved {message}");
+            }
+        } else {
+            eprintln!("{message}");
+            if let Some(guidance) = &finding.manual_fix
+                && !guidance.is_empty()
+            {
+                eprintln!("{}", format_manual_fix(guidance));
+            }
+        }
+    }
+    for error in &result.errors {
+        eprintln!(
+            "Execution error ({:?}, {:?}) {}: {}: {}",
+            error.kind,
+            error.phase,
+            error.policy_id,
+            error.location.display(),
+            error.message
+        );
+        if verbose {
+            eprintln!("\tCause: {}", error.cause);
+        }
+    }
+    for work in &result.skipped {
+        if verbose || work.reason != SkipReason::Excluded {
+            eprintln!(
+                "Skipped {}: {} ({:?})",
+                work.policy_id,
+                work.location.display(),
+                work.reason
+            );
+        }
+    }
+    if verbose && !quiet {
+        eprintln!("\nPerformance Statistics");
+        eprintln!(
+            "  Files processed: {} ({} candidates)",
+            result.perf_stats.processed, result.perf_stats.count
+        );
+        for (action, timings) in &result.perf_stats.data {
+            for (id, millis) in timings {
+                eprintln!("  {action} {id}: {millis:.1}ms");
+            }
+        }
+    }
+}
+
 pub fn run_list(
     sidecar: &mut Sidecar,
     git_root: &str,
@@ -392,95 +348,74 @@ pub fn run_list(
     verbose: bool,
 ) -> Result<()> {
     let config = sidecar.load_config(config_path, git_root)?;
-
     println!("{}", "Configured policies:".bold());
     for policy in &config.policies {
         let resolver_tag = if policy.has_resolver {
-            " [auto-fixable]".green().to_string()
+            " [auto-fixable]"
         } else {
-            String::new()
+            ""
         };
-
         println!(
-            "  {} {}{resolver_tag}",
-            policy.name.bold(),
-            policy.description.dimmed()
+            "  {} ({}) {}{resolver_tag}",
+            policy.instance_id.bold(),
+            policy.name,
+            policy.description
         );
-
         if verbose {
-            println!(
-                "    scope: {}",
-                if policy.scope.is_empty() {
-                    "file"
-                } else {
-                    &policy.scope
-                }
-            );
-            if policy.scope != "repository" {
-                println!("    match: {}", policy.match_pattern);
+            println!("    scope: {:?}", policy.scope);
+            if policy.scope == Scope::File
+                && let Some(pattern) = &policy.r#match
+            {
+                println!("    match: {pattern}");
             }
-            if !policy.exclude_files.is_empty() {
-                println!(
-                    "    excludes: {}",
-                    policy
-                        .exclude_files
-                        .iter()
-                        .map(|pattern| format!("/{}/{}", pattern.source(), pattern.flags()))
-                        .collect::<Vec<_>>()
-                        .join(", ")
-                );
-            }
+            println!("    excludes: {:?}", policy.exclude);
         }
     }
-
-    println!(
-        "\n{} policies configured.",
-        config.policies.len().to_string().bold()
-    );
-
+    if verbose {
+        println!("Global exclusions: {:?}", config.exclude_files);
+    }
+    println!("\n{} policies configured.", config.policies.len());
     Ok(())
 }
 
 #[cfg(test)]
 mod tests {
-    use super::{compile_js_regex, compile_policies, format_manual_fix};
-    use crate::types::LoadConfigResponse;
+    use super::*;
+    use serde_json::json;
 
     #[test]
-    fn preserves_exclusion_flags_and_case_insensitive_string_defaults() {
-        let config: LoadConfigResponse = serde_json::from_value(serde_json::json!({
-            "policies": [{
-                "name": "Example",
-                "description": "Example",
-                "matchPattern": ".*",
-                "excludeFiles": [
-                    { "source": "^README", "flags": "" },
-                    { "source": "^skip$", "flags": "m" },
-                    "vendor/"
-                ]
-            }],
-            "excludeFiles": [
-                { "source": "^README", "flags": "" },
-                { "source": "^skip$", "flags": "m" },
-                "vendor/"
-            ]
-        }))
-        .unwrap();
-        let (policies, global) = compile_policies(&config).unwrap();
-        for exclusions in [&global, &policies[0].exclude_regexes] {
-            assert!(exclusions[0].is_match("README.md"));
-            assert!(!exclusions[0].is_match("readme.md"));
-            assert!(exclusions[1].is_match("prefix\nskip"));
-            assert!(exclusions[2].is_match("VENDOR/test.txt"));
+    fn native_match_subset_retains_flags_and_advanced_js_is_delegated_only_for_matching() {
+        let regex = compile_pattern(&json!({"source":r"\.(txt|md)$","flags":"g"})).unwrap();
+        assert!(regex.is_match("file.txt"));
+        assert!(!regex.is_match("file.TXT"));
+        assert!(
+            compile_pattern(&json!({"source":"file","flags":"i"}))
+                .unwrap()
+                .is_match("FILE")
+        );
+        let sticky = compile_pattern(&json!({"source":"file","flags":"y"})).unwrap();
+        assert!(sticky.is_match("file.txt"));
+        assert!(!sticky.is_match("a/file.txt"));
+        for (source, flags) in [
+            ("(?<=^)file", ""),
+            (r"(a)\1", ""),
+            (r"\u212a", ""),
+            (r"\x{41}", ""),
+            (r"\b{start}", ""),
+            ("[a&&b]", ""),
+            ("file", "v"),
+            ("é", ""),
+        ] {
+            assert!(compile_pattern(&json!({"source":source,"flags":flags})).is_none());
         }
-    }
-
-    #[test]
-    fn preserves_dotall_and_sticky_matching() {
-        assert!(compile_js_regex("a.b", "s").unwrap().is_match("a\nb"));
-        let sticky = compile_js_regex("a|b", "y").unwrap();
-        assert!(sticky.is_match("abc"));
-        assert!(!sticky.is_match("cab"));
+        for (source, flags) in [
+            (r"(?:^|/)[a-z]+\.\w{3}$", "g"),
+            (r"^\d+\.txt$", "m"),
+            (r"file", "u"),
+            (r"file", "s"),
+        ] {
+            assert!(compile_pattern(&json!({"source":source,"flags":flags})).is_some());
+        }
     }
 
     #[test]

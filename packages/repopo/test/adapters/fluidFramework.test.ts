@@ -6,10 +6,49 @@ import {
 	type FluidHandler,
 	fromFluidHandlers,
 } from "../../src/adapters/fluidFramework.js";
-import type { PolicyFunctionArguments } from "../../src/policy.js";
+import { makePolicy } from "../../src/makePolicy.js";
+import type { PolicyArgs } from "../../src/policy.js";
+import { runPolicies } from "../../src/runner.js";
 import { runHandler } from "../test-helpers.js";
 
 describe("FluidFramework adapter", () => {
+	it.each([
+		"handler",
+		"resolver",
+	] as const)("preserves hostile rejected values at the external %s boundary", async (phase) => {
+		const trap = vi.fn(() => {
+			throw new Error("must not inspect");
+		});
+		const cause = new Proxy({}, { getPrototypeOf: trap, get: trap });
+		const definitions = fromFluidHandlers([
+			{
+				name: "External",
+				match: /./,
+				handler: async () => {
+					if (phase === "handler") {
+						throw cause;
+					}
+					return "needs fix";
+				},
+				resolver: async () => {
+					throw cause;
+				},
+			},
+		]);
+		const result = await runPolicies({
+			root: ".",
+			files: ["a.txt", "b.txt"],
+			fix: phase === "resolver",
+			policies: definitions.map((definition) => makePolicy(definition)),
+		});
+		expect(result.errors).toHaveLength(2);
+		expect(result.errors.every((error) => error.cause === cause)).toBe(true);
+		expect(result.errors.every((error) => error.kind === "exception")).toBe(
+			true,
+		);
+		expect(trap).not.toHaveBeenCalled();
+	});
+
 	let tempDir: string;
 
 	beforeEach(async () => {
@@ -32,8 +71,7 @@ describe("FluidFramework adapter", () => {
 		await writeFile(filePath, content);
 		return filename; // return relative path
 	};
-
-	const createArgs = (file: string): PolicyFunctionArguments<undefined> => ({
+	const createArgs = (file: string): PolicyArgs<undefined> => ({
 		file,
 		root: tempDir,
 		resolve: false,
@@ -55,8 +93,7 @@ describe("FluidFramework adapter", () => {
 
 			const file = await createTestFile("test.ts", "const x = 1;");
 			const result = await runHandler(policy.handler, createArgs(file));
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should convert a failing Fluid handler", async () => {
@@ -69,13 +106,16 @@ describe("FluidFramework adapter", () => {
 			const policy = fromFluidHandlers([fluidHandler])[0];
 			const file = await createTestFile("test.ts", "console.log('hi');");
 			const result = await runHandler(policy.handler, createArgs(file));
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.name).toBe("no-console");
-				expect(result.file).toBe(file);
-				expect(result.errorMessages.join()).toBe("console.log is not allowed");
-				expect(result.autoFixable).toBe(false);
+				expect(result.every((finding) => !("name" in finding))).toBe(true);
+				expect(result.every((finding) => !("file" in finding))).toBe(true);
+				expect(result.map((finding) => finding.message).join()).toBe(
+					"console.log is not allowed",
+				);
+				expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+					false,
+				);
 			}
 		});
 
@@ -90,10 +130,11 @@ describe("FluidFramework adapter", () => {
 			const policy = fromFluidHandlers([fluidHandler])[0];
 			const file = await createTestFile("test.ts", "content");
 			const result = await runHandler(policy.handler, createArgs(file));
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.autoFixable).toBe(true);
+				expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+					true,
+				);
 			}
 		});
 
@@ -154,10 +195,15 @@ describe("FluidFramework adapter", () => {
 					join(tempDir, file),
 					tempDir,
 				);
-				expect(result).not.toBe(true);
-				if (typeof result === "object" && "resolved" in result) {
-					expect(result.resolved).toBe(true);
-					expect(result.errorMessages.join()).toBe("Fixed!");
+				expect(result).not.toEqual([]);
+				if (typeof result === "object" && result.length > 0) {
+					expect(
+						result.length > 0 &&
+							result.every((finding) => finding.fixStatus === "fixed"),
+					).toBe(true);
+					expect(result.map((finding) => finding.message).join()).toBe(
+						"Fixed!",
+					);
 				}
 			});
 
@@ -179,8 +225,7 @@ describe("FluidFramework adapter", () => {
 
 				expect(resolverCalled).not.toHaveBeenCalled();
 			});
-
-			it("should create standalone resolver when Fluid handler has one", async () => {
+			it("translates the external resolver inline without a redundant standalone resolver", async () => {
 				const fluidHandler: FluidHandler = {
 					name: "fixable",
 					match: /\.ts$/,
@@ -189,19 +234,21 @@ describe("FluidFramework adapter", () => {
 				};
 
 				const policy = fromFluidHandlers([fluidHandler])[0];
-
-				expect(policy.resolver).toBeDefined();
-
+				expect(policy.resolver).toBeUndefined();
 				const file = await createTestFile("test.ts", "content");
-				// biome-ignore lint/style/noNonNullAssertion: we just checked it's defined
-				const result = await policy.resolver!({
+				const result = await runHandler(policy.handler, {
 					file,
 					root: tempDir,
+					resolve: true,
 					config: undefined,
 				});
-
-				expect(result.resolved).toBe(true);
-				expect(result.errorMessages.join()).toBe("standalone fix");
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toBe(true);
+				expect(result.map((finding) => finding.message).join()).toBe(
+					"standalone fix",
+				);
 			});
 
 			it("should handle resolver returning unresolved", async () => {
@@ -221,10 +268,14 @@ describe("FluidFramework adapter", () => {
 					...createArgs(file),
 					resolve: true,
 				});
-
-				if (typeof result === "object" && "resolved" in result) {
-					expect(result.resolved).toBe(false);
-					expect(result.errorMessages.join()).toBe("Could not fix");
+				if (typeof result === "object" && result.length > 0) {
+					expect(
+						result.length > 0 &&
+							result.every((finding) => finding.fixStatus === "fixed"),
+					).toBe(false);
+					expect(result.map((finding) => finding.message).join()).toBe(
+						"Could not fix",
+					);
 				}
 			});
 
@@ -242,9 +293,11 @@ describe("FluidFramework adapter", () => {
 					...createArgs(file),
 					resolve: true,
 				});
-
-				if (typeof result === "object" && "resolved" in result) {
-					expect(result.resolved).toBe(true);
+				if (typeof result === "object" && result.length > 0) {
+					expect(
+						result.length > 0 &&
+							result.every((finding) => finding.fixStatus === "fixed"),
+					).toBe(true);
 				}
 			});
 		});

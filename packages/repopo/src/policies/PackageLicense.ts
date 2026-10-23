@@ -2,7 +2,7 @@ import { existsSync } from "node:fs";
 import { copyFile, readFile } from "node:fs/promises";
 import path from "pathe";
 import type { PackageJson } from "type-fest";
-import type { PolicyFixResult } from "../policy.js";
+import type { PolicyFinding } from "../policy.js";
 import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
 
 /**
@@ -37,42 +37,30 @@ const POLICY_NAME = "PackageLicense";
 
 /**
  * Copies the root LICENSE file to the package directory.
- * @returns A PolicyFixResult indicating success or failure.
+ * @returns Findings that record whether the license was fixed.
  */
 async function copyLicenseFile(
 	rootLicensePath: string,
 	packageLicensePath: string,
-	policyName: string,
-	file: string,
+	_policyName: string,
+	_file: string,
 	packageName: string,
 	licenseFileName: string,
 	isCreate: boolean,
-): Promise<PolicyFixResult> {
+): Promise<PolicyFinding[]> {
 	try {
 		await copyFile(rootLicensePath, packageLicensePath);
-		return {
-			name: policyName,
-			file,
-			resolved: true,
-			autoFixable: true,
-			errorMessages: [
-				isCreate
-					? `Created ${licenseFileName} file for package "${packageName}"`
-					: `Updated ${licenseFileName} file for package "${packageName}" to match root`,
-			],
-		};
+		return [
+			isCreate
+				? `Created ${licenseFileName} file for package "${packageName}"`
+				: `Updated ${licenseFileName} file for package "${packageName}" to match root`,
+		].map((message) => ({ message, fixStatus: "fixed" }));
 	} catch {
-		return {
-			name: policyName,
-			file,
-			resolved: false,
-			autoFixable: true,
-			errorMessages: [
-				isCreate
-					? `Failed to copy ${licenseFileName} to package "${packageName}"`
-					: `Failed to update ${licenseFileName} for package "${packageName}"`,
-			],
-		};
+		return [
+			isCreate
+				? `Failed to copy ${licenseFileName} to package "${packageName}"`
+				: `Failed to update ${licenseFileName} for package "${packageName}"`,
+		].map((message) => ({ message, fixStatus: "failed" }));
 	}
 }
 
@@ -124,7 +112,7 @@ export const PackageLicense = definePackagePolicy<
 
 		// Skip private packages if configured to do so
 		if (skipPrivate && json.private === true) {
-			return true;
+			return [];
 		}
 
 		const packageName = json.name ?? "unknown";
@@ -134,14 +122,9 @@ export const PackageLicense = definePackagePolicy<
 
 		// Check if root LICENSE exists
 		if (!existsSync(rootLicensePath)) {
-			return {
-				name: POLICY_NAME,
-				file,
-				autoFixable: false,
-				errorMessages: [
-					`Cannot validate package LICENSE: root ${licenseFileName} file not found`,
-				],
-			};
+			return [
+				`Cannot validate package LICENSE: root ${licenseFileName} file not found`,
+			].map((message) => ({ message }));
 		}
 
 		// Check if package LICENSE exists
@@ -157,15 +140,12 @@ export const PackageLicense = definePackagePolicy<
 					true,
 				);
 			}
-
-			return {
-				name: POLICY_NAME,
-				file,
-				autoFixable: true,
-				errorMessages: [
-					`${licenseFileName} file missing for package "${packageName}"`,
-				],
-			};
+			return [
+				`${licenseFileName} file missing for package "${packageName}"`,
+			].map((message) => ({
+				message,
+				fixStatus: "available",
+			}));
 		}
 
 		// Compare package LICENSE with root LICENSE
@@ -186,17 +166,13 @@ export const PackageLicense = definePackagePolicy<
 					false,
 				);
 			}
-
-			return {
-				name: POLICY_NAME,
-				file,
-				autoFixable: true,
-				errorMessages: [
-					`${licenseFileName} file in package "${packageName}" doesn't match root ${licenseFileName}`,
-				],
-			};
+			return [
+				`${licenseFileName} file in package "${packageName}" doesn't match root ${licenseFileName}`,
+			].map((message) => ({
+				message,
+				fixStatus: "available",
+			}));
 		}
-
-		return true;
+		return [];
 	},
 });

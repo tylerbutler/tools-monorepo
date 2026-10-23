@@ -68,8 +68,7 @@ describe("WorkspaceInheritance", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should pass when no workspace section exists", async () => {
@@ -83,8 +82,7 @@ describe("WorkspaceInheritance", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should pass when workspace.package has no inherit fields", async () => {
@@ -110,8 +108,7 @@ describe("WorkspaceInheritance", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -145,12 +142,17 @@ describe("WorkspaceInheritance", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("should use workspace inheritance");
-				expect(result.error).toContain("version");
-				expect(result.error).toContain("license");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"should use workspace inheritance",
+				);
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"version",
+				);
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"license",
+				);
 			}
 		});
 	});
@@ -199,8 +201,7 @@ describe("WorkspaceInheritance", () => {
 				resolve: false,
 				config: { allowOverrides: ["crates/foo"] },
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should support wildcard patterns in allowOverrides", async () => {
@@ -233,8 +234,7 @@ describe("WorkspaceInheritance", () => {
 				resolve: false,
 				config: { allowOverrides: ["crates/special-*"] },
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -269,11 +269,14 @@ describe("WorkspaceInheritance", () => {
 				resolve: false,
 				config: { inherit: ["version", "edition"] },
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("edition");
-				expect(result.error).toContain("should use workspace inheritance");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"edition",
+				);
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"should use workspace inheritance",
+				);
 			}
 		});
 	});

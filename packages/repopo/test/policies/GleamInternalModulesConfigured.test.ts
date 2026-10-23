@@ -31,8 +31,7 @@ describe("GleamInternalModulesConfigured", () => {
 			root: testDir,
 			resolve: false,
 		});
-
-		expect(result).toBe(true);
+		expect(result).toEqual([]);
 	});
 
 	it("should fail when internal_modules field is missing", async () => {
@@ -43,10 +42,11 @@ describe("GleamInternalModulesConfigured", () => {
 			root: testDir,
 			resolve: false,
 		});
-
-		expect(result).not.toBe(true);
-		if (typeof result === "object" && "error" in result) {
-			expect(result.error).toContain("Missing internal_modules");
+		expect(result).not.toEqual([]);
+		if (typeof result === "object" && result.length > 0) {
+			expect(result.map((finding) => finding.message).join("; ")).toContain(
+				"Missing internal_modules",
+			);
 		}
 	});
 
@@ -59,10 +59,9 @@ describe("GleamInternalModulesConfigured", () => {
 			resolve: false,
 			config: { suggestPatterns: true },
 		});
-
-		expect(result).not.toBe(true);
+		expect(result).not.toEqual([]);
 		if (typeof result === "object" && "manualFix" in result) {
-			expect(result.manualFix).toContain("my_app/internal");
+			expect(result[0]?.manualFix).toContain("my_app/internal");
 		}
 	});
 
@@ -75,11 +74,10 @@ describe("GleamInternalModulesConfigured", () => {
 			resolve: false,
 			config: { suggestPatterns: false },
 		});
-
-		expect(result).not.toBe(true);
+		expect(result).not.toEqual([]);
 		if (typeof result === "object" && "manualFix" in result) {
-			expect(result.manualFix).not.toContain("my_app/internal");
-			expect(result.manualFix).toContain("Add an internal_modules field");
+			expect(result[0]?.manualFix).not.toContain("my_app/internal");
+			expect(result[0]?.manualFix).toContain("Add an internal_modules field");
 		}
 	});
 });

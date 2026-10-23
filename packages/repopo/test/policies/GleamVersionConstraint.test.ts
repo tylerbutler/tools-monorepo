@@ -34,8 +34,7 @@ describe("GleamVersionConstraint", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should pass when version meets minimum", async () => {
@@ -52,8 +51,7 @@ describe("GleamVersionConstraint", () => {
 				resolve: false,
 				config: { minimumVersion: "1.0.0" },
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should pass when version equals minimum exactly", async () => {
@@ -70,8 +68,7 @@ describe("GleamVersionConstraint", () => {
 				resolve: false,
 				config: { minimumVersion: "1.5.0" },
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -87,10 +84,11 @@ describe("GleamVersionConstraint", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("Missing gleam version constraint");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"Missing gleam version constraint",
+				);
 			}
 		});
 
@@ -105,10 +103,11 @@ describe("GleamVersionConstraint", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("Missing gleam version constraint");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"Missing gleam version constraint",
+				);
 			}
 		});
 
@@ -128,10 +127,11 @@ describe("GleamVersionConstraint", () => {
 				resolve: false,
 				config: { minimumVersion: "1.0.0" },
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("below minimum");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"below minimum",
+				);
 			}
 		});
 
@@ -149,10 +149,11 @@ describe("GleamVersionConstraint", () => {
 				resolve: false,
 				config: { minimumVersion: "1.2.1" },
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("below minimum");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"below minimum",
+				);
 			}
 		});
 	});
@@ -172,8 +173,7 @@ describe("GleamVersionConstraint", () => {
 				resolve: false,
 				config: { minimumVersion: "1.5.0" },
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should pass when minor version is higher than minimum", async () => {
@@ -190,8 +190,7 @@ describe("GleamVersionConstraint", () => {
 				resolve: false,
 				config: { minimumVersion: "1.2.5" },
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 });

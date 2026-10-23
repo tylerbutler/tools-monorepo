@@ -1,7 +1,7 @@
 import { existsSync } from "node:fs";
 import { dirname, join, resolve as resolvePath } from "pathe";
 import type { PackageJson } from "type-fest";
-import type { PolicyFailure } from "../policy.js";
+import type { PolicyFinding } from "../policy.js";
 import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
 
 /**
@@ -215,17 +215,18 @@ export const PackageTestScripts = definePackagePolicy<
 	PackageTestScriptsConfig | undefined
 >({
 	name: "PackageTestScripts",
+	requiresConfig: true,
 	description:
 		"Ensures packages have test scripts when test directories or test framework dependencies exist.",
 	handler: async (json, { file, root, config }) => {
 		// If no config provided, skip validation
 		if (config === undefined) {
-			return true;
+			return [];
 		}
 
 		// Skip validation based on package properties and config
 		if (shouldSkipValidation(json, config)) {
-			return true;
+			return [];
 		}
 
 		// Get config values
@@ -245,29 +246,23 @@ export const PackageTestScripts = definePackagePolicy<
 
 		// If no tests expected based on configured checks, pass
 		if (!(hasTestDir || hasTestDep)) {
-			return true;
+			return [];
 		}
 
 		// Tests are expected - check for required scripts
 		const missingScripts = findMissingScripts(json.scripts, requiredScripts);
 
 		if (missingScripts.length === 0) {
-			return true;
+			return [];
 		}
 
 		// Build error message
 		const reason = hasTestDir
 			? "test directory exists"
 			: `test dependencies found (${getPresentTestDependencies(devDeps, testDependencies).join(", ")})`;
-
-		const failResult: PolicyFailure = {
-			name: PackageTestScripts.name,
-			file,
-			autoFixable: false,
-			errorMessages: [
-				`Package "${json.name}" has ${reason} but is missing test scripts: ${missingScripts.join(", ")}`,
-			],
-		};
+		const failResult: PolicyFinding[] = [
+			`Package "${json.name}" has ${reason} but is missing test scripts: ${missingScripts.join(", ")}`,
+		].map((message) => ({ message }));
 		return failResult;
 	},
 });

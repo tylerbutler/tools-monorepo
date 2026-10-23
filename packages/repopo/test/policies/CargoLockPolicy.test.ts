@@ -55,8 +55,7 @@ describe("CargoLockPolicy", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should fail when binary crate has no Cargo.lock", async () => {
@@ -77,10 +76,11 @@ describe("CargoLockPolicy", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("Binary crate is missing Cargo.lock");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"Binary crate is missing Cargo.lock",
+				);
 			}
 		});
 
@@ -95,10 +95,11 @@ describe("CargoLockPolicy", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("Binary crate is missing Cargo.lock");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"Binary crate is missing Cargo.lock",
+				);
 			}
 		});
 	});
@@ -122,8 +123,7 @@ describe("CargoLockPolicy", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should warn when library crate has Cargo.lock and library policy is warn", async () => {
@@ -146,10 +146,9 @@ describe("CargoLockPolicy", () => {
 				resolve: false,
 				config: { libraries: "warn" },
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain(
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
 					"Library crate has Cargo.lock committed",
 				);
 			}
@@ -168,8 +167,7 @@ describe("CargoLockPolicy", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 });

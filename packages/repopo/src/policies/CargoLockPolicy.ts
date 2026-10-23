@@ -1,6 +1,6 @@
 import { existsSync } from "node:fs";
 import path from "pathe";
-import type { PolicyShape } from "../policy.js";
+import type { FilePolicyDefinition } from "../policy.js";
 import {
 	type CargoToml,
 	defineCargoPolicy,
@@ -59,43 +59,45 @@ function isLibraryCrate(toml: CargoToml): boolean {
  *
  * @public
  */
-export const CargoLockPolicy: PolicyShape<CargoLockPolicyConfig> =
-	defineCargoPolicy({
-		name: "CargoLockPolicy",
-		description:
-			"Context-aware Cargo.lock validation: binaries should commit it, libraries typically should not.",
-		handler: async (toml: CargoToml, { root, file, config }) => {
-			// Skip workspace root Cargo.toml
-			if (toml.workspace !== undefined && toml.package === undefined) {
-				return true;
-			}
+export const CargoLockPolicy = defineCargoPolicy({
+	name: "CargoLockPolicy",
+	description:
+		"Context-aware Cargo.lock validation: binaries should commit it, libraries typically should not.",
+	handler: async (toml: CargoToml, { root, file, config }) => {
+		// Skip workspace root Cargo.toml
+		if (toml.workspace !== undefined && toml.package === undefined) {
+			return [];
+		}
 
-			const dir = path.dirname(path.resolve(root, file));
-			const lockExists = existsSync(path.join(dir, "Cargo.lock"));
-			const isBinary = isBinaryCrate(toml);
-			const isLib = isLibraryCrate(toml);
+		const dir = path.dirname(path.resolve(root, file));
+		const lockExists = existsSync(path.join(dir, "Cargo.lock"));
+		const isBinary = isBinaryCrate(toml);
+		const isLib = isLibraryCrate(toml);
 
-			const binaryPolicy = config?.binaries ?? "require";
-			const libraryPolicy = config?.libraries ?? "ignore";
+		const binaryPolicy = config?.binaries ?? "require";
+		const libraryPolicy = config?.libraries ?? "ignore";
 
-			if (isBinary && binaryPolicy === "require" && !lockExists) {
-				return {
-					error:
+		if (isBinary && binaryPolicy === "require" && !lockExists) {
+			return [
+				{
+					message:
 						"Binary crate is missing Cargo.lock. Binary crates should commit their lockfile for reproducible builds.",
 					manualFix:
 						"Run `cargo generate-lockfile` and commit the Cargo.lock file.",
-				};
-			}
+				},
+			];
+		}
 
-			if (isLib && !isBinary && libraryPolicy === "warn" && lockExists) {
-				return {
-					error:
+		if (isLib && !isBinary && libraryPolicy === "warn" && lockExists) {
+			return [
+				{
+					message:
 						"Library crate has Cargo.lock committed. Library crates typically should not commit their lockfile.",
 					manualFix:
 						"Consider adding Cargo.lock to .gitignore for library crates.",
-				};
-			}
-
-			return true;
-		},
-	});
+				},
+			];
+		}
+		return [];
+	},
+}) satisfies FilePolicyDefinition<CargoLockPolicyConfig>;

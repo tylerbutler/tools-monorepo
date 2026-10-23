@@ -1,7 +1,7 @@
 /**
  * Built-in file and repository policies and their configuration types.
  *
- * Use `policy()` from `repopo` or `repopo/api` to configure these definitions.
+ * Use `makePolicy()` from `repopo` or `repopo/api` to configure these definitions.
  *
  * @packageDocumentation
  */
@@ -104,7 +104,10 @@ export {
 export { HtmlFileHeaders } from "./policies/HtmlFileHeaders.js";
 export { JsTsFileHeaders } from "./policies/JsTsFileHeaders.js";
 // License policies
-export { LicenseFileExists } from "./policies/LicenseFileExists.js";
+export {
+	LicenseFileExists,
+	type LicenseFileExistsSettings,
+} from "./policies/LicenseFileExists.js";
 export {
 	MutuallyExclusiveScripts,
 	type MutuallyExclusiveScriptsConfig,
@@ -114,9 +117,15 @@ export { NoBuildDirectory } from "./policies/NoBuildDirectory.js";
 // File extension policies
 export { NoJsFileExtensions } from "./policies/NoJsFileExtensions.js";
 // File size policies
-export { NoLargeBinaryFiles } from "./policies/NoLargeBinaryFiles.js";
+export {
+	NoLargeBinaryFiles,
+	type NoLargeBinaryFilesSettings,
+} from "./policies/NoLargeBinaryFiles.js";
 // Dependency policies
-export { NoPrivateWorkspaceDependencies } from "./policies/NoPrivateWorkspaceDependencies.js";
+export {
+	NoPrivateWorkspaceDependencies,
+	type NoPrivateWorkspaceDependenciesSettings,
+} from "./policies/NoPrivateWorkspaceDependencies.js";
 // Rust build artifact policies
 export { NoTargetArtifacts } from "./policies/NoTargetArtifacts.js";
 // Rust unsafe code policies
@@ -144,7 +153,10 @@ export {
 	type PackageFolderNameConfig,
 } from "./policies/PackageFolderName.js";
 // Package.json field policies
-export { PackageJsonProperties } from "./policies/PackageJsonProperties.js";
+export {
+	PackageJsonProperties,
+	type PackageJsonPropertiesSettings,
+} from "./policies/PackageJsonProperties.js";
 export { PackageJsonRepoDirectoryProperty } from "./policies/PackageJsonRepoDirectoryProperty.js";
 export { PackageJsonSorted } from "./policies/PackageJsonSorted.js";
 export {
@@ -178,7 +190,10 @@ export {
 	type PublicApiDocumentedConfig,
 } from "./policies/PublicApiDocumented.js";
 // Gitignore policies
-export { RequiredGitignorePatterns } from "./policies/RequiredGitignorePatterns.js";
+export {
+	RequiredGitignorePatterns,
+	type RequiredGitignorePatternsSettings,
+} from "./policies/RequiredGitignorePatterns.js";
 export {
 	type RequiredScriptEntry,
 	RequiredScripts,
@@ -218,3 +233,7 @@ export {
 } from "./policies/WorkspaceMembersValid.js";
 // Default policies
 export { DefaultPolicies } from "./policy.js";
+export type {
+	FileHeaderGeneratorConfig,
+	FileHeaderPolicyConfig,
+} from "./policyDefiners/defineFileHeaderPolicy.js";

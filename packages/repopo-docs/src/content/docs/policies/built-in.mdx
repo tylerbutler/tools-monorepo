@@ -4,7 +4,16 @@ sidebar:
   order: 2
 ---
 
-repopo includes several built-in policies that enforce common repository standards. All built-in policies are **enabled by default** but can be configured or disabled as needed.
+repopo includes built-in policies for common repository standards. Only
+`NoJsFileExtensions`, `PackageJsonRepoDirectoryProperty`, and `PackageJsonSorted`
+are enabled by default. Other policies are opt-in.
+
+Configure definitions with `makePolicy(definition, { config, exclude, instanceId })`.
+Configuration replaces defaults; it is not merged. Header policies and
+`PackageJsonProperties` require settings. The focused `RequiredScripts`,
+`ExactScripts`, `MutuallyExclusiveScripts`, `ConditionalScripts`, and
+`ScriptContains` policies also require settings; prefer them to `PackageScripts`.
+See [the migration guide](/usage/migration/) for finding arrays and required config.
 
 ## Policy Overview
 
@@ -40,9 +49,9 @@ import { HtmlFileHeaders } from "repopo/policies";
 
 const config = {
   policies: [
-    makePolicy(HtmlFileHeaders, {
+    makePolicy(HtmlFileHeaders, { config: {
       headerText: "Copyright (c) 2024 Your Company. All rights reserved."
-    })
+    } })
   ]
 };
 ```
@@ -63,10 +72,10 @@ import { JsTsFileHeaders } from "repopo/policies";
 
 const config = {
   policies: [
-    makePolicy(JsTsFileHeaders, {
+    makePolicy(JsTsFileHeaders, { config: {
       headerText: `Copyright (c) 2024 Your Company.
 Licensed under the MIT License.`
-    })
+    } })
   ]
 };
 ```
@@ -108,12 +117,12 @@ import { NoPrivateWorkspaceDependencies } from "repopo/policies";
 const config = {
   policies: [
     // Default: only check dependencies (not devDependencies)
-    makePolicy(NoPrivateWorkspaceDependencies),
+    makePolicy(NoPrivateWorkspaceDependencies, { instanceId: "production-deps" }),
 
     // Or: also check devDependencies
-    makePolicy(NoPrivateWorkspaceDependencies, {
+    makePolicy(NoPrivateWorkspaceDependencies, { instanceId: "all-deps", config: {
       checkDevDependencies: true
-    })
+    } })
   ]
 };
 ```
@@ -162,12 +171,12 @@ import { PackageAllowedScopes } from "repopo/policies";
 
 const config = {
   policies: [
-    makePolicy(PackageAllowedScopes, {
+    makePolicy(PackageAllowedScopes, { config: {
       // Only these scopes are allowed
       allowedScopes: ["@myorg", "@internal", "@experimental"],
       // These specific unscoped packages are also allowed
       unscopedPackages: ["legacy-tool", "special-package"]
-    })
+    } })
   ]
 };
 ```
@@ -193,16 +202,16 @@ import { PackageEsmType } from "repopo/policies";
 const config = {
   policies: [
     // Option 1: Require all packages to be ESM
-    makePolicy(PackageEsmType, { requiredType: "module" }),
+    makePolicy(PackageEsmType, { instanceId: "esm", config: { requiredType: "module" } }),
 
     // Option 2: Detect based on exports/main field
-    makePolicy(PackageEsmType, { detectFromExports: true }),
+    makePolicy(PackageEsmType, { instanceId: "detected", config: { detectFromExports: true } }),
 
     // Option 3: With exclusions
-    makePolicy(PackageEsmType, {
+    makePolicy(PackageEsmType, { instanceId: "esm-exceptions", config: {
       requiredType: "module",
       excludePackages: ["@myorg/legacy-cjs-package"]
-    })
+    } })
   ]
 };
 ```
@@ -227,7 +236,7 @@ import { PackageFolderName } from "repopo/policies";
 
 const config = {
   policies: [
-    makePolicy(PackageFolderName, {
+    makePolicy(PackageFolderName, { config: {
       // Strip all scopes when matching: @myorg/my-package → folder "my-package"
       stripScopes: ["@*"],
 
@@ -239,7 +248,7 @@ const config = {
 
       // Exclude packages with intentionally different folder names
       excludePackages: ["@myorg/special-case"]
-    })
+    } })
   ]
 };
 ```
@@ -267,7 +276,7 @@ import { PackageJsonProperties } from "repopo/policies";
 
 const config = {
   policies: [
-    makePolicy(PackageJsonProperties, {
+    makePolicy(PackageJsonProperties, { config: {
       verbatim: {
         license: "MIT",
         author: "Tyler Butler <tyler@tylerbutler.com>",
@@ -277,7 +286,7 @@ const config = {
           url: "git+https://github.com/tylerbutler/tools-monorepo.git",
         }
       }
-    })
+    } })
   ]
 };
 ```
@@ -315,13 +324,13 @@ import { PackageLicense } from "repopo/policies";
 const config = {
   policies: [
     // Use defaults (skip private packages, look for LICENSE)
-    makePolicy(PackageLicense),
+    makePolicy(PackageLicense, { instanceId: "default-license" }),
 
     // Require LICENSE for all packages including private
-    makePolicy(PackageLicense, { skipPrivate: false }),
+    makePolicy(PackageLicense, { instanceId: "all-license", config: { skipPrivate: false } }),
 
     // Use a different license file name
-    makePolicy(PackageLicense, { licenseFileName: "LICENSE.md" })
+    makePolicy(PackageLicense, { instanceId: "markdown-license", config: { licenseFileName: "LICENSE.md" } })
   ]
 };
 ```
@@ -346,7 +355,7 @@ import { PackagePrivateField } from "repopo/policies";
 
 const config = {
   policies: [
-    makePolicy(PackagePrivateField, {
+    makePolicy(PackagePrivateField, { config: {
       // Packages in these scopes must be published (no private: true)
       mustPublish: ["@myorg", "@myorg-tools"],
 
@@ -359,7 +368,7 @@ const config = {
       // Default for packages not matching any list
       // Options: "private" (default), "public", "ignore"
       unmatchedPackages: "private"
-    })
+    } })
   ]
 };
 ```
@@ -386,16 +395,16 @@ import { PackageReadme } from "repopo/policies";
 const config = {
   policies: [
     // Basic README validation
-    makePolicy(PackageReadme),
+    makePolicy(PackageReadme, { instanceId: "readme-exists" }),
 
     // Require README title to match package name
-    makePolicy(PackageReadme, { requireMatchingTitle: true }),
+    makePolicy(PackageReadme, { instanceId: "readme-title", config: { requireMatchingTitle: true } }),
 
     // Require specific content (e.g., trademark notice)
-    makePolicy(PackageReadme, {
+    makePolicy(PackageReadme, { instanceId: "readme-content", config: {
       requiredContent: "## Trademark",
       skipPrivate: true
-    })
+    } })
   ]
 };
 ```
@@ -421,7 +430,7 @@ import { PackageScripts } from "repopo/policies";
 
 const config = {
   policies: [
-    makePolicy(PackageScripts, {
+    makePolicy(PackageScripts, { config: {
       // Scripts that must exist (with optional defaults for auto-fix)
       must: [
         "test",                        // Must exist, no auto-fix
@@ -454,7 +463,7 @@ const config = {
         ["test:unit", "test:vitest"],
         ["lint:eslint", "lint:biome"]
       ]
-    })
+    } })
   ]
 };
 ```
@@ -483,7 +492,7 @@ import { PackageTestScripts } from "repopo/policies";
 
 const config = {
   policies: [
-    makePolicy(PackageTestScripts, {
+    makePolicy(PackageTestScripts, { config: {
       // Check for these test directories
       testDirectories: ["test", "tests", "__tests__"],
 
@@ -495,7 +504,7 @@ const config = {
 
       // Exclude specific packages
       excludePackages: ["@myorg/docs", "@myorg/examples"]
-    })
+    } })
   ]
 };
 ```
@@ -521,23 +530,24 @@ import { PackageScripts, JsTsFileHeaders } from "repopo/policies";
 const config = {
   policies: [
     // Configure with settings
-    makePolicy(PackageScripts, {
+    makePolicy(PackageScripts, { config: {
       must: ["build", "test"],
       mutuallyExclusive: [["lint:eslint", "lint:biome"]]
-    }),
+    } }),
 
     // Configure with settings and exclusions
-    makePolicy(JsTsFileHeaders,
-      { headerText: "Copyright 2024" },
-      { excludeFiles: ["**/generated/**"] }
-    )
+    makePolicy(JsTsFileHeaders, {
+      config: { headerText: "Copyright 2024" },
+      exclude: ["(^|/)generated/"]
+    })
   ]
 };
 ```
 
 ### Disabling Policies
 
-To disable a built-in policy, simply don't include it in your policies array. By default, all built-in policies are enabled, but you can create a custom configuration that includes only the policies you want:
+To disable a built-in policy, omit it from your explicit policies array. Omitted
+`policies` uses the three defaults listed above; `policies: []` disables all:
 
 ```ts title="repopo.config.ts"
 import { makePolicy } from "repopo";
@@ -564,16 +574,52 @@ const config = {
   // Exclude files from ALL policies
   excludeFiles: [
     /node_modules/,
-    /\\.coverage/,
+    /\.coverage/,
     /dist/
   ],
 
   policies: [
     // Exclude files from specific policy
-    makePolicy(PackageJsonProperties,
-      { verbatim: { license: "MIT" } },
-      { excludeFiles: [/packages\/experimental/] }
-    )
+    makePolicy(PackageJsonProperties, {
+      config: { verbatim: { license: "MIT" } },
+      exclude: [/packages\/experimental/]
+    })
   ]
 };
+```
+
+## Additional exported settings
+
+All built-in configuration types are covered in the generated
+[API reference](/api/readme/), including Cargo and Gleam policies.
+The following settings are available from `repopo/policies`, `repopo/api`,
+and `repopo`:
+
+| Type | Policy | Settings |
+| --- | --- | --- |
+| `PackageJsonPropertiesSettings` | `PackageJsonProperties` | `verbatim` fields and values; nested objects preserve unspecified fields and arrays replace existing arrays. Configuration is required. |
+| `NoLargeBinaryFilesSettings` | `NoLargeBinaryFiles` | Optional `maxSizeBytes` (default 10 MiB), `excludeExtensions`, and policy-specific glob `excludePatterns`. These config fields are not instance regex exclusions. |
+| `LicenseFileExistsSettings` | `LicenseFileExists` | Optional `acceptedNames` for a repository-root license; defaults include LICENSE/LICENCE with common extensions. Repository scope, no standalone fixer. |
+| `RequiredGitignorePatternsSettings` | `RequiredGitignorePatterns` | `patterns` entries are strings or `{ pattern, comment? }`; fixes add missing entries. Omit config to use the built-in default patterns. |
+| `NoPrivateWorkspaceDependenciesSettings` | `NoPrivateWorkspaceDependencies` | Optional `checkDevDependencies` (default false). |
+
+For example:
+
+```ts
+import { makePolicy, type RepopoConfig } from "repopo/api";
+import {
+	LicenseFileExists,
+	NoLargeBinaryFiles,
+	RequiredGitignorePatterns,
+} from "repopo/policies";
+
+export default {
+	policies: [
+		makePolicy(LicenseFileExists, { config: { acceptedNames: ["LICENSE.md"] } }),
+		makePolicy(NoLargeBinaryFiles, { config: { maxSizeBytes: 5 * 1024 * 1024 } }),
+		makePolicy(RequiredGitignorePatterns, {
+			config: { patterns: ["node_modules/", { pattern: ".env", comment: "Secrets" }] },
+		}),
+	],
+} satisfies RepopoConfig;
 ```

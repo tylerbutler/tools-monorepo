@@ -1,5 +1,5 @@
 import { resolve } from "pathe";
-import type { PolicyShape } from "../policy.js";
+import type { FilePolicyDefinition } from "../policy.js";
 import {
 	type CargoToml,
 	defineCargoPolicy,
@@ -50,43 +50,42 @@ const MANUAL_FIX =
  *
  * @public
  */
-export const CargoLicenceValidated: PolicyShape<CargoLicenceValidatedConfig> =
-	defineCargoPolicy({
-		name: "CargoLicenceValidated",
-		description:
-			"Validates that Cargo.toml has a valid SPDX licence identifier.",
-		handler: async (
-			toml: CargoToml,
-			{ file, root, resolve: shouldResolve, config },
-		) => {
-			const skipWorkspace = config?.skipWorkspace ?? true;
-			const pkg = toml.package as Record<string, unknown> | undefined;
+export const CargoLicenceValidated = defineCargoPolicy({
+	name: "CargoLicenceValidated",
+	description: "Validates that Cargo.toml has a valid SPDX licence identifier.",
+	handler: async (
+		toml: CargoToml,
+		{ file, root, resolve: shouldResolve, config },
+	) => {
+		const skipWorkspace = config?.skipWorkspace ?? true;
+		const pkg = toml.package as Record<string, unknown> | undefined;
 
-			if (!pkg && skipWorkspace) {
-				return true;
-			}
+		if (!pkg && skipWorkspace) {
+			return [];
+		}
 
-			const licence = pkg?.license as string | undefined;
+		const licence = pkg?.license as string | undefined;
 
-			if (!licence || licence.trim() === "") {
-				return {
-					error: "Missing or empty license field in [package] section.",
+		if (!licence || licence.trim() === "") {
+			return [
+				{
+					message: "Missing or empty license field in [package] section.",
 					manualFix:
 						'Add license = "MIT" (or appropriate SPDX identifier) to [package] in Cargo.toml.',
-				};
-			}
+				},
+			];
+		}
 
-			const result = await validateLicenceField({
-				licences: [licence],
-				...(config?.allowedLicences !== undefined && {
-					allowedLicences: config.allowedLicences,
-				}),
-				validateSpdx: config?.validateSpdx ?? true,
-				shouldResolve,
-				filePath: resolve(root, file),
-				manualFixMessage: MANUAL_FIX,
-			});
-
-			return result ?? true;
-		},
-	});
+		const result = await validateLicenceField({
+			licences: [licence],
+			...(config?.allowedLicences !== undefined && {
+				allowedLicences: config.allowedLicences,
+			}),
+			validateSpdx: config?.validateSpdx ?? true,
+			shouldResolve,
+			filePath: resolve(root, file),
+			manualFixMessage: MANUAL_FIX,
+		});
+		return result;
+	},
+}) satisfies FilePolicyDefinition<CargoLicenceValidatedConfig>;

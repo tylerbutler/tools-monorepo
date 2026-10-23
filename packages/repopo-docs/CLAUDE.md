@@ -177,8 +177,8 @@ Prevents ambiguous `.js` file extensions in the repository.
 ### Configuration
 
 \`\`\`typescript
-makePolicy(NoJsFileExtensions, undefined, {
-  excludeFiles: [".*/bin/.*js"]  // Exclude bin scripts
+makePolicy(NoJsFileExtensions, {
+  exclude: ["^bin/"]  // Repo-relative regex, not a glob
 })
 \`\`\`
 
@@ -198,9 +198,24 @@ API documentation is generated from the repopo source code:
 - Interface documentation
 
 **Configuration:**
-- Entry point: repopo/src/index.ts
+- Entry points: repopo/src/index.ts, repopo/src/api.ts, repopo/src/policies.ts
 - Output: src/content/docs/api/
 - Format: Markdown (Starlight-compatible)
+
+Use canonical authoring terms: `makePolicy`, `PolicyDefinition`,
+`FilePolicyDefinition`, `RepositoryPolicyDefinition`, and `ConfiguredPolicy`.
+Write definition literals with `satisfies`. The factory accepts only
+`makePolicy(definition, { config, exclude, instanceId })`.
+Both handler scopes return finding arrays; `[]` passes. Findings use `message`,
+optional `manualFix`, and optional `fixStatus` (`available`, `fixed`, `failed`).
+Only fixed resolves; fixed findings remain in results. Fixed/failed require fix
+mode. Keep async/generator handlers and file resolvers.
+
+Reference pages are generated, never edited by hand. The generator cleans its
+output so removed exports do not retain obsolete pages. Document all public
+configuration types and entry points. Link new authoring guidance to
+`/usage/migration/`, which covers required/default config, resolver processing,
+runner results/errors, and explicit full repository inventory.
 
 ## Styling and Theming
 

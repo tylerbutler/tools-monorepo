@@ -3,10 +3,9 @@ import { EOL, tmpdir } from "node:os";
 import { run } from "effection";
 import { join } from "pathe";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { policy as configurePolicy } from "../src/makePolicy.js";
+import { makePolicy as configurePolicy } from "../src/makePolicy.js";
 import { HtmlFileHeaders } from "../src/policies/HtmlFileHeaders.js";
 import { JsTsFileHeaders } from "../src/policies/JsTsFileHeaders.js";
-import type { PolicyFailure, PolicyFixResult } from "../src/policy.js";
 import {
 	defineFileHeaderPolicy,
 	type FileHeaderGeneratorConfig,
@@ -82,8 +81,7 @@ describe("defineFileHeaderPolicy", () => {
 				resolve: false,
 				config: { headerText: "Copyright Example" },
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should fail when file is missing header", async () => {
@@ -104,20 +102,21 @@ describe("defineFileHeaderPolicy", () => {
 				description: "Test file header policy",
 				config,
 			});
-
-			const result = (await runHandler(policy.handler, {
+			const result = await runHandler(policy.handler, {
 				file: "test.ts",
 				root: testDir,
 				resolve: false,
 				config: { headerText: "Copyright 2025" },
-			})) as PolicyFailure;
-
-			expect(result).not.toBe(true);
-			expect(result).toHaveProperty("autoFixable", true);
-			expect(result.errorMessages.join()).toContain(".ts file missing header");
+			});
+			expect(result).not.toEqual([]);
+			expect(result.some((finding) => finding.fixStatus !== undefined)).toEqual(
+				true,
+			);
+			expect(result.map((finding) => finding.message).join()).toContain(
+				".ts file missing header",
+			);
 		});
-
-		it("should pass when config is undefined", async () => {
+		it("rejects missing required header config", async () => {
 			const testFile = join(testDir, "test.ts");
 			await writeFile(testFile, "const x = 1;");
 
@@ -133,15 +132,14 @@ describe("defineFileHeaderPolicy", () => {
 				description: "Test file header policy",
 				config,
 			});
-
-			const result = await runHandler(policy.handler, {
-				file: "test.ts",
-				root: testDir,
-				resolve: false,
-				config: undefined,
-			});
-
-			expect(result).toBe(true);
+			await expect(
+				runHandler(policy.handler, {
+					file: "test.ts",
+					root: testDir,
+					resolve: false,
+					config: undefined,
+				}),
+			).rejects.toThrow("requires config");
 		});
 	});
 
@@ -168,16 +166,15 @@ describe("defineFileHeaderPolicy", () => {
 			await writeFile(join(testDir, "index.ts"), "export const x = 1;");
 			const runner = new PolicyRunner({
 				policies: [
-					configurePolicy(HtmlFileHeaders, { headerText: "Copyright Example" }),
+					configurePolicy(HtmlFileHeaders, {
+						config: { headerText: "Copyright Example" },
+					}),
 				],
-				excludeFromAll: [],
-				excludePoliciesForFiles: new Map(),
-				gitRoot: testDir,
-				resolve: true,
+				root: testDir,
+				fix: true,
+				files: ["index.html", "index.ts"],
 			});
-
-			await run(() => runner.run(["index.html", "index.ts"]));
-
+			await run(() => runner.run());
 			expect
 				.soft(await readFile(join(testDir, "index.html"), "utf-8"))
 				.toContain("<!-- Copyright Example -->");
@@ -203,15 +200,15 @@ describe("defineFileHeaderPolicy", () => {
 				description: "Test file header policy",
 				config,
 			});
-
-			const result = (await runHandler(policy.handler, {
+			const result = await runHandler(policy.handler, {
 				file: "test.ts",
 				root: testDir,
 				resolve: false,
 				config: { headerText: "Copyright 2025" },
-			})) as PolicyFailure;
-
-			expect(result.autoFixable).toBe(true);
+			});
+			expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+				true,
+			);
 		});
 
 		it("should fix missing header when resolve is true", async () => {
@@ -233,17 +230,19 @@ describe("defineFileHeaderPolicy", () => {
 				description: "Test file header policy",
 				config,
 			});
-
-			const result = (await runHandler(policy.handler, {
+			const result = await runHandler(policy.handler, {
 				file: "test.ts",
 				root: testDir,
 				resolve: true,
 				config: { headerText },
-			})) as PolicyFixResult;
-
-			expect(result.resolved).toBe(true);
-			expect(result.autoFixable).toBe(true);
-
+			});
+			expect(
+				result.length > 0 &&
+					result.every((finding) => finding.fixStatus === "fixed"),
+			).toBe(true);
+			expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+				true,
+			);
 			// Verify file was actually updated
 			const newContent = await readFile(testFile, "utf-8");
 			expect(newContent).toContain(`// ${headerText}`);
@@ -332,16 +331,16 @@ describe("defineFileHeaderPolicy", () => {
 				description: "Test file header policy",
 				config,
 			});
-
-			const result = (await runHandler(policy.handler, {
+			const result = await runHandler(policy.handler, {
 				file: "test.ts",
 				root: testDir,
 				resolve: false,
 				config: { headerText: "Copyright" },
-			})) as PolicyFailure;
-
-			expect(result.errorMessages.join()).toContain(".ts");
-			expect(result.errorMessages.join()).toContain("missing header");
+			});
+			expect(result.map((finding) => finding.message).join()).toContain(".ts");
+			expect(result.map((finding) => finding.message).join()).toContain(
+				"missing header",
+			);
 		});
 
 		it("should include policy name in failure", async () => {
@@ -361,15 +360,13 @@ describe("defineFileHeaderPolicy", () => {
 				description: "Custom file header policy",
 				config,
 			});
-
-			const result = (await runHandler(policy.handler, {
+			const result = await runHandler(policy.handler, {
 				file: "test.ts",
 				root: testDir,
 				resolve: false,
 				config: { headerText: "Copyright" },
-			})) as PolicyFailure;
-
-			expect(result.name).toBe("CustomHeaderPolicy");
+			});
+			expect(result.every((finding) => !("name" in finding))).toBe(true);
 		});
 	});
 });

@@ -31,8 +31,7 @@ describe("GleamSharedDependencyVersions", () => {
 				packages: ["gleam.toml"],
 			},
 		});
-
-		expect(result).toBe(true);
+		expect(result).toEqual([]);
 	});
 
 	it("should pass when same versions across packages", async () => {
@@ -56,8 +55,7 @@ describe("GleamSharedDependencyVersions", () => {
 				packages: ["pkg_a/gleam.toml", "pkg_b/gleam.toml"],
 			},
 		});
-
-		expect(result).toBe(true);
+		expect(result).toEqual([]);
 	});
 
 	it("should fail when different versions for same dep", async () => {
@@ -81,11 +79,14 @@ describe("GleamSharedDependencyVersions", () => {
 				packages: ["pkg_a/gleam.toml", "pkg_b/gleam.toml"],
 			},
 		});
-
-		expect(result).not.toBe(true);
-		if (typeof result === "object" && "error" in result) {
-			expect(result.error).toContain("Version mismatch");
-			expect(result.error).toContain("gleam_stdlib");
+		expect(result).not.toEqual([]);
+		if (typeof result === "object" && result.length > 0) {
+			expect(result.map((finding) => finding.message).join("; ")).toContain(
+				"Version mismatch",
+			);
+			expect(result.map((finding) => finding.message).join("; ")).toContain(
+				"gleam_stdlib",
+			);
 		}
 	});
 
@@ -111,8 +112,7 @@ describe("GleamSharedDependencyVersions", () => {
 				detectMismatches: false,
 			},
 		});
-
-		expect(result).toBe(true);
+		expect(result).toEqual([]);
 	});
 
 	it("should include dev-dependencies when includeDev is true", async () => {
@@ -137,11 +137,14 @@ describe("GleamSharedDependencyVersions", () => {
 				includeDev: true,
 			},
 		});
-
-		expect(result).not.toBe(true);
-		if (typeof result === "object" && "error" in result) {
-			expect(result.error).toContain("Version mismatch");
-			expect(result.error).toContain("gleeunit");
+		expect(result).not.toEqual([]);
+		if (typeof result === "object" && result.length > 0) {
+			expect(result.map((finding) => finding.message).join("; ")).toContain(
+				"Version mismatch",
+			);
+			expect(result.map((finding) => finding.message).join("; ")).toContain(
+				"gleeunit",
+			);
 		}
 	});
 });

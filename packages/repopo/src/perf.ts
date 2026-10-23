@@ -36,11 +36,13 @@ export function* runWithPerf<T>(
 	run: () => Operation<T>,
 ): Operation<T> {
 	const start = performance.now();
-	const result = yield* run();
-	const actionMap = stats.data.get(action) ?? new Map<string, number>();
-	actionMap.set(name, (actionMap.get(name) ?? 0) + performance.now() - start);
-	stats.data.set(action, actionMap);
-	return result;
+	try {
+		return yield* run();
+	} finally {
+		const actionMap = stats.data.get(action) ?? new Map<string, number>();
+		actionMap.set(name, (actionMap.get(name) ?? 0) + performance.now() - start);
+		stats.data.set(action, actionMap);
+	}
 }
 
 export function logStats(stats: PolicyHandlerPerfStats, log: Logger): void {

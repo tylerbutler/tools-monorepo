@@ -34,42 +34,40 @@ const DEFAULT_LICENSE_NAMES = [
  *
  * @public
  */
-export const LicenseFileExists: RepositoryPolicyDefinition<LicenseFileExistsSettings> =
-	{
-		name: "LicenseFileExists",
-		description:
-			"Ensures a LICENSE file exists in the repository root for open source projects.",
-		scope: "repository",
-		handler: async ({ root, files, config }) => {
-			const acceptedNames = config?.acceptedNames ?? DEFAULT_LICENSE_NAMES;
+export const LicenseFileExists = {
+	name: "LicenseFileExists",
+	description:
+		"Ensures a LICENSE file exists in the repository root for open source projects.",
+	scope: "repository",
+	handler: async ({ root, files, config }) => {
+		const acceptedNames = config?.acceptedNames ?? DEFAULT_LICENSE_NAMES;
 
-			// Check if any of the accepted license files exist in the root
-			for (const name of acceptedNames) {
-				if (!files.includes(name)) {
-					continue;
+		// Check if any of the accepted license files exist in the root
+		for (const name of acceptedNames) {
+			if (!files.includes(name)) {
+				continue;
+			}
+			try {
+				if ((await stat(path.join(root, name))).isFile()) {
+					return [];
 				}
-				try {
-					if ((await stat(path.join(root, name))).isFile()) {
-						return true;
-					}
-				} catch (error: unknown) {
-					if (
-						!(
-							error instanceof Error &&
-							"code" in error &&
-							error.code === "ENOENT"
-						)
-					) {
-						throw error;
-					}
+			} catch (error: unknown) {
+				if (
+					!(
+						error instanceof Error &&
+						"code" in error &&
+						error.code === "ENOENT"
+					)
+				) {
+					throw error;
 				}
 			}
+		}
 
-			return [
-				{
-					fixable: false,
-					error: `No LICENSE file found in repository root. Expected one of: ${acceptedNames.join(", ")}`,
-				},
-			];
-		},
-	};
+		return [
+			{
+				message: `No LICENSE file found in repository root. Expected one of: ${acceptedNames.join(", ")}`,
+			},
+		];
+	},
+} satisfies RepositoryPolicyDefinition<LicenseFileExistsSettings>;

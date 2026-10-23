@@ -32,8 +32,7 @@ describe("GleamNameRestrictions", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should pass with a simple name", async () => {
@@ -47,8 +46,7 @@ describe("GleamNameRestrictions", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should pass when no name field is present", async () => {
@@ -62,8 +60,7 @@ describe("GleamNameRestrictions", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -79,11 +76,14 @@ describe("GleamNameRestrictions", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("gleam_");
-				expect(result.error).toContain("reserved prefix");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"gleam_",
+				);
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"reserved prefix",
+				);
 			}
 		});
 
@@ -98,10 +98,11 @@ describe("GleamNameRestrictions", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("not snake_case");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"not snake_case",
+				);
 			}
 		});
 
@@ -116,10 +117,11 @@ describe("GleamNameRestrictions", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("not snake_case");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"not snake_case",
+				);
 			}
 		});
 
@@ -134,10 +136,11 @@ describe("GleamNameRestrictions", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("not snake_case");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"not snake_case",
+				);
 			}
 		});
 	});
@@ -155,10 +158,11 @@ describe("GleamNameRestrictions", () => {
 				resolve: false,
 				config: { denyPrefixes: ["internal_"] },
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("internal_");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"internal_",
+				);
 			}
 		});
 
@@ -174,8 +178,7 @@ describe("GleamNameRestrictions", () => {
 				resolve: false,
 				config: { denyPrefixes: [] },
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 });

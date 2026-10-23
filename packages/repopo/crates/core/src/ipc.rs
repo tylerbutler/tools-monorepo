@@ -1,43 +1,24 @@
 use anyhow::{Context, Result};
 use std::io::{BufRead, BufReader, Write};
 use std::process::{Child, ChildStdin, ChildStdout, Command, Stdio};
+use std::sync::mpsc::{self, Receiver, RecvTimeoutError};
+use std::thread;
+use std::time::Duration;
 
 use crate::types::{
-    CompactBatchResponse, HandlerResult, IpcRequest, IpcResponse, LoadConfigParams,
-    LoadConfigResponse, PolicyErrorResult, RepositoryPolicyResult, RunHandlerBatchParams,
-    RunHandlerParams, RunRepositoryPoliciesParams, RunResolverBatchParams, RunResolverParams,
+    BeginRunParams, ExecuteUnitsParams, ExecutionUnit, IpcRequest, IpcResponse, LoadConfigParams,
+    LoadConfigResponse, MatchFilesParams, RunResults,
 };
 
-/// A connection to the sidecar process that loads TypeScript
-/// configurations and executes policy handlers.
 pub struct Sidecar {
     child: Child,
-    stdin: ChildStdin,
-    stdout_reader: BufReader<ChildStdout>,
+    stdin: Option<ChildStdin>,
+    responses: Receiver<std::io::Result<String>>,
+    reader: Option<thread::JoinHandle<()>>,
+    closed: bool,
 }
 
 impl Sidecar {
-    pub fn run_repository_policies(
-        &mut self,
-        resolve: bool,
-    ) -> Result<Vec<RepositoryPolicyResult>> {
-        let response = self.request(&IpcRequest::RunRepositoryPolicies(
-            RunRepositoryPoliciesParams { resolve },
-        ))?;
-        serde_json::from_value(
-            response
-                .data
-                .context("No data in repository policy response")?,
-        )
-        .context("Failed to parse repository policy results")
-    }
-
-    /// Spawn the sidecar process using the given JS runtime.
-    ///
-    /// The `runtime` should be `"node"`, `"bun"`, or another Node-compatible runtime.
-    /// The `sidecar_path` should point to the sidecar .mjs file.
-    /// The `git_root` sets the sidecar's working directory so that
-    /// policy handlers can use repo-relative file paths directly.
     pub fn spawn(runtime: &str, sidecar_path: &str, git_root: &str) -> Result<Self> {
         let mut child = Command::new(runtime)
             .arg(sidecar_path)
@@ -47,231 +28,114 @@ impl Sidecar {
             .stderr(Stdio::inherit())
             .spawn()
             .with_context(|| format!("Failed to spawn sidecar with {runtime} at {sidecar_path}"))?;
-
         let stdin = child.stdin.take().context("Failed to get sidecar stdin")?;
         let stdout = child
             .stdout
             .take()
             .context("Failed to get sidecar stdout")?;
-        let stdout_reader = BufReader::new(stdout);
-
+        let (send, responses) = mpsc::channel();
+        let reader = thread::spawn(move || {
+            let mut reader = BufReader::<ChildStdout>::new(stdout);
+            loop {
+                let mut line = String::new();
+                let result = reader.read_line(&mut line).map(|_| line);
+                let done = result.as_ref().map_or(true, |line| line.is_empty());
+                if send.send(result).is_err() || done {
+                    break;
+                }
+            }
+        });
         Ok(Self {
             child,
-            stdin,
-            stdout_reader,
+            stdin: Some(stdin),
+            responses,
+            reader: Some(reader),
+            closed: false,
         })
     }
 
-    /// Send a request to the sidecar and read the response.
-    fn request(&mut self, req: &IpcRequest) -> Result<IpcResponse> {
-        let mut json = serde_json::to_string(req).context("Failed to serialize IPC request")?;
-        json.push('\n');
-
-        self.stdin
-            .write_all(json.as_bytes())
-            .context("Failed to write to sidecar stdin")?;
-        self.stdin
-            .flush()
-            .context("Failed to flush sidecar stdin")?;
-
-        let mut line = String::new();
-        self.stdout_reader
-            .read_line(&mut line)
-            .context("Failed to read from sidecar stdout")?;
-
+    fn request(&mut self, req: &IpcRequest) -> Result<serde_json::Value> {
+        let json = serde_json::to_string(req).context("Failed to serialize IPC request")?;
+        anyhow::ensure!(
+            crate::termination::signal() == 0,
+            "Native execution cancelled"
+        );
+        let stdin = self.stdin.as_mut().context("Sidecar already closed")?;
+        writeln!(stdin, "{json}").context("Failed to write to sidecar stdin")?;
+        stdin.flush().context("Failed to flush sidecar stdin")?;
+        let line = loop {
+            if crate::termination::signal() != 0 {
+                self.shutdown()?;
+                anyhow::bail!("Native execution cancelled");
+            }
+            match self.responses.recv_timeout(Duration::from_millis(25)) {
+                Ok(response) => break response.context("Failed to read sidecar response")?,
+                Err(RecvTimeoutError::Timeout) => continue,
+                Err(error) => return Err(error.into()),
+            }
+        };
         if line.is_empty() {
             anyhow::bail!("Sidecar closed stdout unexpectedly");
         }
-
         let response: IpcResponse =
             serde_json::from_str(&line).context("Failed to parse sidecar response")?;
-
         if !response.ok {
-            if let Some(ref err) = response.error {
-                anyhow::bail!("Sidecar error: {err}");
-            }
-            anyhow::bail!("Sidecar returned error with no message");
+            anyhow::bail!(
+                "Sidecar error: {}",
+                response.error.as_deref().unwrap_or("No error message")
+            );
         }
-
-        Ok(response)
+        response.data.context("No data in sidecar response")
     }
 
-    /// Ask the sidecar to load the repopo configuration and return policy metadata.
     pub fn load_config(
         &mut self,
         config_path: Option<&str>,
         git_root: &str,
     ) -> Result<LoadConfigResponse> {
-        let req = IpcRequest::LoadConfig(LoadConfigParams {
+        let data = self.request(&IpcRequest::LoadConfig(LoadConfigParams {
             config_path: config_path.map(String::from),
             git_root: git_root.to_string(),
-        });
-
-        let response = self.request(&req)?;
-        let data = response.data.context("No data in load_config response")?;
-        let config: LoadConfigResponse =
-            serde_json::from_value(data).context("Failed to parse load_config response data")?;
-
-        Ok(config)
+        }))?;
+        serde_json::from_value(data).context("Failed to parse load_config response")
     }
 
-    /// Ask the sidecar to run a policy handler on a file.
-    pub fn run_handler(
+    pub fn begin_run(&mut self, fix: bool) -> Result<()> {
+        self.request(&IpcRequest::BeginRun(BeginRunParams { fix }))?;
+        Ok(())
+    }
+
+    pub fn execute_units(&mut self, units: Vec<ExecutionUnit>) -> Result<Vec<RunResults>> {
+        let data = self.request(&IpcRequest::ExecuteUnits(ExecuteUnitsParams { units }))?;
+        serde_json::from_value(data).context("Failed to parse canonical unit results")
+    }
+
+    pub fn match_files(
         &mut self,
-        policy_name: &str,
-        file: &str,
-        root: &str,
-        resolve: bool,
-    ) -> Result<HandlerResult> {
-        let req = IpcRequest::RunHandler(RunHandlerParams {
-            policy_name: policy_name.to_string(),
-            file: file.to_string(),
-            root: root.to_string(),
-            resolve,
-        });
-
-        let response = self.request(&req)?;
-        let data = response.data.context("No data in run_handler response")?;
-
-        // The data can be `true` (pass) or an error object
-        if data.is_boolean() {
-            if data.as_bool() == Some(true) {
-                return Ok(HandlerResult::Pass(true));
-            }
-            anyhow::bail!("Handler returned false (unexpected)");
-        }
-
-        let result: crate::types::PolicyErrorResult =
-            serde_json::from_value(data).context("Failed to parse handler result")?;
-        Ok(HandlerResult::Failure(result))
+        pattern: serde_json::Value,
+        files: Vec<String>,
+    ) -> Result<Vec<bool>> {
+        let data = self.request(&IpcRequest::MatchFiles(MatchFilesParams { pattern, files }))?;
+        serde_json::from_value(data).context("Failed to parse regex matches")
     }
 
-    /// Ask the sidecar to run a policy resolver on a file.
-    pub fn run_resolver(
-        &mut self,
-        policy_name: &str,
-        file: &str,
-        root: &str,
-    ) -> Result<HandlerResult> {
-        let req = IpcRequest::RunResolver(RunResolverParams {
-            policy_name: policy_name.to_string(),
-            file: file.to_string(),
-            root: root.to_string(),
-        });
-
-        let response = self.request(&req)?;
-        let data = response.data.context("No data in run_resolver response")?;
-
-        if data.is_boolean() {
-            if data.as_bool() == Some(true) {
-                return Ok(HandlerResult::Pass(true));
-            }
-            anyhow::bail!("Resolver returned false (unexpected)");
-        }
-
-        let result: crate::types::PolicyErrorResult =
-            serde_json::from_value(data).context("Failed to parse resolver result")?;
-        Ok(HandlerResult::Failure(result))
-    }
-
-    /// Ask the sidecar to run a policy handler on a batch of files.
-    /// Returns a Vec of (file, HandlerResult) pairs.
-    pub fn run_handler_batch(
-        &mut self,
-        policy_id: usize,
-        files: &[String],
-        resolve: bool,
-        concurrency: usize,
-    ) -> Result<Vec<(String, HandlerResult)>> {
-        let req = IpcRequest::RunHandlerBatch(RunHandlerBatchParams {
-            policy_id,
-            files: files.to_vec(),
-            resolve,
-            concurrency,
-        });
-
-        let response = self.request(&req)?;
-        let data = response
-            .data
-            .context("No data in run_handler_batch response")?;
-        let batch: CompactBatchResponse =
-            serde_json::from_value(data).context("Failed to parse batch handler response")?;
-
-        Ok(Self::expand_compact_response(batch))
-    }
-
-    /// Ask the sidecar to run a policy resolver on a batch of files.
-    /// Returns a Vec of (file, HandlerResult) pairs.
-    pub fn run_resolver_batch(
-        &mut self,
-        policy_id: usize,
-        files: &[String],
-    ) -> Result<Vec<(String, HandlerResult)>> {
-        let req = IpcRequest::RunResolverBatch(RunResolverBatchParams {
-            policy_id,
-            files: files.to_vec(),
-        });
-
-        let response = self.request(&req)?;
-        let data = response
-            .data
-            .context("No data in run_resolver_batch response")?;
-        let batch: CompactBatchResponse =
-            serde_json::from_value(data).context("Failed to parse batch resolver response")?;
-
-        Ok(Self::expand_compact_response(batch))
-    }
-
-    /// Parse a single handler/resolver result value into a HandlerResult.
-    /// Used by single-call methods (run_handler, run_resolver).
-    fn parse_handler_data(data: serde_json::Value) -> Result<HandlerResult> {
-        if data.is_boolean() {
-            if data.as_bool() == Some(true) {
-                return Ok(HandlerResult::Pass(true));
-            }
-            anyhow::bail!("Handler returned false (unexpected)");
-        }
-
-        let result: PolicyErrorResult =
-            serde_json::from_value(data).context("Failed to parse handler result")?;
-        Ok(HandlerResult::Failure(result))
-    }
-
-    /// Convert a compact batch response into the Vec<(file, HandlerResult)> format
-    /// expected by callers.
-    fn expand_compact_response(batch: CompactBatchResponse) -> Vec<(String, HandlerResult)> {
-        let mut results = Vec::with_capacity(batch.pass.len() + batch.fail.len());
-
-        for file in batch.pass {
-            results.push((file, HandlerResult::Pass(true)));
-        }
-
-        for item in batch.fail {
-            results.push((
-                item.file,
-                HandlerResult::Failure(PolicyErrorResult {
-                    error: item.error,
-                    error_messages: item.error_messages,
-                    name: None,
-                    file: None,
-                    fixable: item.fixable,
-                    fixed: item.fixed,
-                    manual_fix: item.manual_fix,
-                }),
-            ));
-        }
-
-        results
-    }
-
-    /// Tell the sidecar to shut down gracefully.
     pub fn shutdown(&mut self) -> Result<()> {
-        let req = IpcRequest::Shutdown;
-        // Best-effort: write the shutdown request
-        let json = serde_json::to_string(&req).unwrap_or_default();
-        let _ = writeln!(self.stdin, "{json}");
-        let _ = self.stdin.flush();
-        let _ = self.child.wait();
+        if !self.closed {
+            self.closed = true;
+            if let Some(mut stdin) = self.stdin.take() {
+                if crate::termination::signal() == 0 {
+                    let json = serde_json::to_string(&IpcRequest::Shutdown)?;
+                    let _ = writeln!(stdin, "{json}");
+                    let _ = stdin.flush();
+                }
+                // EOF cancels active sidecar work; never kill it during teardown.
+                drop(stdin);
+            }
+            self.child.wait().context("Failed to wait for sidecar")?;
+            if let Some(reader) = self.reader.take() {
+                let _ = reader.join();
+            }
+        }
         Ok(())
     }
 }

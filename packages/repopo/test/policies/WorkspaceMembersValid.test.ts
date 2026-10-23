@@ -61,8 +61,7 @@ describe("WorkspaceMembersValid", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should pass when no workspace section exists", async () => {
@@ -76,8 +75,7 @@ describe("WorkspaceMembersValid", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should pass when workspace has no members", async () => {
@@ -88,8 +86,7 @@ describe("WorkspaceMembersValid", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -105,11 +102,14 @@ describe("WorkspaceMembersValid", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("does not exist");
-				expect(result.error).toContain("nonexistent");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"does not exist",
+				);
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"nonexistent",
+				);
 			}
 		});
 
@@ -125,10 +125,11 @@ describe("WorkspaceMembersValid", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("has no Cargo.toml");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"has no Cargo.toml",
+				);
 			}
 		});
 	});
@@ -152,8 +153,7 @@ describe("WorkspaceMembersValid", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should fail when glob matches no directories with Cargo.toml", async () => {
@@ -167,10 +167,11 @@ describe("WorkspaceMembersValid", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("matches no directories");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"matches no directories",
+				);
 			}
 		});
 	});
@@ -188,8 +189,7 @@ describe("WorkspaceMembersValid", () => {
 				resolve: false,
 				config: { validatePaths: false },
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 });

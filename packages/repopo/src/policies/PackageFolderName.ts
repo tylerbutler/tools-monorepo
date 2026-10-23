@@ -1,7 +1,7 @@
 import path from "pathe";
 import picomatch from "picomatch";
 import type { PackageJson } from "type-fest";
-import type { PolicyFailure } from "../policy.js";
+import type { PolicyFinding } from "../policy.js";
 import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
 import { parsePackageName } from "../utils/packageName.js";
 
@@ -154,17 +154,17 @@ export const PackageFolderName = definePackagePolicy<
 
 		// Skip packages without a name
 		if (packageName === undefined) {
-			return true;
+			return [];
 		}
 
 		// Skip the root package (common in monorepos)
 		if (packageName === "root") {
-			return true;
+			return [];
 		}
 
 		// Skip explicitly excluded packages
 		if (effectiveConfig.excludePackages?.includes(packageName)) {
-			return true;
+			return [];
 		}
 
 		// Get the folder name (parent directory of package.json)
@@ -178,18 +178,13 @@ export const PackageFolderName = definePackagePolicy<
 
 		// Compare folder name to expected name
 		if (folderName === expectedFolderName) {
-			return true;
+			return [];
 		}
 
 		// Mismatch - build error message
-		const failResult: PolicyFailure = {
-			name: PackageFolderName.name,
-			file,
-			autoFixable: false, // Can't auto-fix folder names
-			errorMessages: [
-				`Package folder "${folderName}" does not match package name "${packageName}". Expected folder name: "${expectedFolderName}"`,
-			],
-		};
+		const failResult: PolicyFinding[] = [
+			`Package folder "${folderName}" does not match package name "${packageName}". Expected folder name: "${expectedFolderName}"`,
+		].map((message) => ({ message }));
 		return failResult;
 	},
 });

@@ -2,13 +2,16 @@ import { call, type Operation } from "effection";
 import jsonfile from "jsonfile";
 import { resolve } from "pathe";
 import type { PackageJson } from "type-fest";
+import { ExecutionContractError } from "../executionContractError.js";
 import { readParsedFile } from "../fileCache.js";
 import { PackageJsonRegexMatch } from "../policies/constants.js";
 import type {
+	DefinedConfig,
+	FilePolicyDefinition,
 	PolicyArgs,
-	PolicyHandlerResult,
-	PolicyShape,
+	PolicyResult,
 } from "../policy.js";
+import { settlePolicyPromise } from "../settlePolicyPromise.js";
 
 const { readFile: readJson } = jsonfile;
 
@@ -27,7 +30,7 @@ const { readFile: readJson } = jsonfile;
 export type PackageJsonHandler<J, C> = (
 	json: J,
 	args: PolicyArgs<C>,
-) => Operation<PolicyHandlerResult> | Promise<PolicyHandlerResult>;
+) => Operation<PolicyResult> | Promise<PolicyResult>;
 
 /**
  * Type guard to check if a value is an Effection Operation (generator).
@@ -66,6 +69,7 @@ export interface DefinePackagePolicyArgs<J, C> {
 	 * Optional default configuration for the policy.
 	 */
 	defaultConfig?: C;
+	requiresConfig?: boolean;
 }
 
 /**
@@ -85,24 +89,36 @@ export interface DefinePackagePolicyArgs<J, C> {
  *   description: "Ensures package.json has required fields",
  *   handler: async (json, { file }) => {
  *     if (!json.name) {
- *       return { error: "Missing name", fixable: false };
+ *       return [{ message: "Missing name" }];
  *     }
- *     return true;
+ *     return [];
  *   },
  * });
  * ```
  *
  * @public
  */
-export function definePackagePolicy<J = PackageJson, C = undefined>(
+export function definePackagePolicy<J = PackageJson, C = void>(
+	args: DefinePackagePolicyArgs<J, C> & { defaultConfig: DefinedConfig<C> },
+): FilePolicyDefinition<C> & { defaultConfig: DefinedConfig<C> };
+/** Define a package policy that requires explicit configuration. @public */
+export function definePackagePolicy<J = PackageJson, C = void>(
+	args: DefinePackagePolicyArgs<J, C> & { requiresConfig: true },
+): FilePolicyDefinition<C> & { requiresConfig: true };
+/** Define a package policy with optional configuration. @public */
+export function definePackagePolicy<J = PackageJson, C = void>(
 	args: DefinePackagePolicyArgs<J, C>,
-): PolicyShape<C> {
+): FilePolicyDefinition<C>;
+export function definePackagePolicy<J = PackageJson, C = void>(
+	args: DefinePackagePolicyArgs<J, C>,
+): FilePolicyDefinition<C> {
 	const { name, description, handler: packageHandler, defaultConfig } = args;
 	return {
 		name,
 		description,
 		match: PackageJsonRegexMatch,
 		defaultConfig,
+		requiresConfig: args.requiresConfig,
 		handler: function* (innerArgs) {
 			const json: J = yield* call(() =>
 				readParsedFile(innerArgs, "json", () =>
@@ -113,20 +129,16 @@ export function definePackagePolicy<J = PackageJson, C = undefined>(
 
 			// Handle both Operation (generator) and Promise return types
 			if (result instanceof Promise) {
-				return yield* call(() => result);
+				return yield* settlePolicyPromise(result);
 			}
 			// Check if it's an Effection Operation (generator)
-			if (isOperation<PolicyHandlerResult>(result)) {
+			if (isOperation<PolicyResult>(result)) {
 				return yield* result;
 			}
 			// This should never happen with proper handler typing
-			throw new Error(`Unexpected handler result type: ${typeof result}`);
+			throw new ExecutionContractError(
+				`Unexpected handler result type: ${typeof result}`,
+			);
 		},
 	};
 }
-
-/**
- * Alias for definePackagePolicy.
- * @alpha
- */
-export const packagePolicy = definePackagePolicy;
