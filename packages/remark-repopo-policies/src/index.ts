@@ -216,7 +216,7 @@ async function loadPolicies(configPath: string): Promise<PolicyInfo[]> {
 				configDetails: policy.config
 					? formatConfigDetails(policy.config)
 					: undefined,
-				excludedFiles: formatExcludedFiles(policy.excludeFiles),
+				excludedFiles: formatExcludedFiles(policy.exclude),
 			});
 		}
 

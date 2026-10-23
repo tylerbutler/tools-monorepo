@@ -1,10 +1,7 @@
 import { readFile } from "node:fs/promises";
 import path from "pathe";
 import { glob } from "tinyglobby";
-import type {
-	RepositoryPolicyDefinition,
-	RepositoryPolicyFinding,
-} from "../policy.js";
+import type { PolicyFinding, RepositoryPolicyDefinition } from "../policy.js";
 import { parseToml } from "../policyDefiners/tomlParser.js";
 
 /**
@@ -146,66 +143,62 @@ async function collectMemberDeps(
  *
  * @public
  */
-export const SharedDependencyVersions: RepositoryPolicyDefinition<SharedDependencyVersionsConfig> =
-	{
-		name: "SharedDependencyVersions",
-		description:
-			"Detects dependency version mismatches across Cargo workspace members.",
-		scope: "repository",
-		handler: async ({ files, root, config }) => {
-			if (!files.includes("Cargo.toml")) {
-				return true;
-			}
-			const detectMismatches = config?.detectMismatches ?? true;
-			const content = await readFile(path.resolve(root, "Cargo.toml"), "utf-8");
-			const toml = await parseToml(content);
+export const SharedDependencyVersions = {
+	name: "SharedDependencyVersions",
+	description:
+		"Detects dependency version mismatches across Cargo workspace members.",
+	scope: "repository",
+	handler: async ({ files, root, config }) => {
+		if (!files.includes("Cargo.toml")) {
+			return [];
+		}
+		const detectMismatches = config?.detectMismatches ?? true;
+		const content = await readFile(path.resolve(root, "Cargo.toml"), "utf-8");
+		const toml = await parseToml(content);
 
-			const workspace = toml.workspace as Record<string, unknown> | undefined;
-			if (!workspace) {
-				return true;
-			}
+		const workspace = toml.workspace as Record<string, unknown> | undefined;
+		if (!workspace) {
+			return [];
+		}
 
-			const members = workspace.members as string[] | undefined;
-			if (!members || members.length === 0) {
-				return true;
-			}
+		const members = workspace.members as string[] | undefined;
+		if (!members || members.length === 0) {
+			return [];
+		}
 
-			const errors: string[] = [];
-			const findings: RepositoryPolicyFinding[] = [];
-			const manualFix =
-				"Use [workspace.dependencies] with `dep.workspace = true` in member Cargo.toml files to share versions.";
+		const errors: string[] = [];
+		const findings: PolicyFinding[] = [];
+		const manualFix =
+			"Use [workspace.dependencies] with `dep.workspace = true` in member Cargo.toml files to share versions.";
 
-			// Check required workspace deps
-			const workspaceDeps = (workspace.dependencies ?? {}) as Record<
-				string,
-				unknown
-			>;
-			checkRequiredWorkspaceDeps(config, workspaceDeps, errors);
-			for (const error of errors) {
-				findings.push({ error, files: ["Cargo.toml"], manualFix });
-			}
+		// Check required workspace deps
+		const workspaceDeps = (workspace.dependencies ?? {}) as Record<
+			string,
+			unknown
+		>;
+		checkRequiredWorkspaceDeps(config, workspaceDeps, errors);
+		for (const error of errors) {
+			findings.push({ message: error, files: ["Cargo.toml"], manualFix });
+		}
 
-			// Detect mismatches across members
-			if (detectMismatches) {
-				const exclude = (workspace.exclude ?? []) as string[];
-				const allDeps = await collectMemberDeps(members, root, exclude, files);
+		// Detect mismatches across members
+		if (detectMismatches) {
+			const exclude = (workspace.exclude ?? []) as string[];
+			const allDeps = await collectMemberDeps(members, root, exclude, files);
 
-				for (const [dep, versionMap] of allDeps) {
-					if (versionMap.size > 1) {
-						const details = [...versionMap.entries()]
-							.map(
-								([ver, memberList]) => `"${ver}" in ${memberList.join(", ")}`,
-							)
-							.join("; ");
-						findings.push({
-							error: `Version mismatch for "${dep}": ${details}`,
-							files: [...versionMap.values()].flat(),
-							manualFix,
-						});
-					}
+			for (const [dep, versionMap] of allDeps) {
+				if (versionMap.size > 1) {
+					const details = [...versionMap.entries()]
+						.map(([ver, memberList]) => `"${ver}" in ${memberList.join(", ")}`)
+						.join("; ");
+					findings.push({
+						message: `Version mismatch for "${dep}": ${details}`,
+						files: [...versionMap.values()].flat(),
+						manualFix,
+					});
 				}
 			}
-
-			return findings.length > 0 ? findings : true;
-		},
-	};
+		}
+		return findings.length > 0 ? findings : [];
+	},
+} satisfies RepositoryPolicyDefinition<SharedDependencyVersionsConfig>;

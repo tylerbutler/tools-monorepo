@@ -1,0 +1,11 @@
+{
+	"$schema": "https://developer.microsoft.com/json-schemas/api-extractor/v7/api-extractor.schema.json",
+	"extends": "./api-extractor.json",
+	"mainEntryPointFilePath": "<projectFolder>/esm/api.d.ts",
+	"apiReport": {
+		"reportFileName": "repopo-api.api.md",
+	},
+	"docModel": {
+		"apiJsonFilePath": "<projectFolder>/_temp/api-extractor/api/repopo-api.api.json",
+	},
+}

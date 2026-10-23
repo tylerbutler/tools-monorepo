@@ -1,8 +1,6 @@
 import { existsSync } from "node:fs";
 import path from "pathe";
-import { makePolicyDefinition } from "../makePolicy.js";
-import type { PolicyDefinition } from "../policy.js";
-
+import type { FilePolicyDefinition } from "../policy.js";
 /**
  * Configuration for the RustToolchainExists policy.
  *
@@ -23,27 +21,27 @@ const DEFAULT_NAMES = ["rust-toolchain.toml", "rust-toolchain"];
  *
  * @public
  */
-export const RustToolchainExists: PolicyDefinition<RustToolchainExistsConfig> =
-	makePolicyDefinition({
-		name: "RustToolchainExists",
-		description:
-			"Ensures a rust-toolchain.toml file exists for reproducible Rust builds.",
-		// Trigger on Cargo.toml to check once per project
-		match: /^Cargo\.toml$/,
-		handler: async ({ root, config }) => {
-			const names = config?.acceptedNames ?? DEFAULT_NAMES;
-			const hasToolchain = names.some((name) =>
-				existsSync(path.join(root, name)),
-			);
+export const RustToolchainExists = {
+	name: "RustToolchainExists",
+	description:
+		"Ensures a rust-toolchain.toml file exists for reproducible Rust builds.",
+	// Trigger on Cargo.toml to check once per project
+	match: /^Cargo\.toml$/,
+	handler: async ({ root, config }) => {
+		const names = config?.acceptedNames ?? DEFAULT_NAMES;
+		const hasToolchain = names.some((name) =>
+			existsSync(path.join(root, name)),
+		);
 
-			if (hasToolchain) {
-				return true;
-			}
-
-			return {
-				error: `No rust-toolchain file found. Expected one of: ${names.join(", ")}`,
+		if (hasToolchain) {
+			return [];
+		}
+		return [
+			{
+				message: `No rust-toolchain file found. Expected one of: ${names.join(", ")}`,
 				manualFix:
 					"Create a rust-toolchain.toml file specifying the Rust toolchain version.",
-			};
-		},
-	});
+			},
+		];
+	},
+} satisfies FilePolicyDefinition<RustToolchainExistsConfig>;

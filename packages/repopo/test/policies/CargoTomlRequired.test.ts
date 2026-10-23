@@ -55,8 +55,7 @@ describe("CargoTomlRequired", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should skip workspace-only Cargo.toml", async () => {
@@ -70,8 +69,7 @@ describe("CargoTomlRequired", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -87,11 +85,14 @@ describe("CargoTomlRequired", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("license");
-				expect(result.error).toContain("description");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"license",
+				);
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"description",
+				);
 			}
 		});
 
@@ -106,10 +107,11 @@ describe("CargoTomlRequired", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("Missing [package] section");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"Missing [package] section",
+				);
 			}
 		});
 	});
@@ -127,8 +129,7 @@ describe("CargoTomlRequired", () => {
 				resolve: false,
 				config: { required: ["version"] },
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should fail with custom required fields when missing", async () => {
@@ -143,11 +144,14 @@ describe("CargoTomlRequired", () => {
 				resolve: false,
 				config: { required: ["homepage", "repository"] },
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("homepage");
-				expect(result.error).toContain("repository");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"homepage",
+				);
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"repository",
+				);
 			}
 		});
 	});
@@ -170,8 +174,7 @@ describe("CargoTomlRequired", () => {
 				resolve: false,
 				config: { expectedValues: { license: "MIT" } },
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should fail when expected values do not match", async () => {
@@ -191,10 +194,11 @@ describe("CargoTomlRequired", () => {
 				resolve: false,
 				config: { expectedValues: { license: "MIT" } },
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain('Expected package.license = "MIT"');
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					'Expected package.license = "MIT"',
+				);
 			}
 		});
 	});
@@ -218,8 +222,7 @@ describe("CargoTomlRequired", () => {
 				resolve: false,
 				config: { minimumEdition: "2021" },
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should fail when edition is below minimum", async () => {
@@ -240,10 +243,11 @@ describe("CargoTomlRequired", () => {
 				resolve: false,
 				config: { minimumEdition: "2021" },
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("below minimum");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"below minimum",
+				);
 			}
 		});
 
@@ -264,10 +268,11 @@ describe("CargoTomlRequired", () => {
 				resolve: false,
 				config: { minimumEdition: "2021" },
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("Missing package.edition");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"Missing package.edition",
+				);
 			}
 		});
 	});

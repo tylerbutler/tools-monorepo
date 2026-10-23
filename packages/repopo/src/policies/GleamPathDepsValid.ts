@@ -1,6 +1,6 @@
 import { existsSync } from "node:fs";
 import path from "pathe";
-import type { PolicyShape } from "../policy.js";
+import type { FilePolicyDefinition } from "../policy.js";
 import {
 	defineGleamPolicy,
 	type GleamToml,
@@ -56,7 +56,7 @@ function checkSection(
  *
  * @public
  */
-export const GleamPathDepsValid: PolicyShape = defineGleamPolicy({
+export const GleamPathDepsValid = defineGleamPolicy({
 	name: "GleamPathDepsValid",
 	description:
 		"Validates that all path dependency targets exist and contain a gleam.toml file.",
@@ -68,13 +68,12 @@ export const GleamPathDepsValid: PolicyShape = defineGleamPolicy({
 		];
 
 		if (errors.length > 0) {
-			return {
-				error: errors.join("; "),
+			return errors.map((message) => ({
+				message,
 				manualFix:
 					"Fix the path dependencies to point to valid Gleam project directories.",
-			};
+			}));
 		}
-
-		return true;
+		return [];
 	},
-});
+}) satisfies FilePolicyDefinition;

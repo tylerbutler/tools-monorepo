@@ -12,10 +12,6 @@ const rootDir = new URL("../..", import.meta.url).pathname;
 export default defineConfig({
 	output: "static",
 	site: "https://repopo.tylerbutler.com",
-	redirects: {
-		"/api/functions/generatepackagepolicy/":
-			"/api/functions/definepackagepolicy/",
-	},
 	// Prevent zod from being externalized to avoid conflicts between
 	// Astro's bundled zod v3 and user-installed zod v4
 	// See: https://github.com/withastro/astro/issues/14117
@@ -39,7 +35,11 @@ export default defineConfig({
 			plugins: [
 				// Generate the documentation.
 				starlightTypeDoc({
-					entryPoints: ["../repopo/src/index.ts"],
+					entryPoints: [
+						"../repopo/src/index.ts",
+						"../repopo/src/api.ts",
+						"../repopo/src/policies.ts",
+					],
 					tsconfig: "../repopo/tsconfig.json",
 					sidebar: {
 						label: "API Reference",
@@ -47,6 +47,8 @@ export default defineConfig({
 					},
 					typeDoc: {
 						excludeExternals: true,
+						excludeInternal: true,
+						cleanOutputDir: true,
 						// router: "module",
 						// publicPath: "https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo",
 						mergeReadme: true,
@@ -67,7 +69,7 @@ export default defineConfig({
 				{
 					icon: "github",
 					label: "GitHub",
-					href: "https://github.com/tylerbutler/tools-monorepo/packages/repopo",
+					href: "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/repopo",
 				},
 			],
 			sidebar: [

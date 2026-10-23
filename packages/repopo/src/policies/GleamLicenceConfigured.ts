@@ -1,5 +1,5 @@
 import { resolve } from "pathe";
-import type { PolicyShape } from "../policy.js";
+import type { FilePolicyDefinition } from "../policy.js";
 import {
 	defineGleamPolicy,
 	type GleamToml,
@@ -37,36 +37,36 @@ const MANUAL_FIX =
  *
  * @public
  */
-export const GleamLicenceConfigured: PolicyShape<GleamLicenceConfiguredConfig> =
-	defineGleamPolicy({
-		name: "GleamLicenceConfigured",
-		description:
-			"Ensures gleam.toml has valid SPDX licence identifiers configured.",
-		handler: async (
-			toml: GleamToml,
-			{ file, root, resolve: shouldResolve, config },
-		) => {
-			const licences = toml.licences;
+export const GleamLicenceConfigured = defineGleamPolicy({
+	name: "GleamLicenceConfigured",
+	description:
+		"Ensures gleam.toml has valid SPDX licence identifiers configured.",
+	handler: async (
+		toml: GleamToml,
+		{ file, root, resolve: shouldResolve, config },
+	) => {
+		const licences = toml.licences;
 
-			if (!Array.isArray(licences) || licences.length === 0) {
-				return {
-					error: "Missing or empty licences field in gleam.toml.",
+		if (!Array.isArray(licences) || licences.length === 0) {
+			return [
+				{
+					message: "Missing or empty licences field in gleam.toml.",
 					manualFix:
 						'Add licences = ["MIT"] (or appropriate SPDX identifier) to gleam.toml.',
-				};
-			}
+				},
+			];
+		}
 
-			const result = await validateLicenceField({
-				licences: licences as string[],
-				...(config?.allowedLicences !== undefined && {
-					allowedLicences: config.allowedLicences,
-				}),
-				validateSpdx: config?.validateSpdx ?? false,
-				shouldResolve,
-				filePath: resolve(root, file),
-				manualFixMessage: MANUAL_FIX,
-			});
-
-			return result ?? true;
-		},
-	});
+		const result = await validateLicenceField({
+			licences: licences as string[],
+			...(config?.allowedLicences !== undefined && {
+				allowedLicences: config.allowedLicences,
+			}),
+			validateSpdx: config?.validateSpdx ?? false,
+			shouldResolve,
+			filePath: resolve(root, file),
+			manualFixMessage: MANUAL_FIX,
+		});
+		return result;
+	},
+}) satisfies FilePolicyDefinition<GleamLicenceConfiguredConfig>;

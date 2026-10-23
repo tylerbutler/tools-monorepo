@@ -13,10 +13,7 @@ const jsTsReplacer = (
 		prevContent.startsWith("\r") || prevContent.startsWith("\n")
 			? newline
 			: newline + newline;
-	const newContent = `/*!${newline} * ${headerText.replace(
-		newline,
-		`${newline} * `,
-	)}${newline} */${separator}${prevContent}`;
+	const newContent = `/*!${newline} * ${headerText.replace(newline, `${newline} * `)}${newline} */${separator}${prevContent}`;
 	return newContent;
 };
 

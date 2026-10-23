@@ -75,6 +75,20 @@ See [sort-tsconfig.api.md][API].
 
 sort-tsconfig provides a policy for use with [repopo][].
 
+```ts
+import { makePolicy, type RepopoConfig } from "repopo/api";
+import { SortTsconfigsPolicy } from "sort-tsconfig";
+
+export default {
+	policies: [makePolicy(SortTsconfigsPolicy, { exclude: ["^vendor/"] })],
+} satisfies RepopoConfig;
+```
+
+`SortTsconfigsPolicy` is a `FilePolicyDefinition` and returns finding arrays.
+An empty array passes. Unsorted files have `fixStatus: "available"`; successful
+fixes have `"fixed"`. This exported policy contract is an intentional pre-1.0
+breaking change. See [the Repopo migration guide](https://repopo.tylerbutler.com/usage/migration/).
+
 [API]: ./api-docs/sort-tsconfig.api.md
 [repopo]:
     https://github.com/tylerbutler/tools-monorepo/tree/main/packages/repopo#repopo---police-the-files-in-your-git-repo-with-extensible-policies

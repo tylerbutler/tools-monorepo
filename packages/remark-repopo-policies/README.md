@@ -52,6 +52,14 @@ The plugin generates a table with the following columns:
 
 User-edited descriptions are preserved across regenerations.
 
+The config contains canonical Repopo `ConfiguredPolicy` objects, created with
+`makePolicy(definition, { config, exclude, instanceId })`. Per-instance regex
+exclusions use `exclude`; repository-global exclusions remain
+`RepopoConfig.excludeFiles`. The table reads definition metadata directly.
+The Auto-Fix column detects standalone resolvers; it does not detect inline
+fixes. Repository definitions have no file match regex and use the wildcard
+fallback in the Files column.
+
 ## License
 
 MIT

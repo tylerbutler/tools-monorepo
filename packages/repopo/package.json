@@ -44,8 +44,8 @@
 		"/THIRD-PARTY-LICENSES.txt"
 	],
 	"scripts": {
-		"api:markdown": "api-documenter markdown -i _temp/api-extractor -o _temp/docs",
-		"build:api": "api-extractor run --local",
+		"api:markdown": "rimraf _temp/docs && api-documenter markdown -i _temp/api-extractor/root -o _temp/docs/root && api-documenter markdown -i _temp/api-extractor/api -o _temp/docs/api && api-documenter markdown -i _temp/api-extractor/policies -o _temp/docs/policies",
+		"build:api": "rimraf _temp/api-extractor/root _temp/api-extractor/api _temp/api-extractor/policies && api-extractor run --local && api-extractor run --local --config api-extractor.api.json && api-extractor run --local --config api-extractor.policies.json",
 		"build:compile": "tsc --project ./tsconfig.json",
 		"build:manifest": "oclif manifest",
 		"build:readme": "concurrently npm:readme:*",
@@ -112,6 +112,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.8",
+		"@microsoft/api-documenter": "^7.30.7",
 		"@microsoft/api-extractor": "^7.59.4",
 		"@oclif/plugin-command-snapshot": "^6.0.6",
 		"@oclif/test": "^5.0.3",
@@ -152,7 +153,21 @@
 			"build": {
 				"executor": "nx:noop"
 			},
-			"ci": {}
+			"ci": {},
+			"build:readme": {
+				"inputs": [
+					"sharedGlobals",
+					"{projectRoot}/package.json",
+					"{projectRoot}/oclif.manifest.json",
+					"{projectRoot}/README.md",
+					"{workspaceRoot}/packages/repopo-docs/src/content/docs/cli-reference.md"
+				],
+				"outputs": [
+					"{projectRoot}/README.md",
+					"{projectRoot}/docs/**",
+					"{workspaceRoot}/packages/repopo-docs/src/content/docs/cli-reference.md"
+				]
+			}
 		}
 	}
 }

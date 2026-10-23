@@ -1,7 +1,6 @@
 import { readFile } from "node:fs/promises";
 import path from "pathe";
-import { makePolicyDefinition } from "../makePolicy.js";
-import type { PolicyDefinition } from "../policy.js";
+import type { FilePolicyDefinition } from "../policy.js";
 import { parseToml } from "../policyDefiners/tomlParser.js";
 
 /**
@@ -83,61 +82,59 @@ async function checkMemberInheritance(
  *
  * @public
  */
-export const WorkspaceInheritance: PolicyDefinition<WorkspaceInheritanceConfig> =
-	makePolicyDefinition({
-		name: "WorkspaceInheritance",
-		description:
-			"Ensures Cargo workspace members inherit shared fields (version, authors, etc.) from workspace config.",
-		match: /^Cargo\.toml$/,
-		handler: async ({ file, root, config }) => {
-			const content = await readFile(path.resolve(root, file), "utf-8");
-			const toml = await parseToml(content);
+export const WorkspaceInheritance = {
+	name: "WorkspaceInheritance",
+	description:
+		"Ensures Cargo workspace members inherit shared fields (version, authors, etc.) from workspace config.",
+	match: /^Cargo\.toml$/,
+	handler: async ({ file, root, config }) => {
+		const content = await readFile(path.resolve(root, file), "utf-8");
+		const toml = await parseToml(content);
 
-			const workspace = toml.workspace as Record<string, unknown> | undefined;
-			if (!workspace) {
-				return true;
+		const workspace = toml.workspace as Record<string, unknown> | undefined;
+		if (!workspace) {
+			return [];
+		}
+
+		const members = workspace.members as string[] | undefined;
+		if (!members || members.length === 0) {
+			return [];
+		}
+
+		const inheritFields = config?.inherit ?? DEFAULT_INHERIT_FIELDS;
+		const allowOverrides = config?.allowOverrides ?? [];
+
+		// Check which fields are defined at the workspace level
+		const workspacePkg = (workspace.package ?? {}) as Record<string, unknown>;
+		const availableFields = inheritFields.filter(
+			(field) => workspacePkg[field] !== undefined,
+		);
+
+		if (availableFields.length === 0) {
+			return [];
+		}
+
+		const errors: string[] = [];
+
+		for (const member of members) {
+			if (member.includes("*")) {
+				continue;
 			}
 
-			const members = workspace.members as string[] | undefined;
-			if (!members || members.length === 0) {
-				return true;
+			if (isOverrideAllowed(member, allowOverrides)) {
+				continue;
 			}
 
-			const inheritFields = config?.inherit ?? DEFAULT_INHERIT_FIELDS;
-			const allowOverrides = config?.allowOverrides ?? [];
+			await checkMemberInheritance(member, root, availableFields, errors);
+		}
 
-			// Check which fields are defined at the workspace level
-			const workspacePkg = (workspace.package ?? {}) as Record<string, unknown>;
-			const availableFields = inheritFields.filter(
-				(field) => workspacePkg[field] !== undefined,
-			);
-
-			if (availableFields.length === 0) {
-				return true;
-			}
-
-			const errors: string[] = [];
-
-			for (const member of members) {
-				if (member.includes("*")) {
-					continue;
-				}
-
-				if (isOverrideAllowed(member, allowOverrides)) {
-					continue;
-				}
-
-				await checkMemberInheritance(member, root, availableFields, errors);
-			}
-
-			if (errors.length > 0) {
-				return {
-					error: errors.join("; "),
-					manualFix:
-						"Use workspace inheritance in member Cargo.toml files, e.g., `version.workspace = true`.",
-				};
-			}
-
-			return true;
-		},
-	});
+		if (errors.length > 0) {
+			return errors.map((message) => ({
+				message,
+				manualFix:
+					"Use workspace inheritance in member Cargo.toml files, e.g., `version.workspace = true`.",
+			}));
+		}
+		return [];
+	},
+} satisfies FilePolicyDefinition<WorkspaceInheritanceConfig>;

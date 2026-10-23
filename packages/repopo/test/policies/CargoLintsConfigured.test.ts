@@ -49,8 +49,7 @@ describe("CargoLintsConfigured", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should skip workspace-only Cargo.toml", async () => {
@@ -64,8 +63,7 @@ describe("CargoLintsConfigured", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -81,10 +79,11 @@ describe("CargoLintsConfigured", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("Missing [lints] section");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"Missing [lints] section",
+				);
 			}
 		});
 
@@ -105,10 +104,11 @@ describe("CargoLintsConfigured", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("Missing [lints.clippy] section");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"Missing [lints.clippy] section",
+				);
 			}
 		});
 	});
@@ -133,8 +133,7 @@ describe("CargoLintsConfigured", () => {
 				resolve: false,
 				config: { required: { pedantic: "warn" } },
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should fail when required lint has wrong level", async () => {
@@ -155,11 +154,14 @@ describe("CargoLintsConfigured", () => {
 				resolve: false,
 				config: { required: { pedantic: "warn" } },
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("pedantic");
-				expect(result.error).toContain('"warn"');
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"pedantic",
+				);
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					'"warn"',
+				);
 			}
 		});
 
@@ -181,10 +183,11 @@ describe("CargoLintsConfigured", () => {
 				resolve: false,
 				config: { required: { pedantic: "warn" } },
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("Missing clippy lint: pedantic");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"Missing clippy lint: pedantic",
+				);
 			}
 		});
 	});
@@ -202,8 +205,7 @@ describe("CargoLintsConfigured", () => {
 				resolve: false,
 				config: { requireSection: false },
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 });

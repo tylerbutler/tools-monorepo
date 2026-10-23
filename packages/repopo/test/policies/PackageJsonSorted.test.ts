@@ -4,7 +4,6 @@ import { join } from "pathe";
 import type { PackageJson } from "type-fest";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { PackageJsonSorted } from "../../src/policies/PackageJsonSorted.js";
-import type { PolicyFailure, PolicyFixResult } from "../../src/policy.js";
 import { runHandler } from "../test-helpers.js";
 
 describe("PackageJsonSorted Policy", () => {
@@ -67,8 +66,7 @@ describe("PackageJsonSorted Policy", () => {
 				resolve: false,
 				config: undefined,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should fail when package.json is not sorted", async () => {
@@ -89,16 +87,16 @@ describe("PackageJsonSorted Policy", () => {
 				packageJsonPath,
 				JSON.stringify(unsortedPackageJson, null, 2),
 			);
-
-			const result = (await runHandler(PackageJsonSorted.handler, {
+			const result = await runHandler(PackageJsonSorted.handler, {
 				file: packageJsonPath,
 				root: testDir,
 				resolve: false,
 				config: undefined,
-			})) as PolicyFailure;
-
-			expect(result).not.toBe(true);
-			expect(result).toHaveProperty("autoFixable", true);
+			});
+			expect(result).not.toEqual([]);
+			expect(result.some((finding) => finding.fixStatus !== undefined)).toEqual(
+				true,
+			);
 		});
 
 		it("should fail when scripts are not alphabetically sorted", async () => {
@@ -113,15 +111,13 @@ describe("PackageJsonSorted Policy", () => {
 			};
 
 			await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
-
-			const result = (await runHandler(PackageJsonSorted.handler, {
+			const result = await runHandler(PackageJsonSorted.handler, {
 				file: packageJsonPath,
 				root: testDir,
 				resolve: false,
 				config: undefined,
-			})) as PolicyFailure;
-
-			expect(result).not.toBe(true);
+			});
+			expect(result).not.toEqual([]);
 		});
 
 		it("should fail when dependencies are not alphabetically sorted", async () => {
@@ -136,15 +132,13 @@ describe("PackageJsonSorted Policy", () => {
 			};
 
 			await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
-
-			const result = (await runHandler(PackageJsonSorted.handler, {
+			const result = await runHandler(PackageJsonSorted.handler, {
 				file: packageJsonPath,
 				root: testDir,
 				resolve: false,
 				config: undefined,
-			})) as PolicyFailure;
-
-			expect(result).not.toBe(true);
+			});
+			expect(result).not.toEqual([]);
 		});
 	});
 
@@ -159,15 +153,15 @@ describe("PackageJsonSorted Policy", () => {
 				packageJsonPath,
 				JSON.stringify(unsortedPackageJson, null, 2),
 			);
-
-			const result = (await runHandler(PackageJsonSorted.handler, {
+			const result = await runHandler(PackageJsonSorted.handler, {
 				file: packageJsonPath,
 				root: testDir,
 				resolve: false,
 				config: undefined,
-			})) as PolicyFailure;
-
-			expect(result.autoFixable).toBe(true);
+			});
+			expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+				true,
+			);
 		});
 
 		it("should fix unsorted package.json when resolve is true", async () => {
@@ -184,16 +178,16 @@ describe("PackageJsonSorted Policy", () => {
 				packageJsonPath,
 				JSON.stringify(unsortedPackageJson, null, 2),
 			);
-
-			const result = (await runHandler(PackageJsonSorted.handler, {
+			const result = await runHandler(PackageJsonSorted.handler, {
 				file: packageJsonPath,
 				root: testDir,
 				resolve: true,
 				config: undefined,
-			})) as PolicyFixResult;
-
-			expect(result.resolved).toBe(true);
-
+			});
+			expect(
+				result.length > 0 &&
+					result.every((finding) => finding.fixStatus === "fixed"),
+			).toBe(true);
 			// Verify file was sorted
 			const content = await readFile(packageJsonPath, "utf-8");
 			const parsedContent = JSON.parse(content);
@@ -264,16 +258,16 @@ describe("PackageJsonSorted Policy", () => {
 				packageJsonPath,
 				JSON.stringify(minimalPackageJson, null, 2),
 			);
-
-			const result = (await runHandler(PackageJsonSorted.handler, {
+			const result = await runHandler(PackageJsonSorted.handler, {
 				file: packageJsonPath,
 				root: testDir,
 				resolve: true,
 				config: undefined,
-			})) as PolicyFixResult;
-
-			expect(result.resolved).toBe(true);
-
+			});
+			expect(
+				result.length > 0 &&
+					result.every((finding) => finding.fixStatus === "fixed"),
+			).toBe(true);
 			const content = JSON.parse(await readFile(packageJsonPath, "utf-8"));
 			const keys = Object.keys(content);
 			expect(keys[0]).toBe("name");
@@ -385,17 +379,23 @@ describe("PackageJsonSorted Policy", () => {
 			await chmod(packageJsonPath, 0o444); // read-only
 
 			try {
-				const result = (await runHandler(PackageJsonSorted.handler, {
+				const result = await runHandler(PackageJsonSorted.handler, {
 					file: packageJsonPath,
 					root: testDir,
 					resolve: true,
 					config: undefined,
-				})) as PolicyFixResult;
-
+				});
 				// Should return a fix result with resolved: false and error messages
-				expect(result.resolved).toBe(false);
-				expect(result.autoFixable).toBe(true);
-				expect(result.errorMessages.length).toBeGreaterThan(0);
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toBe(false);
+				expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+					true,
+				);
+				expect(result.map((finding) => finding.message).length).toBeGreaterThan(
+					0,
+				);
 			} finally {
 				// Restore write permissions so cleanup can succeed
 				await chmod(packageJsonPath, 0o644);
@@ -412,15 +412,13 @@ describe("PackageJsonSorted Policy", () => {
 				packageJsonPath,
 				JSON.stringify(unsortedPackageJson, null, 2),
 			);
-
-			const result = (await runHandler(PackageJsonSorted.handler, {
+			const result = await runHandler(PackageJsonSorted.handler, {
 				file: packageJsonPath,
 				root: testDir,
 				resolve: false,
 				config: undefined,
-			})) as PolicyFailure;
-
-			expect(result.file).toBe(packageJsonPath);
+			});
+			expect(result.every((finding) => !("file" in finding))).toBe(true);
 		});
 
 		it("should include policy name in result", async () => {
@@ -433,15 +431,13 @@ describe("PackageJsonSorted Policy", () => {
 				packageJsonPath,
 				JSON.stringify(unsortedPackageJson, null, 2),
 			);
-
-			const result = (await runHandler(PackageJsonSorted.handler, {
+			const result = await runHandler(PackageJsonSorted.handler, {
 				file: packageJsonPath,
 				root: testDir,
 				resolve: false,
 				config: undefined,
-			})) as PolicyFailure;
-
-			expect(result.name).toBe("PackageJsonSorted");
+			});
+			expect(result.every((finding) => !("name" in finding))).toBe(true);
 		});
 	});
 });

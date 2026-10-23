@@ -2,16 +2,6 @@
 	"extends": "../../config/tsconfig.strict.json",
 	"include": ["src/**/*"],
 	"exclude": ["src/test/**/*"],
-	"compilerOptions": {
-		"outDir": "./esm",
-		"rootDir": "./src",
-		"exactOptionalPropertyTypes": false,
-		"noPropertyAccessFromIndexSignature": false,
-		"noUncheckedIndexedAccess": false,
-	},
-	"ts-node": {
-		"esm": true,
-	},
 	"references": [
 		{
 			"path": "../cli-api",
@@ -23,4 +13,14 @@
 			"path": "../sail-infrastructure",
 		},
 	],
+	"compilerOptions": {
+		"exactOptionalPropertyTypes": false,
+		"noPropertyAccessFromIndexSignature": false,
+		"noUncheckedIndexedAccess": false,
+		"outDir": "./esm",
+		"rootDir": "./src",
+	},
+	"ts-node": {
+		"esm": true,
+	},
 }

@@ -50,8 +50,7 @@ describe("GleamProjectStructure", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should pass when both src/ and test/ exist with requireTestDir=true", async () => {
@@ -68,8 +67,7 @@ describe("GleamProjectStructure", () => {
 				resolve: false,
 				config: { requireTestDir: true },
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should skip src check when requireSrcDir=false", async () => {
@@ -84,8 +82,7 @@ describe("GleamProjectStructure", () => {
 				resolve: false,
 				config: { requireSrcDir: false },
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -101,10 +98,11 @@ describe("GleamProjectStructure", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("Missing src/ directory");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"Missing src/ directory",
+				);
 			}
 		});
 
@@ -121,10 +119,11 @@ describe("GleamProjectStructure", () => {
 				resolve: false,
 				config: { requireTestDir: true },
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("Missing test/ directory");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"Missing test/ directory",
+				);
 			}
 		});
 	});

@@ -38,7 +38,7 @@ describe("Performance Utilities", () => {
 				success: vi.fn(),
 				info: vi.fn(),
 				warning: vi.fn(),
-				error: vi.fn(),
+				message: vi.fn(),
 				verbose: vi.fn(),
 			};
 		}
@@ -311,9 +311,7 @@ describe("Performance Utilities", () => {
 				),
 			).rejects.toThrow("Test error");
 
-			// Note: When an error is thrown before the operation completes,
-			// the performance tracking may not be finalized. This is expected behavior.
-			// The important part is that the error propagates correctly.
+			expect(stats.data.get("handle")?.has("TestPolicy")).toBe(true);
 		});
 
 		it("should return complex objects from the operation", async () => {
@@ -323,12 +321,7 @@ describe("Performance Utilities", () => {
 				data: new Map(),
 			};
 
-			const complexResult = {
-				name: "TestPolicy",
-				file: "test.ts",
-				resolved: true,
-				errorMessage: "Fixed",
-			};
+			const complexResult = [{ message: "Fixed", fixStatus: "fixed" }];
 
 			const result = await run(() =>
 				runWithPerf("TestPolicy", "handle", stats, function* () {

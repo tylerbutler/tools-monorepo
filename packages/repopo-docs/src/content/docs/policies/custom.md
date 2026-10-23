@@ -2,230 +2,238 @@
 title: Custom policies
 description: A guide to creating your own policies and integrating existing handlers.
 sidebar:
-  order: 3
+  order: 7
 ---
 
-## Creating Custom Policies
+A policy is an object with a name, a description, and a handler function. There are two kinds:
 
-File policies run once per matching selected file. Repository policies run once per invocation, after all file policies. Configure both with `policy()` in the same `policies` array.
+- **File policies** have a `match` regular expression. They run once for each selected file whose repo-relative path matches.
+- **Repository policies** set `scope: "repository"`. They run once per check, after all file policies.
 
-## Concurrency and manifest snapshots
+Write a policy as an object literal with `satisfies FilePolicyDefinition<C>` or `satisfies RepositoryPolicyDefinition<C>`, where `C` is the type of its configuration. `PolicyDefinition` is the union of both. Using `satisfies` rather than a type annotation keeps literal metadata such as `requiresConfig: true`. Configure both kinds with `makePolicy()` in the same `policies` array.
 
-Read-only checks process up to 8 files at a time. Use `--concurrency <n>` with
-`check` or `check-native` to change the limit, or set `concurrency` in
-`PolicyRunnerOptions` for programmatic execution. Choose a positive safe integer.
-Use `--concurrency 1` if a custom policy depends on sequential file processing.
+## File policies
 
-The limit counts active files. In the TypeScript runner, matching read-only
-policies for one file can overlap, so the limit does not cap individual handler
-calls. The native engine processes policy batches in order and applies the limit
-within each batch. Both engines report file results in input order within their
-existing traversal order.
+A file policy handler receives `{ file, root, resolve, config }`:
 
-During read-only checks, `definePackagePolicy`, `defineCargoPolicy`, and
-`defineGleamPolicy` reuse the first read and parse of each manifest for that run.
-Each handler receives its own copy of the parsed object, including nested values.
-Do not change files during a read-only run: later handlers see the first parsed
-snapshot. A new run reads fresh data. Direct calls to these helpers without a
-runner context keep fresh-read behavior. Custom file reads and repository
-policies do not use this cache.
+- `file` is the repo-relative path.
+- `root` is the absolute path of the repository root.
+- `resolve` is `true` when the user ran `check --fix`. Only write files when it's `true`.
+- `config` is the configuration passed to `makePolicy()`, or the policy's `defaultConfig`.
 
-With `--fix`, both engines keep file handlers and standalone resolvers sequential
-and bypass the manifest cache, regardless of `--concurrency`. Later fixers read
-the changes from earlier fixers. Repository policies remain sequential and start
-after file policies finish.
+The handler returns an array of **findings**. An empty array means the file passes. Each finding describes one violation:
 
-## Programmatic imports
+| Field | Description |
+| --- | --- |
+| `message` | Required. What's wrong. |
+| `manualFix` | Instructions for fixing the violation by hand. |
+| `fixStatus` | `"available"` if `--fix` can fix it, or `"fixed"` / `"failed"` to report the outcome of a fix the handler attempted. |
 
-Use `repopo/api` to import policy types, factories, adapters, and `PolicyRunner`
-without OCLIF's CLI `run` export. The root `repopo` entry point also exports these
-APIs. Import `run` from `effection` when executing a runner.
+```ts title="repopo.config.ts"
+import { readFile } from "node:fs/promises";
+import { join } from "pathe";
+import { makePolicy, type FilePolicyDefinition, type RepopoConfig } from "repopo/api";
 
-Use `definePackagePolicy` for package.json policies, `defineCargoPolicy` for
-Cargo.toml, and `defineGleamPolicy` for gleam.toml. The older
-`generatePackagePolicy` name remains an alias for `definePackagePolicy`.
+const NoTodoComments = {
+	name: "NoTodoComments",
+	description: "Disallows TODO comments in TypeScript sources.",
+	match: /^src\/.*\.ts$/,
+	handler: async ({ file, root }) => {
+		const text = await readFile(join(root, file), "utf8");
+		return text.includes("TODO")
+			? [{ message: "File contains TODO comments.", manualFix: "Resolve or remove the TODO." }]
+			: [];
+	},
+} satisfies FilePolicyDefinition;
+
+export default {
+	policies: [makePolicy(NoTodoComments)],
+} satisfies RepopoConfig;
+```
+
+Handlers can be async functions or [Effection](https://frontside.com/effection) generator functions. Synchronous handlers aren't supported.
+
+Only `fixStatus: "fixed"` resolves a finding. Fixed findings still appear in the output so users can see what changed. A finding with `"available"`, `"failed"`, or no status is unresolved and fails the check. Returning `"fixed"` or `"failed"` without `--fix` is an error. File findings can't set `files`; repopo supplies the file.
+
+### Configuration
+
+Declare a configuration type with the `C` parameter. Then choose one of these:
+
+- Set `requiresConfig: true` if the policy can't run without configuration. Configuring it without `config` is then an error that stops the check before any policy runs.
+- Set a **complete** `defaultConfig` to make configuration optional.
+
+```ts
+interface RequireTextConfig {
+	required: string;
+}
+
+const RequireText = {
+	name: "RequireText",
+	description: "Requires configured text in matching files.",
+	match: /\.txt$/,
+	requiresConfig: true,
+	handler: async ({ file, root, config }) => {
+		if (config === undefined) throw new TypeError("RequireText needs config.");
+		const text = await readFile(join(root, file), "utf8");
+		return text.includes(config.required)
+			? []
+			: [{ message: `Missing text: ${config.required}` }];
+	},
+} satisfies FilePolicyDefinition<RequireTextConfig>;
+
+makePolicy(RequireText, { config: { required: "License" } });
+```
+
+Explicit configuration replaces the whole `defaultConfig`; repopo doesn't merge them.
+
+## Policy definers
+
+For common files, the definer functions match the file, read and parse it, and pass the parsed content to your handler as its first argument. They keep `requiresConfig` and `defaultConfig`.
+
+| Function | Matches | Handler receives |
+| --- | --- | --- |
+| `definePackagePolicy` | `package.json` | Parsed JSON |
+| `defineCargoPolicy` | `Cargo.toml` | Parsed TOML |
+| `defineGleamPolicy` | `gleam.toml` | Parsed TOML |
+| `defineFileHeaderPolicy` | Your `match` | Generates header checks and fixes; requires header configuration |
+
+```ts
+import { definePackagePolicy } from "repopo/api";
+
+export const RequireDescription = definePackagePolicy({
+	name: "RequireDescription",
+	description: "Requires a description in every package.json.",
+	handler: async (json) =>
+		json.description ? [] : [{ message: "Missing description." }],
+});
+```
 
 ## Standalone file resolvers
 
-Assign a `PolicyResolver` to a file policy's `resolver` property:
+A file policy can put its fix in a separate `resolver` instead of fixing in the handler. In fix mode, repopo calls the resolver when the handler returns findings. It receives `{ file, root, config, findings }` and returns the updated findings:
 
 ```ts
-import type { PolicyResolver, PolicyShape } from "repopo/api";
+import type { PolicyResolver } from "repopo/api";
 
-const resolver: PolicyResolver = async ({ file }) => ({
-	error: `Cannot fix ${file} without manual input.`,
-	fixed: false,
-	manualFix: "Add the required file header.",
-});
-
-const HeaderPolicy: PolicyShape = {
-	name: "Header",
-	description: "Demonstrates a standalone resolver.",
-	match: /\.ts$/,
-	handler: async () => ({ error: "Header check failed", fixable: true }),
-	resolver,
+const resolver: PolicyResolver = async ({ findings }) => {
+	// Apply the actual file changes first, then:
+	return findings.map((finding) => ({ ...finding, fixStatus: "fixed" }));
 };
 ```
 
-Return `fixed: true` only after a successful fix. Set `fixed: false` or omit it
-when the fix did not succeed. Async functions and Effection generators are
-supported. Legacy `PolicyStandaloneResolver` functions remain supported.
-`PolicyRunner` normalizes both resolver formats to `PolicyFixResult` in
-`PolicyFileResult.resolution`.
+- Return each original finding with the same `message`, in the same order, to update it. Findings with new messages are added.
+- Findings you leave out stay unresolved. Returning `[]` does **not** mark everything fixed.
+- If the handler already returned a finding with `"fixed"` or `"failed"`, the resolver isn't called for that file.
+- If the resolver throws, the handler's findings are kept and the error is reported.
+
+Repository policies can't have a resolver; they fix inline in the handler.
 
 ## Repository policies
 
-Use `RepositoryPolicyDefinition` for checks that require several files or check for a missing file. Set `scope: "repository"` and omit `match`.
+Use a repository policy for checks that involve several files or a file that's missing. Set `scope: "repository"` and omit `match`.
 
 ```ts title="repopo.config.ts"
-import { policy, type RepopoConfig, type RepositoryPolicyDefinition } from "repopo";
-import { NoJsFileExtensions } from "repopo/policies";
+import { makePolicy, type RepopoConfig, type RepositoryPolicyDefinition } from "repopo/api";
 
-const RequiredReadme: RepositoryPolicyDefinition = {
+const RequiredReadme = {
 	name: "RequiredReadme",
 	description: "Requires a README at the repository root.",
 	scope: "repository",
 	handler: async ({ files }) =>
 		files.includes("README.md")
-			? true
-			: [{ error: "README.md is missing.", manualFix: "Add README.md." }],
-};
+			? []
+			: [{ message: "README.md is missing.", manualFix: "Add a root README.md." }],
+} satisfies RepositoryPolicyDefinition;
 
 export default {
-	policies: [policy(NoJsFileExtensions), policy(RequiredReadme)],
+	policies: [makePolicy(RequiredReadme)],
 } satisfies RepopoConfig;
 ```
 
-Repository handlers receive `root`, `files`, `resolve`, and `config`. `root` is the absolute Git root. `files` contains repo-relative paths from `git ls-files -co --exclude-standard --full-name`, after global and per-policy exclusions. This includes tracked and untracked files, but not ignored untracked files. Paths do not guarantee that a file still exists on disk.
+Repository handlers receive `{ root, files, resolve, config }`:
 
-Return `true` to pass, or an array of findings. Each finding has an `error` message and can include `files`, `fixable`, `fixed`, and `manualFix`. Use `files` for a violation that concerns several files. Omit it for a repository-level violation. An empty array also passes. Async functions and Effection generators are supported.
+- `root` is the absolute Git root.
+- `files` contains repo-relative paths from `git ls-files -co --exclude-standard --full-name`, after global and per-instance exclusions. This includes tracked and untracked files, but not ignored untracked files. A path doesn't guarantee the file still exists on disk.
 
-Use `resolve` to apply fixes inside the handler, and set `fixed` on each finding to report the result. Repository policies do not use standalone resolvers.
+Repository findings can set `files` to the repo-relative paths a violation concerns, using forward slashes and no `.` or `..` segments. Omit `files` for a repository-level violation. Repository policies fix inline: check `resolve`, apply the fix, and return the finding with `fixStatus: "fixed"`.
 
 ### Partial runs and fixes
 
-With `--stdin`, file policies check only the supplied paths. Repository policies still run, even with empty stdin, and receive the full eligible repository inventory. Exclusions filter their inventory; they do not prevent execution when the inventory is empty.
+With `--stdin`, file policies check only the supplied paths. Repository policies still run, even with empty stdin, and receive the full eligible repository inventory. Exclusions filter their inventory; they don't prevent the policy from running when the inventory is empty.
 
-Repository policies run serially in configuration order after file policies finish. In fix mode, the inventory is refreshed before each repository policy. A repository fixer can modify files outside the stdin selection. These rules apply to both `check` and `check-native`.
+Repository policies run one at a time in configuration order after file policies finish. In fix mode, the inventory is refreshed before each repository policy, and a repository fixer can modify files outside the stdin selection. These rules apply to both `check` and `check-native`. To run repository policies from your own code, pass the full inventory explicitly; see the [programmatic API](/usage/programmatic-api/#selected-files-and-the-repository-inventory).
 
-For programmatic execution, pass the full inventory separately from the file selection:
+## Concurrency and manifest snapshots
 
-```ts
-await run(() => runner.run(selectedFiles, repositoryFiles));
-```
+Read-only checks process up to 8 files at a time. Use `--concurrency <n>` with `check` or `check-native` to change the limit, or the `concurrency` option for programmatic runs. Use `--concurrency 1` if a custom policy depends on sequential file processing. The policies for one file run in configuration order.
 
-`run` is imported from `effection`. Pass an async inventory loader instead of an array if fixes can create or remove files. If the second argument is omitted, the runner uses the selected files as the inventory; this is suitable only for full-repository runs.
+During read-only checks, `definePackagePolicy`, `defineCargoPolicy`, and `defineGleamPolicy` reuse the first read and parse of each manifest for that run. Each handler receives its own copy of the parsed object. Don't change files during a read-only run: later handlers see the first parsed snapshot. Custom file reads and repository policies don't use this cache.
 
-### Built-in repository policies
-
-`LicenseFileExists` checks for a license file at the repository root. `SharedDependencyVersions` compares dependency versions across members of the root Cargo workspace when `Cargo.toml` is in its eligible inventory.
-
-Configure either policy with `policy()`. Both run during partial and empty stdin checks. If you call their handlers directly, pass the full eligible `files` inventory and handle `true` or an array of findings.
+With `--fix`, files are processed one at a time and the manifest cache is bypassed, regardless of `--concurrency`, so later fixers see the changes from earlier ones. Repository policies start after file policies finish.
 
 ## Guidance for policy failures
 
-Return `manualFix` with a policy error to explain how to correct the violation.
-Both `repopo check` and `repopo check-native` print this guidance for unresolved
-failures, including failed auto-fix attempts. They omit it after a successful fix.
-If a standalone resolver fails without its own guidance, they print the original
-handler's guidance.
+Return `manualFix` with a finding to explain how to correct the violation. Both `repopo check` and `repopo check-native` print it for unresolved findings.
 
-For architectural policies, name the preferred implementation, point to an example,
-and explain what the author must preserve:
+For architectural policies, name the preferred implementation, point to an example, and explain what the author must preserve:
 
 ```ts
-return {
-	error: "Package-level project.json files split task configuration.",
+return [{
+	message: "Package-level project.json files split task configuration.",
 	manualFix: [
 		"Put implementation commands in package.json scripts.",
 		"Put shared orchestration in root nx.json.",
 		"Follow packages/repopo/package.json as an example.",
 		"Preserve required tasks and caching settings during migration.",
 	].join("\n"),
-};
+}];
 ```
 
-Keep repository-specific decisions in custom policies. Use existing linters for
-rules they support. Reserve auto-fixes for changes that preserve behavior without
-an architectural decision.
+Keep repository-specific decisions in custom policies. Use existing linters for rules they support. Reserve auto-fixes for changes that preserve behavior without an architectural decision.
 
-## FluidFramework Handler Adapter
+## FluidFramework handler adapter
 
-If you're migrating from FluidFramework's build-tools or want to reuse existing Fluid policy handlers, repopo provides an adapter to convert them to repopo policies.
-
-### Converting Handlers
-
-Use `fromFluidHandlers` to convert FluidFramework handlers to repopo policies:
+If you're migrating from FluidFramework's build-tools, or want to reuse existing Fluid policy handlers, `fromFluidHandlers` converts them to repopo file policies:
 
 ```ts title="repopo.config.ts"
-import { fromFluidHandlers, makePolicy } from "repopo";
+import { fromFluidHandlers, makePolicy, type RepopoConfig } from "repopo/api";
 import { copyrightFileHeaderHandlers, fluidCaseHandler } from "@fluidframework/build-tools";
 
 // Convert multiple handlers with a namespace prefix
 const FluidCopyrightPolicies = fromFluidHandlers(copyrightFileHeaderHandlers, {
-  namePrefix: "Fluid:"  // Results in "Fluid:my-handler-name"
+	namePrefix: "Fluid:", // Results in "Fluid:my-handler-name"
 });
 
 // For a single handler, wrap it in an array
 const [FluidCasePolicy] = fromFluidHandlers([fluidCaseHandler]);
 
-const config = {
-  policies: [
-    ...FluidCopyrightPolicies.map(p => makePolicy(p)),
-    makePolicy(FluidCasePolicy),
-  ]
-};
-
-export default config;
+export default {
+	policies: [
+		...FluidCopyrightPolicies.map((definition) => makePolicy(definition)),
+		makePolicy(FluidCasePolicy),
+	],
+} satisfies RepopoConfig;
 ```
 
-### Handler Interface
-
-The adapter accepts handlers matching the FluidFramework `Handler` interface:
+The adapter accepts handlers that match FluidFramework's `Handler` interface:
 
 ```ts
 interface FluidHandler {
-  // Display name for filtering and output
-  name: string;
-
-  // Regex pattern for matching files
-  match: RegExp;
-
-  // Check function: returns undefined (pass) or error message (fail)
-  handler: (file: string, root: string) => Promise<string | undefined>;
-
-  // Optional resolver for auto-fix support
-  resolver?: (file: string, root: string) =>
-    Promise<{ resolved: boolean; message?: string }> |
-    { resolved: boolean; message?: string };
+	name: string;
+	match: RegExp;
+	// Returns undefined to pass, or an error message
+	handler: (file: string, root: string) => Promise<string | undefined>;
+	// Optional fixer
+	resolver?: (file: string, root: string) =>
+		| Promise<{ resolved: boolean; message?: string }>
+		| { resolved: boolean; message?: string };
 }
 ```
-
-### Key Differences Handled
-
-The adapter automatically handles differences between the two systems:
 
 | Aspect | FluidFramework | repopo |
-|--------|---------------|--------|
-| File paths | Absolute paths | Repo-relative paths |
-| Return type | `string \| undefined` | `true \| PolicyFailure` |
-| Resolver | Separate function | Integrated or standalone |
+| --- | --- | --- |
+| File paths | Absolute | Repo-relative |
+| Handler result | `string \| undefined` | Array of findings |
+| Fix result | `{ resolved, message? }` | Findings with `fixStatus` |
 
-### Options
-
-```ts
-interface FluidAdapterOptions {
-  // Prefix for policy names (useful for namespacing)
-  namePrefix?: string;
-}
-```
-
-### Import Paths
-
-```ts
-// Main export
-import { fromFluidHandlers } from "repopo";
-
-// Types
-import type { FluidHandler, FluidAdapterOptions } from "repopo";
-```
+`FluidAdapterOptions` has one option, `namePrefix`, which is prepended to each policy name.

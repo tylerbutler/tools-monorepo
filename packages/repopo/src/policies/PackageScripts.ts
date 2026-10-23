@@ -174,9 +174,6 @@ export interface PackageScriptsSettings {
 	 */
 	scriptMustContain?: ScriptMustContainRule[];
 }
-
-const POLICY_NAME = "PackageScripts";
-
 /**
  * Extracts script name and optional default value from a RequiredScriptEntry.
  */
@@ -469,7 +466,10 @@ function applyScriptFixes(
 	missingScriptsWithDefaults: string[],
 	mismatchedScripts: string[],
 	defaultScripts: Record<string, string>,
-): { updatedScripts: Record<string, string>; fixedScripts: string[] } {
+): {
+	updatedScripts: Record<string, string>;
+	fixedScripts: string[];
+} {
 	const updatedScripts: Record<string, string> = {};
 
 	// Copy existing scripts, filtering out undefined values
@@ -679,23 +679,25 @@ function runAllValidations(
  * const config: RepopoConfig = {
  *   policies: [
  *     makePolicy(PackageScripts, {
- *       // Scripts that must exist
- *       must: [
- *         "test",                        // Must exist, no auto-fix
- *         { build: "tsc" },              // Must exist, auto-fix available
- *         { lint: "biome lint ." },      // Must exist, auto-fix available
- *       ],
- *       // Scripts that must exist AND match exactly
- *       exact: {
- *         clean: "rimraf dist esm",
- *         format: "biome format --write .",
+ *       config: {
+ *         // Scripts that must exist
+ *         must: [
+ *           "test",                        // Must exist, no auto-fix
+ *           { build: "tsc" },              // Must exist, auto-fix available
+ *           { lint: "biome lint ." },      // Must exist, auto-fix available
+ *         ],
+ *         // Scripts that must exist AND match exactly
+ *         exact: {
+ *           clean: "rimraf dist esm",
+ *           format: "biome format --write .",
+ *         },
+ *         // If "build" exists, "clean" must also exist (with inline auto-fix default)
+ *         conditionalRequired: [{ ifPresent: "build", requires: [{ clean: "rimraf dist" }] }],
+ *         // Script body must contain these substrings
+ *         scriptMustContain: [{ script: "build", mustContain: ["tsc"] }],
+ *         // Only one of these can exist
+ *         mutuallyExclusive: [["lint:eslint", "lint:biome"]],
  *       },
- *       // If "build" exists, "clean" must also exist (with inline auto-fix default)
- *       conditionalRequired: [{ ifPresent: "build", requires: [{ clean: "rimraf dist" }] }],
- *       // Script body must contain these substrings
- *       scriptMustContain: [{ script: "build", mustContain: ["tsc"] }],
- *       // Only one of these can exist
- *       mutuallyExclusive: [["lint:eslint", "lint:biome"]],
  *     }),
  *   ],
  * };
@@ -708,11 +710,12 @@ export const PackageScripts = definePackagePolicy<
 	PackageScriptsSettings | undefined
 >({
 	name: "PackageScripts",
+	requiresConfig: true,
 	description:
 		"Validates package.json scripts based on configurable rules including required scripts, exact content, and conditional requirements.",
 	handler: async (json, { file, root, resolve, config }) => {
 		if (config === undefined) {
-			return true;
+			return [];
 		}
 
 		const scripts = Object.hasOwn(json, "scripts") ? json.scripts : {};
@@ -722,7 +725,7 @@ export const PackageScripts = definePackagePolicy<
 			runAllValidations(config, scripts, defaultScripts);
 
 		if (errors.length === 0) {
-			return true;
+			return [];
 		}
 
 		const hasAutoFixableErrors =
@@ -743,28 +746,26 @@ export const PackageScripts = definePackagePolicy<
 					{ spaces: 2 },
 				);
 				const postFixErrors = revalidateAfterFix(config, updatedScripts);
-
-				return {
-					name: POLICY_NAME,
-					file,
-					resolved: postFixErrors.length === 0,
-					errorMessages:
-						postFixErrors.length > 0
-							? [
-									`Fixed scripts: ${fixedScripts.join(", ")}. Remaining errors:\n${postFixErrors.join("\n\n")}`,
-								]
-							: [`Fixed scripts: ${fixedScripts.join(", ")}`],
-				};
+				return [
+					...fixedScripts.map((name) => ({
+						message: `Fixed scripts: ${name}`,
+						fixStatus: "fixed" as const,
+					})),
+					...postFixErrors.map((message) => ({
+						message: `Remaining errors:\n${message}`,
+					})),
+				];
 			} catch {
 				// Fall through to return regular failure
 			}
 		}
-
-		return {
-			name: POLICY_NAME,
-			file,
-			autoFixable: hasAutoFixableErrors,
-			errorMessages: errors,
-		};
+		return errors.map((message) => ({
+			message,
+			fixStatus: hasAutoFixableErrors
+				? resolve
+					? "failed"
+					: "available"
+				: undefined,
+		}));
 	},
 });

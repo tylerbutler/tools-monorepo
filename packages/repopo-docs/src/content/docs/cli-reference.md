@@ -57,10 +57,9 @@ FLAGS
 DESCRIPTION
   Checks and applies policies using the Rust engine.
 
-  Runs the Rust-based repopo-core engine with the Node.js sidecar. This provides the same policy checking as 'check' but
-  with Rust-based file enumeration, regex matching, and orchestration for better performance. Repository policies always
-  run with the full repository inventory, including with --stdin. With --fix, repository policies can modify files
-  outside the stdin selection.
+  Runs the Rust-based repopo-core engine with the Node.js sidecar. Rust handles file matching, scheduling and reporting;
+  the sidecar shares per-policy contracts with 'check'. Repository policies always run with the full repository
+  inventory, including with --stdin. With --fix, repository policies can modify files outside the stdin selection.
 ```
 
 _See code: [src/commands/check-native.ts](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/commands/check-native.ts)_

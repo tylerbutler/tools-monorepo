@@ -41,8 +41,7 @@ describe("NoLargeBinaryFiles", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should pass for medium-sized files under default limit", async () => {
@@ -56,8 +55,7 @@ describe("NoLargeBinaryFiles", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -73,15 +71,24 @@ describe("NoLargeBinaryFiles", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.name).toBe("NoLargeBinaryFiles");
-				expect(result.autoFixable).toBe(false);
-				expect(result.errorMessages.join()).toContain("File is too large");
-				expect(result.errorMessages.join()).toContain("15.0 MB");
-				expect(result.errorMessages.join()).toContain("10.0 MB");
-				expect(result.errorMessages.join()).toContain("Git LFS");
+				expect(result.every((finding) => !("name" in finding))).toBe(true);
+				expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+					false,
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"File is too large",
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"15.0 MB",
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"10.0 MB",
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"Git LFS",
+				);
 			}
 		});
 
@@ -95,11 +102,14 @@ describe("NoLargeBinaryFiles", () => {
 				root: testDir,
 				resolve: true,
 			});
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.autoFixable).toBe(false);
-				expect("resolved" in result).toBe(false);
+				expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+					false,
+				);
+				expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+					false,
+				);
 			}
 		});
 	});
@@ -130,8 +140,7 @@ describe("NoLargeBinaryFiles", () => {
 					root: testDir,
 					resolve: false,
 				});
-
-				expect(result).toBe(true);
+				expect(result).toEqual([]);
 			}
 		});
 	});
@@ -153,11 +162,14 @@ describe("NoLargeBinaryFiles", () => {
 				resolve: false,
 				config: customConfig,
 			});
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("2.0 MB");
-				expect(result.errorMessages.join()).toContain("1.0 MB");
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"2.0 MB",
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"1.0 MB",
+				);
 			}
 		});
 
@@ -177,8 +189,7 @@ describe("NoLargeBinaryFiles", () => {
 				resolve: false,
 				config: customConfig,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should use custom exclude patterns", async () => {
@@ -199,8 +210,7 @@ describe("NoLargeBinaryFiles", () => {
 				resolve: false,
 				config: customConfig,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should handle glob-like patterns in excludePatterns", async () => {
@@ -231,8 +241,7 @@ describe("NoLargeBinaryFiles", () => {
 					resolve: false,
 					config: customConfig,
 				});
-
-				expect(result).toBe(true);
+				expect(result).toEqual([]);
 			}
 		});
 	});
@@ -244,8 +253,7 @@ describe("NoLargeBinaryFiles", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should handle directories", async () => {
@@ -257,8 +265,7 @@ describe("NoLargeBinaryFiles", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should handle zero-byte files", async () => {
@@ -270,8 +277,7 @@ describe("NoLargeBinaryFiles", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should format file sizes correctly", async () => {
@@ -295,7 +301,9 @@ describe("NoLargeBinaryFiles", () => {
 				});
 
 				if (typeof result === "object") {
-					expect(result.errorMessages.join()).toContain(expected);
+					expect(result.map((finding) => finding.message).join()).toContain(
+						expected,
+					);
 				}
 			}
 		});

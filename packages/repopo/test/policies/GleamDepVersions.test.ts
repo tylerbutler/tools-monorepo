@@ -39,8 +39,7 @@ describe("GleamDepVersions", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should pass for path dependencies without versions", async () => {
@@ -60,8 +59,7 @@ describe("GleamDepVersions", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should pass with unbounded version when warnUnbounded=false (default)", async () => {
@@ -81,8 +79,7 @@ describe("GleamDepVersions", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -104,11 +101,14 @@ describe("GleamDepVersions", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("gleam_stdlib");
-				expect(result.error).toContain("no version constraint");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"gleam_stdlib",
+				);
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"no version constraint",
+				);
 			}
 		});
 
@@ -130,11 +130,14 @@ describe("GleamDepVersions", () => {
 				resolve: false,
 				config: { warnUnbounded: true },
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("gleam_stdlib");
-				expect(result.error).toContain("unbounded version range");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"gleam_stdlib",
+				);
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"unbounded version range",
+				);
 			}
 		});
 	});
@@ -160,11 +163,14 @@ describe("GleamDepVersions", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("gleeunit");
-				expect(result.error).toContain("dev-dependencies");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"gleeunit",
+				);
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"dev-dependencies",
+				);
 			}
 		});
 	});

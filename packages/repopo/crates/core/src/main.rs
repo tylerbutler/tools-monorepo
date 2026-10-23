@@ -1,6 +1,7 @@
 mod engine;
 mod files;
 mod ipc;
+mod termination;
 mod types;
 
 use anyhow::{Context, Result};
@@ -23,6 +24,9 @@ struct Cli {
 enum Commands {
     /// Check and enforce policies on repository files.
     Check {
+        /// Emit canonical results for native protocol clients.
+        #[arg(long, hide = true)]
+        json: bool,
         /// Maximum concurrent files in read-only checks. Fixes remain sequential.
         #[arg(long, default_value = "8", value_parser = parse_concurrency)]
         concurrency: usize,
@@ -174,11 +178,12 @@ fn resolve_sidecar_path(explicit: Option<&str>) -> Result<String> {
     )
 }
 
-fn main() -> Result<()> {
+fn execute() -> Result<i32> {
     let cli = Cli::parse();
 
     match cli.command {
         Commands::Check {
+            json,
             concurrency,
             fix,
             stdin,
@@ -193,34 +198,6 @@ fn main() -> Result<()> {
 
             if verbose {
                 eprintln!("Using sidecar: {sidecar_script} (runtime: {runtime_bin})");
-            }
-
-            #[cfg(test)]
-            mod tests {
-                use super::*;
-
-                #[test]
-                fn validates_check_concurrency() {
-                    for value in ["0", "-1", "1.5", "bad", "9007199254740992"] {
-                        assert!(
-                            Cli::try_parse_from(["repopo-core", "check", "--concurrency", value])
-                                .is_err()
-                        );
-                    }
-                    for value in ["1", "8", "32"] {
-                        let cli =
-                            Cli::try_parse_from(["repopo-core", "check", "--concurrency", value])
-                                .unwrap();
-                        assert!(
-                            matches!(cli.command, Commands::Check { concurrency, .. } if concurrency == value.parse::<usize>().unwrap())
-                        );
-                    }
-                    let cli = Cli::try_parse_from(["repopo-core", "check"]).unwrap();
-                    assert!(matches!(
-                        cli.command,
-                        Commands::Check { concurrency: 8, .. }
-                    ));
-                }
             }
 
             let cwd = env::current_dir()
@@ -250,20 +227,21 @@ fn main() -> Result<()> {
 
             let success = engine::run_check(
                 &mut sidecar,
-                file_list,
-                &git_root,
-                config.as_deref(),
-                fix,
-                verbose,
-                quiet,
-                concurrency,
+                engine::CheckOptions {
+                    json,
+                    files: file_list,
+                    git_root: &git_root,
+                    config_path: config.as_deref(),
+                    fix,
+                    verbose,
+                    quiet,
+                    concurrency,
+                },
             )?;
 
             sidecar.shutdown()?;
 
-            if !success {
-                process::exit(1);
-            }
+            return Ok(if success { 0 } else { 1 });
         }
 
         Commands::List {
@@ -289,5 +267,44 @@ fn main() -> Result<()> {
         }
     }
 
+    Ok(0)
+}
+
+fn main() -> Result<()> {
+    termination::install();
+    let result = execute();
+    let signal = termination::signal();
+    // execute's sidecar (including its Drop teardown) has finished before exit.
+    if signal != 0 {
+        process::exit(128 + signal);
+    }
+    let code = result?;
+    if code != 0 {
+        process::exit(code);
+    }
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn validates_check_concurrency() {
+        for value in ["0", "-1", "1.5", "bad", "9007199254740992"] {
+            assert!(Cli::try_parse_from(["repopo-core", "check", "--concurrency", value]).is_err());
+        }
+        for value in ["1", "8", "32"] {
+            let cli =
+                Cli::try_parse_from(["repopo-core", "check", "--concurrency", value]).unwrap();
+            assert!(
+                matches!(cli.command, Commands::Check { concurrency, .. } if concurrency == value.parse::<usize>().unwrap())
+            );
+        }
+        let cli = Cli::try_parse_from(["repopo-core", "check"]).unwrap();
+        assert!(matches!(
+            cli.command,
+            Commands::Check { concurrency: 8, .. }
+        ));
+    }
 }

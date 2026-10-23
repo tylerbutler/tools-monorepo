@@ -1,1327 +1,891 @@
-import { all, run, suspend } from "effection";
+import { all, call, ensure, run, sleep } from "effection";
 import { describe, expect, it, vi } from "vitest";
-
-import { makePolicy, policy } from "../src/makePolicy.js";
+import { makePolicy } from "../src/makePolicy.js";
 import type {
-	PolicyError,
-	PolicyFailure,
-	PolicyFixResult,
-	PolicyResolver,
-	PolicyShape,
-	RepositoryPolicyArgs,
+	FilePolicyDefinition,
+	PolicyResult,
+	RepositoryPolicyDefinition,
 } from "../src/policy.js";
-import { PolicyRunner, type PolicyRunnerOptions } from "../src/runner.js";
+import { PolicyRunner, runPolicies } from "../src/runner.js";
 
-function makeRunnerOptions(
-	overrides: Partial<PolicyRunnerOptions> = {},
-): PolicyRunnerOptions {
-	return {
-		policies: [],
-		excludeFromAll: [],
-		excludePoliciesForFiles: new Map(),
-		gitRoot: "/fake/root",
-		resolve: false,
-		...overrides,
-	};
-}
+const fileDefinition = {
+	name: "File",
+	description: "Checks files",
+	match: /\.txt$/,
+	handler: async () => [],
+} satisfies FilePolicyDefinition;
+const repositoryDefinition = {
+	name: "Repository",
+	description: "Checks repository",
+	scope: "repository",
+	handler: async () => [],
+} satisfies RepositoryPolicyDefinition;
+const root = "/repo";
 
-describe("PolicyRunner", () => {
-	describe("bounded file concurrency", () => {
-		it.each([
-			1,
-			3,
-			undefined,
-		])("bounds active files with limit %s", async (concurrency) => {
-			const limit = concurrency ?? 8;
-			let active = 0;
-			let peak = 0;
-			let release = () => {};
-			const gate = new Promise<void>((resolve) => {
-				release = resolve;
-			});
-			const runner = new PolicyRunner(
-				makeRunnerOptions({
-					...(concurrency === undefined ? {} : { concurrency }),
+describe("canonical policy execution", () => {
+	it.each([
+		"file",
+		"repository",
+	] as const)("rejects invalid later structural %s exclusions before any loader, handler or resolver", (scope) => {
+		const handler = vi.fn(async () => [{ message: "needs fix" }]);
+		const resolver = vi.fn(async () => []);
+		const inventory = vi.fn(async () => ["a.txt"]);
+		const later = scope === "file" ? fileDefinition : repositoryDefinition;
+		expect(
+			() =>
+				new PolicyRunner({
+					root,
+					fix: true,
+					inventory,
 					policies: [
-						policy({
-							name: "Bounded",
-							description: "Waits for a full worker pool",
-							match: /\.txt$/,
-							handler: async () => {
-								active++;
-								peak = Math.max(peak, active);
-								if (active === limit) {
-									release();
-								}
-								await gate;
-								await Promise.resolve();
-								active--;
-								return true;
-							},
-						}),
+						makePolicy({ ...fileDefinition, name: "First", handler, resolver }),
+						{ ...later, exclude: ["["] },
 					],
 				}),
-			);
-			const result = await run(() =>
-				runner.run(Array.from({ length: 17 }, (_, i) => `${i}.txt`)),
-			);
-			expect(peak).toBe(limit);
-			expect(active).toBe(0);
-			expect(result.perfStats.processed).toBe(17);
-		});
-
-		it("reports input order despite out-of-order completion and waits before repository policies", async () => {
-			let release = () => {};
-			const gate = new Promise<void>((resolve) => {
-				release = resolve;
-			});
-			const finished: string[] = [];
-			const repoHandler = vi.fn(async () => {
-				expect(finished).toHaveLength(3);
-				return true as const;
-			});
-			const runner = new PolicyRunner(
-				makeRunnerOptions({
-					concurrency: 2,
-					policies: [
-						policy({
-							name: "Delayed",
-							description: "Completes b before a",
-							match: /\.txt$/,
-							handler: async ({ file }) => {
-								if (file === "a.txt") {
-									await gate;
-								} else {
-									release();
-								}
-								finished.push(file);
-								return { error: file };
-							},
-						}),
-						policy({
-							name: "Repository",
-							description: "Runs after all files",
-							scope: "repository",
-							handler: repoHandler,
-						}),
-					],
-				}),
-			);
-			const result = await run(() => runner.run(["a.txt", "b.txt", "c.txt"]));
-			expect(
-				result.results
-					.filter((entry) => entry.scope !== "repository")
-					.map(({ file }) => file),
-			).toEqual(["a.txt", "b.txt", "c.txt"]);
-			expect(finished[0]).toBe("b.txt");
-			expect(repoHandler).toHaveBeenCalledOnce();
-			expect(result.results).toHaveLength(3);
-		});
-
-		it.each([
-			0,
-			-1,
-			1.5,
-			Number.NaN,
-			Number.POSITIVE_INFINITY,
-			Number.MAX_SAFE_INTEGER + 1,
-		])("rejects invalid concurrency %s", (concurrency) => {
-			expect(
-				() => new PolicyRunner(makeRunnerOptions({ concurrency })),
-			).toThrow("positive safe integer");
-		});
-
-		it("keeps all fix work sequential even with a higher limit", async () => {
-			let active = 0;
-			let peak = 0;
-			const seen: string[] = [];
-			const runner = new PolicyRunner(
-				makeRunnerOptions({
-					resolve: true,
-					concurrency: 8,
-					policies: [
-						policy({
-							name: "Fix",
-							description: "Sequential writes",
-							match: /\.txt$/,
-							handler: async ({ file }) => {
-								active++;
-								peak = Math.max(peak, active);
-								await Promise.resolve();
-								seen.push(file);
-								active--;
-								return true;
-							},
-						}),
-					],
-				}),
-			);
-			await run(() => runner.run(["a.txt", "b.txt", "c.txt"]));
-			expect(peak).toBe(1);
-			expect(seen).toEqual(["a.txt", "b.txt", "c.txt"]);
-		});
-
-		it("cancels worker generators without starting queued files", async () => {
-			let notify = () => {};
-			const ready = new Promise<void>((resolve) => {
-				notify = resolve;
-			});
-			let started = 0;
-			let cleaned = 0;
-			const runner = new PolicyRunner(
-				makeRunnerOptions({
-					concurrency: 2,
-					policies: [
-						policy({
-							name: "Resource",
-							description: "Owns a resource",
-							match: /\.txt$/,
-							handler: function* () {
-								try {
-									if (++started === 2) {
-										notify();
-									}
-									yield* suspend();
-									return true as const;
-								} finally {
-									cleaned++;
-								}
-							},
-						}),
-					],
-				}),
-			);
-			const task = run(() => runner.run(["a.txt", "b.txt", "c.txt"]));
-			await ready;
-			await task.halt();
-			expect(started).toBe(2);
-			expect(cleaned).toBe(2);
-		});
+		).toThrow(SyntaxError);
+		expect(handler).not.toHaveBeenCalled();
+		expect(resolver).not.toHaveBeenCalled();
+		expect(inventory).not.toHaveBeenCalled();
 	});
 
-	describe("configuration", () => {
-		it.each([
-			"file",
-			"repository",
-		] as const)("keeps exclude-shaped %s configuration separate from options", async (scope) => {
-			const configs: unknown[] = [];
-			const files: string[] = [];
-			const common = {
-				name: "Configured",
-				description: "Checks configuration delivery",
-				defaultConfig: { exclude: ["default"] },
-			};
-			const configured =
-				scope === "file"
-					? policy(
-							{
-								...common,
-								match: /.*/,
-								handler: async ({ file, config }) => {
-									files.push(file);
-									configs.push(config);
-									return true;
-								},
-							},
-							{ exclude: ["keep.txt"] },
-						)
-					: policy(
-							{
-								...common,
-								scope: "repository",
-								handler: async ({ files: inventory, config }) => {
-									files.push(...inventory);
-									configs.push(config);
-									return true;
-								},
-							},
-							{ exclude: ["keep.txt"] },
-						);
-			const runner = new PolicyRunner(
-				makeRunnerOptions({
-					policies: [configured],
-				}),
-			);
-
-			await run(() => runner.run(["keep.txt"]));
-
-			expect(files).toEqual(["keep.txt"]);
-			expect(configs).toEqual([{ exclude: ["keep.txt"] }]);
-		});
-
-		it.each([
-			"file",
-			"repository",
-		] as const)("applies legacy %s defaults, settings config, and explicit overrides", async (scope) => {
-			const configs: unknown[] = [];
-			const common = {
-				name: "Legacy",
-				description: "Checks legacy configuration delivery",
-				defaultConfig: { threshold: 10 },
-				handler: async ({ config }: { config?: { threshold: number } }) => {
-					configs.push(config);
-					return true as const;
-				},
-			};
-			const configured = [
-				{ config: undefined, settings: undefined },
-				{ config: undefined, settings: { config: { threshold: 20 } } },
-				{ config: { threshold: 30 }, settings: { config: { threshold: 20 } } },
-			].map(({ config, settings }) =>
-				scope === "file"
-					? makePolicy({ ...common, match: /.*/ }, config, settings)
-					: makePolicy({ ...common, scope: "repository" }, config, settings),
-			);
-			for (const instance of configured) {
-				const runner = new PolicyRunner(
-					makeRunnerOptions({ policies: [instance] }),
-				);
-				await run(() => runner.run(["file.txt"]));
-			}
-			expect(configs).toEqual([
-				{ threshold: 10 },
-				{ threshold: 20 },
-				{ threshold: 30 },
-			]);
-		});
-	});
-	describe("repository policies", () => {
-		it("runs once on the full eligible inventory, independently of the selection", async () => {
-			const handler = vi.fn(async () => [
-				{ error: "Repository problem" },
-				{ error: "Cross-file problem", files: ["a.txt", "b.txt"] },
-			]);
-			const fileHandler = vi.fn(async () => true as const);
-			const runner = new PolicyRunner(
-				makeRunnerOptions({
-					policies: [
-						policy(
-							{
-								name: "Repo",
-								description: "Repo",
-								scope: "repository",
-								handler,
-							},
-							undefined,
-							{ exclude: ["vendor/"] },
-						),
-						policy({
-							name: "File",
-							description: "File",
-							match: /\.txt$/,
-							handler: fileHandler,
-						}),
-					],
-					excludeFromAll: [/generated/g],
-				}),
-			);
-			const result = await run(() =>
-				runner.run(
-					["a.txt"],
-					[
-						"a.txt",
-						"b.txt",
-						"vendor/c.txt",
-						"generated/a.txt",
-						"generated/b.txt",
-					],
+	it("retains independent messages, manual guidance, fixed findings and runner-owned scope/identity", async () => {
+		const result = await runPolicies({
+			root,
+			files: ["one.txt"],
+			inventory: [],
+			fix: true,
+			policies: [
+				makePolicy(
+					{
+						...fileDefinition,
+						handler: async () => [
+							{ message: "first", manualFix: "edit manually" },
+							{ message: "second", fixStatus: "fixed" },
+							{ message: "third", fixStatus: "failed" },
+						],
+					},
+					{ instanceId: "file-one" },
 				),
-			);
-			expect(handler).toHaveBeenCalledExactlyOnceWith({
-				root: "/fake/root",
+				makePolicy({
+					...repositoryDefinition,
+					handler: async () => [
+						{ message: "repository wide" },
+						{ message: "several files", files: ["a.txt", "b.txt"] },
+					],
+				}),
+			],
+		});
+		expect(result.errors).toEqual([]);
+		expect(result.findings).toEqual([
+			{
+				scope: "file",
+				policy: "File",
+				policyId: "file-one",
+				file: "one.txt",
+				message: "first",
+				manualFix: "edit manually",
+			},
+			{
+				scope: "file",
+				policy: "File",
+				policyId: "file-one",
+				file: "one.txt",
+				message: "second",
+				fixStatus: "fixed",
+			},
+			{
+				scope: "file",
+				policy: "File",
+				policyId: "file-one",
+				file: "one.txt",
+				message: "third",
+				fixStatus: "failed",
+			},
+			{
+				scope: "repository",
+				policy: "Repository",
+				policyId: "Repository",
+				message: "repository wide",
+			},
+			{
+				scope: "repository",
+				policy: "Repository",
+				policyId: "Repository",
+				message: "several files",
 				files: ["a.txt", "b.txt"],
-				resolve: false,
-				config: undefined,
-			});
-			expect(fileHandler).toHaveBeenCalledExactlyOnceWith(
-				expect.objectContaining({ file: "a.txt" }),
-			);
-			expect(result.results).toEqual([
-				{
-					scope: "repository",
-					policy: "Repo",
-					policyId: "Repo",
-					outcome: { error: "Repository problem" },
-				},
-				{
-					scope: "repository",
-					policy: "Repo",
-					policyId: "Repo",
-					outcome: { error: "Cross-file problem", files: ["a.txt", "b.txt"] },
-				},
-			]);
-			expect(result.perfStats.data.get("handle")?.has("Repo")).toBe(true);
-		});
-
-		it("runs generator handlers with defaults and instance-specific exclusions on empty selections", async () => {
-			const seen: { files: readonly string[]; enabled: boolean | undefined }[] =
-				[];
-			const definition = {
-				name: "Repo",
-				description: "Repo",
-				scope: "repository" as const,
-				defaultConfig: { enabled: true },
-				handler: function* ({
-					files,
-					config,
-				}: RepositoryPolicyArgs<{ enabled: boolean }>) {
-					seen.push({ files, enabled: config?.enabled });
-					yield* all([]);
-					return true as const;
-				},
-			};
-			const runner = new PolicyRunner(
-				makeRunnerOptions({
-					policies: [
-						policy(definition, undefined, {
-							exclude: ["a"],
-							instanceId: "first",
-						}),
-						policy(
-							definition,
-							{ enabled: false },
-							{ exclude: ["b"], instanceId: "second" },
-						),
-					],
-				}),
-			);
-			await run(() => runner.run([], ["a", "b"]));
-			await run(() => runner.run([], []));
-			expect(seen).toEqual([
-				{ files: ["b"], enabled: true },
-				{ files: ["a"], enabled: false },
-				{ files: [], enabled: true },
-				{ files: [], enabled: false },
-			]);
-		});
-
-		it("finishes file fixes first and refreshes inventory before each serial repository fixer", async () => {
-			const files: string[] = ["original.txt"];
-			const order: string[] = [];
-			const inventory = vi.fn(async () => [...files]);
-			const runner = new PolicyRunner(
-				makeRunnerOptions({
-					resolve: true,
-					policies: [
-						policy({
-							name: "Repo1",
-							description: "Repo1",
-							scope: "repository",
-							handler: async ({ files: current, resolve }) => {
-								expect(current).toContain("file-fix.txt");
-								expect(resolve).toBe(true);
-								order.push("repo1");
-								await Promise.resolve();
-								files.push("repo-fix.txt");
-								return [{ error: "Created file", fixed: true }];
-							},
-						}),
-						policy({
-							name: "File",
-							description: "File",
-							match: /\.txt$/,
-							handler: async () => {
-								order.push("file");
-								files.push("file-fix.txt");
-								return true;
-							},
-						}),
-						policy({
-							name: "Repo2",
-							description: "Repo2",
-							scope: "repository",
-							handler: async ({ files: current }) => {
-								expect(current).toContain("repo-fix.txt");
-								order.push("repo2");
-								return true;
-							},
-						}),
-					],
-				}),
-			);
-			await run(() => runner.run(["original.txt"], inventory));
-			expect(order).toEqual(["file", "repo1", "repo2"]);
-			expect(inventory).toHaveBeenCalledTimes(2);
-		});
-
-		it("reports repository handler errors and continues to subsequent policies", async () => {
-			const next = vi.fn(async () => true as const);
-			const runner = new PolicyRunner(
-				makeRunnerOptions({
-					policies: [
-						policy({
-							name: "Broken",
-							description: "Broken",
-							scope: "repository",
-							handler: async () => {
-								throw new Error("Cannot read manifest");
-							},
-						}),
-						policy({
-							name: "Next",
-							description: "Next",
-							scope: "repository",
-							handler: next,
-						}),
-					],
-				}),
-			);
-			const result = await run(() => runner.run([]));
-			expect(result.results).toEqual([
-				expect.objectContaining({
-					scope: "repository",
-					outcome: { error: expect.stringContaining("Cannot read manifest") },
-				}),
-			]);
-			expect(next).toHaveBeenCalledOnce();
-		});
+			},
+		]);
 	});
 
-	describe("run", () => {
-		it("should preserve every same-file fix across asynchronous handlers", async () => {
-			let contents: { license?: string; scripts?: { test: string } } = {};
-			const runner = new PolicyRunner(
-				makeRunnerOptions({
-					resolve: true,
-					policies: [
-						policy({
-							name: "AddLicense",
-							description: "Adds a license to the stored document",
-							match: /package\.json$/,
-							handler: async () => {
-								const snapshot = structuredClone(contents);
-								await Promise.resolve();
-								contents = { ...snapshot, license: "MIT" };
-								return { error: "Missing license", fixed: true };
-							},
-						}),
-						policy({
-							name: "AddTestScript",
-							description: "Adds a test script to the stored document",
-							match: /package\.json$/,
-							handler: async () => {
-								const snapshot = structuredClone(contents);
-								await Promise.resolve();
-								contents = { ...snapshot, scripts: { test: "vitest" } };
-								return { error: "Missing test script", fixed: true };
-							},
-						}),
-					],
-				}),
-			);
-
-			const results = await run(() => runner.run(["package.json"]));
-
-			expect(results.results).toHaveLength(2);
-			expect(contents).toEqual({
-				license: "MIT",
-				scripts: { test: "vitest" },
-			});
+	it.each([
+		"promise",
+		"generator",
+	] as const)("preserves hostile original causes from a %s without coercion or dropping independent work", async (mode) => {
+		const getter = vi.fn(() => {
+			throw new Error("must not inspect");
 		});
-
-		it("should return empty results for no files", async () => {
-			const runner = new PolicyRunner(makeRunnerOptions());
-			const results = await run(() => runner.run([]));
-			expect(results.results).toEqual([]);
-			expect(results.perfStats.count).toBe(0);
-			expect(results.perfStats.processed).toBe(0);
-		});
-
-		it("should count all processed files", async () => {
-			const runner = new PolicyRunner(makeRunnerOptions());
-			const results = await run(() => runner.run(["a.txt", "b.txt", "c.txt"]));
-			expect(results.perfStats.count).toBe(3);
-			expect(results.perfStats.processed).toBe(3);
-		});
-
-		it("should return no results when all policies pass", async () => {
-			const passingPolicy = policy({
-				name: "PassingPolicy",
-				description: "Always passes",
-				match: /\.txt$/,
-				handler: async () => true,
-			});
-
-			const runner = new PolicyRunner(
-				makeRunnerOptions({ policies: [passingPolicy] }),
-			);
-			const results = await run(() => runner.run(["file.txt"]));
-			expect(results.results).toEqual([]);
-		});
-
-		it("should use fresh state when a runner is reused", async () => {
-			const failingPolicy = policy({
-				name: "FailPolicy",
-				description: "Always fails",
-				match: /\.txt$/,
-				handler: async (): Promise<PolicyError> => ({
-					error: "Something went wrong",
-				}),
-			});
-			const options = makeRunnerOptions({ policies: [failingPolicy] });
-			const runner = new PolicyRunner(options);
-
-			await run(() => runner.run(["first.txt"]));
-			const reusedResult = await run(() => runner.run(["second.txt"]));
-			const freshResult = await run(() =>
-				new PolicyRunner(options).run(["second.txt"]),
-			);
-
-			expect(reusedResult.results).toEqual(freshResult.results);
-			expect(reusedResult.perfStats.count).toBe(freshResult.perfStats.count);
-			expect(reusedResult.results.map(({ file }) => file)).toEqual([
-				"second.txt",
-			]);
-		});
-
-		it("should not mutate a previously returned result after reuse", async () => {
-			const failingPolicy = policy({
-				name: "FailPolicy",
-				description: "Always fails",
-				match: /\.txt$/,
-				handler: async (): Promise<PolicyError> => ({
-					error: "Something went wrong",
-				}),
-			});
-			const runner = new PolicyRunner(
-				makeRunnerOptions({ policies: [failingPolicy] }),
-			);
-
-			const firstResult = await run(() => runner.run(["first.txt"]));
-			const firstResultsSnapshot = structuredClone(firstResult.results);
-			const firstPerfSnapshot = structuredClone(firstResult.perfStats);
-			const secondResult = await run(() => runner.run(["second.txt"]));
-
-			expect(firstResult.results).toEqual(firstResultsSnapshot);
-			expect(firstResult.perfStats).toEqual(firstPerfSnapshot);
-			expect(firstResult.results).not.toBe(secondResult.results);
-			expect(firstResult.perfStats).not.toBe(secondResult.perfStats);
-		});
-
-		it("should isolate state between concurrent runs", async () => {
-			const failingPolicy = policy({
-				name: "FailPolicy",
-				description: "Always fails",
-				match: /\.txt$/,
-				handler: async (): Promise<PolicyError> => ({
-					error: "Something went wrong",
-				}),
-			});
-			const runner = new PolicyRunner(
-				makeRunnerOptions({ policies: [failingPolicy] }),
-			);
-
-			const [firstResult, secondResult] = await run(function* () {
-				return yield* all([
-					runner.run(["first.txt"]),
-					runner.run(["second.txt"]),
-				]);
-			});
-
-			expect(firstResult.results.map(({ file }) => file)).toEqual([
-				"first.txt",
-			]);
-			expect(secondResult.results.map(({ file }) => file)).toEqual([
-				"second.txt",
-			]);
-			expect(firstResult.perfStats.count).toBe(1);
-			expect(secondResult.perfStats.count).toBe(1);
-			expect(firstResult.results).not.toBe(secondResult.results);
-			expect(firstResult.perfStats).not.toBe(secondResult.perfStats);
-		});
-	});
-
-	describe("exclusion logic", () => {
-		it.each([
-			{ pattern: /^README/, excluded: "README.md", included: "readme.md" },
-			{ pattern: /^skip$/m, excluded: "prefix\nskip", included: "skip.txt" },
-			{ pattern: "vendor/", excluded: "VENDOR/file.txt", included: "file.txt" },
-		])("preserves configured exclusion semantics for $pattern", async ({
-			pattern,
-			excluded,
-			included,
-		}) => {
-			const files: string[] = [];
-			const configured = policy(
-				{
-					name: "Exclusions",
-					description: "Checks configured exclusions",
-					match: /./s,
-					handler: async ({ file }) => {
-						files.push(file);
-						return true;
-					},
-				},
-				undefined,
-				{ exclude: [pattern] },
-			);
-			const runner = new PolicyRunner(
-				makeRunnerOptions({ policies: [configured] }),
-			);
-			await run(() => runner.run([excluded, included]));
-			expect(files).toEqual([included]);
-		});
-
-		it("should exclude files matching excludeFromAll patterns", async () => {
-			let handlerCalled = false;
-			const testPolicy = policy({
-				name: "TestPolicy",
-				description: "Test",
-				match: /\.txt$/,
-				handler: async () => {
-					handlerCalled = true;
-					return true;
-				},
-			});
-
-			const runner = new PolicyRunner(
-				makeRunnerOptions({
-					policies: [testPolicy],
-					excludeFromAll: [/node_modules/],
-				}),
-			);
-
-			const results = await run(() =>
-				runner.run(["node_modules/pkg/file.txt"]),
-			);
-			expect(handlerCalled).toBe(false);
-			expect(results.results).toEqual([]);
-			expect(results.perfStats.count).toBe(1);
-			expect(results.perfStats.processed).toBe(0);
-		});
-
-		it("should only process files admitted past global exclusions", async () => {
-			const handledFiles: string[] = [];
-			const testPolicy = policy({
-				name: "TestPolicy",
-				description: "Test",
-				match: /\.txt$/,
-				handler: async ({ file }) => {
-					handledFiles.push(file);
-					return true;
-				},
-			});
-
-			const runner = new PolicyRunner(
-				makeRunnerOptions({
-					policies: [testPolicy],
-					excludeFromAll: [/generated/],
-				}),
-			);
-
-			const results = await run(() =>
-				runner.run(["file.txt", "generated/output.txt", "README.md"]),
-			);
-			expect(handledFiles).toEqual(["file.txt"]);
-			expect(results.perfStats.count).toBe(3);
-			expect(results.perfStats.processed).toBe(2);
-		});
-
-		it("should exclude files matching per-policy exclusions", async () => {
-			let handlerCalled = false;
-			const testPolicy = policy({
-				name: "TestPolicy",
-				description: "Test",
-				match: /\.txt$/,
-				handler: async () => {
-					handlerCalled = true;
-					return true;
-				},
-			});
-
-			const excludeMap = new Map([["TestPolicy", [/generated/]]]);
-
-			const runner = new PolicyRunner(
-				makeRunnerOptions({
-					policies: [testPolicy],
-					excludePoliciesForFiles: excludeMap,
-				}),
-			);
-
-			const results = await run(() => runner.run(["generated/output.txt"]));
-			expect(handlerCalled).toBe(false);
-			expect(results.results).toEqual([]);
-			expect(results.perfStats.count).toBe(1);
-			expect(results.perfStats.processed).toBe(1);
-		});
-
-		it("should log verbose messages for exclusions", async () => {
-			const verboseFn = vi.fn();
-			const testPolicy = policy({
-				name: "TestPolicy",
-				description: "Test",
-				match: /\.txt$/,
-				handler: async () => true,
-			});
-
-			const runner = new PolicyRunner(
-				makeRunnerOptions({
-					policies: [testPolicy],
-					excludeFromAll: [/excluded/],
-					logger: { verbose: verboseFn },
-				}),
-			);
-
-			await run(() => runner.run(["excluded/file.txt"]));
-			expect(verboseFn).toHaveBeenCalledWith(
-				"Excluded all handlers: excluded/file.txt",
-			);
-		});
-
-		it.each([
-			{ flag: "g", regex: /.*\.txt$/g, description: "with global flag" },
-			{ flag: "y", regex: /.*\.txt$/y, description: "with sticky flag" },
-		])("should support excludeFromAll with regex $description, preserving lastIndex", async ({
-			regex,
-		}) => {
-			let handlerCalled = false;
-			const testPolicy = policy({
-				name: "TestPolicy",
-				description: "Test",
-				match: /\.txt$/,
-				handler: async () => {
-					handlerCalled = true;
-					return true;
-				},
-			});
-
-			// Pre-set lastIndex to simulate prior regex use
-			regex.lastIndex = 2;
-			const initialLastIndex = regex.lastIndex;
-
-			const runner = new PolicyRunner(
-				makeRunnerOptions({
-					policies: [testPolicy],
-					excludeFromAll: [regex],
-				}),
-			);
-
-			const results = await run(() => runner.run(["a.txt", "b.txt", "c.txt"]));
-
-			// All files should be excluded
-			expect(handlerCalled).toBe(false);
-			expect(results.results).toEqual([]);
-
-			// lastIndex should be preserved
-			expect(regex.lastIndex).toBe(initialLastIndex);
-		});
-
-		it.each([
-			{ flag: "g", regex: /.*\.txt$/g, description: "with global flag" },
-			{ flag: "y", regex: /.*\.txt$/y, description: "with sticky flag" },
-		])("should support per-policy exclusions with regex $description, preserving lastIndex", async ({
-			regex,
-		}) => {
-			let handlerCalled = false;
-			const testPolicy = policy({
-				name: "TestPolicy",
-				description: "Test",
-				match: /\.txt$/,
-				handler: async () => {
-					handlerCalled = true;
-					return true;
-				},
-			});
-
-			// Pre-set lastIndex to simulate prior regex use
-			regex.lastIndex = 2;
-			const initialLastIndex = regex.lastIndex;
-
-			const excludeMap = new Map([["TestPolicy", [regex]]]);
-
-			const runner = new PolicyRunner(
-				makeRunnerOptions({
-					policies: [testPolicy],
-					excludePoliciesForFiles: excludeMap,
-				}),
-			);
-
-			const results = await run(() => runner.run(["a.txt", "b.txt", "c.txt"]));
-
-			// All files should be excluded
-			expect(handlerCalled).toBe(false);
-			expect(results.results).toEqual([]);
-
-			// lastIndex should be preserved
-			expect(regex.lastIndex).toBe(initialLastIndex);
-		});
-
-		it("should keep duplicate policy configurations and exclusions independent", async () => {
-			const calls: string[] = [];
-			const duplicatePolicy: PolicyShape<{ label: string }> = {
-				name: "DuplicatePolicy",
-				description: "Configured more than once",
-				match: /\.txt$/,
-				handler: async ({ config, file }): Promise<PolicyError> => {
-					calls.push(`${config?.label}:${file}`);
-					return { error: config?.label ?? "missing config" };
-				},
-			};
-			const policies = [
-				policy(
-					duplicatePolicy,
-					{ label: "first" },
-					{ exclude: ["first-only"], instanceId: "first-instance" },
-				),
-				policy(
-					duplicatePolicy,
-					{ label: "second" },
-					{ exclude: ["second-only"], instanceId: "second-instance" },
-				),
-			];
-			const runner = new PolicyRunner(
-				makeRunnerOptions({
-					policies,
-				}),
-			);
-
-			const results = await run(() =>
-				runner.run(["first-only.txt", "second-only.txt", "shared.txt"]),
-			);
-
-			expect(calls).toEqual(
-				expect.arrayContaining([
-					"second:first-only.txt",
-					"first:second-only.txt",
-					"first:shared.txt",
-					"second:shared.txt",
-				]),
-			);
-			expect(calls).toHaveLength(4);
-			expect(results.results.map((result) => result.policyId).sort()).toEqual([
-				"first-instance",
-				"first-instance",
-				"second-instance",
-				"second-instance",
-			]);
-			expect(
-				[...(results.perfStats.data.get("handle")?.keys() ?? [])].sort(),
-			).toEqual(["first-instance", "second-instance"]);
-		});
-	});
-
-	describe("policy matching", () => {
-		it("should only run policies that match the file path", async () => {
-			const txtCalled: string[] = [];
-			const jsCalled: string[] = [];
-
-			const txtPolicy = policy({
-				name: "TxtPolicy",
-				description: "Matches txt",
-				match: /\.txt$/,
-				handler: async ({ file }) => {
-					txtCalled.push(file);
-					return true;
-				},
-			});
-
-			const jsPolicy = policy({
-				name: "JsPolicy",
-				description: "Matches js",
-				match: /\.mjs$/,
-				handler: async ({ file }) => {
-					jsCalled.push(file);
-					return true;
-				},
-			});
-
-			const runner = new PolicyRunner(
-				makeRunnerOptions({
-					policies: [txtPolicy, jsPolicy],
-				}),
-			);
-
-			await run(() => runner.run(["file.txt", "file.mjs"]));
-			expect(txtCalled).toEqual(["file.txt"]);
-			expect(jsCalled).toEqual(["file.mjs"]);
-		});
-
-		it("should count a file once when duplicate policy instances match it", async () => {
-			let handlerCalls = 0;
-			const duplicatePolicy: PolicyShape = {
-				name: "DuplicatePolicy",
-				description: "Matches the same file twice",
-				match: /\.txt$/,
-				handler: async () => {
-					handlerCalls++;
-					return true;
-				},
-			};
-
-			const runner = new PolicyRunner(
-				makeRunnerOptions({
-					policies: [
-						policy(duplicatePolicy, undefined, {
-							instanceId: "first-instance",
-						}),
-						policy(duplicatePolicy, undefined, {
-							instanceId: "second-instance",
-						}),
-					],
-				}),
-			);
-
-			const results = await run(() => runner.run(["file.txt"]));
-			expect(handlerCalls).toBe(2);
-			expect(results.results).toEqual([]);
-			expect(results.perfStats.count).toBe(1);
-			expect(results.perfStats.processed).toBe(1);
-		});
-
-		it.each([
-			{ flag: "g", regex: /.*\.txt$/g, description: "with global flag" },
-			{ flag: "y", regex: /.*\.txt$/y, description: "with sticky flag" },
-		])("should run policy match deterministically $description, preserving lastIndex", async ({
-			regex,
-		}) => {
-			const handledFiles: string[] = [];
-
-			const testPolicy = policy({
-				name: "TestPolicy",
-				description: "Test",
-				match: regex,
-				handler: async ({ file }) => {
-					handledFiles.push(file);
-					return true;
-				},
-			});
-
-			// Pre-set lastIndex to simulate prior regex use
-			regex.lastIndex = 2;
-			const initialLastIndex = regex.lastIndex;
-
-			const runner = new PolicyRunner(
-				makeRunnerOptions({
-					policies: [testPolicy],
-				}),
-			);
-
-			await run(() => runner.run(["a.txt", "b.txt", "c.txt"]));
-
-			// All files should match and be handled
-			expect(handledFiles).toEqual(["a.txt", "b.txt", "c.txt"]);
-
-			// lastIndex should be preserved
-			expect(regex.lastIndex).toBe(initialLastIndex);
-		});
-	});
-
-	describe("result collection", () => {
-		it("should collect PolicyError results", async () => {
-			const failingPolicy = policy({
-				name: "FailPolicy",
-				description: "Always fails",
-				match: /\.txt$/,
-				handler: async (): Promise<PolicyError> => ({
-					error: "Something went wrong",
-					fixable: true,
-				}),
-			});
-
-			const runner = new PolicyRunner(
-				makeRunnerOptions({ policies: [failingPolicy] }),
-			);
-			const results = await run(() => runner.run(["bad.txt"]));
-
-			expect(results.results).toHaveLength(1);
-			expect(results.results[0].file).toBe("bad.txt");
-			expect(results.results[0].policy).toBe("FailPolicy");
-			expect(results.results[0].outcome).toEqual({
-				error: "Something went wrong",
-				fixable: true,
-			});
-		});
-
-		it("should collect legacy PolicyFailure results", async () => {
-			const failingPolicy = policy({
-				name: "LegacyFail",
-				description: "Legacy failure",
-				match: /\.txt$/,
-				handler: async ({ file }): Promise<PolicyFailure> => ({
-					name: "LegacyFail",
-					file,
-					errorMessages: ["bad format"],
-					autoFixable: false,
-				}),
-			});
-
-			const runner = new PolicyRunner(
-				makeRunnerOptions({ policies: [failingPolicy] }),
-			);
-			const results = await run(() => runner.run(["file.txt"]));
-
-			expect(results.results).toHaveLength(1);
-			expect(results.results[0].outcome).toMatchObject({
-				name: "LegacyFail",
-				errorMessages: ["bad format"],
-			});
-		});
-
-		it("should collect PolicyFixResult when handler resolves inline", async () => {
-			const fixPolicy = policy({
-				name: "FixPolicy",
-				description: "Fixes inline",
-				match: /\.txt$/,
-				handler: async ({ file }): Promise<PolicyFixResult> => ({
-					name: "FixPolicy",
-					file,
-					resolved: true,
-					errorMessages: ["fixed it"],
-				}),
-			});
-
-			const runner = new PolicyRunner(
-				makeRunnerOptions({ policies: [fixPolicy], resolve: true }),
-			);
-			const results = await run(() => runner.run(["file.txt"]));
-
-			expect(results.results).toHaveLength(1);
-			expect(results.results[0].outcome).toMatchObject({
-				resolved: true,
-			});
-			// No standalone resolution attempted since handler already returned fix result
-			expect(results.results[0].resolution).toBeUndefined();
-		});
-
-		it("should collect PolicyError with fixed property without attempting resolution", async () => {
-			const fixPolicy = policy({
-				name: "NewFixPolicy",
-				description: "Fixes via new format",
-				match: /\.txt$/,
-				handler: async (): Promise<PolicyError> => ({
-					error: "was wrong",
-					fixed: true,
-				}),
-			});
-
-			const runner = new PolicyRunner(
-				makeRunnerOptions({ policies: [fixPolicy], resolve: true }),
-			);
-			const results = await run(() => runner.run(["file.txt"]));
-
-			expect(results.results).toHaveLength(1);
-			expect(results.results[0].resolution).toBeUndefined();
-		});
-	});
-
-	describe("standalone resolver", () => {
-		it.each([
-			{ kind: "async", fixed: true },
-			{ kind: "generator", fixed: false },
-			{ kind: "async", fixed: undefined },
-		])("normalizes $kind PolicyResolver results with fixed=$fixed", async ({
-			kind,
-			fixed,
-		}) => {
-			const result: PolicyError = {
-				error: "Resolver result",
-				fixed,
-				manualFix: "Manual correction",
-			};
-			const resolver: PolicyResolver =
-				kind === "async"
-					? async () => result
-					: function* () {
-							yield* all([]);
-							return result;
-						};
-			const definition: PolicyShape = {
-				name: "Resolver",
-				description: "Checks the new resolver format",
-				match: /\.txt$/,
-				handler: async () => ({ error: "Needs a fix" }),
-				resolver,
-			};
-			const runner = new PolicyRunner(
-				makeRunnerOptions({
-					policies: [policy(definition)],
-					resolve: true,
-				}),
-			);
-			const { results } = await run(() => runner.run(["file.txt"]));
-			expect(results).toEqual([
-				expect.objectContaining({
-					resolution: {
-						name: "Resolver",
-						file: "file.txt",
-						resolved: fixed === true,
-						errorMessages: ["Resolver result"],
-						autoFixable: undefined,
-						manualFix: "Manual correction",
-					},
-				}),
-			]);
-		});
-
-		it("should attempt resolution when resolve=true and resolver exists", async () => {
-			const policyDef: PolicyShape = {
-				name: "ResolvablePolicy",
-				description: "Has resolver",
-				match: /\.txt$/,
-				handler: async ({ file }): Promise<PolicyFailure> => ({
-					name: "ResolvablePolicy",
-					file,
-					errorMessages: ["needs fix"],
-					autoFixable: true,
-				}),
-				resolver: async ({ file }): Promise<PolicyFixResult> => ({
-					name: "ResolvablePolicy",
-					file,
-					resolved: true,
-					errorMessages: [],
-				}),
-			};
-
-			const configured = policy(policyDef);
-			const runner = new PolicyRunner(
-				makeRunnerOptions({
-					policies: [configured],
-					resolve: true,
-				}),
-			);
-
-			const results = await run(() => runner.run(["file.txt"]));
-			expect(results.results).toHaveLength(1);
-			expect(results.results[0].resolution).toBeDefined();
-			expect(results.results[0].resolution?.resolved).toBe(true);
-		});
-
-		it("should not attempt resolution when resolve=false", async () => {
-			let resolverCalled = false;
-			const policyDef: PolicyShape = {
-				name: "ResolvablePolicy",
-				description: "Has resolver",
-				match: /\.txt$/,
-				handler: async ({ file }): Promise<PolicyFailure> => ({
-					name: "ResolvablePolicy",
-					file,
-					errorMessages: ["needs fix"],
-					autoFixable: true,
-				}),
-				resolver: async ({ file }): Promise<PolicyFixResult> => {
-					resolverCalled = true;
-					return {
-						name: "ResolvablePolicy",
-						file,
-						resolved: true,
-						errorMessages: [],
+		const cause = Proxy.revocable({}, { getPrototypeOf: getter });
+		cause.revoke();
+		const handler =
+			mode === "promise"
+				? async () => {
+						throw cause.proxy;
+					}
+				: function* () {
+						yield* sleep(0);
+						throw cause.proxy;
 					};
-				},
-			};
-
-			const configured = policy(policyDef);
-			const runner = new PolicyRunner(
-				makeRunnerOptions({
-					policies: [configured],
-					resolve: false,
+		const result = await runPolicies({
+			root,
+			files: ["a.txt"],
+			inventory: [],
+			policies: [
+				makePolicy({ ...fileDefinition, handler }),
+				makePolicy({
+					...fileDefinition,
+					name: "Independent",
+					handler: async () => [{ message: "survived" }],
 				}),
-			);
-
-			const results = await run(() => runner.run(["file.txt"]));
-			expect(resolverCalled).toBe(false);
-			expect(results.results[0].resolution).toBeUndefined();
+				makePolicy({ ...repositoryDefinition, handler }),
+			],
 		});
+		expect(result.errors).toHaveLength(2);
+		expect(result.errors.every((error) => error.cause === cause.proxy)).toBe(
+			true,
+		);
+		expect(result.errors.every((error) => error.kind === "exception")).toBe(
+			true,
+		);
+		expect(result.findings).toMatchObject([
+			{ policyId: "Independent", message: "survived" },
+		]);
+		expect(getter).not.toHaveBeenCalled();
 	});
 
-	describe("generator-based handlers", () => {
-		it("should execute Operation-based policy handlers", async () => {
-			const testPolicy = policy({
-				name: "GeneratorPolicy",
-				description: "Uses generators",
-				match: /\.txt$/,
-				handler: function* () {
-					yield* (function* () {})();
-					return true;
-				},
-			});
-
-			const runner = new PolicyRunner(
-				makeRunnerOptions({ policies: [testPolicy] }),
-			);
-			const results = await run(() => runner.run(["file.txt"]));
-			expect(results.results).toEqual([]);
-		});
-
-		it("should handle failures from generator-based handlers", async () => {
-			const testPolicy = policy({
-				name: "FailGen",
-				description: "Fails via generator",
-				match: /\.txt$/,
-				handler: function* (): Generator<unknown, PolicyError, unknown> {
-					yield* (function* () {})();
-					return { error: "generator error" };
-				},
-			});
-
-			const runner = new PolicyRunner(
-				makeRunnerOptions({ policies: [testPolicy] }),
-			);
-			const results = await run(() => runner.run(["file.txt"]));
-			expect(results.results).toHaveLength(1);
-			expect(results.results[0].outcome).toMatchObject({
-				error: "generator error",
-			});
-		});
+	it.each([
+		true,
+		undefined,
+		{},
+		{ error: "old" },
+		{ errorMessages: ["old"] },
+		[{ message: "ok", typo: true }],
+		[{ message: 1 }],
+		[null],
+		[{ message: "" }],
+		[{ message: "bad", fixStatus: "unknown" }],
+		[{ message: "bad", manualFix: 123 }],
+		[{ message: "bad", files: ["/absolute"] }],
+		[{ message: "bad", files: ["../outside"] }],
+		[{ message: "bad", files: ["a\\b"] }],
+		[{ message: "bad", files: [""] }],
+		[{ message: "bad", files: ["."] }],
+		[{ message: "bad", files: ["a//b"] }],
+		[{ message: "bad", files: ["a/../b"] }],
+		[{ message: "bad", files: ["C:/drive"] }],
+		[{ message: "bad", files: ["a\0b"] }],
+		[{ message: "bad", files: "file.txt" }],
+		[{ message: "bad", files: [123] }],
+	])("reports malformed and legacy results as structured contract errors: %j", async (value) => {
+		// Reflect exercises the JavaScript boundary without weakening the public handler types.
+		const result = await Reflect.apply(runPolicies, undefined, [
+			{
+				root,
+				files: ["one.txt"],
+				inventory: [],
+				policies: [
+					{
+						...fileDefinition,
+						instanceId: "bad-file",
+						handler: async () => value,
+					},
+					{
+						...repositoryDefinition,
+						instanceId: "bad-repo",
+						handler: async () => value,
+					},
+				],
+			},
+		]);
+		expect(result.findings).toEqual([]);
+		expect(result.errors).toHaveLength(2);
+		expect(result.errors.map((error: { kind: string }) => error.kind)).toEqual([
+			"contract",
+			"contract",
+		]);
 	});
 
-	describe("error handling", () => {
-		it("should report a system error and continue when a handler throws", async () => {
-			const processedFiles: string[] = [];
-			const testPolicy = policy(
-				{
-					name: "ThrowPolicy",
-					description: "Throws",
-					match: /\.txt$/,
-					handler: async ({ file }) => {
-						processedFiles.push(file);
-						if (file === "bad.txt") {
-							throw new Error("handler boom");
+	it.each([
+		"fixed",
+		"failed",
+	] as const)("rejects %s in check mode in both scopes", async (fixStatus) => {
+		const handler = async (): Promise<PolicyResult> => [
+			{ message: "illegal", fixStatus },
+		];
+		const result = await runPolicies({
+			root,
+			files: ["one.txt"],
+			inventory: [],
+			policies: [
+				makePolicy({ ...fileDefinition, handler }),
+				makePolicy({ ...repositoryDefinition, handler }),
+			],
+		});
+		expect(result.errors).toHaveLength(2);
+		expect(result.errors.every((error) => error.kind === "contract")).toBe(
+			true,
+		);
+	});
+
+	it("forbids file-handler locations, while repository locations may be empty", async () => {
+		const result = await runPolicies({
+			root,
+			files: ["one.txt"],
+			inventory: [],
+			policies: [
+				makePolicy({
+					...fileDefinition,
+					handler: async () => [{ message: "bad", files: ["a"] }],
+				}),
+				makePolicy({
+					...repositoryDefinition,
+					handler: async () => [
+						{ message: "valid", files: [] },
+						{ message: "unlocated", files: undefined },
+					],
+				}),
+			],
+		});
+		expect(result.errors).toHaveLength(1);
+		expect(result.findings).toMatchObject([
+			{ scope: "repository", files: [] },
+			{ scope: "repository", files: undefined },
+		]);
+	});
+
+	it.each([
+		"fixed",
+		"failed",
+	] as const)("never calls standalone resolvers after an inline %s attempt", async (fixStatus) => {
+		const resolver = vi.fn(async () => []);
+		const result = await runPolicies({
+			root,
+			files: ["one.txt"],
+			fix: true,
+			policies: [
+				makePolicy({
+					...fileDefinition,
+					resolver,
+					handler: async () => [
+						{ message: "attempted", fixStatus },
+						{ message: "still unresolved" },
+					],
+				}),
+			],
+		});
+		expect(resolver).not.toHaveBeenCalled();
+		expect(result.findings).toHaveLength(2);
+	});
+
+	it("passes findings to a generator resolver, preserves omitted unresolved work and records fixes", async () => {
+		const policy = {
+			...fileDefinition,
+			handler: async (): Promise<PolicyResult> => [
+				{ message: "one", fixStatus: "available", manualFix: "old guidance" },
+				{ message: "two" },
+			],
+			resolver: function* ({ findings }) {
+				yield* sleep(1);
+				expect(findings).toHaveLength(2);
+				return [
+					{ ...findings[0], message: "one", fixStatus: "fixed" as const },
+					{ message: "three" },
+				];
+			},
+		} satisfies FilePolicyDefinition;
+		const result = await runPolicies({
+			root,
+			files: ["one.txt"],
+			fix: true,
+			policies: [makePolicy(policy)],
+		});
+		expect(result.errors).toEqual([]);
+		expect(
+			result.findings.map(({ message, fixStatus }) => ({ message, fixStatus })),
+		).toEqual([
+			{ message: "one", fixStatus: "fixed" },
+			{ message: "two", fixStatus: undefined },
+			{ message: "three", fixStatus: undefined },
+		]);
+		expect(result.perfStats.data.get("resolve")?.has("File")).toBe(true);
+	});
+
+	it("reconciles duplicate messages by occurrence without losing guidance or omitted findings", async () => {
+		const result = await runPolicies({
+			root,
+			files: ["one.txt"],
+			fix: true,
+			policies: [
+				makePolicy({
+					...fileDefinition,
+					handler: async () => [
+						{ message: "duplicate", manualFix: "first guidance" },
+						{ message: "duplicate", manualFix: "second guidance" },
+						{ message: "omitted" },
+					],
+					resolver: async () => [
+						{ message: "duplicate", fixStatus: "fixed" },
+						{ message: "duplicate", fixStatus: "failed" },
+					],
+				}),
+			],
+		});
+		expect(result.errors).toEqual([]);
+		expect(result.findings).toMatchObject([
+			{ message: "duplicate", manualFix: "first guidance", fixStatus: "fixed" },
+			{
+				message: "duplicate",
+				manualFix: "second guidance",
+				fixStatus: "failed",
+			},
+			{ message: "omitted" },
+		]);
+	});
+
+	it("preserves checked findings if a resolver mutates its input and then throws", async () => {
+		const cause = new Error("write failed");
+		const result = await runPolicies({
+			root,
+			files: ["one.txt"],
+			fix: true,
+			policies: [
+				makePolicy({
+					...fileDefinition,
+					handler: async () => [
+						{ message: "original", manualFix: "keep this" },
+					],
+					resolver: async ({ findings }) => {
+						for (const finding of findings) {
+							finding.message = "mutated";
+							finding.fixStatus = "fixed";
 						}
-						return true;
+						throw cause;
 					},
-				},
-				undefined,
-				{ instanceId: "throw-instance" },
-			);
-
-			const runner = new PolicyRunner(
-				makeRunnerOptions({ policies: [testPolicy] }),
-			);
-
-			const results = await run(() => runner.run(["bad.txt", "good.txt"]));
-
-			expect(processedFiles).toEqual(["bad.txt", "good.txt"]);
-			expect(results.results).toEqual([
-				{
-					file: "bad.txt",
-					policy: "ThrowPolicy",
-					policyId: "throw-instance",
-					outcome: {
-						error:
-							"System Error: Error executing policy 'throw-instance' for file 'bad.txt': handler boom",
-					},
-				},
-			]);
+				}),
+			],
 		});
+		expect(result.findings).toMatchObject([
+			{ message: "original", manualFix: "keep this" },
+		]);
+		expect(result.findings[0]?.fixStatus).toBeUndefined();
+		expect(result.errors[0]?.cause).toBe(cause);
 	});
 
-	describe("performance tracking", () => {
-		it("should track handler execution time", async () => {
-			const testPolicy = policy({
-				name: "PerfPolicy",
-				description: "Tracked",
-				match: /\.txt$/,
-				handler: async () => true,
-			});
-
-			const runner = new PolicyRunner(
-				makeRunnerOptions({ policies: [testPolicy] }),
-			);
-			const results = await run(() => runner.run(["file.txt"]));
-
-			const handleMap = results.perfStats.data.get("handle");
-			expect(handleMap).toBeDefined();
-			expect(handleMap?.has("PerfPolicy")).toBe(true);
+	it("collects read-only exceptions and continues file and repository work with original causes", async () => {
+		const cause = new Error("broken");
+		const visited: string[] = [];
+		const result = await runPolicies({
+			root,
+			files: ["a.txt", "b.txt"],
+			inventory: [],
+			policies: [
+				makePolicy({
+					...fileDefinition,
+					handler: async () => {
+						throw cause;
+					},
+				}),
+				makePolicy({
+					...fileDefinition,
+					name: "After",
+					handler: async ({ file }) => {
+						visited.push(file);
+						return [];
+					},
+				}),
+				makePolicy({
+					...repositoryDefinition,
+					handler: async () => {
+						throw cause;
+					},
+				}),
+				makePolicy({
+					...repositoryDefinition,
+					name: "AfterRepository",
+					handler: async () => [{ message: "done" }],
+				}),
+			],
 		});
+		expect(visited).toEqual(["a.txt", "b.txt"]);
+		expect(result.errors).toHaveLength(3);
+		expect(result.errors.every((error) => error.cause === cause)).toBe(true);
+		expect(result.errors[0]).toMatchObject({
+			scope: "file",
+			file: "a.txt",
+			phase: "handle",
+			policyId: "File",
+		});
+		expect(result.errors[2]).toMatchObject({
+			scope: "repository",
+			files: [],
+			policyId: "Repository",
+		});
+		expect(result.findings[0]?.message).toBe("done");
+		expect(result.skipped).toEqual([]);
+	});
+
+	it.each([
+		"handler",
+		"resolver",
+	] as const)("stops the current file after a fixer %s exception, continues other files, skips all repository work", async (phase) => {
+		const visited: string[] = [];
+		const failure: FilePolicyDefinition = {
+			...fileDefinition,
+			handler: async ({ file }) => {
+				if (phase === "handler" && file === "a.txt") {
+					throw new Error("write failed");
+				}
+				return [{ message: "needs fix", fixStatus: "available" }];
+			},
+			resolver: async ({ file, findings }) => {
+				if (phase === "resolver" && file === "a.txt") {
+					throw new Error("fixer failed");
+				}
+				return findings.map((finding) => ({ ...finding, fixStatus: "fixed" }));
+			},
+		};
+		const result = await runPolicies({
+			root,
+			files: ["a.txt", "b.txt"],
+			inventory: [],
+			fix: true,
+			policies: [
+				makePolicy(failure),
+				makePolicy({
+					...fileDefinition,
+					name: "Later",
+					handler: async ({ file }) => {
+						visited.push(file);
+						return [];
+					},
+				}),
+				makePolicy(repositoryDefinition),
+				makePolicy({ ...repositoryDefinition, name: "LaterRepo" }),
+			],
+		});
+		expect(visited).toEqual(["b.txt"]);
+		expect(result.errors).toHaveLength(1);
+		expect(result.errors[0]?.phase).toBe(
+			phase === "handler" ? "handle" : "resolve",
+		);
+		expect(result.skipped).toEqual([
+			{
+				scope: "file",
+				file: "a.txt",
+				policy: "Later",
+				policyId: "Later",
+				reason: "file-fix-error",
+			},
+			{
+				scope: "repository",
+				policy: "Repository",
+				policyId: "Repository",
+				reason: "file-fix-error",
+			},
+			{
+				scope: "repository",
+				policy: "LaterRepo",
+				policyId: "LaterRepo",
+				reason: "file-fix-error",
+			},
+		]);
+		expect(
+			result.findings.some(
+				(finding) => finding.file === "b.txt" && finding.fixStatus === "fixed",
+			),
+		).toBe(true);
+		if (phase === "resolver") {
+			expect(
+				result.findings.some(
+					(finding) =>
+						finding.file === "a.txt" && finding.message === "needs fix",
+				),
+			).toBe(true);
+		}
+	});
+
+	it("does not stop after ordinary failed findings but skips repository policies after repository fixer exceptions", async () => {
+		const after = vi.fn(async () => []);
+		const result = await runPolicies({
+			root,
+			files: ["a.txt"],
+			inventory: [],
+			fix: true,
+			policies: [
+				makePolicy({
+					...fileDefinition,
+					handler: async () => [
+						{ message: "ordinary failure", fixStatus: "failed" },
+					],
+				}),
+				makePolicy({
+					...repositoryDefinition,
+					name: "First",
+					handler: async () => [
+						{ message: "repo failure", fixStatus: "failed" },
+					],
+				}),
+				makePolicy({
+					...repositoryDefinition,
+					name: "Throws",
+					handler: async () => {
+						throw new Error("bad fixer");
+					},
+				}),
+				makePolicy({ ...repositoryDefinition, name: "After", handler: after }),
+			],
+		});
+		expect(result.findings).toHaveLength(2);
+		expect(result.errors).toHaveLength(1);
+		expect(after).not.toHaveBeenCalled();
+		expect(result.skipped).toMatchObject([
+			{
+				scope: "repository",
+				policyId: "After",
+				reason: "repository-fix-error",
+			},
+		]);
+	});
+});
+
+describe("inventory, selection and regex semantics", () => {
+	it("applies defaults and rejects missing required configuration at runner registration", async () => {
+		const definition = {
+			...fileDefinition,
+			requiresConfig: true,
+			defaultConfig: { label: "default" },
+			handler: async ({ config }) => [{ message: config?.label ?? "missing" }],
+		} satisfies FilePolicyDefinition<{ label: string }>;
+		const result = await runPolicies({
+			root,
+			files: ["one.txt"],
+			policies: [definition],
+		});
+		expect(result.findings[0]?.message).toBe("default");
+		expect(
+			() =>
+				new PolicyRunner({
+					root,
+					policies: [{ ...definition, defaultConfig: undefined }],
+				}),
+		).toThrow("requires config");
+		expect(() =>
+			Reflect.construct(PolicyRunner, [
+				{
+					root,
+					inventory: [],
+					policies: [{ ...repositoryDefinition, resolver: async () => [] }],
+				},
+			]),
+		).toThrow("inline fixes only");
+	});
+
+	it("requires an explicit inventory even when files is provided", () => {
+		expect(
+			() =>
+				new PolicyRunner({
+					root,
+					files: ["a.txt"],
+					policies: [makePolicy(repositoryDefinition)],
+				}),
+		).toThrow("explicit inventory");
+	});
+	it("limits only file policies by selection and runs repository policies with an empty eligible inventory", async () => {
+		const seen: readonly string[][] = [];
+		const handler = vi.fn(async ({ files }: { files: readonly string[] }) => {
+			expect(files).toEqual(["b.txt"]);
+			return [];
+		});
+		const result = await runPolicies({
+			root,
+			inventory: ["a.txt", "b.txt", "vendor/c.txt"],
+			files: ["a.txt"],
+			exclude: ["vendor/"],
+			policies: [
+				makePolicy({
+					...fileDefinition,
+					handler: async ({ file }) => [{ message: file }],
+				}),
+				makePolicy({ ...repositoryDefinition, handler }, { exclude: ["^a"] }),
+			],
+		});
+		expect(result.findings.map((finding) => finding.message)).toEqual([
+			"a.txt",
+		]);
+		expect(handler).toHaveBeenCalledTimes(1);
+		const empty = vi.fn(async () => []);
+		await runPolicies({
+			root,
+			files: [],
+			inventory: [],
+			policies: [makePolicy({ ...repositoryDefinition, handler: empty })],
+		});
+		expect(empty).toHaveBeenCalledWith(expect.objectContaining({ files: [] }));
+		expect(seen).toEqual([]);
+	});
+	it("refreshes loaders after file fixes and between repository fixers, without rerunning selected files", async () => {
+		const inventory = ["a.txt"];
+		const events: string[] = [];
+		const loader = vi.fn(async () => {
+			events.push("load");
+			return [...inventory];
+		});
+		const result = await runPolicies({
+			root,
+			inventory: loader,
+			files: ["a.txt"],
+			fix: true,
+			concurrency: 4,
+			policies: [
+				makePolicy({
+					...fileDefinition,
+					handler: async () => {
+						events.push("file");
+						inventory.push("b.txt");
+						return [];
+					},
+				}),
+				makePolicy({
+					...repositoryDefinition,
+					name: "First",
+					handler: async ({ files }) => {
+						events.push(files.join(","));
+						inventory.push("c.txt");
+						return [];
+					},
+				}),
+				makePolicy({
+					...repositoryDefinition,
+					name: "Second",
+					handler: async ({ files }) => {
+						events.push(files.join(","));
+						return [];
+					},
+				}),
+			],
+		});
+		expect(result.errors).toEqual([]);
+		expect(events).toEqual([
+			"file",
+			"load",
+			"a.txt,b.txt",
+			"load",
+			"a.txt,b.txt,c.txt",
+		]);
+	});
+	it.each([
+		/^README/g,
+		/^README/y,
+		/^README/m,
+		"README",
+	])("preserves flags and lastIndex for %s exclusions", async (exclude) => {
+		if (exclude instanceof RegExp) {
+			exclude.lastIndex = 2;
+		}
+		const result = await runPolicies({
+			root,
+			files: ["README.txt", "readme.txt"],
+			exclude: [exclude],
+			policies: [
+				makePolicy({
+					...fileDefinition,
+					handler: async ({ file }) => [{ message: file }],
+				}),
+			],
+		});
+		expect(result.findings.map((finding) => finding.file)).toEqual(
+			typeof exclude === "string" ? [] : ["readme.txt"],
+		);
+		expect(result.perfStats.count).toBe(2);
+		expect(result.perfStats.processed).toBe(
+			typeof exclude === "string" ? 0 : 1,
+		);
+		expect(result.skipped.length).toBe(typeof exclude === "string" ? 2 : 1);
+		if (exclude instanceof RegExp) {
+			expect(exclude.lastIndex).toBe(2);
+		}
+	});
+	it("keeps config and exclusions independent for duplicate instances and repeated matches", async () => {
+		const match = /\.txt$/g;
+		match.lastIndex = 2;
+		const definition = {
+			...fileDefinition,
+			match,
+			handler: async ({ config }) => [{ message: `${config?.label}` }],
+		} satisfies FilePolicyDefinition<{ label: string; exclude: string[] }>;
+		const policies = [
+			makePolicy(definition, {
+				instanceId: "one",
+				config: { label: "first", exclude: ["a"] },
+				exclude: ["^b"],
+			}),
+			makePolicy(definition, {
+				instanceId: "two",
+				config: { label: "second", exclude: [] },
+				exclude: ["^a"],
+			}),
+		];
+		const result = await runPolicies({
+			root,
+			files: ["a.txt", "b.txt", "c.txt"],
+			policies,
+		});
+		expect(
+			result.findings.map(({ file, policyId }) => [file, policyId]),
+		).toEqual([
+			["a.txt", "one"],
+			["b.txt", "two"],
+			["c.txt", "one"],
+			["c.txt", "two"],
+		]);
+		expect(match.lastIndex).toBe(2);
+		expect(result.perfStats.count).toBe(3);
+	});
+});
+
+describe("concurrency, state and cancellation", () => {
+	it.each([
+		1,
+		3,
+		undefined,
+	])("bounds read-only active files with concurrency %s and retains input order", async (concurrency) => {
+		let active = 0;
+		let maximum = 0;
+		const policy = makePolicy({
+			...fileDefinition,
+			handler: async ({ file }) => {
+				active++;
+				maximum = Math.max(maximum, active);
+				await new Promise((resolve) =>
+					setTimeout(resolve, file === "0.txt" ? 8 : 1),
+				);
+				active--;
+				return [{ message: file }];
+			},
+		});
+		const files = Array.from({ length: 12 }, (_, index) => `${index}.txt`);
+		const result = await runPolicies({
+			root,
+			policies: [policy],
+			files,
+			concurrency,
+		});
+		expect(maximum).toBe(concurrency ?? 8);
+		expect(result.findings.map((finding) => finding.message)).toEqual(files);
+	});
+	it("runs fixes sequentially, isolates reusable concurrent runs and never mutates prior results", async () => {
+		let active = 0;
+		let maximum = 0;
+		const runner = new PolicyRunner({
+			root,
+			files: ["a.txt", "b.txt"],
+			fix: true,
+			concurrency: 8,
+			policies: [
+				makePolicy({
+					...fileDefinition,
+					handler: async ({ file }) => {
+						active++;
+						maximum = Math.max(maximum, active);
+						await Promise.resolve();
+						active--;
+						return [{ message: file, fixStatus: "fixed" }];
+					},
+				}),
+			],
+		});
+		const first = await run(() => runner.run());
+		expect(maximum).toBe(1);
+		const concurrent = await run(function* () {
+			return yield* all([runner.run(), runner.run()]);
+		});
+		expect(concurrent.map((result) => result.perfStats.count)).toEqual([2, 2]);
+		expect(first.perfStats.count).toBe(2);
+		expect(first.findings).toHaveLength(2);
+	});
+	it("propagates cancellation and releases generator resources without starting queued work", async () => {
+		let started = 0;
+		let released = 0;
+		let notify: (() => void) | undefined;
+		const ready = new Promise<void>((resolve) => {
+			notify = resolve;
+		});
+		const runner = new PolicyRunner({
+			root,
+			files: ["a.txt", "b.txt", "c.txt"],
+			concurrency: 1,
+			policies: [
+				makePolicy({
+					...fileDefinition,
+					handler: function* () {
+						started++;
+						yield* ensure(() => {
+							released++;
+						});
+						notify?.();
+						yield* sleep(60000);
+						return [];
+					},
+				}),
+			],
+		});
+		const task = run(() => runner.run());
+		await ready;
+		await task.halt();
+		await expect(Promise.resolve(task)).rejects.toThrow();
+		expect(started).toBe(1);
+		expect(released).toBe(1);
+	});
+	it("cancels Promise runs through AbortSignal, including generator resolvers", async () => {
+		const controller = new AbortController();
+		let cleanup = false;
+		let notify: (() => void) | undefined;
+		const ready = new Promise<void>((resolve) => {
+			notify = resolve;
+		});
+		const result = runPolicies({
+			root,
+			files: ["a.txt"],
+			fix: true,
+			signal: controller.signal,
+			policies: [
+				makePolicy({
+					...fileDefinition,
+					handler: async () => [{ message: "fix" }],
+					resolver: function* () {
+						yield* ensure(() => {
+							cleanup = true;
+						});
+						notify?.();
+						yield* call(() => new Promise<void>(() => {}));
+						return [];
+					},
+				}),
+			],
+		});
+		await ready;
+		controller.abort();
+		await expect(result).rejects.toThrow();
+		expect(cleanup).toBe(true);
+	});
+
+	it.each([
+		0,
+		-1,
+		1.5,
+		Number.NaN,
+	])("rejects invalid concurrency %s", (concurrency) => {
+		expect(
+			() => new PolicyRunner({ root, files: [], policies: [], concurrency }),
+		).toThrow();
 	});
 });

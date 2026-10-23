@@ -47,7 +47,7 @@ describe("MutuallyExclusiveScripts policy", () => {
 				MutuallyExclusiveScripts.handler,
 				createArgs(filePath, undefined),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -60,7 +60,7 @@ describe("MutuallyExclusiveScripts policy", () => {
 				MutuallyExclusiveScripts.handler,
 				createArgs(filePath, { groups: [] }),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -79,7 +79,7 @@ describe("MutuallyExclusiveScripts policy", () => {
 					groups: [["lint:eslint", "lint:biome"]],
 				}),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should pass when exactly one script from a group is present", async () => {
@@ -96,7 +96,7 @@ describe("MutuallyExclusiveScripts policy", () => {
 					groups: [["lint:eslint", "lint:biome"]],
 				}),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should fail when multiple scripts from a group are present", async () => {
@@ -116,10 +116,12 @@ describe("MutuallyExclusiveScripts policy", () => {
 					groups: [["lint:eslint", "lint:biome"]],
 				}),
 			);
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result !== "boolean") {
-				expect(result).toHaveProperty("autoFixable", false);
-				expect(result).toHaveProperty("errorMessages");
+				expect(
+					result.some((finding) => finding.fixStatus !== undefined),
+				).toEqual(false);
+				expect(result.length).toBeGreaterThan(0);
 			}
 		});
 
@@ -144,10 +146,10 @@ describe("MutuallyExclusiveScripts policy", () => {
 					],
 				}),
 			);
-			expect(result).not.toBe(true);
-			if (typeof result !== "boolean" && "errorMessages" in result) {
+			expect(result).not.toEqual([]);
+			if (typeof result !== "boolean" && result.length > 0) {
 				// Only the test group should fail
-				expect(result.errorMessages.length).toBe(1);
+				expect(result.map((finding) => finding.message).length).toBe(1);
 			}
 		});
 
@@ -171,7 +173,7 @@ describe("MutuallyExclusiveScripts policy", () => {
 					],
 				}),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -189,7 +191,7 @@ describe("MutuallyExclusiveScripts policy", () => {
 					groups: [["lint:eslint", "lint:biome"]],
 				}),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 

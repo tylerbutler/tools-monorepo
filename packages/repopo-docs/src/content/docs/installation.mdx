@@ -1,25 +1,45 @@
 ---
 title: Installation
+description: Install repopo as a development tool or as a library.
 ---
 
 import { PackageManagers } from 'starlight-package-managers';
 
-## Installation
+Install repopo with your package manager.
 
-You can install repopo into your project using your favorite package manager.
+## As a development tool
 
-### For use as a CI/CD/dev tool
-
-If you're using repopo for CI/CD purposes, then you probably want to install repopo as a dev dependency only.
+To run repopo in a repository, from scripts, Git hooks, or CI, install it as a dev dependency:
 
 <PackageManagers pkg="repopo" dev="true" />
 
-### For use in your own program
+Then [create a configuration file](/usage/config/) and run `repopo check`.
 
-TODO
+## As a library
+
+To run policies from your own program with the [programmatic API](/usage/programmatic-api/), or to publish policies for other repositories, install it as a regular dependency:
 
 <PackageManagers pkg="repopo" />
 
-### Or install it globally
+## Globally
 
-You can also install repopo globally if you prefer.
+You can also install repopo globally to use the `repopo` command in any repository:
+
+```sh
+npm install --global repopo
+# or
+pnpm add --global repopo
+```
+
+Each repository still needs its own `repopo.config.ts`, and that file must be able to import `repopo`.
+
+## The native engine
+
+The `repopo check-native` command uses a Rust binary, `repopo-core`. When you install repopo, a postinstall script downloads a prebuilt binary for Linux (x64, arm64), macOS (x64, arm64), or Windows (x64). If the download fails, installation still succeeds. Only `check-native` needs the binary; `repopo check` doesn't.
+
+- Set `REPOPO_SKIP_POSTINSTALL=1` to skip the download.
+- Point to your own build with `--binary-path` or the `REPOPO_CORE_PATH` environment variable.
+
+:::note
+Package managers that block install scripts by default, such as pnpm, skip the download unless you allow repopo's scripts.
+:::

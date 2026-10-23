@@ -1,38 +1,26 @@
-import type { PolicyDefinition, PolicyFailure, PolicyFixResult } from "repopo";
-import { isSorted, sortTsconfigFile } from "sort-tsconfig";
+import { resolve as resolvePath } from "pathe";
+import type { FilePolicyDefinition } from "repopo";
+import { isSorted, sortTsconfigFile } from "./api.js";
 
-/**
- * A repo policy that checks that tsconfig files are sorted according to settings.
- *
- * @alpha
- */
-export const SortTsconfigsPolicy: PolicyDefinition = {
+/** Enforces sorted tsconfig files. @alpha */
+export const SortTsconfigsPolicy = {
 	name: "SortTsconfigs",
 	description:
 		"Ensures tsconfig.json files are sorted consistently for better readability and diff clarity.",
 	match: /.*\.?tsconfig\.json$/i,
-	handler: async ({ file, config, resolve }) => {
-		if (config === undefined) {
-			return true;
+	handler: async ({ file, root, resolve }) => {
+		const filePath = resolvePath(root, file);
+		if (isSorted(filePath)) {
+			return [];
 		}
-
-		const failResult: PolicyFailure = {
-			name: SortTsconfigsPolicy.name,
-			file,
-			autoFixable: true,
-			errorMessages: [`${file} is not sorted.`],
-		};
-
 		if (resolve) {
-			sortTsconfigFile(file, true);
-			const fixResult: PolicyFixResult = {
-				...failResult,
-				resolved: true,
-			};
-
-			return fixResult;
+			sortTsconfigFile(filePath, true);
 		}
-
-		return isSorted(file) === true ? true : failResult;
+		return [
+			{
+				message: `${file} is not sorted.`,
+				fixStatus: resolve ? "fixed" : "available",
+			},
+		];
 	},
-};
+} satisfies FilePolicyDefinition;

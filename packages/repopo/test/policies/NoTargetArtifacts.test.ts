@@ -65,13 +65,14 @@ describe("NoTargetArtifacts", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "errorMessages" in result) {
-				expect(result.errorMessages.join()).toContain(
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join()).toContain(
 					"Build artifact detected",
 				);
-				expect(result.autoFixable).toBe(false);
+				expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+					false,
+				);
 			}
 		});
 
@@ -81,8 +82,7 @@ describe("NoTargetArtifacts", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should allow artifacts in fixture directories", async () => {
@@ -91,8 +91,7 @@ describe("NoTargetArtifacts", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 });

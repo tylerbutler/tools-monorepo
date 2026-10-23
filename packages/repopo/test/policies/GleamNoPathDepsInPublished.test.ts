@@ -36,8 +36,7 @@ describe("GleamNoPathDepsInPublished", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should pass when all dependencies use versions", async () => {
@@ -59,8 +58,7 @@ describe("GleamNoPathDepsInPublished", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should skip check when onlyPublishable=true and no description", async () => {
@@ -81,8 +79,7 @@ describe("GleamNoPathDepsInPublished", () => {
 				resolve: false,
 				config: { onlyPublishable: true },
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -105,11 +102,14 @@ describe("GleamNoPathDepsInPublished", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("my_local_dep");
-				expect(result.error).toContain("path dependency");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"my_local_dep",
+				);
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"path dependency",
+				);
 			}
 		});
 
@@ -132,11 +132,14 @@ describe("GleamNoPathDepsInPublished", () => {
 				resolve: false,
 				config: { onlyPublishable: true },
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("my_local_dep");
-				expect(result.error).toContain("path dependency");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"my_local_dep",
+				);
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"path dependency",
+				);
 			}
 		});
 	});
