@@ -91,7 +91,9 @@ const config: RepopoConfig = {
 			},
 			exclude: ["packages/.*-docs/package.json", ...vendoredPackageJsons],
 		}),
-		makePolicy(SortTsconfigsPolicy),
+		makePolicy(SortTsconfigsPolicy, {
+			exclude: vendoredPackages,
+		}),
 		makePolicy(NoPrivateWorkspaceDependencies),
 		makePolicy(LicenseFileExists),
 		makePolicy(NoLargeBinaryFiles),

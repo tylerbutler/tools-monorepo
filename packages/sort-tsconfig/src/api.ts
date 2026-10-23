@@ -61,8 +61,8 @@ export class TsConfigSorter {
 		// get the expected sort index of the key; if not found, (unexpected key) use a number greater than any sortIndex,
 		// assuming those items will always be at the bottom
 		return key === undefined
-			? this._orderMap.size + 1
-			: (this._orderMap.get(key) ?? this._orderMap.size + 1);
+			? this._order.length + 1
+			: (this._orderMap.get(key) ?? this._order.length + 1);
 	}
 
 	/**
