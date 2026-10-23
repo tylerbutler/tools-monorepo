@@ -152,7 +152,21 @@
 			"build": {
 				"executor": "nx:noop"
 			},
-			"ci": {}
+			"ci": {},
+			"build:readme": {
+				"inputs": [
+					"sharedGlobals",
+					"{projectRoot}/package.json",
+					"{projectRoot}/oclif.manifest.json",
+					"{projectRoot}/README.md",
+					"{workspaceRoot}/packages/repopo-docs/src/content/docs/cli-reference.md"
+				],
+				"outputs": [
+					"{projectRoot}/README.md",
+					"{projectRoot}/docs/**",
+					"{workspaceRoot}/packages/repopo-docs/src/content/docs/cli-reference.md"
+				]
+			}
 		}
 	}
 }
