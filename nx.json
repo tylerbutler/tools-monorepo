@@ -81,7 +81,8 @@
 				"tools-monorepo:check", // Root-level checks must pass first
 				"tools-monorepo:lint", // Root-level lint must pass first
 				"build",
-				"test:coverage"
+				"test:coverage",
+				"test:rust"
 			],
 			"cache": true
 		},
@@ -110,7 +111,8 @@
 				"build:compile", // Need compiled code before testing
 				"test:unit", // Intra-package: Unit tests
 				"test:vitest", // Intra-package: Vitest tests
-				"test:snapshots" // Intra-package: Snapshot tests (OCLIF)
+				"test:snapshots", // Intra-package: Snapshot tests (OCLIF)
+				"test:rust"
 			],
 			"cache": true
 		},
@@ -124,6 +126,28 @@
 				"{projectRoot}/test/fixtures/**"
 			],
 			"cache": false // Integration tests interact with filesystem and should not be cached
+		},
+
+		"test:rust": {
+			"dependsOn": [
+				"build:compile",
+				{ "projects": ["sort-tsconfig"], "target": "build:compile" }
+			],
+			"inputs": [
+				"{projectRoot}/crates/core/src/**",
+				"{projectRoot}/crates/core/tests/**",
+				"{projectRoot}/crates/core/Cargo.{toml,lock}",
+				"{projectRoot}/sidecar/**",
+				"production",
+				"^production",
+				"{workspaceRoot}/pnpm-lock.yaml",
+				"{workspaceRoot}/repopo.config.ts",
+				"{workspaceRoot}/LICENSE",
+				"{workspaceRoot}/packages/sort-tsconfig/src/**",
+				{ "runtime": "rustc --version" },
+				{ "runtime": "node --version" }
+			],
+			"cache": true
 		},
 
 		"lint": {

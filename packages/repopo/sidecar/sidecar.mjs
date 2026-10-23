@@ -36,6 +36,30 @@ import { fileCache, ParsedFileCache } from "../esm/fileCache.js";
 
 const parsedFiles = new ParsedFileCache();
 
+// --- CLI argument parsing ---
+
+function parseSidecarArgs(argv) {
+	const result = { mode: "ipc", gitRoot: process.cwd(), config: undefined };
+	for (let i = 0; i < argv.length; i++) {
+		if (argv[i] === "--mode" && argv[i + 1]) {
+			result.mode = argv[++i];
+		} else if (argv[i].startsWith("--mode=")) {
+			result.mode = argv[i].slice("--mode=".length);
+		} else if (argv[i] === "--git-root" && argv[i + 1]) {
+			result.gitRoot = argv[++i];
+		} else if (argv[i].startsWith("--git-root=")) {
+			result.gitRoot = argv[i].slice("--git-root=".length);
+		} else if (argv[i] === "--config" && argv[i + 1]) {
+			result.config = argv[++i];
+		} else if (argv[i].startsWith("--config=")) {
+			result.config = argv[i].slice("--config=".length);
+		}
+	}
+	return result;
+}
+
+const sidecarArgs = parseSidecarArgs(process.argv.slice(2));
+
 /** @type {Map<string, import("../src/policy.js").ConfiguredPolicy>} */
 let policiesByName = new Map();
 
@@ -548,9 +572,27 @@ async function main() {
 	parsedFiles.clear();
 	process.exit(0);
 }
+async function bundleMode() {
+	const { prepareBundle } = await import("./prepare.mjs");
+	const artifact = await prepareBundle(sidecarArgs.gitRoot, sidecarArgs.config);
+	await new Promise((resolve, reject) => {
+		process.stdout.write(JSON.stringify(artifact) + "\n", (error) =>
+			error ? reject(error) : resolve(),
+		);
+	});
+}
 
-main().catch((err) => {
-	parsedFiles.clear();
-	process.stderr.write(`Sidecar fatal error: ${err.message}\n`);
-	process.exit(1);
-});
+// --- Entry point ---
+
+if (sidecarArgs.mode === "bundle") {
+	bundleMode().catch((err) => {
+		process.stderr.write(`Bundle mode error: ${err.message}\n${err.stack}\n`);
+		process.exit(1);
+	});
+} else {
+	main().catch((err) => {
+		parsedFiles.clear();
+		process.stderr.write(`Sidecar fatal error: ${err.message}\n`);
+		process.exit(1);
+	});
+}

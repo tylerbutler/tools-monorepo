@@ -1,5 +1,5 @@
 import type { PolicyDefinition, PolicyFailure, PolicyFixResult } from "repopo";
-import { isSorted, sortTsconfigFile } from "sort-tsconfig";
+import { isSorted, sortTsconfigFile } from "./api.js";
 
 /**
  * A repo policy that checks that tsconfig files are sorted according to settings.

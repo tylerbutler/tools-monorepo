@@ -1,12 +1,10 @@
 import { readFileSync } from "node:fs";
-// Use default import + destructure for CJS/ESM interop
-// (resolve-workspace-root is a bundled CJS module)
-import resolveWorkspaceRoot from "resolve-workspace-root";
-
-const { getWorkspaceGlobs } = resolveWorkspaceRoot;
-
+import { readFile } from "node:fs/promises";
+import { call } from "effection";
+import { join } from "pathe";
 import { globSync } from "tinyglobby";
 import type { PackageJson } from "type-fest";
+import { parse } from "yaml";
 import type { PolicyFailure } from "../policy.js";
 import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
 
@@ -31,13 +29,64 @@ const workspacePackageCache = new Map<
 	Map<string, PackageJson | undefined>
 >();
 
+async function readOptionalFile(path: string): Promise<string | undefined> {
+	try {
+		return await readFile(path, "utf8");
+	} catch (error) {
+		if (error instanceof Error && "code" in error && error.code === "ENOENT") {
+			return undefined;
+		}
+		throw error;
+	}
+}
+
+function workspacePatterns(value: unknown, source: string): string[] {
+	if (
+		!(Array.isArray(value) && value.every((entry) => typeof entry === "string"))
+	) {
+		throw new Error(
+			`Invalid workspace patterns in ${source}: expected a string array.`,
+		);
+	}
+	return value;
+}
+
+async function getWorkspaceGlobs(root: string): Promise<string[] | null> {
+	const pnpmPath = join(root, "pnpm-workspace.yaml");
+	const pnpm = await readOptionalFile(pnpmPath);
+	if (pnpm !== undefined) {
+		const workspace: unknown = parse(pnpm);
+		if (
+			workspace !== null &&
+			typeof workspace === "object" &&
+			"packages" in workspace
+		) {
+			return workspacePatterns(workspace.packages, pnpmPath);
+		}
+	}
+	const packagePath = join(root, "package.json");
+	const contents = await readOptionalFile(packagePath);
+	if (contents === undefined) {
+		return null;
+	}
+	const json: PackageJson = JSON.parse(contents);
+	const workspaces = json.workspaces;
+	if (workspaces === undefined) {
+		return null;
+	}
+	return workspacePatterns(
+		Array.isArray(workspaces) ? workspaces : workspaces.packages,
+		packagePath,
+	);
+}
+
 /**
  * Builds a map of package name to package.json for all packages in the workspace.
  * Uses the workspace configuration (pnpm-workspace.yaml or package.json workspaces) to find packages.
  */
-function buildWorkspacePackageMap(
+async function buildWorkspacePackageMap(
 	root: string,
-): Map<string, PackageJson | undefined> {
+): Promise<Map<string, PackageJson | undefined>> {
 	// Check cache first
 	const cached = workspacePackageCache.get(root);
 	if (cached !== undefined) {
@@ -47,7 +96,7 @@ function buildWorkspacePackageMap(
 	const packageMap = new Map<string, PackageJson | undefined>();
 
 	// Get workspace globs from pnpm-workspace.yaml or package.json
-	const workspaceGlobs = getWorkspaceGlobs(root);
+	const workspaceGlobs = await getWorkspaceGlobs(root);
 	if (workspaceGlobs === null) {
 		// Not a workspace - return empty map
 		workspacePackageCache.set(root, packageMap);
@@ -83,11 +132,11 @@ function buildWorkspacePackageMap(
 /**
  * Looks up a workspace package by name using the workspace configuration.
  */
-function findWorkspacePackage(
+async function findWorkspacePackage(
 	depName: string,
 	root: string,
-): PackageJson | undefined {
-	const packageMap = buildWorkspacePackageMap(root);
+): Promise<PackageJson | undefined> {
+	const packageMap = await buildWorkspacePackageMap(root);
 	return packageMap.get(depName);
 }
 
@@ -132,7 +181,6 @@ export const NoPrivateWorkspaceDependencies = definePackagePolicy<
 	name: "NoPrivateWorkspaceDependencies",
 	description:
 		"Prevents publishable packages from depending on private workspace packages that won't be available on npm.",
-	// biome-ignore lint/correctness/useYield: no yield needed
 	handler: function* (json, { file, root, config }) {
 		// Private packages can depend on anything - they won't be published
 		if (json.private === true) {
@@ -158,7 +206,9 @@ export const NoPrivateWorkspaceDependencies = definePackagePolicy<
 				continue;
 			}
 
-			const depPackageJson = findWorkspacePackage(depName, root);
+			const depPackageJson = yield* call(() =>
+				findWorkspacePackage(depName, root),
+			);
 
 			if (depPackageJson === undefined) {
 				// Could not find the package - might be a configuration issue

@@ -1,9 +1,13 @@
 import assert from "node:assert/strict";
-import { updatePackageJsonFile } from "@fluid-tools/build-infrastructure";
+import { call } from "effection";
+import jsonfile from "jsonfile";
 import path from "pathe";
 import type { PackageJson } from "type-fest";
 import type { PolicyFailure, PolicyFixResult } from "../policy.js";
 import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
+import { detectIndentation } from "../utils/indentation.js";
+
+const { writeFile: writeJson } = jsonfile;
 
 /**
  * A RepoPolicy that checks that the repository.directory property in package.json is set correctly. If the repository
@@ -42,13 +46,18 @@ export const PackageJsonRepoDirectoryProperty = definePackagePolicy<
 		) {
 			if (resolve) {
 				try {
-					updatePackageJsonFile(packageJsonPath, (pkgJson) => {
-						assert(typeof pkgJson.repository === "object");
+					yield* call(async () => {
+						const { default: sortPackageJson } = await import(
+							"sort-package-json-legacy"
+						);
+						const spaces = await detectIndentation(packageJsonPath);
+						assert(typeof json.repository === "object");
 						if (relativePkgDir === undefined) {
-							delete pkgJson.repository.directory;
+							delete json.repository.directory;
 						} else {
-							pkgJson.repository.directory = relativePkgDir;
+							json.repository.directory = relativePkgDir;
 						}
+						await writeJson(packageJsonPath, sortPackageJson(json), { spaces });
 					});
 					fixResult.resolved = true;
 				} catch (error: unknown) {
