@@ -33,6 +33,8 @@ interface PolicyShape<C = void> {
 3. If match, call `handler({ file, root, resolve, config })`
 4. Handler returns `true` or `PolicyError`
 5. If `resolve=true`, handler can apply auto-fixes
+6. After all file policies, policies with `scope: "repository"` run once with
+   `{ root, files, resolve, config }` (the full file inventory, even with `--stdin`)
 
 ### Handler Function
 
@@ -98,28 +100,21 @@ export default config;
 
 ## Built-in Policies
 
-**File Headers:**
-- `HtmlFileHeaders` - Enforce headers in HTML files
-- `JsTsFileHeaders` - Enforce headers in JS/TS files
+All built-in policies are exported from `src/policies.ts` (`repopo/policies`) and
+documented on the site, one page per ecosystem:
 
-**Package.json:**
-- `PackageJsonProperties` - Enforce specific fields/values
-- `PackageJsonRepoDirectoryProperty` - Validate `repository.directory`
-- `PackageJsonSorted` - Enforce sorted keys (uses `sort-package-json`)
+- **JavaScript & package.json** (`packages/repopo-docs/src/content/docs/policies/javascript.mdx`):
+  file headers, `NoJsFileExtensions`, `Package*` policies, `NoPrivateWorkspaceDependencies`,
+  and the focused script policies (`RequiredScripts`, `ExactScripts`, `ConditionalScripts`,
+  `MutuallyExclusiveScripts`, `ScriptContains`). `PackageScripts` is the legacy combined policy.
+- **Rust & Cargo** (`policies/rust.mdx`): `Cargo*`, `Rust*`, `Workspace*`,
+  `SharedDependencyVersions`, `NoWildcardDependencies`, `NoUnsafeWithoutJustification`, etc.
+- **Gleam** (`policies/gleam.mdx`): `Gleam*` policies and `NoBuildDirectory`.
+- **General** (`policies/repository.mdx`): `LicenseFileExists`, `NoLargeBinaryFiles`,
+  `RequiredGitignorePatterns`.
 
-**Script Validation (Focused Policies):**
-- `RequiredScripts` - Scripts that must exist (with optional defaults)
-- `ExactScripts` - Scripts that must match exactly
-- `MutuallyExclusiveScripts` - At most one script from a group
-- `ConditionalScripts` - If script X exists, script Y must exist
-- `ScriptContains` - Script body must contain substring
-
-**Code Standards:**
-- `NoJsFileExtensions` - Prevent ambiguous `.js` files (require `.mjs`/`.cjs`)
-- `NoLargeBinaryFiles` - Prevent large binary files in repo
-
-**Legacy:**
-- `PackageScripts` - Monolithic script validation (prefer focused policies above)
+When adding or changing a built-in policy, update its page and the table in
+`policies/built-in.mdx`. Every exported policy should appear exactly once.
 
 `DefaultPolicies` enables `NoJsFileExtensions`, `PackageJsonRepoDirectoryProperty`,
 and `PackageJsonSorted`. Configure other built-in policies to enable them.
@@ -312,10 +307,8 @@ const config: RepopoConfig = {
 
     // Focused script policy
     policy(RequiredScripts, {
-      scripts: [
-        { name: "build", default: "tsc" },
-        { name: "test" },
-      ],
+      // A string requires the script; an object also gives a default for --fix
+      scripts: [{ build: "tsc" }, "test"],
     }),
 
     // External policy from another package

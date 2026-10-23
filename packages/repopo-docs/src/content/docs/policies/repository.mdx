@@ -1,0 +1,60 @@
+---
+title: General repository policies
+description: Built-in policies that apply to any repository, whatever its language.
+sidebar:
+  label: General
+  order: 6
+---
+
+These policies work in any repository, whatever its language.
+
+```ts title="repopo.config.ts"
+import { policy, type RepopoConfig } from "repopo";
+import {
+	LicenseFileExists,
+	NoLargeBinaryFiles,
+	RequiredGitignorePatterns,
+} from "repopo/policies";
+
+export default {
+	policies: [
+		policy(LicenseFileExists),
+		policy(NoLargeBinaryFiles, { maxSizeBytes: 5 * 1024 * 1024 }),
+		policy(RequiredGitignorePatterns),
+	],
+} satisfies RepopoConfig;
+```
+
+### LicenseFileExists
+
+**Repository policy.** Checks that a license file exists at the repository root. It runs once per check, including runs with `--stdin` and runs with empty stdin.
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `acceptedNames` | `string[]` | `LICENSE`, `LICENCE`, and their `.txt`, `.md`, and `.rst` variants | File names that count as a license. |
+
+**Auto-fixable:** No.
+
+### NoLargeBinaryFiles
+
+Reports files larger than a size limit. Large files bloat the repository and slow down clones. Consider [Git LFS](https://git-lfs.com/) for large assets.
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `maxSizeBytes` | `number` | `10485760` (10 MB) | Largest allowed file size. |
+| `excludeExtensions` | `string[]` | Common text and source extensions (`.md`, `.json`, `.ts`, `.css`, `.html`, and more) | Extensions that are not checked. |
+| `excludePatterns` | `string[]` | | Glob-style patterns (`*` wildcards) for files that are not checked. |
+
+**Auto-fixable:** No.
+
+### RequiredGitignorePatterns
+
+Checks that the root `.gitignore` contains required entries.
+
+| Option | Type | Description |
+| --- | --- | --- |
+| `patterns` | `Array<string \| { pattern: string; comment?: string }>` | Entries that must be present. With the object form, `comment` is inserted above the entry when fixing. |
+
+When `patterns` isn't set, the policy requires `node_modules/`, `.env`, `.env.*`, `!.env.example`, `dist/`, `build/`, `.DS_Store`, and `Thumbs.db`.
+
+**Auto-fixable:** Yes. `--fix` appends missing entries.

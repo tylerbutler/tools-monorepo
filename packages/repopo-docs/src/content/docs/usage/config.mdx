@@ -1,18 +1,18 @@
 ---
 title: Configuration
+description: Configure repopo policies, exclusions, and policy options.
 sidebar:
-  order: 4
+  order: 2
 ---
 
-To use repopo, [install it](/installation) then run `repopo check` to check files.
+repopo reads its configuration from `repopo.config.ts`, `repopo.config.mjs`, or `repopo.config.cjs` at the repository root. A TypeScript file is recommended. Its default export is a `RepopoConfig`:
 
-Create `repopo.config.ts` in the repository root:
-
-```ts
+```ts title="repopo.config.ts"
 import { policy, type RepopoConfig } from "repopo";
 import { NoJsFileExtensions, PackageJsonProperties } from "repopo/policies";
 
 export default {
+	excludeFiles: ["^vendor/"],
 	policies: [
 		policy(NoJsFileExtensions, undefined, { exclude: ["^bin/"] }),
 		policy(PackageJsonProperties, { verbatim: { license: "MIT" } }),
@@ -20,22 +20,61 @@ export default {
 } satisfies RepopoConfig;
 ```
 
-Pass policy configuration as the second argument and instance options as the
-third argument: `policy(definition, config, options)`. Use `undefined` for
-configuration to retain `defaultConfig`. Options include `exclude` and
-`instanceId`; set a distinct instance ID for each repeated policy definition.
+## Choosing policies
 
-To migrate the old options shorthand, replace
-`policy(definition, { exclude: patterns })` with
-`policy(definition, undefined, { exclude: patterns })`. The second argument now
-holds policy configuration even when it contains an `exclude` property.
+If you omit `policies`, `check` and `check-native` run the [default policies](/policies/built-in/#default-policies). Set `policies: []` to run none.
 
-Use `excludeFiles` at the top level for global exclusions. Exclusion strings
-are case-insensitive regular expressions, not globs. Use `"^vendor/"` rather
-than `"**/vendor/**"`. `RegExp` values retain their flags: `/^README/` is
-case-sensitive, and `/^README/i` is case-insensitive.
+With `check --fix`, the policies for each file run in configuration order, so one fix can't overwrite another. Read-only checks can run policies concurrently.
 
-Omit `policies` to use the default policies. Set `policies: []` to disable them.
-Both `policy(definition)` and the legacy `makePolicy(definition)` use
-`definition.defaultConfig`. For `makePolicy()`, explicit configuration takes
-precedence over `settings.config`, followed by `defaultConfig`.
+## Configuring a policy
+
+Configure each policy with `policy(definition, config, options)`:
+
+- `config` is the policy's own configuration. Use `undefined` to keep the policy's `defaultConfig`.
+- `options` holds per-instance settings:
+  - `exclude`: patterns for files this policy skips.
+  - `instanceId`: a stable ID. Required when the same policy appears more than once.
+
+```ts
+policy(PackageJsonProperties, sourceConfig, { instanceId: "source-packages" });
+policy(PackageJsonProperties, testConfig, { instanceId: "test-packages" });
+```
+
+The options of each built-in policy are documented in [Built-in policies](/policies/built-in/).
+
+:::note[Migrating from the options shorthand]
+Earlier versions accepted options as the second argument. Replace `policy(definition, { exclude: patterns })` with `policy(definition, undefined, { exclude: patterns })`. The second argument is always policy configuration, even when it has an `exclude` property.
+:::
+
+### makePolicy
+
+`makePolicy(definition, config, settings)` is the older helper and still works. It takes per-policy exclusions as `{ excludeFiles: patterns }` in its third argument. When both are present, explicit `config` takes precedence over `settings.config`, which takes precedence over `defaultConfig`. New configurations should use `policy()`.
+
+## Excluding files
+
+repopo checks every file Git knows about: tracked files and untracked files that are not ignored.
+
+- `excludeFiles` at the top level removes matching files from all policies.
+- `exclude` in a policy's options removes matching files from that policy only.
+
+Both take an array of strings or `RegExp` values, matched against repo-relative paths:
+
+- Strings are **case-insensitive regular expressions, not globs**. Use `"^vendor/"`, not `"**/vendor/**"`.
+- `RegExp` values keep their own flags. `/^README/` is case-sensitive and does not exclude `readme.md`. `/^README/i` does.
+
+```ts
+export default {
+	excludeFiles: ["^vendor/", /\.snap$/],
+	policies: [
+		policy(PackageJsonProperties, { verbatim: { license: "MIT" } }, { exclude: ["^examples/"] }),
+	],
+} satisfies RepopoConfig;
+```
+
+## Repository policies
+
+File policies run once per matching selected file. Policies with `scope: "repository"` run once after all file policies, even when no files are selected. Both kinds go in the same `policies` array and use the same `policy()` helper.
+
+Repository policies receive the full Git file inventory after global and per-policy exclusions, even with `--stdin`. With `--fix`, they run one at a time in configuration order and can change files outside the stdin selection. The inventory is refreshed before each repository policy runs. These rules apply to both `check` and `check-native`.
+
+The built-in repository policies are [LicenseFileExists](/policies/repository/#licensefileexists) and [SharedDependencyVersions](/policies/rust/#shareddependencyversions). To write your own, see [Repository policies](/policies/custom/#repository-policies).

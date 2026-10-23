@@ -1,14 +1,41 @@
 ---
 title: What is repopo?
+description: An overview of repopo, its policies, and how it runs them.
 ---
 
-repopo is a tool to apply policies to the files in your git repo. You can think of it as a sort of lint tool for any
-file in your git repo, with a straightforward way to write your own policies.
+repopo applies policies to the files in your Git repository. It works like a linter for any file type, and you can write your own policies as functions.
 
-## Why?
+Linters and formatters check the contents of individual source files. Many repository conventions involve other things: every `package.json` needs a license field, every package needs a README, every `.js` file should have an explicit module extension, or every crate in a workspace should use the same dependency versions. repopo checks rules like these in one place, and most of its policies can fix the violations they find.
 
-TODO
+## Policies
 
-## Implementation
+A policy is a named check with a handler function. repopo has two kinds:
 
-TODO
+- **File policies** match repo-relative paths with a regular expression and run once for each matching file. Most built-in policies are file policies.
+- **Repository policies** run once per check with the full list of files in the repository. Use them for rules that involve several files or a missing file, such as "the repository has a LICENSE".
+
+repopo includes [over 50 built-in policies](/policies/built-in/) for JavaScript and package.json, Rust and Cargo, Gleam, and general repository hygiene. You can also [write your own](/policies/custom/) in your configuration file or import them from other packages.
+
+When your configuration doesn't list any policies, repopo runs three defaults: `NoJsFileExtensions`, `PackageJsonRepoDirectoryProperty`, and `PackageJsonSorted`.
+
+## How a check runs
+
+1. repopo lists the files Git knows about: tracked files and untracked files that are not ignored. With `--stdin`, file policies check only the paths you pipe in.
+2. It removes [excluded](/usage/config/#excluding-files) files.
+3. It runs each file policy on every matching file, then runs each repository policy once.
+4. With `--fix`, policies fix what they can. repopo reports everything else, with instructions for manual fixes when a policy provides them.
+
+## Engines
+
+repopo has two ways to run a check:
+
+- `repopo check` runs everything in Node.js.
+- `repopo check-native` uses a Rust engine for file listing, regex matching, and orchestration, and runs the policy handlers in a Node.js or Bun sidecar process.
+
+Both engines use the same configuration and policies and produce the same results. See [Benchmarking](/usage/benchmarking/) to compare them.
+
+## Next steps
+
+- [Install repopo](/installation/)
+- [Use the CLI](/usage/cli-usage/)
+- [Configure policies](/usage/config/)

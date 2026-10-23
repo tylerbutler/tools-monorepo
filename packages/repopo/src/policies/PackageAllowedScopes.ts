@@ -123,12 +123,12 @@ function isUnscopedPackageAllowed(
  *
  * @example
  * ```typescript
- * import { makePolicy } from "repopo";
+ * import { policy } from "repopo";
  * import { PackageAllowedScopes } from "repopo/policies";
  *
  * const config: RepopoConfig = {
  *   policies: [
- *     makePolicy(PackageAllowedScopes, {
+ *     policy(PackageAllowedScopes, {
  *       allowedScopes: ["@myorg", "@internal"],
  *       unscopedPackages: ["legacy-package"],
  *     }),

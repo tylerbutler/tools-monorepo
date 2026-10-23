@@ -124,12 +124,12 @@ function getExpectedFolderName(
  *
  * @example
  * ```typescript
- * import { makePolicy } from "repopo";
+ * import { policy } from "repopo";
  * import { PackageFolderName } from "repopo/policies";
  *
  * const config: RepopoConfig = {
  *   policies: [
- *     makePolicy(PackageFolderName, {
+ *     policy(PackageFolderName, {
  *       stripScopes: ["@myorg", "@internal"],
  *       excludePackages: ["@myorg/special-case"],
  *     }),

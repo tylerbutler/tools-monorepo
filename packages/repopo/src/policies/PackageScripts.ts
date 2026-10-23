@@ -673,12 +673,12 @@ function runAllValidations(
  *
  * @example
  * ```typescript
- * import { makePolicy } from "repopo";
+ * import { policy } from "repopo";
  * import { PackageScripts } from "repopo/policies";
  *
  * const config: RepopoConfig = {
  *   policies: [
- *     makePolicy(PackageScripts, {
+ *     policy(PackageScripts, {
  *       // Scripts that must exist
  *       must: [
  *         "test",                        // Must exist, no auto-fix

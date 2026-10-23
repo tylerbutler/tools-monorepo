@@ -346,14 +346,14 @@ async function applyFix(
  *
  * @example
  * ```typescript
- * import { makePolicy } from "repopo";
+ * import { policy } from "repopo";
  * import { PackageEsmType } from "repopo/policies";
  *
  * // Require all packages to be ESM
- * makePolicy(PackageEsmType, { requiredType: "module" })
+ * policy(PackageEsmType, { requiredType: "module" })
  *
  * // Or detect based on exports
- * makePolicy(PackageEsmType, { detectFromExports: true })
+ * policy(PackageEsmType, { detectFromExports: true })
  * ```
  *
  * @public

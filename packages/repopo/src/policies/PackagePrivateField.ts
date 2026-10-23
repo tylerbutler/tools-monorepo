@@ -191,12 +191,12 @@ function getRequiredPrivateState(
  *
  * @example
  * ```typescript
- * import { makePolicy } from "repopo";
+ * import { policy } from "repopo";
  * import { PackagePrivateField } from "repopo/policies";
  *
  * const config: RepopoConfig = {
  *   policies: [
- *     makePolicy(PackagePrivateField, {
+ *     policy(PackagePrivateField, {
  *       mustPublish: ["@myorg/*"],
  *       mustBePrivate: ["@internal/*"],
  *       mayPublish: ["@experimental/*"],

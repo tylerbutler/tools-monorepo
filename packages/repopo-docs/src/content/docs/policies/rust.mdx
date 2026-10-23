@@ -1,0 +1,196 @@
+---
+title: Rust and Cargo policies
+description: Built-in policies for Cargo.toml manifests, Cargo workspaces, and Rust sources.
+sidebar:
+  label: Rust & Cargo
+  order: 4
+---
+
+These policies check `Cargo.toml` manifests, Cargo workspaces, and Rust source files. Unless noted, a manifest policy checks every `Cargo.toml` in the repository. Policies marked **root only** check only the `Cargo.toml` at the repository root.
+
+```ts title="repopo.config.ts"
+import { policy, type RepopoConfig } from "repopo";
+import { CargoTomlRequired, CargoTomlSorted } from "repopo/policies";
+
+export default {
+	policies: [
+		policy(CargoTomlRequired, { minimumEdition: "2021" }),
+		policy(CargoTomlSorted),
+	],
+} satisfies RepopoConfig;
+```
+
+## Manifest fields
+
+### CargoTomlRequired
+
+Checks that fields exist in the `[package]` section of `Cargo.toml`.
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `required` | `string[]` | `["license", "description"]` | Fields that must exist. |
+| `minimumEdition` | `string` | | Lowest allowed `edition`, such as `"2021"`. |
+| `requireRustVersion` | `boolean` | `false` | Require `rust-version` (MSRV). |
+| `expectedValues` | `Record<string, string>` | | Fields that must have these exact values. |
+
+**Auto-fixable:** No.
+
+### CargoLicenceValidated
+
+Checks the `license` field against the SPDX license list.
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `allowedLicences` | `string[]` | | Only these SPDX identifiers are accepted. |
+| `validateSpdx` | `boolean` | `true` | Validate against SPDX with `spdx-correct`. |
+| `skipWorkspace` | `boolean` | `true` | Skip workspace-only manifests that have no `[package]` section. |
+
+SPDX validation needs the optional peer dependency `spdx-correct`.
+
+**Auto-fixable:** Yes. `--fix` replaces a correctable identifier, such as `MIIT` or `mit`, with the canonical one (`MIT`).
+
+### CargoLintsConfigured
+
+Checks that `Cargo.toml` has a `[lints.clippy]` section and, optionally, minimum lint levels.
+
+```ts
+policy(CargoLintsConfigured, { required: { pedantic: "warn", nursery: "warn" } });
+```
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `requireSection` | `boolean` | `true` | Require a `[lints.clippy]` section. |
+| `required` | `Record<string, string>` | | Lint names (without `clippy::`) mapped to a minimum level, `"warn"` or `"deny"`. |
+
+**Auto-fixable:** No.
+
+### PublicApiDocumented
+
+Checks that the `missing_docs` lint is set to `"warn"` or `"deny"` in the `[lints.rust]` section of `Cargo.toml`.
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `checkCargoLints` | `boolean` | `true` | Check `[lints.rust]` for `missing_docs`. |
+
+**Auto-fixable:** No.
+
+### CargoTomlSorted
+
+Checks that the keys in `Cargo.toml` dependency sections are in alphabetical order.
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `sections` | `string[]` | `["dependencies", "dev-dependencies", "build-dependencies"]` | Sections to check. |
+
+**Auto-fixable:** Yes. `--fix` sorts the sections line by line, so formatting and comments are kept.
+
+### NoWildcardDependencies
+
+Reports dependency versions that are wildcards or too loose.
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `deny` | `string[]` | `["*"]` | Version prefixes that fail the check. |
+| `warn` | `string[]` | `[">="]` | Version prefixes that produce a warning. |
+| `allowDev` | `boolean` | `true` | Apply only `deny` rules, not `warn` rules, to `dev-dependencies`. |
+
+Checks `dependencies`, `build-dependencies`, and `dev-dependencies`.
+
+**Auto-fixable:** No.
+
+### CargoLockPolicy
+
+Checks whether `Cargo.lock` is committed, based on the crate type. Binary crates should commit the lockfile. Library crates usually don't.
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `binaries` | `"require" \| "warn" \| "ignore"` | `"require"` | Rule for binary crates when `Cargo.lock` is missing. |
+| `libraries` | `"require" \| "warn" \| "ignore"` | `"ignore"` | Rule for library crates. `"warn"` reports a committed `Cargo.lock`. |
+
+**Auto-fixable:** No.
+
+## Workspaces
+
+### WorkspaceMembersValid
+
+**Root only.** Checks that every path in `[workspace].members` exists. Simple globs such as `crates/*` are expanded.
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `validatePaths` | `boolean` | `true` | Check that member paths exist on disk. |
+
+**Auto-fixable:** No.
+
+### WorkspaceInheritance
+
+**Root only.** Checks that workspace members inherit shared fields from `[workspace.package]`, for example with `version.workspace = true`.
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `inherit` | `string[]` | `["version", "authors", "license", "repository"]` | Fields members must inherit. |
+| `allowOverrides` | `string[]` | | Member paths that may set their own values. A trailing `*` matches a prefix. |
+
+**Auto-fixable:** No.
+
+### SharedDependencyVersions
+
+**Repository policy.** Compares dependency versions across the members of the root Cargo workspace and reports mismatches. Runs once per check, even with `--stdin`, when the root `Cargo.toml` is in its inventory.
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `detectMismatches` | `boolean` | `true` | Report a dependency that has different versions in different members. |
+| `requireWorkspaceDeps` | `string[]` | | Dependencies that must be declared in `[workspace.dependencies]`. |
+
+**Auto-fixable:** No.
+
+## Project files
+
+### RustToolchainExists
+
+**Root only.** Requires a toolchain file so every build uses the same Rust version.
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `acceptedNames` | `string[]` | `["rust-toolchain.toml", "rust-toolchain"]` | Accepted file names. |
+
+**Auto-fixable:** No.
+
+### RustfmtConfigExists
+
+**Root only.** Requires a rustfmt configuration file.
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `acceptedNames` | `string[]` | `["rustfmt.toml", ".rustfmt.toml"]` | Accepted file names. |
+
+**Auto-fixable:** No.
+
+### RustDocExists
+
+Checks that documentation files exist next to each `Cargo.toml`.
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `required` | `string[]` | `["README.md"]` | Files that must exist. |
+| `recommended` | `string[]` | | Files that produce a warning when missing. |
+
+**Auto-fixable:** No.
+
+## Source and artifacts
+
+### NoUnsafeWithoutJustification
+
+Requires a safety comment within the five lines before each `unsafe` block, `unsafe fn`, or `unsafe impl` in `.rs` files.
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `requireComment` | `string` | `"// SAFETY:"` | Comment prefix to look for. |
+| `excludePaths` | `string[]` | | Skip files whose path contains any of these strings, such as FFI modules. |
+
+**Auto-fixable:** No.
+
+### NoTargetArtifacts
+
+Reports committed Rust build artifacts: files ending in `.rlib`, `.rmeta`, `.d`, `.so`, `.dylib`, `.dll`, `.exe`, or `.pdb`. Paths containing `test/` or `fixture` are allowed.
+
+**Auto-fixable:** No. Remove the files from Git and add `/target/` to `.gitignore`.

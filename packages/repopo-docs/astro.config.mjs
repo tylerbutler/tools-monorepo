@@ -67,7 +67,7 @@ export default defineConfig({
 				{
 					icon: "github",
 					label: "GitHub",
-					href: "https://github.com/tylerbutler/tools-monorepo/packages/repopo",
+					href: "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/repopo",
 				},
 			],
 			sidebar: [

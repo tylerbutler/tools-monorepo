@@ -194,12 +194,12 @@ function shouldSkipValidation(
  *
  * @example
  * ```typescript
- * import { makePolicy } from "repopo";
+ * import { policy } from "repopo";
  * import { PackageTestScripts } from "repopo/policies";
  *
  * const config: RepopoConfig = {
  *   policies: [
- *     makePolicy(PackageTestScripts, {
+ *     policy(PackageTestScripts, {
  *       testDirectories: ["test", "tests"],
  *       testDependencies: ["vitest", "jest"],
  *       requiredScripts: ["test"],

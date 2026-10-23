@@ -94,16 +94,16 @@ async function copyLicenseFile(
  *
  * @example
  * ```typescript
- * import { makePolicy } from "repopo";
+ * import { policy } from "repopo";
  * import { PackageLicense } from "repopo/policies";
  *
  * const config: RepopoConfig = {
  *   policies: [
  *     // Use defaults (skip private, look for LICENSE)
- *     makePolicy(PackageLicense),
+ *     policy(PackageLicense),
  *
  *     // Or require LICENSE for all packages including private
- *     makePolicy(PackageLicense, { skipPrivate: false }),
+ *     policy(PackageLicense, { skipPrivate: false }),
  *   ],
  * };
  * ```

@@ -2,12 +2,74 @@
 title: Custom policies
 description: A guide to creating your own policies and integrating existing handlers.
 sidebar:
-  order: 3
+  order: 7
 ---
 
-## Creating Custom Policies
+A policy is an object with a name, a description, and a handler function. There are two kinds:
 
-File policies run once per matching selected file. Repository policies run once per invocation, after all file policies. Configure both with `policy()` in the same `policies` array.
+- **File policies** have a `match` regular expression. They run once for each selected file whose repo-relative path matches.
+- **Repository policies** set `scope: "repository"`. They run once per check, after all file policies.
+
+Configure both kinds with `policy()` in the same `policies` array.
+
+## File policies
+
+A file policy handler receives `{ file, root, resolve, config }`:
+
+- `file` is the repo-relative path.
+- `root` is the absolute path of the repository root.
+- `resolve` is `true` when the user ran `check --fix`.
+- `config` is the configuration passed to `policy()`, or the policy's `defaultConfig`.
+
+Return `true` to pass, or a failure object with an `error` message. Set `fixable: true` when `--fix` can correct the violation, and set `fixed` to report the outcome when the handler applies a fix itself.
+
+```ts title="repopo.config.ts"
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+import { policy, type PolicyShape, type RepopoConfig } from "repopo";
+
+const NoTodoComments: PolicyShape<{ marker: string }> = {
+	name: "NoTodoComments",
+	description: "Disallows TODO comments in TypeScript sources.",
+	match: /^src\/.*\.ts$/,
+	defaultConfig: { marker: "TODO" },
+	handler: async ({ file, root, config }) => {
+		const content = await readFile(path.join(root, file), "utf8");
+		return content.includes(config?.marker ?? "TODO")
+			? { error: `${file} contains a ${config?.marker} comment.` }
+			: true;
+	},
+};
+
+export default {
+	policies: [policy(NoTodoComments)],
+} satisfies RepopoConfig;
+```
+
+Handlers can be async functions or [Effection](https://frontside.com/effection) generator functions.
+
+## Policy definers
+
+For common manifest files, the definer functions match the file, read and parse it, and pass the parsed content to your handler:
+
+| Function | Matches | Handler receives |
+| --- | --- | --- |
+| `definePackagePolicy` | `package.json` | Parsed JSON |
+| `defineCargoPolicy` | `Cargo.toml` | Parsed TOML |
+| `defineGleamPolicy` | `gleam.toml` | Parsed TOML |
+
+```ts
+import { definePackagePolicy } from "repopo";
+
+const RequireDescription = definePackagePolicy({
+	name: "RequireDescription",
+	description: "Requires a description in every package.json.",
+	handler: async (json, { file }) =>
+		json.description ? true : { error: `${file} has no description.` },
+});
+```
+
+`generatePackagePolicy` is an older name for `definePackagePolicy` and still works.
 
 ## Concurrency and manifest snapshots
 
@@ -35,15 +97,7 @@ and bypass the manifest cache, regardless of `--concurrency`. Later fixers read
 the changes from earlier fixers. Repository policies remain sequential and start
 after file policies finish.
 
-## Programmatic imports
-
-Use `repopo/api` to import policy types, factories, adapters, and `PolicyRunner`
-without OCLIF's CLI `run` export. The root `repopo` entry point also exports these
-APIs. Import `run` from `effection` when executing a runner.
-
-Use `definePackagePolicy` for package.json policies, `defineCargoPolicy` for
-Cargo.toml, and `defineGleamPolicy` for gleam.toml. The older
-`generatePackagePolicy` name remains an alias for `definePackagePolicy`.
+To run policies from your own code instead of the CLI, see the [programmatic API](/usage/programmatic-api/).
 
 ## Standalone file resolvers
 
@@ -158,25 +212,23 @@ If you're migrating from FluidFramework's build-tools or want to reuse existing 
 Use `fromFluidHandlers` to convert FluidFramework handlers to repopo policies:
 
 ```ts title="repopo.config.ts"
-import { fromFluidHandlers, makePolicy } from "repopo";
+import { fromFluidHandlers, policy, type RepopoConfig } from "repopo";
 import { copyrightFileHeaderHandlers, fluidCaseHandler } from "@fluidframework/build-tools";
 
 // Convert multiple handlers with a namespace prefix
 const FluidCopyrightPolicies = fromFluidHandlers(copyrightFileHeaderHandlers, {
-  namePrefix: "Fluid:"  // Results in "Fluid:my-handler-name"
+	namePrefix: "Fluid:", // Results in "Fluid:my-handler-name"
 });
 
 // For a single handler, wrap it in an array
 const [FluidCasePolicy] = fromFluidHandlers([fluidCaseHandler]);
 
-const config = {
-  policies: [
-    ...FluidCopyrightPolicies.map(p => makePolicy(p)),
-    makePolicy(FluidCasePolicy),
-  ]
-};
-
-export default config;
+export default {
+	policies: [
+		...FluidCopyrightPolicies.map((p) => policy(p)),
+		policy(FluidCasePolicy),
+	],
+} satisfies RepopoConfig;
 ```
 
 ### Handler Interface

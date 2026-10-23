@@ -113,12 +113,12 @@ function isWorkspaceDependency(version: string | undefined): boolean {
  * // In repopo.config.ts
  * import { NoPrivateWorkspaceDependencies } from "repopo/policies";
  *
- * makePolicy(NoPrivateWorkspaceDependencies, {
+ * policy(NoPrivateWorkspaceDependencies, {
  *   checkDevDependencies: false, // Only check production dependencies (default)
  * });
  *
  * // Or check both dependencies and devDependencies
- * makePolicy(NoPrivateWorkspaceDependencies, {
+ * policy(NoPrivateWorkspaceDependencies, {
  *   checkDevDependencies: true,
  * });
  * ```

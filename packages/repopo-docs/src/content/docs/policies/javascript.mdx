@@ -1,0 +1,393 @@
+---
+title: JavaScript and package.json policies
+description: Built-in policies for JavaScript, TypeScript, HTML, and package.json files.
+sidebar:
+  label: JavaScript & package.json
+  order: 3
+---
+
+These policies check source file headers, file extensions, and the `package.json` files in a JavaScript or TypeScript repository. Policies that check `package.json` match every `package.json` file in the repository, including the root.
+
+All examples go in the `policies` array of `repopo.config.ts`:
+
+```ts title="repopo.config.ts"
+import { policy, type RepopoConfig } from "repopo";
+import { PackageJsonSorted } from "repopo/policies";
+
+export default {
+	policies: [policy(PackageJsonSorted)],
+} satisfies RepopoConfig;
+```
+
+## File headers
+
+### HtmlFileHeaders
+
+Checks that `.html` and `.htm` files start with the configured header in an HTML comment (`<!-- ... -->`). Multi-line headers get comment delimiters on each line.
+
+```ts
+policy(HtmlFileHeaders, {
+	headerText: "Copyright (c) Example Corp. All rights reserved.",
+});
+```
+
+| Option | Type | Description |
+| --- | --- | --- |
+| `headerText` | `string` | Required. The header text. |
+| `autoGenText` | `string` | Optional text appended to `headerText`. |
+
+**Auto-fixable:** Yes. `--fix` adds a missing header.
+
+### JsTsFileHeaders
+
+Checks that JavaScript and TypeScript files (`.js`, `.mjs`, `.cjs`, `.ts`, `.mts`, `.cts`, `.jsx`, `.tsx`) start with the configured header in a `/*! ... */` block comment. The `!` keeps the comment during minification. Each line of a multi-line header gets a ` * ` prefix. A hashbang (`#!`) line stays first, and the header goes after it.
+
+```ts
+policy(JsTsFileHeaders, {
+	headerText: "Copyright (c) Example Corp.\nLicensed under the MIT License.",
+});
+```
+
+Takes the same options as [HtmlFileHeaders](#htmlfileheaders).
+
+**Auto-fixable:** Yes.
+
+## File extensions
+
+### NoJsFileExtensions
+
+Reports JavaScript files that use the `.js` extension. Node.js treats a `.js` file as CommonJS or ESM based on the `type` field of the nearest `package.json`, so changing that field changes how the file runs. The explicit `.mjs` and `.cjs` extensions remove that ambiguity.
+
+Included in `DefaultPolicies`. Exclude generated or vendored files with the `exclude` option:
+
+```ts
+policy(NoJsFileExtensions, undefined, { exclude: ["^bin/", "^vendor/"] });
+```
+
+**Auto-fixable:** No.
+
+## Dependencies
+
+### NoPrivateWorkspaceDependencies
+
+Stops publishable packages from depending on private workspace packages through the `workspace:` protocol. Publishing a package replaces each `workspace:` dependency with a real version. A private package (`"private": true`) is never published, so consumers can't install the dependency.
+
+How it works:
+
+1. Packages with `"private": true` are skipped, because they are never published.
+2. The policy finds workspace packages from `pnpm-workspace.yaml` or the `workspaces` field of the root `package.json`.
+3. A `workspace:` dependency on a private package fails the check.
+
+```ts
+// Check dependencies only (default)
+policy(NoPrivateWorkspaceDependencies);
+
+// Also check devDependencies
+policy(NoPrivateWorkspaceDependencies, { checkDevDependencies: true });
+```
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `checkDevDependencies` | `boolean` | `false` | Also check `devDependencies`. |
+
+To fix a failure, publish the dependency (remove `"private": true`), move the shared code into a publishable package, or remove the dependency.
+
+**Auto-fixable:** No.
+
+## Package metadata
+
+### PackageAllowedScopes
+
+Checks that every package uses an approved npm scope or is a listed unscoped name. This catches new or misspelled scopes in a monorepo.
+
+```ts
+policy(PackageAllowedScopes, {
+	allowedScopes: ["@myorg", "@internal"],
+	unscopedPackages: ["legacy-tool"],
+});
+```
+
+| Option | Type | Description |
+| --- | --- | --- |
+| `allowedScopes` | `string[]` | Allowed scopes, such as `@myorg`. |
+| `unscopedPackages` | `string[]` | Unscoped package names that are allowed. |
+
+A scoped package must use a scope from `allowedScopes`. An unscoped package must appear in `unscopedPackages`. The policy always skips a package named `root`.
+
+**Auto-fixable:** No.
+
+### PackageEsmType
+
+Checks that the `type` field in `package.json` is set to `"module"` or `"commonjs"` as expected.
+
+```ts
+// Require ESM everywhere
+policy(PackageEsmType, { requiredType: "module" });
+
+// Infer the expected type from exports/main
+policy(PackageEsmType, { detectFromExports: true, onDetectionFailure: "warn" });
+```
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `requiredType` | `"module" \| "commonjs"` | | Type every package must declare. Overrides detection. |
+| `detectFromExports` | `boolean` | `false` | Infer the expected type from `exports` and `main`. |
+| `excludePackages` | `string[]` | | Package names or scopes to skip. |
+| `onDetectionFailure` | `"skip" \| "warn" \| "fail"` | `"skip"` | What to do when detection finds no type. |
+
+Detection rules when `detectFromExports` is `true`:
+
+- `.mjs` entry points or `import` conditions mean `"module"`.
+- `.cjs` entry points or `require` conditions mean `"commonjs"`.
+
+**Auto-fixable:** Yes. `--fix` sets the `type` field.
+
+### PackageFolderName
+
+Checks that the folder containing each `package.json` has the same name as the package.
+
+```ts
+policy(PackageFolderName, {
+	stripScopes: ["@*"],
+	excludePackages: ["@myorg/special-case"],
+});
+```
+
+| Option | Type | Description |
+| --- | --- | --- |
+| `stripScopes` | `string[]` | Scope globs to drop before comparing, such as `@*`, `@myorg`, or `@my*`. |
+| `excludePackages` | `string[]` | Package names to skip. |
+
+| Package name | `stripScopes` | Expected folder |
+| --- | --- | --- |
+| `@myorg/my-lib` | `["@*"]` | `my-lib` |
+| `@myorg/my-lib` | `["@myorg"]` | `my-lib` |
+| `@other/my-lib` | `["@myorg"]` | `@other/my-lib` |
+| `my-lib` | `["@*"]` | `my-lib` |
+
+**Auto-fixable:** No.
+
+### PackageJsonProperties
+
+Checks that `package.json` fields match the configured values.
+
+```ts
+policy(PackageJsonProperties, {
+	verbatim: {
+		license: "MIT",
+		author: "Example Author <author@example.com>",
+		repository: {
+			type: "git",
+			url: "git+https://github.com/example/repo.git",
+		},
+	},
+});
+```
+
+With `verbatim`, every configured field must match its value exactly. A configured array replaces the existing array; it is not appended. Fields not in the configuration are left unchanged.
+
+**Auto-fixable:** Yes. `--fix` writes the configured values.
+
+### PackageJsonRepoDirectoryProperty
+
+Checks that `repository.directory` in `package.json` is the package's path relative to the repository root. Packages whose `repository` field is a string are skipped.
+
+Included in `DefaultPolicies`.
+
+**Auto-fixable:** Yes.
+
+### PackageJsonSorted
+
+Checks that `package.json` files are sorted with [sort-package-json](https://github.com/keithamus/sort-package-json).
+
+Included in `DefaultPolicies`.
+
+**Auto-fixable:** Yes.
+
+### PackageLicense
+
+Checks that each package has a LICENSE file identical to the one at the repository root. Each published package in a monorepo should include its own LICENSE.
+
+```ts
+// Skip private packages and look for LICENSE (defaults)
+policy(PackageLicense);
+
+// Require a license in private packages too, with a different file name
+policy(PackageLicense, { skipPrivate: false, licenseFileName: "LICENSE.md" });
+```
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `skipPrivate` | `boolean` | `true` | Skip packages with `"private": true`. |
+| `licenseFileName` | `string` | `"LICENSE"` | License file name to compare and copy. |
+
+**Auto-fixable:** Yes. `--fix` copies the root LICENSE into the package.
+
+### PackagePrivateField
+
+Checks the `private` field in `package.json` against glob patterns of package names. Use it to keep internal packages from being published, and to keep public packages from being blocked by `"private": true`.
+
+```ts
+policy(PackagePrivateField, {
+	mustPublish: ["@myorg/*"],
+	mustBePrivate: ["@internal/*"],
+	mayPublish: ["@experimental/*"],
+	unmatchedPackages: "private",
+});
+```
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `mustPublish` | `string[]` | | Packages that must not have `"private": true`. |
+| `mustBePrivate` | `string[]` | | Packages that must have `"private": true`. |
+| `mayPublish` | `string[]` | | Packages that can be either. |
+| `unmatchedPackages` | `"private" \| "public" \| "ignore"` | `"private"` | Rule for packages that match no pattern. |
+
+Patterns are [picomatch](https://github.com/micromatch/picomatch) globs, checked in the order `mustPublish`, `mustBePrivate`, `mayPublish`. A package that matches none of them gets the `unmatchedPackages` rule.
+
+**Auto-fixable:** Yes. `--fix` adds or removes the `private` field.
+
+### PackageReadme
+
+Checks that each package has a `README.md` with the expected content.
+
+```ts
+policy(PackageReadme, {
+	requireMatchingTitle: true,
+	requiredContent: "## Trademark",
+});
+```
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `skipPrivate` | `boolean` | `true` | Skip packages with `"private": true`. |
+| `requireMatchingTitle` | `boolean` | `true` | Require the first line to be `# <package name>`. |
+| `requiredContent` | `string` | | Text that must appear in the README. |
+
+**Auto-fixable:** Yes. `--fix` creates a missing README with the package name as its title and appends missing `requiredContent`.
+
+## Scripts
+
+The script policies each check one rule. Combine them as needed. [PackageScripts](#packagescripts) is an older policy that checks all of these rules together.
+
+Several options take *script entries*. An entry is either a script name (`"test"`), which must exist but cannot be auto-fixed, or a one-key object (`{ clean: "rimraf dist" }`). With an object, `--fix` adds the script with that value when it is missing.
+
+### RequiredScripts
+
+Checks that `package.json` contains the listed scripts. Only presence is checked, not content.
+
+```ts
+policy(RequiredScripts, {
+	scripts: ["test", { lint: "biome lint ." }, { clean: "rimraf dist esm" }],
+});
+```
+
+**Auto-fixable:** Partial. `--fix` adds missing scripts that have a default value.
+
+### ExactScripts
+
+Checks that the listed scripts exist and have exactly the configured content.
+
+```ts
+policy(ExactScripts, {
+	scripts: {
+		clean: "rimraf dist esm",
+		format: "biome format --write .",
+	},
+});
+```
+
+**Auto-fixable:** Yes. `--fix` adds missing scripts and replaces scripts with different content.
+
+### ConditionalScripts
+
+Requires other scripts when a given script is present.
+
+```ts
+policy(ConditionalScripts, {
+	rules: [
+		// If "build" exists, "clean" must too
+		{ ifPresent: "build", requires: [{ clean: "rimraf dist" }] },
+		// If "test" exists, "test:coverage" must too
+		{ ifPresent: "test", requires: ["test:coverage"] },
+	],
+});
+```
+
+**Auto-fixable:** Partial. `--fix` adds missing scripts that have a default value.
+
+### MutuallyExclusiveScripts
+
+Allows at most one script from each group. A package can have none of them.
+
+```ts
+policy(MutuallyExclusiveScripts, {
+	groups: [
+		["lint:eslint", "lint:biome"],
+		["test:jest", "test:vitest"],
+	],
+});
+```
+
+**Auto-fixable:** No.
+
+### ScriptContains
+
+Checks that scripts contain the configured substrings. A script that doesn't exist is not checked; use [RequiredScripts](#requiredscripts) to require it.
+
+```ts
+policy(ScriptContains, {
+	rules: [
+		{ script: "clean", mustContain: ["rimraf"] },
+		{ script: "test", mustContain: ["vitest", "run"] },
+	],
+});
+```
+
+**Auto-fixable:** No.
+
+### PackageScripts
+
+Legacy policy that checks the rules of the five script policies above with one configuration. New configurations should use those policies instead.
+
+```ts
+policy(PackageScripts, {
+	must: ["test", { build: "tsc" }],
+	exact: { clean: "rimraf dist esm" },
+	conditionalRequired: [{ ifPresent: "build", requires: [{ clean: "rimraf dist" }] }],
+	scriptMustContain: [{ script: "build", mustContain: ["tsc"] }],
+	mutuallyExclusive: [["lint:eslint", "lint:biome"]],
+});
+```
+
+| Option | Equivalent policy | Auto-fixable |
+| --- | --- | --- |
+| `must` | [RequiredScripts](#requiredscripts) | If a default is given |
+| `exact` | [ExactScripts](#exactscripts) | Yes |
+| `conditionalRequired` | [ConditionalScripts](#conditionalscripts) | If a default is given |
+| `scriptMustContain` | [ScriptContains](#scriptcontains) | No |
+| `mutuallyExclusive` | [MutuallyExclusiveScripts](#mutuallyexclusivescripts) | No |
+
+### PackageTestScripts
+
+Requires test scripts in packages that contain test directories or test framework dependencies.
+
+```ts
+policy(PackageTestScripts, {
+	testDirectories: ["test", "tests", "__tests__"],
+	testDependencies: ["vitest", "jest", "mocha"],
+	requiredScripts: ["test"],
+	excludePackages: ["@myorg/docs"],
+});
+```
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `testDirectories` | `string[]` | | Directories next to `package.json` that indicate tests. |
+| `testDependencies` | `string[]` | | `devDependencies` that indicate tests. |
+| `requiredScripts` | `string[]` | `["test"]` | Scripts required when tests are found. |
+| `excludePackages` | `string[]` | | Package names or scopes to skip. |
+
+Only configured checks run. If both `testDirectories` and `testDependencies` are set, either one triggers the requirement.
+
+**Auto-fixable:** No.

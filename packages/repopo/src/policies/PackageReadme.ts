@@ -261,16 +261,16 @@ async function validateExistingReadme(
  *
  * @example
  * ```typescript
- * import { makePolicy } from "repopo";
+ * import { policy } from "repopo";
  * import { PackageReadme } from "repopo/policies";
  *
  * const config: RepopoConfig = {
  *   policies: [
  *     // Basic README validation
- *     makePolicy(PackageReadme),
+ *     policy(PackageReadme),
  *
  *     // Require trademark notice in all READMEs
- *     makePolicy(PackageReadme, {
+ *     policy(PackageReadme, {
  *       requiredContent: "## Trademark",
  *     }),
  *   ],
