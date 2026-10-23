@@ -23,13 +23,15 @@ pnpm add -D repopo
 Create `repopo.config.ts` in the root of the repo:
 
 ```ts
-import { policy, type RepopoConfig } from "repopo";
-import { NoJsFileExtensions, PackageJsonSorted } from "repopo/policies";
+import { makePolicy, type RepopoConfig } from "repopo";
+import { NoJsFileExtensions, PackageJsonProperties } from "repopo/policies";
 
 export default {
 	policies: [
-		policy(NoJsFileExtensions, undefined, { exclude: ["^bin/"] }),
-		policy(PackageJsonSorted),
+		makePolicy(NoJsFileExtensions, { exclude: ["^bin/"] }),
+		makePolicy(PackageJsonProperties, {
+			config: { verbatim: { license: "MIT" } },
+		}),
 	],
 } satisfies RepopoConfig;
 ```
@@ -46,7 +48,8 @@ repopo check --fix
 - [Configuration](https://repopo.tylerbutler.com/usage/config/): choosing policies, policy options, and file exclusions
 - [Built-in policies](https://repopo.tylerbutler.com/policies/built-in/): every included policy and its options
 - [Custom policies](https://repopo.tylerbutler.com/policies/custom/): writing file and repository policies
-- [Programmatic API](https://repopo.tylerbutler.com/usage/programmatic-api/): running policies with `PolicyRunner`
+- [Programmatic API](https://repopo.tylerbutler.com/usage/programmatic-api/): running policies with `runPolicies` and `PolicyRunner`
+- [Migrating to the 1.0 API](https://repopo.tylerbutler.com/usage/migration/): breaking changes to configuration, policy results, and runners
 - [Benchmarking](https://repopo.tylerbutler.com/usage/benchmarking/): comparing the TypeScript and Rust engines
 - [API reference](https://repopo.tylerbutler.com/api/readme/)
 
@@ -107,10 +110,9 @@ FLAGS
 DESCRIPTION
   Checks and applies policies using the Rust engine.
 
-  Runs the Rust-based repopo-core engine with the Node.js sidecar. This provides the same policy checking as 'check' but
-  with Rust-based file enumeration, regex matching, and orchestration for better performance. Repository policies always
-  run with the full repository inventory, including with --stdin. With --fix, repository policies can modify files
-  outside the stdin selection.
+  Runs the Rust-based repopo-core engine with the Node.js sidecar. Rust handles file matching, scheduling and reporting;
+  the sidecar shares per-policy contracts with 'check'. Repository policies always run with the full repository
+  inventory, including with --stdin. With --fix, repository policies can modify files outside the stdin selection.
 ```
 
 _See code: [src/commands/check-native.ts](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/commands/check-native.ts)_

@@ -50,8 +50,7 @@ describe("RustToolchainExists", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should pass when rust-toolchain exists (without .toml)", async () => {
@@ -62,8 +61,7 @@ describe("RustToolchainExists", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -74,10 +72,11 @@ describe("RustToolchainExists", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("No rust-toolchain file found");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"No rust-toolchain file found",
+				);
 			}
 		});
 	});
@@ -92,8 +91,7 @@ describe("RustToolchainExists", () => {
 				resolve: false,
 				config: { acceptedNames: ["my-toolchain"] },
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 });

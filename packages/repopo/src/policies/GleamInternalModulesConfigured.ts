@@ -1,4 +1,4 @@
-import type { PolicyShape } from "../policy.js";
+import type { FilePolicyDefinition } from "../policy.js";
 import {
 	defineGleamPolicy,
 	type GleamToml,
@@ -23,35 +23,35 @@ export interface GleamInternalModulesConfiguredConfig {
  *
  * @public
  */
-export const GleamInternalModulesConfigured: PolicyShape<GleamInternalModulesConfiguredConfig> =
-	defineGleamPolicy({
-		name: "GleamInternalModulesConfigured",
-		description:
-			"Ensures internal_modules is configured in gleam.toml to hide implementation details from docs.",
-		handler: async (toml: GleamToml, { config }) => {
-			const internalModules = toml.internal_modules as string[] | undefined;
+export const GleamInternalModulesConfigured = defineGleamPolicy({
+	name: "GleamInternalModulesConfigured",
+	description:
+		"Ensures internal_modules is configured in gleam.toml to hide implementation details from docs.",
+	handler: async (toml: GleamToml, { config }) => {
+		const internalModules = toml.internal_modules as string[] | undefined;
 
-			if (
-				internalModules !== undefined &&
-				Array.isArray(internalModules) &&
-				internalModules.length > 0
-			) {
-				return true;
-			}
+		if (
+			internalModules !== undefined &&
+			Array.isArray(internalModules) &&
+			internalModules.length > 0
+		) {
+			return [];
+		}
 
-			const name = toml.name as string | undefined;
-			const suggestPatterns = config?.suggestPatterns ?? true;
+		const name = toml.name as string | undefined;
+		const suggestPatterns = config?.suggestPatterns ?? true;
 
-			let manualFix =
-				"Add an internal_modules field to gleam.toml to hide implementation details from docs.";
-			if (suggestPatterns && name) {
-				manualFix = `Add to gleam.toml:\ninternal_modules = ["${name}/internal", "${name}/internal/*"]`;
-			}
-
-			return {
-				error:
+		let manualFix =
+			"Add an internal_modules field to gleam.toml to hide implementation details from docs.";
+		if (suggestPatterns && name) {
+			manualFix = `Add to gleam.toml:\ninternal_modules = ["${name}/internal", "${name}/internal/*"]`;
+		}
+		return [
+			{
+				message:
 					"Missing internal_modules configuration in gleam.toml. Published packages should hide internal modules from documentation.",
-				manualFix,
-			};
-		},
-	});
+				manualFix: manualFix,
+			},
+		];
+	},
+}) satisfies FilePolicyDefinition<GleamInternalModulesConfiguredConfig>;

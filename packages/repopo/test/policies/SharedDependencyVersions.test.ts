@@ -29,7 +29,7 @@ describe("SharedDependencyVersions", () => {
 					files: [],
 					resolve: false,
 				}),
-			).toBe(true);
+			).toEqual([]);
 		});
 
 		it("should pass when versions match across members", async () => {
@@ -68,8 +68,7 @@ describe("SharedDependencyVersions", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should pass when no workspace section exists", async () => {
@@ -83,8 +82,7 @@ describe("SharedDependencyVersions", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -116,14 +114,14 @@ describe("SharedDependencyVersions", () => {
 				expect.arrayContaining([
 					expect.objectContaining({ files: ["Cargo.toml"] }),
 					expect.objectContaining({
-						error: expect.stringContaining('Version mismatch for "serde"'),
+						message: expect.stringContaining('Version mismatch for "serde"'),
 						files: expect.arrayContaining([
 							"crates/foo/Cargo.toml",
 							"crates/bar/Cargo.toml",
 						]),
 					}),
 					expect.objectContaining({
-						error: expect.stringContaining('Version mismatch for "tokio"'),
+						message: expect.stringContaining('Version mismatch for "tokio"'),
 					}),
 				]),
 			);
@@ -141,9 +139,7 @@ describe("SharedDependencyVersions", () => {
 		])("should check globbed members while honoring workspace exclusions: %s", async (excludeBar) => {
 			await writeFile(
 				join(testDir, "Cargo.toml"),
-				`[workspace]\nmembers = ["crates/*"]\n${
-					excludeBar ? 'exclude = ["crates/bar"]\n' : ""
-				}`,
+				`[workspace]\nmembers = ["crates/*"]\n${excludeBar ? 'exclude = ["crates/bar"]\n' : ""}`,
 			);
 			for (const [name, version] of [
 				["foo", "1.0"],
@@ -163,11 +159,11 @@ describe("SharedDependencyVersions", () => {
 			});
 
 			if (excludeBar) {
-				expect(result).toBe(true);
+				expect(result).toEqual([]);
 			} else {
 				expect(result).toMatchObject([
 					{
-						error: expect.stringContaining('Version mismatch for "serde"'),
+						message: expect.stringContaining('Version mismatch for "serde"'),
 						files: expect.arrayContaining([
 							"crates/foo/Cargo.toml",
 							"crates/bar/Cargo.toml",
@@ -211,11 +207,10 @@ describe("SharedDependencyVersions", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			expect(result).toEqual([
 				expect.objectContaining({
-					error: expect.stringContaining('Version mismatch for "serde"'),
+					message: expect.stringContaining('Version mismatch for "serde"'),
 				}),
 			]);
 		});
@@ -246,8 +241,7 @@ describe("SharedDependencyVersions", () => {
 				resolve: false,
 				config: { requireWorkspaceDeps: ["serde"] },
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should fail when required deps are not in workspace.dependencies", async () => {
@@ -268,11 +262,10 @@ describe("SharedDependencyVersions", () => {
 				resolve: false,
 				config: { requireWorkspaceDeps: ["serde"] },
 			});
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			expect(result).toEqual([
 				expect.objectContaining({
-					error: expect.stringContaining(
+					message: expect.stringContaining(
 						'"serde" should be defined in [workspace.dependencies]',
 					),
 					files: ["Cargo.toml"],
@@ -317,8 +310,7 @@ describe("SharedDependencyVersions", () => {
 				resolve: false,
 				config: { detectMismatches: false },
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 });

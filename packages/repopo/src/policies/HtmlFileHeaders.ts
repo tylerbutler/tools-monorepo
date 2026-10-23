@@ -20,10 +20,7 @@ export const HtmlFileHeaders = defineFileHeaderPolicy({
 			content: string,
 			{ headerText }: FileHeaderPolicyConfig,
 		): string => {
-			const newContent = `<!-- ${headerText.replace(
-				newline,
-				` -->${newline}<!-- `,
-			)} -->${newline}${newline}${content}`;
+			const newContent = `<!-- ${headerText.replace(newline, ` -->${newline}<!-- `)} -->${newline}${newline}${content}`;
 			return newContent;
 		},
 	},

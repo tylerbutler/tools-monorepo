@@ -1,11 +1,10 @@
 import { run } from "effection";
 import type {
-	PolicyFunctionArguments,
+	PolicyArgs,
 	PolicyHandler,
-	PolicyHandlerResult,
+	PolicyResult,
 	RepositoryPolicyArgs,
 	RepositoryPolicyHandler,
-	RepositoryPolicyResult,
 } from "../src/policy.js";
 
 /**
@@ -18,7 +17,11 @@ function isOperation<T>(
 		typeof value === "object" &&
 		value !== null &&
 		"next" in value &&
-		typeof (value as { next: unknown }).next === "function"
+		typeof (
+			value as {
+				next: unknown;
+			}
+		).next === "function"
 	);
 }
 
@@ -32,11 +35,11 @@ function isOperation<T>(
 export function runHandler<C = undefined>(
 	handler: RepositoryPolicyHandler<C>,
 	args: RepositoryPolicyArgs<C>,
-): Promise<RepositoryPolicyResult>;
+): Promise<PolicyResult>;
 export function runHandler<C = undefined>(
 	handler: PolicyHandler<C>,
-	args: PolicyFunctionArguments<C>,
-): Promise<PolicyHandlerResult>;
+	args: PolicyArgs<C>,
+): Promise<PolicyResult>;
 export async function runHandler<A, R>(
 	handler: (handlerArgs: A) => Promise<R> | Generator<unknown, R, unknown>,
 	args: A,

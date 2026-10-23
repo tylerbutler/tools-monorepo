@@ -1,6 +1,6 @@
 ---
 title: Programmatic API
-description: Run repopo policies from your own code with PolicyRunner.
+description: Run repopo policies from your own code with runPolicies or PolicyRunner.
 sidebar:
   order: 3
 ---
@@ -9,7 +9,7 @@ You can run policies from your own code as well as from the CLI. repopo has thre
 
 | Import | Contents |
 | --- | --- |
-| `repopo/api` | Policy types, `policy()` and the policy definers, adapters, and `PolicyRunner`. |
+| `repopo/api` | Policy types, `makePolicy()` and the policy definers, adapters, `runPolicies`, and `PolicyRunner`. |
 | `repopo/policies` | The [built-in policies](/policies/built-in/) and their configuration types. |
 | `repopo` | Everything in `repopo/api`, plus the CLI's `run` function from OCLIF. |
 
@@ -17,57 +17,84 @@ Import from `repopo/api` in programs so you don't load the CLI entry point.
 
 ## Running policies
 
-`PolicyRunner.run()` returns an [Effection](https://frontside.com/effection) operation. Run it with `run` from `effection`:
+`runPolicies` runs configured policies and returns a promise of the results:
 
 ```ts
-import { run } from "effection";
-import { PolicyRunner, policy } from "repopo/api";
+import { makePolicy, runPolicies } from "repopo/api";
 import { NoJsFileExtensions } from "repopo/policies";
 
-const runner = new PolicyRunner({
-	policies: [policy(NoJsFileExtensions)],
-	gitRoot: process.cwd(),
-	resolve: false,
-	excludeFromAll: [],
-	excludePoliciesForFiles: new Map(),
+const results = await runPolicies({
+	policies: [makePolicy(NoJsFileExtensions)],
+	root: process.cwd(),
+	files: ["src/main.mjs"],
+	fix: false,
 });
 
-const { results } = await run(() => runner.run(["src/main.mjs"]));
+const failed =
+	results.errors.length > 0 ||
+	results.findings.some((finding) => finding.fixStatus !== "fixed");
 ```
 
-### Runner options
+If your code already uses [Effection](https://frontside.com/effection), use `PolicyRunner`. It takes the same options and returns the same results: `yield* new PolicyRunner(options).run()` inside an operation.
+
+### Options
 
 | Option | Description |
 | --- | --- |
-| `policies` | Configured file and repository policies. |
-| `gitRoot` | Absolute path of the repository root. |
-| `resolve` | `true` to apply fixes, like `check --fix`. |
-| `excludeFromAll` | Regular expressions that exclude repo-relative paths from every policy. |
-| `excludePoliciesForFiles` | Per-instance exclusions. Entries override a policy's own exclusions. |
-| `concurrency` | Maximum files processed at once in read-only runs. Defaults to 8. Fixes always run one at a time. |
-| `logger` | Optional logger for file-exclusion messages. |
+| `policies` | Policies configured with `makePolicy()`. |
+| `root` | Absolute path of the repository root. |
+| `files` | Repo-relative paths that file policies check. Defaults to `inventory`. |
+| `inventory` | The full repository file list for repository policies. See below. |
+| `exclude` | Patterns that exclude repo-relative paths from every policy, like `excludeFiles` in a configuration file. |
+| `fix` | `true` to apply fixes, like `check --fix`. |
+| `concurrency` | Maximum files processed at once in read-only runs. Defaults to 8. Fixes always run one file at a time. |
+| `signal` | An `AbortSignal` to cancel the run. |
 
 ### Selected files and the repository inventory
 
-`run(filePaths, repositoryFiles)` takes two lists:
+The two file lists do different jobs:
 
-- `filePaths`: the repo-relative files that file policies check.
-- `repositoryFiles`: the full inventory that repository policies receive.
+- `files` is the selection that file policies check.
+- `inventory` is the full list of repository files that repository policies receive.
+
+When any repository policy is configured, you **must** pass `inventory`. repopo never uses `files` as a substitute: a repository policy that checks for a missing README would give the wrong answer if it saw only the changed files. Repository policies run once each, even when the selection or the inventory is empty.
+
+An array is a fixed snapshot. When fixes can create or remove files, pass an async function instead; repopo calls it again after file fixes and before each repository policy:
 
 ```ts
-await run(() => runner.run(selectedFiles, repositoryFiles));
+await runPolicies({
+	policies,
+	root,
+	files: changedFiles,
+	inventory: async () => listAllRepositoryFiles(),
+	fix: true,
+});
 ```
 
-If `repositoryFiles` is omitted, the runner uses `filePaths`, which is correct only when you check the whole repository. When fixes can create or remove files, pass an async function that returns the inventory instead of an array. The runner calls it again before each repository policy.
+`listAllRepositoryFiles` stands for your own function, such as one that runs `git ls-files`. The CLI loads the full Git inventory this way regardless of `--stdin`.
 
-### Results
+## Results
 
-`run` returns `{ results, perfStats }`. Each result has a `scope`, the `policy` name, the `policyId`, and an `outcome`. File results also have the `file`, and a `resolution` when a standalone resolver ran.
+The results have four parts:
 
-Use the `isPolicyError`, `isPolicyFailure`, and `isPolicyFixResult` type guards to tell outcome shapes apart.
+| Field | Contents |
+| --- | --- |
+| `findings` | Every finding, including fixed ones. Each has the `policy` name, the `policyId`, the `scope`, and a `file` (file policies) or optional `files` (repository policies). |
+| `errors` | Execution errors: a policy threw or broke the result contract. Each has the `phase` (`"handle"` or `"resolve"`), the `kind` (`"exception"` or `"contract"`), a `message`, and the original `cause`. |
+| `skipped` | Work that didn't run, with a `reason`: `"excluded"`, `"file-fix-error"`, or `"repository-fix-error"`. |
+| `perfStats` | Counts and per-policy timings in milliseconds. |
+
+A run has failed if there are any errors or any finding whose `fixStatus` isn't `"fixed"`. Skipped work because of exclusions isn't a failure.
+
+### Error handling
+
+- Invalid input, such as a bad exclusion pattern or a policy missing required configuration, throws before any policy runs.
+- In read-only runs, execution errors are collected and the run continues.
+- In fix runs, an error stops the remaining work on that file, but other files continue and repository policies are skipped. An error in a repository policy skips the repository policies after it.
+- Cancelling with `signal` releases resources before the run rejects. Fixes that were already written aren't rolled back.
 
 ## Standalone resolvers
 
-A file policy can provide its fix as a separate `resolver` instead of fixing in the handler. See [Standalone file resolvers](/policies/custom/#standalone-file-resolvers). `PolicyRunner` converts every resolver result to a `PolicyFixResult` in the `resolution` field of the file result.
+A file policy can provide its fix as a separate `resolver` instead of fixing in the handler. See [Standalone file resolvers](/policies/custom/#standalone-file-resolvers).
 
-See the [API reference](/api/readme/) for every exported type and function.
+See the [API reference](/api/readme/) for every exported type and function, and [Migrate to the 1.0 API](/usage/migration/) if you're updating code written against an earlier version.

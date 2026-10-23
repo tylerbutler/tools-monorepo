@@ -2,7 +2,7 @@ import { readFile, writeFile } from "node:fs/promises";
 import { EOL as newline } from "node:os";
 import { call } from "effection";
 import { extname, resolve as resolvePath } from "pathe";
-import type { PolicyFailure, PolicyFixResult, PolicyShape } from "../policy.js";
+import type { FilePolicyDefinition, PolicyFinding } from "../policy.js";
 
 const trailingSpaces = /\s*\\r\?\\n/;
 
@@ -87,12 +87,15 @@ export interface DefineFileHeaderPolicyArgs {
 	 * Configuration for how headers are detected and inserted.
 	 */
 	config: FileHeaderGeneratorConfig;
+	/** Complete default instance configuration, if the policy is usable without an override. */
+	defaultConfig?: FileHeaderPolicyConfig;
 }
 
 /**
  * Creates a file-header policy that detects missing or incorrect headers and can replace them.
  *
- * The handler skips checks when no {@link FileHeaderPolicyConfig} is supplied.
+ * Supply {@link FileHeaderPolicyConfig} when configuring the policy, unless
+ * the definition supplies a complete default.
  *
  * @param args - Policy metadata and header matching and replacement rules.
  * @returns A file policy configured for the supplied file types.
@@ -109,8 +112,18 @@ export interface DefineFileHeaderPolicyArgs {
  * @public
  */
 export function defineFileHeaderPolicy(
+	args: DefineFileHeaderPolicyArgs & { defaultConfig: FileHeaderPolicyConfig },
+): FilePolicyDefinition<FileHeaderPolicyConfig> & {
+	requiresConfig: true;
+	defaultConfig: FileHeaderPolicyConfig;
+};
+/** Define a header policy that requires explicit header configuration. @public */
+export function defineFileHeaderPolicy(
 	args: DefineFileHeaderPolicyArgs,
-): PolicyShape<FileHeaderPolicyConfig> {
+): FilePolicyDefinition<FileHeaderPolicyConfig> & { requiresConfig: true };
+export function defineFileHeaderPolicy(
+	args: DefineFileHeaderPolicyArgs,
+): FilePolicyDefinition<FileHeaderPolicyConfig> & { requiresConfig: true } {
 	const { name, description, config } = args;
 	const pre = config.headerStart?.source ?? "";
 	const start = config.lineStart.source;
@@ -133,22 +146,17 @@ export function defineFileHeaderPolicy(
 		name,
 		description,
 		match: config.match,
+		requiresConfig: true,
+		defaultConfig: args.defaultConfig,
 		handler: function* ({ file, root, resolve, config: policyConfig }) {
 			if (policyConfig === undefined) {
-				return true;
+				throw new TypeError(`${name} requires config.`);
 			}
 
 			const regex = new RegExp(
 				`^${pre}${toRegex(policyConfig.headerText)}(${toRegex(policyConfig.autoGenText ?? config.autoGenText ?? "")})?${post}`,
 			);
-
-			const failResult: PolicyFailure = {
-				name,
-				file,
-				autoFixable: true,
-				errorMessages: [],
-			};
-
+			const failResult: PolicyFinding[] = [];
 			// TODO: Consider reading only the first 512B or so since headers are typically
 			// at the beginning of the file.
 			const filePath = resolvePath(root, file);
@@ -158,31 +166,25 @@ export function defineFileHeaderPolicy(
 			const failed = !regex.test(content);
 
 			if (failed) {
-				failResult.errorMessages.push(`${extname(file)} file missing header`);
+				failResult.push({
+					message: `${extname(file)} file missing header`,
+					fixStatus: "available",
+				});
 			}
 
 			if (failed) {
 				if (resolve) {
 					const newContent = config.replacer(content, policyConfig);
 					yield* call(() => writeFile(filePath, newContent));
-
-					const fixResult: PolicyFixResult = {
-						...failResult,
-						resolved: true,
-					};
-
+					const fixResult: PolicyFinding[] = failResult.map((finding) => ({
+						...finding,
+						fixStatus: "fixed",
+					}));
 					return fixResult;
 				}
 				return failResult;
 			}
-
-			return true;
+			return [];
 		},
 	};
 }
-
-/**
- * Alias for defineFileHeaderPolicy.
- * @alpha
- */
-export const fileHeaderPolicy = defineFileHeaderPolicy;

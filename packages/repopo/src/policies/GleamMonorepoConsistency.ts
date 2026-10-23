@@ -1,7 +1,6 @@
 import { readFile } from "node:fs/promises";
 import path from "pathe";
-import { makePolicyDefinition } from "../makePolicy.js";
-import type { PolicyDefinition } from "../policy.js";
+import type { FilePolicyDefinition } from "../policy.js";
 import { parseToml } from "../policyDefiners/tomlParser.js";
 
 /**
@@ -24,7 +23,7 @@ export interface GleamMonorepoConsistencyConfig {
 
 	/**
 	 * Paths to gleam.toml files to compare (relative to repo root).
-	 * If not specified, the policy only checks the file it matches against.
+	 * With fewer than two paths, the policy reports no findings.
 	 */
 	packages?: string[];
 }
@@ -71,51 +70,50 @@ function checkFieldConsistency(
  *
  * @public
  */
-export const GleamMonorepoConsistency: PolicyDefinition<GleamMonorepoConsistencyConfig> =
-	makePolicyDefinition({
-		name: "GleamMonorepoConsistency",
-		description:
-			"Enforces consistent metadata (licences, gleam version, etc.) across Gleam packages in a monorepo.",
-		match: /^gleam\.toml$/,
-		handler: async ({ root, config }) => {
-			const packagePaths = config?.packages;
-			if (!packagePaths || packagePaths.length < 2) {
-				return true;
+export const GleamMonorepoConsistency = {
+	name: "GleamMonorepoConsistency",
+	requiresConfig: true,
+	description:
+		"Enforces consistent metadata (licences, gleam version, etc.) across Gleam packages in a monorepo.",
+	match: /^gleam\.toml$/,
+	handler: async ({ root, config }) => {
+		const packagePaths = config?.packages;
+		if (!packagePaths || packagePaths.length < 2) {
+			return [];
+		}
+
+		const syncFields = config?.syncFields ?? DEFAULT_SYNC_FIELDS;
+		const syncGleamVersion = config?.syncGleamVersion ?? true;
+
+		const packages = new Map<string, Record<string, unknown>>();
+		for (const pkgPath of packagePaths) {
+			const toml = await loadGleamToml(path.resolve(root, pkgPath));
+			if (toml) {
+				packages.set(pkgPath, toml);
 			}
+		}
 
-			const syncFields = config?.syncFields ?? DEFAULT_SYNC_FIELDS;
-			const syncGleamVersion = config?.syncGleamVersion ?? true;
+		if (packages.size < 2) {
+			return [];
+		}
 
-			const packages = new Map<string, Record<string, unknown>>();
-			for (const pkgPath of packagePaths) {
-				const toml = await loadGleamToml(path.resolve(root, pkgPath));
-				if (toml) {
-					packages.set(pkgPath, toml);
-				}
-			}
+		const errors: string[] = [];
 
-			if (packages.size < 2) {
-				return true;
-			}
+		for (const field of syncFields) {
+			errors.push(...checkFieldConsistency(packages, field));
+		}
 
-			const errors: string[] = [];
+		if (syncGleamVersion) {
+			errors.push(...checkFieldConsistency(packages, "gleam"));
+		}
 
-			for (const field of syncFields) {
-				errors.push(...checkFieldConsistency(packages, field));
-			}
-
-			if (syncGleamVersion) {
-				errors.push(...checkFieldConsistency(packages, "gleam"));
-			}
-
-			if (errors.length > 0) {
-				return {
-					error: errors.join("; "),
-					manualFix:
-						"Ensure all Gleam packages in the monorepo use consistent metadata values.",
-				};
-			}
-
-			return true;
-		},
-	});
+		if (errors.length > 0) {
+			return errors.map((message) => ({
+				message,
+				manualFix:
+					"Ensure all Gleam packages in the monorepo use consistent metadata values.",
+			}));
+		}
+		return [];
+	},
+} satisfies FilePolicyDefinition<GleamMonorepoConsistencyConfig>;

@@ -7,7 +7,7 @@ import {
 	PackageAllowedScopes,
 	type PackageAllowedScopesConfig,
 } from "../../src/policies/PackageAllowedScopes.js";
-import type { PolicyFunctionArguments } from "../../src/policy.js";
+import type { PolicyArgs } from "../../src/policy.js";
 import { runHandler } from "../test-helpers.js";
 
 describe("PackageAllowedScopes policy", () => {
@@ -30,7 +30,7 @@ describe("PackageAllowedScopes policy", () => {
 	const createArgs = (
 		filePath: string,
 		config?: PackageAllowedScopesConfig,
-	): PolicyFunctionArguments<typeof config> => ({
+	): PolicyArgs<typeof config> => ({
 		file: filePath,
 		root: tempDir,
 		resolve: false,
@@ -49,7 +49,7 @@ describe("PackageAllowedScopes policy", () => {
 				PackageAllowedScopes.handler,
 				createArgs(filePath, undefined),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -65,7 +65,7 @@ describe("PackageAllowedScopes policy", () => {
 				PackageAllowedScopes.handler,
 				createArgs(filePath, { allowedScopes: ["@myorg"] }),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should pass when package scope is one of multiple allowedScopes", async () => {
@@ -81,7 +81,7 @@ describe("PackageAllowedScopes policy", () => {
 					allowedScopes: ["@myorg", "@internal", "@experimental"],
 				}),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should fail when package scope is not in allowedScopes", async () => {
@@ -95,14 +95,17 @@ describe("PackageAllowedScopes policy", () => {
 				PackageAllowedScopes.handler,
 				createArgs(filePath, { allowedScopes: ["@myorg"] }),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("@unknown");
-				expect(result.errorMessages.join()).toContain(
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"@unknown",
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
 					"not in the allowed scopes",
 				);
-				expect(result.autoFixable).toBe(false);
+				expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+					false,
+				);
 			}
 		});
 
@@ -117,8 +120,7 @@ describe("PackageAllowedScopes policy", () => {
 				PackageAllowedScopes.handler,
 				createArgs(filePath, { allowedScopes: [] }),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 		});
 	});
 
@@ -134,7 +136,7 @@ describe("PackageAllowedScopes policy", () => {
 				PackageAllowedScopes.handler,
 				createArgs(filePath, { unscopedPackages: ["my-special-tool"] }),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should pass when unscoped package is one of multiple unscopedPackages", async () => {
@@ -150,7 +152,7 @@ describe("PackageAllowedScopes policy", () => {
 					unscopedPackages: ["my-special-tool", "legacy-pkg", "another-tool"],
 				}),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should fail when unscoped package is not in unscopedPackages", async () => {
@@ -164,12 +166,17 @@ describe("PackageAllowedScopes policy", () => {
 				PackageAllowedScopes.handler,
 				createArgs(filePath, { unscopedPackages: ["my-special-tool"] }),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("random-package");
-				expect(result.errorMessages.join()).toContain("unscoped package");
-				expect(result.autoFixable).toBe(false);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"random-package",
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"unscoped package",
+				);
+				expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+					false,
+				);
 			}
 		});
 
@@ -184,8 +191,7 @@ describe("PackageAllowedScopes policy", () => {
 				PackageAllowedScopes.handler,
 				createArgs(filePath, { unscopedPackages: [] }),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 		});
 	});
 
@@ -206,7 +212,7 @@ describe("PackageAllowedScopes policy", () => {
 				PackageAllowedScopes.handler,
 				createArgs(filePath, fullConfig),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should pass for allowed unscoped package", async () => {
@@ -220,7 +226,7 @@ describe("PackageAllowedScopes policy", () => {
 				PackageAllowedScopes.handler,
 				createArgs(filePath, fullConfig),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should fail for package with unknown scope", async () => {
@@ -234,8 +240,7 @@ describe("PackageAllowedScopes policy", () => {
 				PackageAllowedScopes.handler,
 				createArgs(filePath, fullConfig),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 		});
 
 		it("should fail for unknown unscoped package", async () => {
@@ -249,8 +254,7 @@ describe("PackageAllowedScopes policy", () => {
 				PackageAllowedScopes.handler,
 				createArgs(filePath, fullConfig),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 		});
 	});
 
@@ -266,8 +270,7 @@ describe("PackageAllowedScopes policy", () => {
 				PackageAllowedScopes.handler,
 				createArgs(filePath, { allowedScopes: ["@myorg"] }),
 			);
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should skip packages without a name", async () => {
@@ -280,8 +283,7 @@ describe("PackageAllowedScopes policy", () => {
 				PackageAllowedScopes.handler,
 				createArgs(filePath, { allowedScopes: ["@myorg"] }),
 			);
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should handle malformed scoped names (no slash)", async () => {
@@ -299,10 +301,11 @@ describe("PackageAllowedScopes policy", () => {
 					unscopedPackages: [],
 				}),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("unscoped package");
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"unscoped package",
+				);
 			}
 		});
 	});
@@ -319,11 +322,14 @@ describe("PackageAllowedScopes policy", () => {
 				PackageAllowedScopes.handler,
 				createArgs(filePath, { allowedScopes: ["@good", "@better"] }),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("@good");
-				expect(result.errorMessages.join()).toContain("@better");
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"@good",
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"@better",
+				);
 			}
 		});
 
@@ -338,11 +344,14 @@ describe("PackageAllowedScopes policy", () => {
 				PackageAllowedScopes.handler,
 				createArgs(filePath, { unscopedPackages: ["good-pkg", "better-pkg"] }),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("good-pkg");
-				expect(result.errorMessages.join()).toContain("better-pkg");
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"good-pkg",
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"better-pkg",
+				);
 			}
 		});
 
@@ -357,10 +366,11 @@ describe("PackageAllowedScopes policy", () => {
 				PackageAllowedScopes.handler,
 				createArgs(filePath, {}),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("(none)");
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"(none)",
+				);
 			}
 		});
 	});
@@ -381,10 +391,11 @@ describe("PackageAllowedScopes policy", () => {
 				PackageAllowedScopes.handler,
 				createArgs(filePath, { allowedScopes: ["@myorg"] }),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.autoFixable).toBe(false);
+				expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+					false,
+				);
 			}
 		});
 	});

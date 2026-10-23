@@ -48,7 +48,9 @@ describe("NoLargeBinaryFiles utility functions", () => {
 					});
 
 					if (typeof result === "object") {
-						expect(result.errorMessages.join()).toContain(expected);
+						expect(result.map((finding) => finding.message).join()).toContain(
+							expected,
+						);
 					}
 				}
 			} finally {
@@ -82,8 +84,7 @@ describe("NoLargeBinaryFiles utility functions", () => {
 					resolve: false,
 					config: { maxSizeBytes: 1 },
 				});
-
-				expect(result).toBe(true);
+				expect(result).toEqual([]);
 			} finally {
 				rmSync(testDir, { recursive: true, force: true });
 			}
@@ -144,7 +145,7 @@ describe("NoLargeBinaryFiles utility functions", () => {
 					});
 
 					if (shouldExclude) {
-						expect(result).toBe(true);
+						expect(result).toEqual([]);
 					}
 				}
 			} finally {
@@ -188,7 +189,7 @@ describe("NoLargeBinaryFiles utility functions", () => {
 					});
 
 					// Should be excluded because pattern matches exactly
-					expect(result).toBe(true);
+					expect(result).toEqual([]);
 				}
 			} finally {
 				rmSync(testDir, { recursive: true, force: true });
@@ -228,7 +229,7 @@ describe("NoLargeBinaryFiles utility functions", () => {
 					});
 
 					// Should pass because extensions are matched case-insensitively
-					expect(result).toBe(true);
+					expect(result).toEqual([]);
 				}
 			} finally {
 				rmSync(testDir, { recursive: true, force: true });
@@ -262,7 +263,12 @@ describe("NoLargeBinaryFiles utility functions", () => {
 				});
 
 				// Should fail because no extension to match against default exclusions
-				expect(result).not.toBe(true);
+				expect(result).not.toEqual([
+					/**
+					 * These tests verify the internal utility functions of NoLargeBinaryFiles policy.
+					 * Since these are not exported, we test them indirectly through the policy behavior.
+					 */
+				]);
 			} finally {
 				rmSync(testDir, { recursive: true, force: true });
 			}
@@ -300,7 +306,7 @@ describe("NoLargeBinaryFiles utility functions", () => {
 				});
 
 				// Should be excluded via substring match
-				expect(result).toBe(true);
+				expect(result).toEqual([]);
 			} finally {
 				rmSync(testDir, { recursive: true, force: true });
 			}

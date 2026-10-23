@@ -7,7 +7,7 @@ const { getWorkspaceGlobs } = resolveWorkspaceRoot;
 
 import { globSync } from "tinyglobby";
 import type { PackageJson } from "type-fest";
-import type { PolicyFailure } from "../policy.js";
+import type { PolicyFinding } from "../policy.js";
 import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
 
 /**
@@ -111,15 +111,15 @@ function isWorkspaceDependency(version: string | undefined): boolean {
  * @example
  * ```typescript
  * // In repopo.config.ts
+ * import { makePolicy } from "repopo";
  * import { NoPrivateWorkspaceDependencies } from "repopo/policies";
  *
- * policy(NoPrivateWorkspaceDependencies, {
- *   checkDevDependencies: false, // Only check production dependencies (default)
- * });
+ * // Only check production dependencies (default)
+ * makePolicy(NoPrivateWorkspaceDependencies);
  *
  * // Or check both dependencies and devDependencies
- * policy(NoPrivateWorkspaceDependencies, {
- *   checkDevDependencies: true,
+ * makePolicy(NoPrivateWorkspaceDependencies, {
+ *   config: { checkDevDependencies: true },
  * });
  * ```
  *
@@ -132,11 +132,10 @@ export const NoPrivateWorkspaceDependencies = definePackagePolicy<
 	name: "NoPrivateWorkspaceDependencies",
 	description:
 		"Prevents publishable packages from depending on private workspace packages that won't be available on npm.",
-	// biome-ignore lint/correctness/useYield: no yield needed
-	handler: function* (json, { file, root, config }) {
+	handler: function* (json, { root, config }) {
 		// Private packages can depend on anything - they won't be published
 		if (json.private === true) {
-			return true;
+			return [];
 		}
 
 		const checkDevDeps = config?.checkDevDependencies ?? false;
@@ -187,15 +186,11 @@ export const NoPrivateWorkspaceDependencies = definePackagePolicy<
 		}
 
 		if (errorMessages.length > 0) {
-			const failResult: PolicyFailure = {
-				name: NoPrivateWorkspaceDependencies.name,
-				file,
-				autoFixable: false,
-				errorMessages,
-			};
+			const failResult: PolicyFinding[] = errorMessages.map((message) => ({
+				message,
+			}));
 			return failResult;
 		}
-
-		return true;
+		return [];
 	},
 });

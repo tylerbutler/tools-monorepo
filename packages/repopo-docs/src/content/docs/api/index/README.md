@@ -1,0 +1,118 @@
+---
+editUrl: false
+next: false
+prev: false
+title: "index"
+---
+
+Repository policy authoring, execution, and CLI entry point.
+
+Import `repopo/api` for the programmatic API without the CLI entry point.
+
+## Classes
+
+- [PolicyRunner](/api/index/classes/policyrunner/)
+
+## Interfaces
+
+- [CargoLicenceValidatedConfig](/api/index/interfaces/cargolicencevalidatedconfig/)
+- [CargoLintsConfiguredConfig](/api/index/interfaces/cargolintsconfiguredconfig/)
+- [CargoLockPolicyConfig](/api/index/interfaces/cargolockpolicyconfig/)
+- [CargoTomlRequiredConfig](/api/index/interfaces/cargotomlrequiredconfig/)
+- [CargoTomlSortedConfig](/api/index/interfaces/cargotomlsortedconfig/)
+- [ConditionalScriptRule](/api/index/interfaces/conditionalscriptrule/)
+- [ConditionalScriptsConfig](/api/index/interfaces/conditionalscriptsconfig/)
+- [DefineCargoPolicyArgs](/api/index/interfaces/definecargopolicyargs/)
+- [DefineFileHeaderPolicyArgs](/api/index/interfaces/definefileheaderpolicyargs/)
+- [DefineGleamPolicyArgs](/api/index/interfaces/definegleampolicyargs/)
+- [DefinePackagePolicyArgs](/api/index/interfaces/definepackagepolicyargs/)
+- [ExactScriptsConfig](/api/index/interfaces/exactscriptsconfig/)
+- [FileHeaderGeneratorConfig](/api/index/interfaces/fileheadergeneratorconfig/)
+- [FileHeaderPolicyConfig](/api/index/interfaces/fileheaderpolicyconfig/)
+- [FilePolicyDefinition](/api/index/interfaces/filepolicydefinition/)
+- [FluidAdapterOptions](/api/index/interfaces/fluidadapteroptions/)
+- [FluidHandler](/api/index/interfaces/fluidhandler/)
+- [GleamDepVersionsConfig](/api/index/interfaces/gleamdepversionsconfig/)
+- [GleamDocExistsConfig](/api/index/interfaces/gleamdocexistsconfig/)
+- [GleamInternalModulesConfiguredConfig](/api/index/interfaces/gleaminternalmodulesconfiguredconfig/)
+- [GleamLicenceConfiguredConfig](/api/index/interfaces/gleamlicenceconfiguredconfig/)
+- [GleamMonorepoConsistencyConfig](/api/index/interfaces/gleammonorepoconsistencyconfig/)
+- [GleamNameRestrictionsConfig](/api/index/interfaces/gleamnamerestrictionsconfig/)
+- [GleamNoPathDepsInPublishedConfig](/api/index/interfaces/gleamnopathdepsinpublishedconfig/)
+- [GleamProjectStructureConfig](/api/index/interfaces/gleamprojectstructureconfig/)
+- [GleamSharedDependencyVersionsConfig](/api/index/interfaces/gleamshareddependencyversionsconfig/)
+- [GleamTomlRequiredConfig](/api/index/interfaces/gleamtomlrequiredconfig/)
+- [GleamTomlSortedConfig](/api/index/interfaces/gleamtomlsortedconfig/)
+- [GleamVersionConstraintConfig](/api/index/interfaces/gleamversionconstraintconfig/)
+- [LicenseFileExistsSettings](/api/index/interfaces/licensefileexistssettings/)
+- [MutuallyExclusiveScriptsConfig](/api/index/interfaces/mutuallyexclusivescriptsconfig/)
+- [NoLargeBinaryFilesSettings](/api/index/interfaces/nolargebinaryfilessettings/)
+- [NoPrivateWorkspaceDependenciesSettings](/api/index/interfaces/noprivateworkspacedependenciessettings/)
+- [NoUnsafeWithoutJustificationConfig](/api/index/interfaces/nounsafewithoutjustificationconfig/)
+- [NoWildcardDependenciesConfig](/api/index/interfaces/nowildcarddependenciesconfig/)
+- [PackageAllowedScopesConfig](/api/index/interfaces/packageallowedscopesconfig/)
+- [PackageEsmTypeConfig](/api/index/interfaces/packageesmtypeconfig/)
+- [PackageFolderNameConfig](/api/index/interfaces/packagefoldernameconfig/)
+- [PackageJsonPropertiesSettings](/api/index/interfaces/packagejsonpropertiessettings/)
+- [PackageLicenseSettings](/api/index/interfaces/packagelicensesettings/)
+- [PackagePrivateFieldConfig](/api/index/interfaces/packageprivatefieldconfig/)
+- [PackageReadmeSettings](/api/index/interfaces/packagereadmesettings/)
+- [PackageScriptsSettings](/api/index/interfaces/packagescriptssettings/)
+- [PackageTestScriptsConfig](/api/index/interfaces/packagetestscriptsconfig/)
+- [PolicyArgs](/api/index/interfaces/policyargs/)
+- [PolicyFinding](/api/index/interfaces/policyfinding/)
+- [PolicyHandlerPerfStats](/api/index/interfaces/policyhandlerperfstats/)
+- [PolicyOptions](/api/index/interfaces/policyoptions/)
+- [PolicyRunnerOptions](/api/index/interfaces/policyrunneroptions/)
+- [PolicyRunResults](/api/index/interfaces/policyrunresults/)
+- [PublicApiDocumentedConfig](/api/index/interfaces/publicapidocumentedconfig/)
+- [RepopoConfig](/api/index/interfaces/repopoconfig/)
+- [RepositoryPolicyArgs](/api/index/interfaces/repositorypolicyargs/)
+- [RepositoryPolicyDefinition](/api/index/interfaces/repositorypolicydefinition/)
+- [RequiredGitignorePatternsSettings](/api/index/interfaces/requiredgitignorepatternssettings/)
+- [RequiredScriptsConfig](/api/index/interfaces/requiredscriptsconfig/)
+- [RustDocExistsConfig](/api/index/interfaces/rustdocexistsconfig/)
+- [RustfmtConfigExistsConfig](/api/index/interfaces/rustfmtconfigexistsconfig/)
+- [RustToolchainExistsConfig](/api/index/interfaces/rusttoolchainexistsconfig/)
+- [ScriptContainsConfig](/api/index/interfaces/scriptcontainsconfig/)
+- [ScriptContainsRule](/api/index/interfaces/scriptcontainsrule/)
+- [ScriptMustContainRule](/api/index/interfaces/scriptmustcontainrule/)
+- [SharedDependencyVersionsConfig](/api/index/interfaces/shareddependencyversionsconfig/)
+- [WorkspaceInheritanceConfig](/api/index/interfaces/workspaceinheritanceconfig/)
+- [WorkspaceMembersValidConfig](/api/index/interfaces/workspacemembersvalidconfig/)
+
+## Type Aliases
+
+- [CargoToml](/api/index/type-aliases/cargotoml/)
+- [CargoTomlHandler](/api/index/type-aliases/cargotomlhandler/)
+- [ConditionalScriptEntry](/api/index/type-aliases/conditionalscriptentry/)
+- [ConfiguredFilePolicy](/api/index/type-aliases/configuredfilepolicy/)
+- [ConfiguredPolicy](/api/index/type-aliases/configuredpolicy/)
+- [ConfiguredRepositoryPolicy](/api/index/type-aliases/configuredrepositorypolicy/)
+- [GleamToml](/api/index/type-aliases/gleamtoml/)
+- [GleamTomlHandler](/api/index/type-aliases/gleamtomlhandler/)
+- [IdentifiedPolicy](/api/index/type-aliases/identifiedpolicy/)
+- [PackageJsonHandler](/api/index/type-aliases/packagejsonhandler/)
+- [PolicyAction](/api/index/type-aliases/policyaction/)
+- [PolicyDefinition](/api/index/type-aliases/policydefinition/)
+- [PolicyExecutionError](/api/index/type-aliases/policyexecutionerror/)
+- [PolicyHandler](/api/index/type-aliases/policyhandler/)
+- [PolicyInstanceId](/api/index/type-aliases/policyinstanceid/)
+- [PolicyName](/api/index/type-aliases/policyname/)
+- [PolicyResolver](/api/index/type-aliases/policyresolver/)
+- [PolicyResult](/api/index/type-aliases/policyresult/)
+- [PolicyRunFinding](/api/index/type-aliases/policyrunfinding/)
+- [PolicySkippedWork](/api/index/type-aliases/policyskippedwork/)
+- [RepositoryInventory](/api/index/type-aliases/repositoryinventory/)
+- [RepositoryPolicyHandler](/api/index/type-aliases/repositorypolicyhandler/)
+- [RequiredScriptEntry](/api/index/type-aliases/requiredscriptentry/)
+
+## Functions
+
+- [defineCargoPolicy](/api/index/functions/definecargopolicy/)
+- [defineFileHeaderPolicy](/api/index/functions/definefileheaderpolicy/)
+- [defineGleamPolicy](/api/index/functions/definegleampolicy/)
+- [definePackagePolicy](/api/index/functions/definepackagepolicy/)
+- [fromFluidHandlers](/api/index/functions/fromfluidhandlers/)
+- [makePolicy](/api/index/functions/makepolicy/)
+- [runPolicies](/api/index/functions/runpolicies/)

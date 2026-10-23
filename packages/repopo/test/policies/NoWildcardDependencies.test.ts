@@ -51,8 +51,7 @@ describe("NoWildcardDependencies", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should pass with table-style dependency versions", async () => {
@@ -73,8 +72,7 @@ describe("NoWildcardDependencies", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should skip workspace root", async () => {
@@ -94,8 +92,7 @@ describe("NoWildcardDependencies", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -118,11 +115,14 @@ describe("NoWildcardDependencies", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("serde");
-				expect(result.error).toContain("denied version pattern");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"serde",
+				);
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"denied version pattern",
+				);
 			}
 		});
 	});
@@ -146,10 +146,11 @@ describe("NoWildcardDependencies", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("overly permissive version range");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"overly permissive version range",
+				);
 			}
 		});
 
@@ -171,8 +172,7 @@ describe("NoWildcardDependencies", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should flag '>=' in dev-dependencies when allowDev is false", async () => {
@@ -194,10 +194,11 @@ describe("NoWildcardDependencies", () => {
 				resolve: false,
 				config: { allowDev: false },
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("overly permissive");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"overly permissive",
+				);
 			}
 		});
 	});
@@ -221,11 +222,14 @@ describe("NoWildcardDependencies", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("cc");
-				expect(result.error).toContain("denied version pattern");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"cc",
+				);
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"denied version pattern",
+				);
 			}
 		});
 	});

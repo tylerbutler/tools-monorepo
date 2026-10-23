@@ -2,7 +2,6 @@ import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "pathe";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { PolicyFailure } from "../../src/policy.js";
 import { runHandler } from "../test-helpers.js";
 
 describe("PackageJsonSorted optional dependency", () => {
@@ -33,17 +32,17 @@ describe("PackageJsonSorted optional dependency", () => {
 				join(testDir, "package.json"),
 				JSON.stringify({ version: "1.0.0", name: "test-package" }, null, 2),
 			);
-
-			const result = (await runHandler(PackageJsonSorted.handler, {
+			const result = await runHandler(PackageJsonSorted.handler, {
 				file: "package.json",
 				root: testDir,
 				resolve: false,
 				config: undefined,
-			})) as PolicyFailure;
-
-			expect(result.name).toBe("PackageJsonSorted");
-			expect(result.autoFixable).toBe(false);
-			expect(result.errorMessages).toEqual([
+			});
+			expect(result.every((finding) => !("name" in finding))).toBe(true);
+			expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+				false,
+			);
+			expect(result.map((finding) => finding.message)).toEqual([
 				"PackageJsonSorted requires the optional peer dependency sort-package-json. Install it to enable this policy.",
 			]);
 		} finally {

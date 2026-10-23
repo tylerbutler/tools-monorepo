@@ -1,13 +1,16 @@
 import { readFile } from "node:fs/promises";
 import { call, type Operation } from "effection";
 import { resolve } from "pathe";
+import { ExecutionContractError } from "../executionContractError.js";
 import { readParsedFile } from "../fileCache.js";
 import { GleamTomlRegexMatch } from "../policies/constants.js";
 import type {
+	DefinedConfig,
+	FilePolicyDefinition,
 	PolicyArgs,
-	PolicyHandlerResult,
-	PolicyShape,
+	PolicyResult,
 } from "../policy.js";
+import { settlePolicyPromise } from "../settlePolicyPromise.js";
 import { parseToml } from "./tomlParser.js";
 
 /**
@@ -28,7 +31,7 @@ export type GleamToml = Record<string, unknown>;
 export type GleamTomlHandler<C> = (
 	toml: GleamToml,
 	args: PolicyArgs<C>,
-) => Operation<PolicyHandlerResult> | Promise<PolicyHandlerResult>;
+) => Operation<PolicyResult> | Promise<PolicyResult>;
 
 /**
  * Type guard to check if a value is an Effection Operation (generator).
@@ -67,6 +70,7 @@ export interface DefineGleamPolicyArgs<C> {
 	 * Optional default configuration for the policy.
 	 */
 	defaultConfig?: C;
+	requiresConfig?: boolean;
 }
 
 /**
@@ -86,24 +90,36 @@ export interface DefineGleamPolicyArgs<C> {
  *   description: "Ensures gleam.toml has required fields",
  *   handler: async (toml, { file }) => {
  *     if (!toml.name) {
- *       return { error: "Missing name field", fixable: false };
+ *       return [{ message: "Missing name field" }];
  *     }
- *     return true;
+ *     return [];
  *   },
  * });
  * ```
  *
  * @public
  */
-export function defineGleamPolicy<C = undefined>(
+export function defineGleamPolicy<C = void>(
+	args: DefineGleamPolicyArgs<C> & { defaultConfig: DefinedConfig<C> },
+): FilePolicyDefinition<C> & { defaultConfig: DefinedConfig<C> };
+/** Define a Gleam policy that requires explicit configuration. @public */
+export function defineGleamPolicy<C = void>(
+	args: DefineGleamPolicyArgs<C> & { requiresConfig: true },
+): FilePolicyDefinition<C> & { requiresConfig: true };
+/** Define a Gleam policy with optional configuration. @public */
+export function defineGleamPolicy<C = void>(
 	args: DefineGleamPolicyArgs<C>,
-): PolicyShape<C> {
+): FilePolicyDefinition<C>;
+export function defineGleamPolicy<C = void>(
+	args: DefineGleamPolicyArgs<C>,
+): FilePolicyDefinition<C> {
 	const { name, description, handler: gleamHandler, defaultConfig } = args;
 	return {
 		name,
 		description,
 		match: GleamTomlRegexMatch,
 		defaultConfig,
+		requiresConfig: args.requiresConfig,
 		handler: function* (innerArgs) {
 			const toml: GleamToml = yield* call(() =>
 				readParsedFile(innerArgs, "toml", async () => {
@@ -117,12 +133,14 @@ export function defineGleamPolicy<C = undefined>(
 			const result = gleamHandler(toml, innerArgs);
 
 			if (result instanceof Promise) {
-				return yield* call(() => result);
+				return yield* settlePolicyPromise(result);
 			}
-			if (isOperation<PolicyHandlerResult>(result)) {
+			if (isOperation<PolicyResult>(result)) {
 				return yield* result;
 			}
-			throw new Error(`Unexpected handler result type: ${typeof result}`);
+			throw new ExecutionContractError(
+				`Unexpected handler result type: ${typeof result}`,
+			);
 		},
 	};
 }

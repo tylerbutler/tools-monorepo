@@ -1,6 +1,6 @@
 import jsonfile from "jsonfile";
 import { resolve as resolvePath } from "pathe";
-import type { PolicyFailure, PolicyFixResult } from "../policy.js";
+import type { PolicyFinding } from "../policy.js";
 import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
 import { detectIndentation } from "../utils/indentation.js";
 
@@ -50,12 +50,9 @@ export const PackageJsonSorted = definePackagePolicy({
 	handler: async (json, { file, root, resolve }) => {
 		const sortPackageJson = await loadSortPackageJson();
 		if (sortPackageJson === undefined) {
-			const result: PolicyFailure = {
-				name: PackageJsonSorted.name,
-				file,
-				autoFixable: false,
-				errorMessages: [missingDependencyMessage],
-			};
+			const result: PolicyFinding[] = [missingDependencyMessage].map(
+				(message) => ({ message }),
+			);
 			return result;
 		}
 
@@ -63,7 +60,7 @@ export const PackageJsonSorted = definePackagePolicy({
 		const isSorted = JSON.stringify(sortedJson) === JSON.stringify(json);
 
 		if (isSorted) {
-			return true;
+			return [];
 		}
 
 		if (resolve) {
@@ -71,33 +68,23 @@ export const PackageJsonSorted = definePackagePolicy({
 				const packageJsonPath = resolvePath(root, file);
 				const indent = await detectIndentation(packageJsonPath);
 				await writeJson(packageJsonPath, sortedJson, { spaces: indent });
-				const result: PolicyFixResult = {
-					name: PackageJsonSorted.name,
-					file,
-					resolved: true,
-					errorMessages: [],
-				};
+				const result: PolicyFinding[] = [
+					{ message: "package.json is not sorted.", fixStatus: "fixed" },
+				];
 				return result;
 			} catch (error: unknown) {
-				const result: PolicyFixResult = {
-					name: PackageJsonSorted.name,
-					file,
-					resolved: false,
-					autoFixable: true,
-					errorMessages: [
-						(error as Error).message,
-						(error as Error).stack ?? "",
-					],
-				};
+				const result: PolicyFinding[] = [
+					{
+						message: error instanceof Error ? error.message : String(error),
+						fixStatus: "failed",
+					},
+				];
 				return result;
 			}
 		} else {
-			const result: PolicyFailure = {
-				name: PackageJsonSorted.name,
-				file,
-				autoFixable: true,
-				errorMessages: [],
-			};
+			const result: PolicyFinding[] = [
+				{ message: "package.json is not sorted.", fixStatus: "available" },
+			];
 			return result;
 		}
 	},

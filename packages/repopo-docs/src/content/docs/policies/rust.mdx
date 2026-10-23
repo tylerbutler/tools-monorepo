@@ -9,13 +9,13 @@ sidebar:
 These policies check `Cargo.toml` manifests, Cargo workspaces, and Rust source files. Unless noted, a manifest policy checks every `Cargo.toml` in the repository. Policies marked **root only** check only the `Cargo.toml` at the repository root.
 
 ```ts title="repopo.config.ts"
-import { policy, type RepopoConfig } from "repopo";
+import { makePolicy, type RepopoConfig } from "repopo";
 import { CargoTomlRequired, CargoTomlSorted } from "repopo/policies";
 
 export default {
 	policies: [
-		policy(CargoTomlRequired, { minimumEdition: "2021" }),
-		policy(CargoTomlSorted),
+		makePolicy(CargoTomlRequired, { config: { minimumEdition: "2021" } }),
+		makePolicy(CargoTomlSorted),
 	],
 } satisfies RepopoConfig;
 ```
@@ -54,7 +54,7 @@ SPDX validation needs the optional peer dependency `spdx-correct`.
 Checks that `Cargo.toml` has a `[lints.clippy]` section and, optionally, minimum lint levels.
 
 ```ts
-policy(CargoLintsConfigured, { required: { pedantic: "warn", nursery: "warn" } });
+makePolicy(CargoLintsConfigured, { config: { required: { pedantic: "warn", nursery: "warn" } } });
 ```
 
 | Option | Type | Default | Description |

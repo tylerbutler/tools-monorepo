@@ -7,7 +7,7 @@ import {
 	PackageTestScripts,
 	type PackageTestScriptsConfig,
 } from "../../src/policies/PackageTestScripts.js";
-import type { PolicyFunctionArguments } from "../../src/policy.js";
+import type { PolicyArgs } from "../../src/policy.js";
 import { runHandler } from "../test-helpers.js";
 
 describe("PackageTestScripts policy", () => {
@@ -37,7 +37,7 @@ describe("PackageTestScripts policy", () => {
 	const createArgs = (
 		filePath: string,
 		config?: PackageTestScriptsConfig,
-	): PolicyFunctionArguments<typeof config> => ({
+	): PolicyArgs<typeof config> => ({
 		file: relative(tempDir, filePath),
 		root: tempDir,
 		resolve: false,
@@ -57,7 +57,7 @@ describe("PackageTestScripts policy", () => {
 				PackageTestScripts.handler,
 				createArgs(filePath, undefined),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -77,11 +77,14 @@ describe("PackageTestScripts policy", () => {
 				PackageTestScripts.handler,
 				createArgs(filePath, { testDirectories: ["test"] }),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("test directory exists");
-				expect(result.errorMessages.join()).toContain("test");
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"test directory exists",
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"test",
+				);
 			}
 		});
 
@@ -100,8 +103,7 @@ describe("PackageTestScripts policy", () => {
 				PackageTestScripts.handler,
 				createArgs(filePath, { testDirectories: ["test", "tests"] }),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 		});
 
 		it("should require test script when __tests__/ directory exists", async () => {
@@ -119,8 +121,7 @@ describe("PackageTestScripts policy", () => {
 				PackageTestScripts.handler,
 				createArgs(filePath, { testDirectories: ["test", "__tests__"] }),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 		});
 
 		it("should pass when test directory exists and test script is present", async () => {
@@ -138,7 +139,7 @@ describe("PackageTestScripts policy", () => {
 				PackageTestScripts.handler,
 				createArgs(filePath, { testDirectories: ["test"] }),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should pass when no test directory exists", async () => {
@@ -156,7 +157,7 @@ describe("PackageTestScripts policy", () => {
 				PackageTestScripts.handler,
 				createArgs(filePath, { testDirectories: ["test", "tests"] }),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -178,11 +179,14 @@ describe("PackageTestScripts policy", () => {
 				PackageTestScripts.handler,
 				createArgs(filePath, { testDependencies: ["vitest", "jest"] }),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("test dependencies");
-				expect(result.errorMessages.join()).toContain("vitest");
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"test dependencies",
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"vitest",
+				);
 			}
 		});
 
@@ -203,8 +207,7 @@ describe("PackageTestScripts policy", () => {
 				PackageTestScripts.handler,
 				createArgs(filePath, { testDependencies: ["vitest", "jest"] }),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 		});
 
 		it("should pass when test dependency exists and test script is present", async () => {
@@ -224,7 +227,7 @@ describe("PackageTestScripts policy", () => {
 				PackageTestScripts.handler,
 				createArgs(filePath, { testDependencies: ["vitest", "jest"] }),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should pass when no test dependency exists", async () => {
@@ -244,7 +247,7 @@ describe("PackageTestScripts policy", () => {
 				PackageTestScripts.handler,
 				createArgs(filePath, { testDependencies: ["vitest", "jest"] }),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -270,8 +273,7 @@ describe("PackageTestScripts policy", () => {
 					testDependencies: ["vitest"],
 				}),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 		});
 
 		it("should only check directories when only testDirectories is configured", async () => {
@@ -297,7 +299,7 @@ describe("PackageTestScripts policy", () => {
 			);
 
 			// Should pass because no test directory exists
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should skip validation when neither directories nor dependencies are configured", async () => {
@@ -317,7 +319,7 @@ describe("PackageTestScripts policy", () => {
 				PackageTestScripts.handler,
 				createArgs(filePath, {}),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -340,10 +342,11 @@ describe("PackageTestScripts policy", () => {
 					requiredScripts: ["test", "test:coverage"],
 				}),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("test:coverage");
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"test:coverage",
+				);
 			}
 		});
 
@@ -366,7 +369,7 @@ describe("PackageTestScripts policy", () => {
 					requiredScripts: ["test", "test:coverage"],
 				}),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -389,7 +392,7 @@ describe("PackageTestScripts policy", () => {
 					excludePackages: ["@myorg/excluded"],
 				}),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -407,7 +410,7 @@ describe("PackageTestScripts policy", () => {
 				PackageTestScripts.handler,
 				createArgs(filePath, { testDirectories: ["test"] }),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should skip packages without a name", async () => {
@@ -421,7 +424,7 @@ describe("PackageTestScripts policy", () => {
 				PackageTestScripts.handler,
 				createArgs(filePath, { testDirectories: ["test"] }),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -443,10 +446,11 @@ describe("PackageTestScripts policy", () => {
 				PackageTestScripts.handler,
 				createArgs(filePath, { testDirectories: ["test"] }),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.autoFixable).toBe(false);
+				expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+					false,
+				);
 			}
 		});
 	});

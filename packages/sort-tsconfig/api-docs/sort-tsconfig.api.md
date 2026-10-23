@@ -4,7 +4,7 @@
 
 ```ts
 
-import type { PolicyDefinition } from 'repopo';
+import { PolicyArgs } from 'repopo';
 import { run } from '@oclif/core';
 
 // @beta
@@ -36,7 +36,15 @@ export interface SortTsconfigResult {
 }
 
 // @alpha
-export const SortTsconfigsPolicy: PolicyDefinition;
+export const SortTsconfigsPolicy: {
+    name: string;
+    description: string;
+    match: RegExp;
+    handler: (input: PolicyArgs<void>) => Promise<{
+        message: string;
+        fixStatus: "fixed" | "available";
+    }[]>;
+};
 
 // @beta
 export class TsConfigSorter {

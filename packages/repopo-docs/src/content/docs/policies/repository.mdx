@@ -9,7 +9,7 @@ sidebar:
 These policies work in any repository, whatever its language.
 
 ```ts title="repopo.config.ts"
-import { policy, type RepopoConfig } from "repopo";
+import { makePolicy, type RepopoConfig } from "repopo";
 import {
 	LicenseFileExists,
 	NoLargeBinaryFiles,
@@ -18,9 +18,9 @@ import {
 
 export default {
 	policies: [
-		policy(LicenseFileExists),
-		policy(NoLargeBinaryFiles, { maxSizeBytes: 5 * 1024 * 1024 }),
-		policy(RequiredGitignorePatterns),
+		makePolicy(LicenseFileExists),
+		makePolicy(NoLargeBinaryFiles, { config: { maxSizeBytes: 5 * 1024 * 1024 } }),
+		makePolicy(RequiredGitignorePatterns),
 	],
 } satisfies RepopoConfig;
 ```

@@ -1,14 +1,6 @@
 {
 	"extends": "../../config/tsconfig.strict.json",
 	"include": ["src/**/*"],
-	"compilerOptions": {
-		"types": ["node"],
-		"outDir": "./esm",
-		"rootDir": "./src",
-	},
-	"ts-node": {
-		"esm": true,
-	},
 	"references": [
 		{
 			"path": "../cli-api",
@@ -20,4 +12,12 @@
 			"path": "../repopo",
 		},
 	],
+	"compilerOptions": {
+		"types": ["node"],
+		"outDir": "./esm",
+		"rootDir": "./src",
+	},
+	"ts-node": {
+		"esm": true,
+	},
 }

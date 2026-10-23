@@ -13,7 +13,7 @@ import {
 	PackageLicense,
 	type PackageLicenseSettings,
 } from "../../src/policies/PackageLicense.js";
-import type { PolicyFunctionArguments } from "../../src/policy.js";
+import type { PolicyArgs } from "../../src/policy.js";
 import { runHandler } from "../test-helpers.js";
 
 describe("PackageLicense policy", () => {
@@ -46,7 +46,7 @@ describe("PackageLicense policy", () => {
 		file: string,
 		config?: PackageLicenseSettings,
 		resolve = false,
-	): PolicyFunctionArguments<typeof config> => ({
+	): PolicyArgs<typeof config> => ({
 		file,
 		root: tempDir,
 		resolve,
@@ -67,7 +67,7 @@ describe("PackageLicense policy", () => {
 			);
 
 			const result = await runHandler(PackageLicense.handler, createArgs(file));
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -80,11 +80,14 @@ describe("PackageLicense policy", () => {
 			const file = createPackageJson(json);
 
 			const result = await runHandler(PackageLicense.handler, createArgs(file));
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("missing");
-				expect(result.autoFixable).toBe(true);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"missing",
+				);
+				expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+					true,
+				);
 			}
 		});
 
@@ -99,10 +102,12 @@ describe("PackageLicense policy", () => {
 				PackageLicense.handler,
 				createArgs(file, undefined, true),
 			);
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "resolved" in result) {
-				expect(result.resolved).toBe(true);
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toBe(true);
 			}
 
 			// Verify LICENSE was created
@@ -128,11 +133,14 @@ describe("PackageLicense policy", () => {
 			);
 
 			const result = await runHandler(PackageLicense.handler, createArgs(file));
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("doesn't match");
-				expect(result.autoFixable).toBe(true);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"doesn't match",
+				);
+				expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+					true,
+				);
 			}
 		});
 
@@ -151,10 +159,12 @@ describe("PackageLicense policy", () => {
 				PackageLicense.handler,
 				createArgs(file, undefined, true),
 			);
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "resolved" in result) {
-				expect(result.resolved).toBe(true);
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toBe(true);
 			}
 
 			// Verify LICENSE was updated
@@ -176,7 +186,7 @@ describe("PackageLicense policy", () => {
 			const file = createPackageJson(json);
 
 			const result = await runHandler(PackageLicense.handler, createArgs(file));
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should validate private packages when skipPrivate: false", async () => {
@@ -191,10 +201,11 @@ describe("PackageLicense policy", () => {
 				PackageLicense.handler,
 				createArgs(file, { skipPrivate: false }),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("missing");
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"missing",
+				);
 			}
 		});
 	});
@@ -217,7 +228,7 @@ describe("PackageLicense policy", () => {
 				PackageLicense.handler,
 				createArgs(file, { licenseFileName: "LICENSE.txt" }),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should fail when custom license file is missing", async () => {
@@ -232,10 +243,11 @@ describe("PackageLicense policy", () => {
 				PackageLicense.handler,
 				createArgs(file, { licenseFileName: "LICENSE.txt" }),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("LICENSE.txt");
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"LICENSE.txt",
+				);
 			}
 		});
 	});
@@ -252,12 +264,17 @@ describe("PackageLicense policy", () => {
 			const file = createPackageJson(json);
 
 			const result = await runHandler(PackageLicense.handler, createArgs(file));
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("root");
-				expect(result.errorMessages.join()).toContain("not found");
-				expect(result.autoFixable).toBe(false);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"root",
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"not found",
+				);
+				expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+					false,
+				);
 			}
 		});
 	});

@@ -19,10 +19,10 @@ No other built-in policy runs until you configure it. Once you set `policies`, o
 
 ## Enabling and configuring policies
 
-Pass each policy to `policy(definition, config, options)`:
+Pass each policy to `makePolicy(definition, { config, exclude, instanceId })`. The options object is optional:
 
 ```ts title="repopo.config.ts"
-import { policy, type RepopoConfig } from "repopo";
+import { makePolicy, type RepopoConfig } from "repopo";
 import {
 	JsTsFileHeaders,
 	NoJsFileExtensions,
@@ -33,103 +33,104 @@ import {
 export default {
 	policies: [
 		// No configuration
-		policy(PackageJsonSorted),
+		makePolicy(PackageJsonSorted),
 
 		// Configuration
-		policy(RequiredScripts, { scripts: ["build", "test"] }),
+		makePolicy(RequiredScripts, { config: { scripts: ["build", "test"] } }),
 
 		// Default configuration, with exclusions
-		policy(NoJsFileExtensions, undefined, { exclude: ["^bin/"] }),
+		makePolicy(NoJsFileExtensions, { exclude: ["^bin/"] }),
 
 		// Configuration and exclusions
-		policy(
-			JsTsFileHeaders,
-			{ headerText: "Copyright (c) Example Corp." },
-			{ exclude: ["/generated/"] },
-		),
+		makePolicy(JsTsFileHeaders, {
+			config: { headerText: "Copyright (c) Example Corp." },
+			exclude: ["/generated/"],
+		}),
 	],
 } satisfies RepopoConfig;
 ```
 
-Exclusion patterns are case-insensitive regular expressions matched against repo-relative paths, not globs. See [Configuration](/usage/config/) for global exclusions and repeated policies.
+Explicit configuration replaces a policy's default configuration; it isn't merged. Options you leave out still use their documented defaults. Policies marked **required** in the tables below have no usable default, so you must pass `config` when you add them.
+
+Exclusion patterns are case-insensitive regular expressions matched against repo-relative paths, not globs. See [Configuration](/usage/config/) for global exclusions and using a policy more than once.
 
 To disable a built-in policy, remove it from the `policies` array.
 
 ## All built-in policies
 
-**Scope** is *file* for policies that check each matching file and *repository* for policies that run once per check. **Fix** says whether `repopo check --fix` can correct violations; *partial* means only some violations can be fixed.
+**Scope** is *file* for policies that check each matching file and *repository* for policies that run once per check. **Fix** says whether `repopo check --fix` can correct violations; *partial* means only some violations can be fixed. **Config** is *required* when the policy has no usable default configuration.
 
 ### JavaScript and package.json
 
-| Policy | Scope | Fix | Purpose |
-| --- | --- | --- | --- |
-| [HtmlFileHeaders](/policies/javascript/#htmlfileheaders) | file | yes | Header comment in HTML files |
-| [JsTsFileHeaders](/policies/javascript/#jstsfileheaders) | file | yes | Header comment in JS/TS files |
-| [NoJsFileExtensions](/policies/javascript/#nojsfileextensions) | file | no | Use `.mjs`/`.cjs` instead of `.js` |
-| [NoPrivateWorkspaceDependencies](/policies/javascript/#noprivateworkspacedependencies) | file | no | Publishable packages can't depend on private workspace packages |
-| [PackageAllowedScopes](/policies/javascript/#packageallowedscopes) | file | no | Only approved npm scopes and names |
-| [PackageEsmType](/policies/javascript/#packageesmtype) | file | yes | Correct `type` field |
-| [PackageFolderName](/policies/javascript/#packagefoldername) | file | no | Folder name matches package name |
-| [PackageJsonProperties](/policies/javascript/#packagejsonproperties) | file | yes | Required package.json field values |
-| [PackageJsonRepoDirectoryProperty](/policies/javascript/#packagejsonrepodirectoryproperty) | file | yes | Correct `repository.directory` |
-| [PackageJsonSorted](/policies/javascript/#packagejsonsorted) | file | yes | Sorted package.json |
-| [PackageLicense](/policies/javascript/#packagelicense) | file | yes | Package LICENSE matches the root LICENSE |
-| [PackagePrivateField](/policies/javascript/#packageprivatefield) | file | yes | `private` field matches publishing rules |
-| [PackageReadme](/policies/javascript/#packagereadme) | file | yes | README exists, with the expected title and content |
-| [RequiredScripts](/policies/javascript/#requiredscripts) | file | partial | Required scripts exist |
-| [ExactScripts](/policies/javascript/#exactscripts) | file | yes | Scripts have exact content |
-| [ConditionalScripts](/policies/javascript/#conditionalscripts) | file | partial | A script requires other scripts |
-| [MutuallyExclusiveScripts](/policies/javascript/#mutuallyexclusivescripts) | file | no | At most one script per group |
-| [ScriptContains](/policies/javascript/#scriptcontains) | file | no | Scripts contain required substrings |
-| [PackageScripts](/policies/javascript/#packagescripts) | file | partial | Legacy combined script checks |
-| [PackageTestScripts](/policies/javascript/#packagetestscripts) | file | no | Test scripts exist when tests exist |
+| Policy | Scope | Fix | Config | Purpose |
+| --- | --- | --- | --- | --- |
+| [HtmlFileHeaders](/policies/javascript/#htmlfileheaders) | file | yes | required | Header comment in HTML files |
+| [JsTsFileHeaders](/policies/javascript/#jstsfileheaders) | file | yes | required | Header comment in JS/TS files |
+| [NoJsFileExtensions](/policies/javascript/#nojsfileextensions) | file | no |  | Use `.mjs`/`.cjs` instead of `.js` |
+| [NoPrivateWorkspaceDependencies](/policies/javascript/#noprivateworkspacedependencies) | file | no |  | Publishable packages can't depend on private workspace packages |
+| [PackageAllowedScopes](/policies/javascript/#packageallowedscopes) | file | no | required | Only approved npm scopes and names |
+| [PackageEsmType](/policies/javascript/#packageesmtype) | file | yes | required | Correct `type` field |
+| [PackageFolderName](/policies/javascript/#packagefoldername) | file | no |  | Folder name matches package name |
+| [PackageJsonProperties](/policies/javascript/#packagejsonproperties) | file | yes | required | Required package.json field values |
+| [PackageJsonRepoDirectoryProperty](/policies/javascript/#packagejsonrepodirectoryproperty) | file | yes |  | Correct `repository.directory` |
+| [PackageJsonSorted](/policies/javascript/#packagejsonsorted) | file | yes |  | Sorted package.json |
+| [PackageLicense](/policies/javascript/#packagelicense) | file | yes |  | Package LICENSE matches the root LICENSE |
+| [PackagePrivateField](/policies/javascript/#packageprivatefield) | file | yes | required | `private` field matches publishing rules |
+| [PackageReadme](/policies/javascript/#packagereadme) | file | yes |  | README exists, with the expected title and content |
+| [RequiredScripts](/policies/javascript/#requiredscripts) | file | partial | required | Required scripts exist |
+| [ExactScripts](/policies/javascript/#exactscripts) | file | yes | required | Scripts have exact content |
+| [ConditionalScripts](/policies/javascript/#conditionalscripts) | file | partial | required | A script requires other scripts |
+| [MutuallyExclusiveScripts](/policies/javascript/#mutuallyexclusivescripts) | file | no | required | At most one script per group |
+| [ScriptContains](/policies/javascript/#scriptcontains) | file | no | required | Scripts contain required substrings |
+| [PackageScripts](/policies/javascript/#packagescripts) | file | partial | required | Legacy combined script checks |
+| [PackageTestScripts](/policies/javascript/#packagetestscripts) | file | no | required | Test scripts exist when tests exist |
 
 ### Rust and Cargo
 
-| Policy | Scope | Fix | Purpose |
-| --- | --- | --- | --- |
-| [CargoTomlRequired](/policies/rust/#cargotomlrequired) | file | no | Required `[package]` fields |
-| [CargoLicenceValidated](/policies/rust/#cargolicencevalidated) | file | yes | Valid SPDX `license` |
-| [CargoLintsConfigured](/policies/rust/#cargolintsconfigured) | file | no | `[lints.clippy]` configured |
-| [PublicApiDocumented](/policies/rust/#publicapidocumented) | file | no | `missing_docs` lint enabled |
-| [CargoTomlSorted](/policies/rust/#cargotomlsorted) | file | yes | Sorted dependency sections |
-| [NoWildcardDependencies](/policies/rust/#nowildcarddependencies) | file | no | No wildcard or loose versions |
-| [CargoLockPolicy](/policies/rust/#cargolockpolicy) | file | no | Commit `Cargo.lock` based on crate type |
-| [WorkspaceMembersValid](/policies/rust/#workspacemembersvalid) | file | no | Workspace member paths exist |
-| [WorkspaceInheritance](/policies/rust/#workspaceinheritance) | file | no | Members inherit workspace fields |
-| [SharedDependencyVersions](/policies/rust/#shareddependencyversions) | repository | no | Same dependency versions across members |
-| [RustToolchainExists](/policies/rust/#rusttoolchainexists) | file | no | `rust-toolchain.toml` exists |
-| [RustfmtConfigExists](/policies/rust/#rustfmtconfigexists) | file | no | `rustfmt.toml` exists |
-| [RustDocExists](/policies/rust/#rustdocexists) | file | no | Crate documentation files exist |
-| [NoUnsafeWithoutJustification](/policies/rust/#nounsafewithoutjustification) | file | no | `// SAFETY:` comments on `unsafe` |
-| [NoTargetArtifacts](/policies/rust/#notargetartifacts) | file | no | No committed build artifacts |
+| Policy | Scope | Fix | Config | Purpose |
+| --- | --- | --- | --- | --- |
+| [CargoTomlRequired](/policies/rust/#cargotomlrequired) | file | no |  | Required `[package]` fields |
+| [CargoLicenceValidated](/policies/rust/#cargolicencevalidated) | file | yes |  | Valid SPDX `license` |
+| [CargoLintsConfigured](/policies/rust/#cargolintsconfigured) | file | no |  | `[lints.clippy]` configured |
+| [PublicApiDocumented](/policies/rust/#publicapidocumented) | file | no |  | `missing_docs` lint enabled |
+| [CargoTomlSorted](/policies/rust/#cargotomlsorted) | file | yes |  | Sorted dependency sections |
+| [NoWildcardDependencies](/policies/rust/#nowildcarddependencies) | file | no |  | No wildcard or loose versions |
+| [CargoLockPolicy](/policies/rust/#cargolockpolicy) | file | no |  | Commit `Cargo.lock` based on crate type |
+| [WorkspaceMembersValid](/policies/rust/#workspacemembersvalid) | file | no |  | Workspace member paths exist |
+| [WorkspaceInheritance](/policies/rust/#workspaceinheritance) | file | no |  | Members inherit workspace fields |
+| [SharedDependencyVersions](/policies/rust/#shareddependencyversions) | repository | no |  | Same dependency versions across members |
+| [RustToolchainExists](/policies/rust/#rusttoolchainexists) | file | no |  | `rust-toolchain.toml` exists |
+| [RustfmtConfigExists](/policies/rust/#rustfmtconfigexists) | file | no |  | `rustfmt.toml` exists |
+| [RustDocExists](/policies/rust/#rustdocexists) | file | no |  | Crate documentation files exist |
+| [NoUnsafeWithoutJustification](/policies/rust/#nounsafewithoutjustification) | file | no |  | `// SAFETY:` comments on `unsafe` |
+| [NoTargetArtifacts](/policies/rust/#notargetartifacts) | file | no |  | No committed build artifacts |
 
 ### Gleam
 
-| Policy | Scope | Fix | Purpose |
-| --- | --- | --- | --- |
-| [GleamTomlRequired](/policies/gleam/#gleamtomlrequired) | file | no | Required `gleam.toml` fields |
-| [GleamVersionConstraint](/policies/gleam/#gleamversionconstraint) | file | no | Compiler version constraint set |
-| [GleamLicenceConfigured](/policies/gleam/#gleamlicenceconfigured) | file | yes | `licences` configured |
-| [GleamNameRestrictions](/policies/gleam/#gleamnamerestrictions) | file | no | Package naming rules |
-| [GleamInternalModulesConfigured](/policies/gleam/#gleaminternalmodulesconfigured) | file | no | `internal_modules` configured |
-| [GleamTomlSorted](/policies/gleam/#gleamtomlsorted) | file | yes | Sorted dependency sections |
-| [GleamDepVersions](/policies/gleam/#gleamdepversions) | file | no | Dependency version constraints |
-| [GleamPathDepsValid](/policies/gleam/#gleampathdepsvalid) | file | no | Path dependencies exist |
-| [GleamNoPathDepsInPublished](/policies/gleam/#gleamnopathdepsinpublished) | file | no | No path dependencies in published packages |
-| [GleamMonorepoConsistency](/policies/gleam/#gleammonorepoconsistency) | file | no | Matching metadata across packages |
-| [GleamSharedDependencyVersions](/policies/gleam/#gleamshareddependencyversions) | file | no | Matching dependency versions across packages |
-| [GleamProjectStructure](/policies/gleam/#gleamprojectstructure) | file | no | Standard `src/` and `test/` layout |
-| [GleamManifestCommitted](/policies/gleam/#gleammanifestcommitted) | file | no | `manifest.toml` committed |
-| [GleamDocExists](/policies/gleam/#gleamdocexists) | file | no | Package documentation files exist |
-| [NoBuildDirectory](/policies/gleam/#nobuilddirectory) | file | no | No committed `build/` output |
+| Policy | Scope | Fix | Config | Purpose |
+| --- | --- | --- | --- | --- |
+| [GleamTomlRequired](/policies/gleam/#gleamtomlrequired) | file | no |  | Required `gleam.toml` fields |
+| [GleamVersionConstraint](/policies/gleam/#gleamversionconstraint) | file | no |  | Compiler version constraint set |
+| [GleamLicenceConfigured](/policies/gleam/#gleamlicenceconfigured) | file | yes |  | `licences` configured |
+| [GleamNameRestrictions](/policies/gleam/#gleamnamerestrictions) | file | no |  | Package naming rules |
+| [GleamInternalModulesConfigured](/policies/gleam/#gleaminternalmodulesconfigured) | file | no |  | `internal_modules` configured |
+| [GleamTomlSorted](/policies/gleam/#gleamtomlsorted) | file | yes |  | Sorted dependency sections |
+| [GleamDepVersions](/policies/gleam/#gleamdepversions) | file | no |  | Dependency version constraints |
+| [GleamPathDepsValid](/policies/gleam/#gleampathdepsvalid) | file | no |  | Path dependencies exist |
+| [GleamNoPathDepsInPublished](/policies/gleam/#gleamnopathdepsinpublished) | file | no |  | No path dependencies in published packages |
+| [GleamMonorepoConsistency](/policies/gleam/#gleammonorepoconsistency) | file | no | required | Matching metadata across packages |
+| [GleamSharedDependencyVersions](/policies/gleam/#gleamshareddependencyversions) | file | no | required | Matching dependency versions across packages |
+| [GleamProjectStructure](/policies/gleam/#gleamprojectstructure) | file | no |  | Standard `src/` and `test/` layout |
+| [GleamManifestCommitted](/policies/gleam/#gleammanifestcommitted) | file | no |  | `manifest.toml` committed |
+| [GleamDocExists](/policies/gleam/#gleamdocexists) | file | no |  | Package documentation files exist |
+| [NoBuildDirectory](/policies/gleam/#nobuilddirectory) | file | no |  | No committed `build/` output |
 
 ### General
 
-| Policy | Scope | Fix | Purpose |
-| --- | --- | --- | --- |
-| [LicenseFileExists](/policies/repository/#licensefileexists) | repository | no | License file at the repository root |
-| [NoLargeBinaryFiles](/policies/repository/#nolargebinaryfiles) | file | no | No files over a size limit |
-| [RequiredGitignorePatterns](/policies/repository/#requiredgitignorepatterns) | file | yes | Required `.gitignore` entries |
+| Policy | Scope | Fix | Config | Purpose |
+| --- | --- | --- | --- | --- |
+| [LicenseFileExists](/policies/repository/#licensefileexists) | repository | no |  | License file at the repository root |
+| [NoLargeBinaryFiles](/policies/repository/#nolargebinaryfiles) | file | no |  | No files over a size limit |
+| [RequiredGitignorePatterns](/policies/repository/#requiredgitignorepatterns) | file | yes |  | Required `.gitignore` entries |
 
 To write your own policies, see [Custom policies](/policies/custom/).

@@ -7,87 +7,54 @@ title: "repopo"
 
 # repopo API
 
-Repository policy authoring, execution, and CLI entry point.
+Use `repopo/api` for policy authoring and programmatic execution without OCLIF.
+The root `repopo` entry point adds the CLI `run` export. `repopo/policies`
+exports built-in definitions and their configuration types.
 
-Import `repopo/api` for the programmatic API without the CLI entry point.
+Write object definitions with `satisfies FilePolicyDefinition<C>` or
+`satisfies RepositoryPolicyDefinition<C>`, then configure them with
+`makePolicy(definition, { config, exclude, instanceId })`.
+Both scopes return `PolicyResult = readonly PolicyFinding[]`; `[]` passes.
+Use `runPolicies(options)` for a Promise or `PolicyRunner(options).run()` for
+an Effection operation. Repository policies require explicit full inventory.
 
-## Classes
+This reference includes all three entry points. Checked-in API Extractor reports:
 
-- [Policy](/api/classes/policy/)
-- [PolicyRunner](/api/classes/policyrunner/)
+TypeDoc labels the entry modules by their source filenames: `index` is
+`repopo`, `api` is `repopo/api`, and `policies` is `repopo/policies`.
+Re-export lists link to the same canonical declarations; they do not introduce
+additional import paths.
 
-## Interfaces
+- [repopo](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/api-docs/repopo.api.md)
+- [repopo/api](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/api-docs/repopo-api.api.md)
+- [repopo/policies](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/api-docs/repopo-policies.api.md)
 
-- [ConfiguredFilePolicy](/api/interfaces/configuredfilepolicy/)
-- [DefineCargoPolicyArgs](/api/interfaces/definecargopolicyargs/)
-- [DefineFileHeaderPolicyArgs](/api/interfaces/definefileheaderpolicyargs/)
-- [DefineGleamPolicyArgs](/api/interfaces/definegleampolicyargs/)
-- [DefinePackagePolicyArgs](/api/interfaces/definepackagepolicyargs/)
-- [FileHeaderGeneratorConfig](/api/interfaces/fileheadergeneratorconfig/)
-- [FileHeaderPolicyConfig](/api/interfaces/fileheaderpolicyconfig/)
-- [FluidAdapterOptions](/api/interfaces/fluidadapteroptions/)
-- [FluidHandler](/api/interfaces/fluidhandler/)
-- [PolicyArgs](/api/interfaces/policyargs/)
-- [PolicyError](/api/interfaces/policyerror/)
-- [~~PolicyFailure~~](/api/interfaces/policyfailure/)
-- [PolicyFileResult](/api/interfaces/policyfileresult/)
-- [~~PolicyFixResult~~](/api/interfaces/policyfixresult/)
-- [PolicyHandlerPerfStats](/api/interfaces/policyhandlerperfstats/)
-- [PolicyInstanceSettings](/api/interfaces/policyinstancesettings/)
-- [PolicyOptions](/api/interfaces/policyoptions/)
-- [PolicyRepositoryResult](/api/interfaces/policyrepositoryresult/)
-- [PolicyRunnerOptions](/api/interfaces/policyrunneroptions/)
-- [PolicyRunResults](/api/interfaces/policyrunresults/)
-- [PolicyShape](/api/interfaces/policyshape/)
-- [RepopoConfig](/api/interfaces/repopoconfig/)
-- [RepositoryPolicyArgs](/api/interfaces/repositorypolicyargs/)
-- [RepositoryPolicyDefinition](/api/interfaces/repositorypolicydefinition/)
-- [RepositoryPolicyFinding](/api/interfaces/repositorypolicyfinding/)
+## Regenerating the reference
 
-## Type Aliases
+From the repository root, run:
 
-- [AnyPolicyShape](/api/type-aliases/anypolicyshape/)
-- [CargoToml](/api/type-aliases/cargotoml/)
-- [CargoTomlHandler](/api/type-aliases/cargotomlhandler/)
-- [ConfiguredPolicy](/api/type-aliases/configuredpolicy/)
-- [ConfiguredRepositoryPolicy](/api/type-aliases/configuredrepositorypolicy/)
-- [ExcludedPolicyFileMap](/api/type-aliases/excludedpolicyfilemap/)
-- [GleamToml](/api/type-aliases/gleamtoml/)
-- [GleamTomlHandler](/api/type-aliases/gleamtomlhandler/)
-- [IdentifiedPolicy](/api/type-aliases/identifiedpolicy/)
-- [PackageJsonHandler](/api/type-aliases/packagejsonhandler/)
-- [PolicyAction](/api/type-aliases/policyaction/)
-- [~~PolicyDefinition~~](/api/type-aliases/policydefinition/)
-- [~~PolicyDefinitionInput~~](/api/type-aliases/policydefinitioninput/)
-- [PolicyExecutionResult](/api/type-aliases/policyexecutionresult/)
-- [~~PolicyFunctionArguments~~](/api/type-aliases/policyfunctionarguments/)
-- [PolicyHandler](/api/type-aliases/policyhandler/)
-- [PolicyHandlerResult](/api/type-aliases/policyhandlerresult/)
-- [~~PolicyInstance~~](/api/type-aliases/policyinstance/)
-- [PolicyInstanceId](/api/type-aliases/policyinstanceid/)
-- [PolicyName](/api/type-aliases/policyname/)
-- [PolicyResolver](/api/type-aliases/policyresolver/)
-- [PolicyResult](/api/type-aliases/policyresult/)
-- [~~PolicyStandaloneResolver~~](/api/type-aliases/policystandaloneresolver/)
-- [RepositoryPolicyHandler](/api/type-aliases/repositorypolicyhandler/)
-- [RepositoryPolicyResult](/api/type-aliases/repositorypolicyresult/)
+```bash
+pnpm nx run repopo:build:api
+pnpm nx run repopo:api:markdown
+```
 
-## Functions
+API Extractor writes each entry point's model into its own directory under
+`packages/repopo/_temp/api-extractor`: `root`, `api`, and `policies`.
+The build cleans only those three generated model directories. API Documenter
+loads each directory separately because all three models have the package name
+`repopo`. It never reads models left in the shared parent directory by older
+builds. Markdown generation cleans its generated `_temp/docs` output and writes
+separate `root`, `api`, and `policies` directories there.
 
-- [defineCargoPolicy](/api/functions/definecargopolicy/)
-- [defineFileHeaderPolicy](/api/functions/definefileheaderpolicy/)
-- [defineGleamPolicy](/api/functions/definegleampolicy/)
-- [definePackagePolicy](/api/functions/definepackagepolicy/)
-- [fromFluidHandlers](/api/functions/fromfluidhandlers/)
-- [isPolicyError](/api/functions/ispolicyerror/)
-- [~~isPolicyFailure~~](/api/functions/ispolicyfailure/)
-- [~~isPolicyFixResult~~](/api/functions/ispolicyfixresult/)
-- [~~makePolicy~~](/api/functions/makepolicy/)
-- [~~makePolicyDefinition~~](/api/functions/makepolicydefinition/)
-- [policy](/api/functions/policy/)
+The three checked-in API report locations above are unchanged. The documentation
+site uses TypeDoc to generate its reference from all three source entry points;
+it does not use the API Documenter output.
 
-## References
+Read the [migration guide](https://repopo.tylerbutler.com/usage/migration/)
+before updating existing policies.
 
-### generatePackagePolicy
+## Modules
 
-Renames and re-exports [definePackagePolicy](/api/functions/definepackagepolicy/)
+- [api](/api/api/readme/)
+- [index](/api/index/readme/)
+- [policies](/api/policies/readme/)

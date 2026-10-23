@@ -9,13 +9,13 @@ sidebar:
 These policies check `gleam.toml` manifests and the layout of Gleam projects. Unless noted, a policy checks every `gleam.toml` in the repository. Policies marked **root only** check only the `gleam.toml` at the repository root.
 
 ```ts title="repopo.config.ts"
-import { policy, type RepopoConfig } from "repopo";
+import { makePolicy, type RepopoConfig } from "repopo";
 import { GleamTomlRequired, GleamTomlSorted } from "repopo/policies";
 
 export default {
 	policies: [
-		policy(GleamTomlRequired, { requireGleamVersion: true }),
-		policy(GleamTomlSorted),
+		makePolicy(GleamTomlRequired, { config: { requireGleamVersion: true } }),
+		makePolicy(GleamTomlSorted),
 	],
 } satisfies RepopoConfig;
 ```
@@ -125,9 +125,11 @@ Reports path dependencies in packages intended for publishing. Hex can't resolve
 
 | Option | Type | Default | Description |
 | --- | --- | --- | --- |
-| `packages` | `string[]` | | Repo-relative paths of `gleam.toml` files to compare. |
+| `packages` | `string[]` | | Required. Repo-relative paths of the `gleam.toml` files to compare. With fewer than two paths, the policy checks nothing. |
 | `syncFields` | `string[]` | `["licences"]` | Top-level fields that must match. |
 | `syncGleamVersion` | `boolean` | `true` | The `gleam` version constraint must match. |
+
+**Configuration:** Required. This policy has no default configuration.
 
 **Auto-fixable:** No.
 
@@ -137,9 +139,11 @@ Reports path dependencies in packages intended for publishing. Hex can't resolve
 
 | Option | Type | Default | Description |
 | --- | --- | --- | --- |
-| `packages` | `string[]` | | Repo-relative paths of `gleam.toml` files to compare. |
+| `packages` | `string[]` | | Required. Repo-relative paths of the `gleam.toml` files to compare. With fewer than two paths, the policy checks nothing. |
 | `detectMismatches` | `boolean` | `true` | Report version mismatches. |
 | `includeDev` | `boolean` | `false` | Also compare `dev-dependencies`. |
+
+**Configuration:** Required. This policy has no default configuration.
 
 **Auto-fixable:** No.
 

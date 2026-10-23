@@ -54,8 +54,7 @@ describe("NoUnsafeWithoutJustification", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should pass when unsafe fn has SAFETY comment", async () => {
@@ -75,8 +74,7 @@ describe("NoUnsafeWithoutJustification", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should pass when no unsafe code is present", async () => {
@@ -91,8 +89,7 @@ describe("NoUnsafeWithoutJustification", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -115,11 +112,14 @@ describe("NoUnsafeWithoutJustification", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("unsafe block without");
-				expect(result.error).toContain("Line 2");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"unsafe block without",
+				);
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"Line 2",
+				);
 			}
 		});
 
@@ -135,10 +135,11 @@ describe("NoUnsafeWithoutJustification", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("unsafe block without");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"unsafe block without",
+				);
 			}
 		});
 	});
@@ -160,8 +161,7 @@ describe("NoUnsafeWithoutJustification", () => {
 				resolve: false,
 				config: { excludePaths: ["generated/"] },
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -186,8 +186,7 @@ describe("NoUnsafeWithoutJustification", () => {
 				resolve: false,
 				config: { requireComment: "// JUSTIFICATION:" },
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 });

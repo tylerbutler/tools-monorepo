@@ -1,4 +1,4 @@
-import type { PolicyShape } from "../policy.js";
+import type { FilePolicyDefinition } from "../policy.js";
 import {
 	type CargoToml,
 	defineCargoPolicy,
@@ -23,42 +23,40 @@ export interface PublicApiDocumentedConfig {
  *
  * @public
  */
-export const PublicApiDocumented: PolicyShape<PublicApiDocumentedConfig> =
-	defineCargoPolicy({
-		name: "PublicApiDocumented",
-		description:
-			"Ensures the missing_docs lint is configured in Cargo.toml to enforce public API documentation.",
-		handler: async (toml: CargoToml, { config }) => {
-			// Skip workspace root
-			if (toml.workspace !== undefined && toml.package === undefined) {
-				return true;
-			}
+export const PublicApiDocumented = defineCargoPolicy({
+	name: "PublicApiDocumented",
+	description:
+		"Ensures the missing_docs lint is configured in Cargo.toml to enforce public API documentation.",
+	handler: async (toml: CargoToml, { config }) => {
+		// Skip workspace root
+		if (toml.workspace !== undefined && toml.package === undefined) {
+			return [];
+		}
 
-			const checkCargoLints = config?.checkCargoLints ?? true;
+		const checkCargoLints = config?.checkCargoLints ?? true;
 
-			if (checkCargoLints) {
-				const lints = toml.lints as Record<string, unknown> | undefined;
-				const rustLints = lints?.rust as Record<string, unknown> | undefined;
+		if (checkCargoLints) {
+			const lints = toml.lints as Record<string, unknown> | undefined;
+			const rustLints = lints?.rust as Record<string, unknown> | undefined;
 
-				if (rustLints) {
-					const missingDocs =
-						rustLints.missing_docs ?? rustLints["missing-docs"];
-					if (
-						missingDocs === "deny" ||
-						missingDocs === "warn" ||
-						missingDocs === "forbid"
-					) {
-						return true;
-					}
+			if (rustLints) {
+				const missingDocs = rustLints.missing_docs ?? rustLints["missing-docs"];
+				if (
+					missingDocs === "deny" ||
+					missingDocs === "warn" ||
+					missingDocs === "forbid"
+				) {
+					return [];
 				}
-
-				return {
-					error:
+			}
+			return [
+				{
+					message:
 						'missing_docs lint is not configured. Set [lints.rust] missing_docs = "warn" or "deny" in Cargo.toml.',
 					manualFix: 'Add to Cargo.toml:\n[lints.rust]\nmissing_docs = "warn"',
-				};
-			}
-
-			return true;
-		},
-	});
+				},
+			];
+		}
+		return [];
+	},
+}) satisfies FilePolicyDefinition<PublicApiDocumentedConfig>;

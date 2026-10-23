@@ -7,7 +7,7 @@ import {
 	PackageScripts,
 	type PackageScriptsSettings,
 } from "../../src/policies/PackageScripts.js";
-import type { PolicyFunctionArguments } from "../../src/policy.js";
+import type { PolicyArgs } from "../../src/policy.js";
 import { runHandler } from "../test-helpers.js";
 
 describe("PackageScripts policy", () => {
@@ -31,7 +31,7 @@ describe("PackageScripts policy", () => {
 		filePath: string,
 		config?: PackageScriptsSettings,
 		resolve = false,
-	): PolicyFunctionArguments<typeof config> => ({
+	): PolicyArgs<typeof config> => ({
 		file: relative(tempDir, filePath),
 		root: tempDir,
 		resolve,
@@ -50,7 +50,7 @@ describe("PackageScripts policy", () => {
 				PackageScripts.handler,
 				createArgs(filePath, undefined),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -71,7 +71,7 @@ describe("PackageScripts policy", () => {
 				PackageScripts.handler,
 				createArgs(filePath, { must: ["build", "clean"] }),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should fail when required scripts are missing", async () => {
@@ -88,13 +88,18 @@ describe("PackageScripts policy", () => {
 				PackageScripts.handler,
 				createArgs(filePath, { must: ["build", "clean", "test"] }),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages?.[0]).toContain("Missing required scripts");
-				expect(result.errorMessages?.[0]).toContain("clean");
-				expect(result.errorMessages?.[0]).toContain("test");
-				expect(result.errorMessages?.[0]).not.toContain("build");
+				expect(result.map((finding) => finding.message)?.[0]).toContain(
+					"Missing required scripts",
+				);
+				expect(result.map((finding) => finding.message)?.[0]).toContain(
+					"clean",
+				);
+				expect(result.map((finding) => finding.message)?.[0]).toContain("test");
+				expect(result.map((finding) => finding.message)?.[0]).not.toContain(
+					"build",
+				);
 			}
 		});
 
@@ -109,11 +114,14 @@ describe("PackageScripts policy", () => {
 				PackageScripts.handler,
 				createArgs(filePath, { must: ["build"] }),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages?.[0]).toContain("Missing required scripts");
-				expect(result.errorMessages?.[0]).toContain("build");
+				expect(result.map((finding) => finding.message)?.[0]).toContain(
+					"Missing required scripts",
+				);
+				expect(result.map((finding) => finding.message)?.[0]).toContain(
+					"build",
+				);
 			}
 		});
 
@@ -128,7 +136,7 @@ describe("PackageScripts policy", () => {
 				PackageScripts.handler,
 				createArgs(filePath, { must: [] }),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -149,7 +157,7 @@ describe("PackageScripts policy", () => {
 					mutuallyExclusive: [["test:unit", "test:vitest"]],
 				}),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should pass when exactly one script from the group is present", async () => {
@@ -168,7 +176,7 @@ describe("PackageScripts policy", () => {
 					mutuallyExclusive: [["test:unit", "test:vitest"]],
 				}),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should fail when multiple scripts from the same group are present", async () => {
@@ -188,12 +196,17 @@ describe("PackageScripts policy", () => {
 					mutuallyExclusive: [["test:unit", "test:vitest"]],
 				}),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages?.[0]).toContain("mutually exclusive");
-				expect(result.errorMessages?.[0]).toContain("test:unit");
-				expect(result.errorMessages?.[0]).toContain("test:vitest");
+				expect(result.map((finding) => finding.message)?.[0]).toContain(
+					"mutually exclusive",
+				);
+				expect(result.map((finding) => finding.message)?.[0]).toContain(
+					"test:unit",
+				);
+				expect(result.map((finding) => finding.message)?.[0]).toContain(
+					"test:vitest",
+				);
 			}
 		});
 
@@ -220,15 +233,22 @@ describe("PackageScripts policy", () => {
 					],
 				}),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
 				// Should fail for lint group only
-				expect(result.errorMessages?.[0]).toContain("lint:eslint");
-				expect(result.errorMessages?.[0]).toContain("lint:biome");
+				expect(result.map((finding) => finding.message)?.[0]).toContain(
+					"lint:eslint",
+				);
+				expect(result.map((finding) => finding.message)?.[0]).toContain(
+					"lint:biome",
+				);
 				// Should not mention the valid groups
-				expect(result.errorMessages?.[0]).not.toContain("build:tsc");
-				expect(result.errorMessages?.[0]).not.toContain("test:unit");
+				expect(result.map((finding) => finding.message)?.[0]).not.toContain(
+					"build:tsc",
+				);
+				expect(result.map((finding) => finding.message)?.[0]).not.toContain(
+					"test:unit",
+				);
 			}
 		});
 
@@ -243,7 +263,7 @@ describe("PackageScripts policy", () => {
 				PackageScripts.handler,
 				createArgs(filePath, { mutuallyExclusive: [] }),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -267,7 +287,7 @@ describe("PackageScripts policy", () => {
 					mutuallyExclusive: [["test:unit", "test:vitest"]],
 				}),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should fail with both types of errors", async () => {
@@ -289,10 +309,10 @@ describe("PackageScripts policy", () => {
 					mutuallyExclusive: [["test:unit", "test:vitest"]],
 				}),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				const allErrors = result.errorMessages?.join(" ") ?? "";
+				const allErrors =
+					result.map((finding) => finding.message)?.join(" ") ?? "";
 				expect(allErrors).toContain("Missing required scripts");
 				expect(allErrors).toContain("clean");
 				expect(allErrors).toContain("mutually exclusive");
@@ -314,10 +334,11 @@ describe("PackageScripts policy", () => {
 				PackageScripts.handler,
 				createArgs(filePath, { must: ["build"] }),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages?.[0]).toContain("Missing required scripts");
+				expect(result.map((finding) => finding.message)?.[0]).toContain(
+					"Missing required scripts",
+				);
 			}
 		});
 
@@ -332,10 +353,11 @@ describe("PackageScripts policy", () => {
 				PackageScripts.handler,
 				createArgs(filePath, { must: ["build"] }),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.autoFixable).toBe(false);
+				expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+					false,
+				);
 			}
 		});
 
@@ -353,7 +375,7 @@ describe("PackageScripts policy", () => {
 				PackageScripts.handler,
 				createArgs(filePath, { must: ["build"] }),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should handle config with only mutuallyExclusive", async () => {
@@ -372,7 +394,7 @@ describe("PackageScripts policy", () => {
 					mutuallyExclusive: [["test:unit", "test:vitest"]],
 				}),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should handle three mutually exclusive scripts where two are present", async () => {
@@ -394,11 +416,12 @@ describe("PackageScripts policy", () => {
 					],
 				}),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages?.[0]).toContain("mutually exclusive");
-				expect(result.errorMessages?.[0]).toContain("2");
+				expect(result.map((finding) => finding.message)?.[0]).toContain(
+					"mutually exclusive",
+				);
+				expect(result.map((finding) => finding.message)?.[0]).toContain("2");
 			}
 		});
 	});
@@ -420,7 +443,7 @@ describe("PackageScripts policy", () => {
 					conditionalRequired: [{ ifPresent: "build", requires: ["clean"] }],
 				}),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should pass when triggering script exists and required scripts exist", async () => {
@@ -440,7 +463,7 @@ describe("PackageScripts policy", () => {
 					conditionalRequired: [{ ifPresent: "build", requires: ["clean"] }],
 				}),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should fail when triggering script exists but required scripts are missing", async () => {
@@ -459,12 +482,17 @@ describe("PackageScripts policy", () => {
 					conditionalRequired: [{ ifPresent: "build", requires: ["clean"] }],
 				}),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("build");
-				expect(result.errorMessages.join()).toContain("clean");
-				expect(result.errorMessages.join()).toContain("missing");
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"build",
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"clean",
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"missing",
+				);
 			}
 		});
 
@@ -487,11 +515,14 @@ describe("PackageScripts policy", () => {
 					],
 				}),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("lint");
-				expect(result.errorMessages.join()).not.toContain("clean");
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"lint",
+				);
+				expect(result.map((finding) => finding.message).join()).not.toContain(
+					"clean",
+				);
 			}
 		});
 
@@ -515,11 +546,14 @@ describe("PackageScripts policy", () => {
 					],
 				}),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("clean");
-				expect(result.errorMessages.join()).toContain("test:coverage");
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"clean",
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"test:coverage",
+				);
 			}
 		});
 
@@ -542,7 +576,7 @@ describe("PackageScripts policy", () => {
 					],
 				}),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should mark missing scripts as autoFixable when inline defaults exist in requires", async () => {
@@ -563,11 +597,14 @@ describe("PackageScripts policy", () => {
 					],
 				}),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.autoFixable).toBe(true);
-				expect(result.errorMessages.join()).toContain("clean");
+				expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+					true,
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"clean",
+				);
 			}
 		});
 
@@ -593,10 +630,12 @@ describe("PackageScripts policy", () => {
 					true,
 				),
 			);
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "resolved" in result) {
-				expect(result.resolved).toBe(true);
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toBe(true);
 			}
 
 			// Verify the file was updated
@@ -630,12 +669,23 @@ describe("PackageScripts policy", () => {
 					true,
 				),
 			);
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "resolved" in result) {
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
 				// Partially resolved - clean was added but test has no default
-				expect(result.resolved).toBe(false);
-				expect(result.errorMessages.join()).toContain("test");
+				expect(
+					result.some(
+						(finding) =>
+							finding.fixStatus === "fixed" &&
+							finding.message.includes("clean"),
+					),
+				).toBe(true);
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toBe(false);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"test",
+				);
 			}
 
 			// Verify clean was added
@@ -661,7 +711,7 @@ describe("PackageScripts policy", () => {
 					scriptMustContain: [{ script: "clean", mustContain: ["rimraf"] }],
 				}),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should pass when script contains all required substrings", async () => {
@@ -682,7 +732,7 @@ describe("PackageScripts policy", () => {
 					],
 				}),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should fail when script is missing required substring", async () => {
@@ -701,11 +751,14 @@ describe("PackageScripts policy", () => {
 					scriptMustContain: [{ script: "clean", mustContain: ["rimraf"] }],
 				}),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("clean");
-				expect(result.errorMessages.join()).toContain("rimraf");
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"clean",
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"rimraf",
+				);
 			}
 		});
 
@@ -727,11 +780,14 @@ describe("PackageScripts policy", () => {
 					],
 				}),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("rimraf");
-				expect(result.errorMessages.join()).toContain("--glob");
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"rimraf",
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"--glob",
+				);
 			}
 		});
 
@@ -751,7 +807,7 @@ describe("PackageScripts policy", () => {
 					scriptMustContain: [{ script: "clean", mustContain: ["rimraf"] }],
 				}),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should handle multiple scripts with content rules", async () => {
@@ -774,13 +830,20 @@ describe("PackageScripts policy", () => {
 					],
 				}),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("clean");
-				expect(result.errorMessages.join()).toContain("rimraf");
-				expect(result.errorMessages.join()).toContain("build");
-				expect(result.errorMessages.join()).toContain("tsc");
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"clean",
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"rimraf",
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"build",
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"tsc",
+				);
 			}
 		});
 	});
@@ -805,13 +868,16 @@ describe("PackageScripts policy", () => {
 					scriptMustContain: [{ script: "clean", mustContain: ["rimraf"] }],
 				}),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
 				// conditionalRequired error
-				expect(result.errorMessages.join()).toContain("test");
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"test",
+				);
 				// scriptMustContain error
-				expect(result.errorMessages.join()).toContain("rimraf");
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"rimraf",
+				);
 			}
 		});
 	});
@@ -835,7 +901,7 @@ describe("PackageScripts policy", () => {
 			);
 
 			// Should pass because existing scripts are not validated against defaults in 'must'
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should mark missing required scripts as autoFixable when inline defaults exist", async () => {
@@ -852,14 +918,17 @@ describe("PackageScripts policy", () => {
 					must: [{ clean: "rimraf dist" }],
 				}),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.autoFixable).toBe(true);
-				expect(result.errorMessages.join()).toContain(
+				expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+					true,
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
 					"Missing required scripts",
 				);
-				expect(result.errorMessages.join()).toContain("clean");
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"clean",
+				);
 			}
 		});
 
@@ -877,10 +946,11 @@ describe("PackageScripts policy", () => {
 					must: ["clean"], // No default, just string
 				}),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.autoFixable).toBe(false);
+				expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+					false,
+				);
 			}
 		});
 
@@ -904,12 +974,18 @@ describe("PackageScripts policy", () => {
 					true,
 				),
 			);
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "resolved" in result) {
-				expect(result.resolved).toBe(true);
-				expect(result.errorMessages.join()).toContain("Fixed scripts");
-				expect(result.errorMessages.join()).toContain("clean");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toBe(true);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"Fixed scripts",
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"clean",
+				);
 			}
 
 			// Verify the file was updated
@@ -939,10 +1015,12 @@ describe("PackageScripts policy", () => {
 					true,
 				),
 			);
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "resolved" in result) {
-				expect(result.resolved).toBe(true);
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toBe(true);
 			}
 
 			// Verify the file was updated
@@ -968,14 +1046,24 @@ describe("PackageScripts policy", () => {
 					true,
 				),
 			);
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "resolved" in result) {
-				expect(result.resolved).toBe(false);
-				expect(result.errorMessages.join()).toContain("Fixed scripts");
-				expect(result.errorMessages.join()).toContain("clean");
-				expect(result.errorMessages.join()).toContain("Remaining errors");
-				expect(result.errorMessages.join()).toContain("test");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toBe(false);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"Fixed scripts",
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"clean",
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"Remaining errors",
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"test",
+				);
 			}
 
 			// Verify clean was added
@@ -1030,13 +1118,21 @@ describe("PackageScripts policy", () => {
 					true,
 				),
 			);
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "resolved" in result) {
-				expect(result.resolved).toBe(true);
-				expect(result.errorMessages.join()).toContain("clean");
-				expect(result.errorMessages.join()).toContain("format");
-				expect(result.errorMessages.join()).toContain("lint");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toBe(true);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"clean",
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"format",
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"lint",
+				);
 			}
 
 			// Verify all scripts were added
@@ -1089,10 +1185,11 @@ describe("PackageScripts policy", () => {
 					must: ["clean", "build", "test"],
 				}),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.autoFixable).toBe(false);
+				expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+					false,
+				);
 			}
 		});
 	});
@@ -1116,8 +1213,7 @@ describe("PackageScripts policy", () => {
 					},
 				}),
 			);
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should fail when existing script doesn't match exact value", async () => {
@@ -1138,13 +1234,20 @@ describe("PackageScripts policy", () => {
 					},
 				}),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.autoFixable).toBe(true);
-				expect(result.errorMessages.join()).toContain("clean");
-				expect(result.errorMessages.join()).toContain("rimraf dist esm");
-				expect(result.errorMessages.join()).toContain("rm -rf dist");
+				expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+					true,
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"clean",
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"rimraf dist esm",
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"rm -rf dist",
+				);
 			}
 		});
 
@@ -1166,13 +1269,17 @@ describe("PackageScripts policy", () => {
 			);
 
 			// Should fail because "clean" doesn't exist - exact requires the script to exist
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.autoFixable).toBe(true);
-				expect(result.errorMessages.join()).toContain(
+				expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+					true,
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
 					"Missing required script",
 				);
-				expect(result.errorMessages.join()).toContain("clean");
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"clean",
+				);
 			}
 		});
 
@@ -1199,10 +1306,12 @@ describe("PackageScripts policy", () => {
 					true,
 				),
 			);
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "resolved" in result) {
-				expect(result.resolved).toBe(true);
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toBe(true);
 			}
 
 			// Verify the file was updated
@@ -1231,12 +1340,17 @@ describe("PackageScripts policy", () => {
 					},
 				}),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.autoFixable).toBe(true);
-				expect(result.errorMessages.join()).toContain("clean");
-				expect(result.errorMessages.join()).toContain("format");
+				expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+					true,
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"clean",
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"format",
+				);
 			}
 		});
 
@@ -1264,10 +1378,12 @@ describe("PackageScripts policy", () => {
 					true,
 				),
 			);
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "resolved" in result) {
-				expect(result.resolved).toBe(true);
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toBe(true);
 			}
 
 			// Verify both scripts were updated
@@ -1299,10 +1415,12 @@ describe("PackageScripts policy", () => {
 					true,
 				),
 			);
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "resolved" in result) {
-				expect(result.resolved).toBe(true);
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toBe(true);
 			}
 
 			// Verify clean was added with exact value
@@ -1333,10 +1451,12 @@ describe("PackageScripts policy", () => {
 					true,
 				),
 			);
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "resolved" in result) {
-				expect(result.resolved).toBe(true);
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toBe(true);
 			}
 
 			// Verify clean was added with exact value
@@ -1364,10 +1484,12 @@ describe("PackageScripts policy", () => {
 					true,
 				),
 			);
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "resolved" in result) {
-				expect(result.resolved).toBe(true);
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toBe(true);
 			}
 
 			// Verify clean was added with exact value

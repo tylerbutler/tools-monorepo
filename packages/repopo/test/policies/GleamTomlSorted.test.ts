@@ -40,8 +40,7 @@ describe("GleamTomlSorted", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should pass when no dependencies section exists", async () => {
@@ -55,8 +54,7 @@ describe("GleamTomlSorted", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -80,11 +78,14 @@ describe("GleamTomlSorted", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("dependencies");
-				expect(result.fixable).toBe(true);
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"dependencies",
+				);
+				expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+					true,
+				);
 			}
 		});
 
@@ -106,10 +107,11 @@ describe("GleamTomlSorted", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("dev-dependencies");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"dev-dependencies",
+				);
 			}
 		});
 	});
@@ -134,11 +136,15 @@ describe("GleamTomlSorted", () => {
 				root: testDir,
 				resolve: true,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.fixable).toBe(true);
-				expect(result.fixed).toBe(true);
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+					true,
+				);
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toBe(true);
 			}
 
 			// Verify file was actually sorted
@@ -178,11 +184,14 @@ describe("GleamTomlSorted", () => {
 				resolve: false,
 				config: { sections: ["dev-dependencies"] },
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("dev-dependencies");
-				expect(result.error).not.toContain("[dependencies]");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"dev-dependencies",
+				);
+				expect(
+					result.map((finding) => finding.message).join("; "),
+				).not.toContain("[dependencies]");
 			}
 		});
 	});

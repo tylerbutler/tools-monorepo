@@ -1,8 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { resolve } from "pathe";
-import { makePolicyDefinition } from "../makePolicy.js";
-import type { PolicyDefinition } from "../policy.js";
-
+import type { FilePolicyDefinition } from "../policy.js";
 /**
  * Configuration for the NoUnsafeWithoutJustification policy.
  *
@@ -71,48 +69,46 @@ function isExcluded(file: string, excludePaths: string[] | undefined): boolean {
  *
  * @public
  */
-export const NoUnsafeWithoutJustification: PolicyDefinition<NoUnsafeWithoutJustificationConfig> =
-	makePolicyDefinition({
-		name: "NoUnsafeWithoutJustification",
-		description:
-			"Requires safety justification comments on unsafe blocks in Rust source files.",
-		match: /\.rs$/,
-		handler: async ({ file, root, config }) => {
-			const requiredComment = config?.requireComment ?? "// SAFETY:";
+export const NoUnsafeWithoutJustification = {
+	name: "NoUnsafeWithoutJustification",
+	description:
+		"Requires safety justification comments on unsafe blocks in Rust source files.",
+	match: /\.rs$/,
+	handler: async ({ file, root, config }) => {
+		const requiredComment = config?.requireComment ?? "// SAFETY:";
 
-			if (isExcluded(file, config?.excludePaths)) {
-				return true;
+		if (isExcluded(file, config?.excludePaths)) {
+			return [];
+		}
+
+		const content = await readFile(resolve(root, file), "utf-8");
+		const lines = content.split("\n");
+		const violations: string[] = [];
+
+		for (let i = 0; i < lines.length; i++) {
+			const line = lines[i];
+			if (line === undefined) {
+				continue;
 			}
+			const trimmed = line.trim();
 
-			const content = await readFile(resolve(root, file), "utf-8");
-			const lines = content.split("\n");
-			const violations: string[] = [];
-
-			for (let i = 0; i < lines.length; i++) {
-				const line = lines[i];
-				if (line === undefined) {
-					continue;
-				}
-				const trimmed = line.trim();
-
-				// Look for `unsafe` keyword usage (blocks, functions, impls)
-				if (
-					UNSAFE_PATTERN.test(trimmed) &&
-					!hasJustificationComment(lines, i, requiredComment)
-				) {
-					violations.push(
-						`Line ${i + 1}: unsafe block without ${requiredComment} comment`,
-					);
-				}
+			// Look for `unsafe` keyword usage (blocks, functions, impls)
+			if (
+				UNSAFE_PATTERN.test(trimmed) &&
+				!hasJustificationComment(lines, i, requiredComment)
+			) {
+				violations.push(
+					`Line ${i + 1}: unsafe block without ${requiredComment} comment`,
+				);
 			}
+		}
 
-			if (violations.length > 0) {
-				return {
-					error: violations.join("; "),
-					manualFix: `Add a "${requiredComment}" comment above each unsafe block explaining why it is safe.`,
-				};
-			}
-
-			return true;
-		},
-	});
+		if (violations.length > 0) {
+			return violations.map((message) => ({
+				message,
+				manualFix: `Add a "${requiredComment}" comment above each unsafe block explaining why it is safe.`,
+			}));
+		}
+		return [];
+	},
+} satisfies FilePolicyDefinition<NoUnsafeWithoutJustificationConfig>;

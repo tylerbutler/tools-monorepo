@@ -3,7 +3,7 @@ import { tmpdir } from "node:os";
 import { run } from "effection";
 import { join } from "pathe";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { policy } from "../../src/makePolicy.js";
+import { makePolicy } from "../../src/makePolicy.js";
 import { LicenseFileExists } from "../../src/policies/LicenseFileExists.js";
 import { PolicyRunner } from "../../src/runner.js";
 
@@ -35,27 +35,24 @@ describe("LicenseFileExists", () => {
 				files: [name],
 				resolve: false,
 			}),
-		).toBe(true);
+		).toEqual([]);
 	});
 
 	it("reports a repository finding even with no selected files or inventory", async () => {
 		const runner = new PolicyRunner({
-			gitRoot: root,
-			policies: [policy(LicenseFileExists)],
-			excludeFromAll: [],
-			excludePoliciesForFiles: new Map(),
-			resolve: true,
+			root,
+			inventory: [],
+			files: [],
+			policies: [makePolicy(LicenseFileExists)],
+			fix: true,
 		});
-		const result = await run(() => runner.run([]));
-		expect(result.results).toEqual([
+		const result = await run(() => runner.run());
+		expect(result.findings).toEqual([
 			{
 				scope: "repository",
 				policy: "LicenseFileExists",
 				policyId: "LicenseFileExists",
-				outcome: {
-					error: expect.stringContaining("No LICENSE file found"),
-					fixable: false,
-				},
+				message: expect.stringContaining("No LICENSE file found"),
 			},
 		]);
 	});
@@ -68,9 +65,9 @@ describe("LicenseFileExists", () => {
 			resolve: false,
 			config: { acceptedNames: ["COPYING"] },
 		};
-		expect(await LicenseFileExists.handler(args)).toBe(true);
+		expect(await LicenseFileExists.handler(args)).toEqual([]);
 		expect(await LicenseFileExists.handler({ ...args, files: [] })).toEqual([
-			expect.objectContaining({ error: expect.stringContaining("COPYING") }),
+			expect.objectContaining({ message: expect.stringContaining("COPYING") }),
 		]);
 	});
 
@@ -82,6 +79,10 @@ describe("LicenseFileExists", () => {
 				files: ["LICENSE", "LICENSE.txt"],
 				resolve: false,
 			}),
-		).toEqual([expect.objectContaining({ fixable: false })]);
+		).toEqual([
+			expect.objectContaining({
+				message: expect.stringContaining("No LICENSE file found"),
+			}),
+		]);
 	});
 });

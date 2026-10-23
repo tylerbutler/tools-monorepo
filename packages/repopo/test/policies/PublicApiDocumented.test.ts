@@ -49,8 +49,7 @@ describe("PublicApiDocumented", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should pass when missing_docs = 'deny'", async () => {
@@ -70,8 +69,7 @@ describe("PublicApiDocumented", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should pass when missing_docs = 'forbid'", async () => {
@@ -91,8 +89,7 @@ describe("PublicApiDocumented", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should skip workspace root", async () => {
@@ -106,8 +103,7 @@ describe("PublicApiDocumented", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -123,10 +119,11 @@ describe("PublicApiDocumented", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("missing_docs lint is not configured");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"missing_docs lint is not configured",
+				);
 			}
 		});
 
@@ -147,10 +144,11 @@ describe("PublicApiDocumented", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("missing_docs lint is not configured");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"missing_docs lint is not configured",
+				);
 			}
 		});
 	});
@@ -168,8 +166,7 @@ describe("PublicApiDocumented", () => {
 				resolve: false,
 				config: { checkCargoLints: false },
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 });
