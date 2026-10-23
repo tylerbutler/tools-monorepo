@@ -227,11 +227,12 @@ async function validateExistingReadme(
  * const config: RepopoConfig = {
  *   policies: [
  *     // Basic README validation
- *     makePolicy(PackageReadme),
+ *     makePolicy(PackageReadme, { instanceId: "readme" }),
  *
  *     // Require trademark notice in all READMEs
  *     makePolicy(PackageReadme, {
- *       requiredContent: "## Trademark",
+ *       instanceId: "readme-trademark",
+ *       config: { requiredContent: "## Trademark" },
  *     }),
  *   ],
  * };

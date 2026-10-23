@@ -129,8 +129,10 @@ function isUnscopedPackageAllowed(
  * const config: RepopoConfig = {
  *   policies: [
  *     makePolicy(PackageAllowedScopes, {
- *       allowedScopes: ["@myorg", "@internal"],
- *       unscopedPackages: ["legacy-package"],
+ *       config: {
+ *         allowedScopes: ["@myorg", "@internal"],
+ *         unscopedPackages: ["legacy-package"],
+ *       },
  *     }),
  *   ],
  * };

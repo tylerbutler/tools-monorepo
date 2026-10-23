@@ -52,7 +52,7 @@ For a single handler, wrap it in an array: `fromFluidHandlers([handler])`.
 ## Example
 
 ```typescript
-import { fromFluidHandlers, makePolicy } from "repopo";
+import { fromFluidHandlers, makePolicy, type RepopoConfig } from "repopo";
 import { copyrightFileHeaderHandlers, fluidCaseHandler } from "@fluidframework/build-tools";
 
 // Convert multiple handlers with a namespace prefix
@@ -65,7 +65,7 @@ const [FluidCasePolicy] = fromFluidHandlers([fluidCaseHandler]);
 
 const config: RepopoConfig = {
   policies: [
-    ...FluidCopyrightPolicies.map(p => makePolicy(p)),
+    ...FluidCopyrightPolicies.map((p) => makePolicy(p)),
     makePolicy(FluidCasePolicy),
   ],
 };

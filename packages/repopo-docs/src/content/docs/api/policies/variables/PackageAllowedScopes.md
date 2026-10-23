@@ -7,7 +7,7 @@ title: "PackageAllowedScopes"
 
 > `const` **PackageAllowedScopes**: [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<[`PackageAllowedScopesConfig`](/api/index/interfaces/packageallowedscopesconfig/) \| `undefined`\> & `object`
 
-Defined in: [policies/PackageAllowedScopes.ts:141](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageAllowedScopes.ts#L141)
+Defined in: [policies/PackageAllowedScopes.ts:143](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageAllowedScopes.ts#L143)
 
 A policy that ensures packages use only allowed scopes and package names.
 
@@ -40,8 +40,10 @@ import { PackageAllowedScopes } from "repopo/policies";
 const config: RepopoConfig = {
   policies: [
     makePolicy(PackageAllowedScopes, {
-      allowedScopes: ["@myorg", "@internal"],
-      unscopedPackages: ["legacy-package"],
+      config: {
+        allowedScopes: ["@myorg", "@internal"],
+        unscopedPackages: ["legacy-package"],
+      },
     }),
   ],
 };

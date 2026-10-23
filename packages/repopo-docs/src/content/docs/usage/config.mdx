@@ -1,12 +1,13 @@
 ---
 title: Configuration
+description: Configure repopo policies, exclusions, and policy options.
 sidebar:
-  order: 4
+  order: 2
 ---
 
-Create `repopo.config.ts` in the repository root:
+repopo reads its configuration from `repopo.config.ts`, `repopo.config.mjs`, or `repopo.config.cjs` at the repository root. A TypeScript file is recommended. Its default export is a `RepopoConfig`:
 
-```ts
+```ts title="repopo.config.ts"
 import { makePolicy, type RepopoConfig } from "repopo";
 import { NoJsFileExtensions, PackageJsonProperties } from "repopo/policies";
 
@@ -21,26 +22,92 @@ export default {
 } satisfies RepopoConfig;
 ```
 
-Use only `makePolicy(definition, { config, exclude, instanceId })`.
-Omit options when none are needed. Set explicit unique IDs for repeated names.
-`ConfiguredPolicy` represents a configured file or repository policy.
+:::note[Upgrading from an earlier version?]
+The 1.0 API replaced `policy()` and positional arguments with a single `makePolicy()` options object. See [Migrate to the 1.0 API](/usage/migration/).
+:::
 
-Missing or undefined `config` selects `defaultConfig`. Explicit config replaces
-the whole default; there is no merge. An allowed null remains supplied.
-Definitions with `requiresConfig: true` require complete config or a complete
-default. A config's own `exclude` field does not configure instance exclusions.
+## Choosing policies
 
-`excludeFiles` is the repository-global option. Per-instance exclusions use
-`exclude`. String patterns are case-insensitive regexes, not globs. Use
-`"^vendor/"`, not `"**/vendor/**"`. RegExp values retain their flags.
+If you omit `policies`, `check` and `check-native` run the [default policies](/policies/built-in/#default-policies). Set `policies: []` to run none. Other built-in policies run only when you add them.
 
-Omit `policies` to enable `NoJsFileExtensions`,
-`PackageJsonRepoDirectoryProperty`, and `PackageJsonSorted`.
-Set `policies: []` to disable all policies. Other built-ins are opt-in.
+With `check --fix`, the policies for each file run in configuration order, so one fix can't overwrite another. Read-only checks process several files at once, but the policies for a single file still run in order.
 
-File policies check the selected paths. Repository policies run once after
-file checks against full eligible Git inventory, including with empty stdin.
-Repository fixers can change files outside the selection.
+## Configuring a policy
 
-See [the migration guide](/usage/migration/) for breaking changes, runner
-inventory requirements, finding arrays, and resolver behavior.
+Configure each policy with `makePolicy(definition, options)`. The options object is optional and has three properties:
+
+| Option | Description |
+| --- | --- |
+| `config` | The policy's configuration. |
+| `exclude` | Patterns for files this policy instance skips. See [Excluding files](#excluding-files). |
+| `instanceId` | A stable ID for this instance. Required when the same policy appears more than once. |
+
+```ts
+makePolicy(PackageJsonSorted);
+makePolicy(NoJsFileExtensions, { exclude: ["^bin/"] });
+makePolicy(PackageJsonProperties, { config: { verbatim: { license: "MIT" } } });
+```
+
+The options of each built-in policy are documented in [Built-in policies](/policies/built-in/).
+
+### Defaults and required configuration
+
+- When `config` is omitted or `undefined`, the policy uses its default configuration, if it has one.
+- An explicit `config` **replaces** the whole default. repopo doesn't merge it with the default. Individual fields you leave out still fall back to their documented per-field defaults.
+- An explicit `null`, where a policy allows it, is passed to the policy as-is and doesn't select the default.
+- Some policies have no usable default and **require** configuration, such as `PackageJsonProperties`, the file header policies, and the script policies. Configuring one without `config` is an error that stops the check before any policy runs. The [built-in policy table](/policies/built-in/#all-built-in-policies) marks these policies.
+
+A configuration field named `exclude` is part of the policy's configuration. It doesn't exclude files; only the `exclude` option does.
+
+### Using a policy more than once
+
+A policy that appears once uses its name as its ID. To configure the same policy twice, for example with different settings for different parts of the repository, give each instance a unique `instanceId`:
+
+```ts
+makePolicy(PackageJsonProperties, {
+	instanceId: "published-packages",
+	config: { verbatim: { license: "MIT" } },
+	exclude: ["^examples/"],
+});
+makePolicy(PackageJsonProperties, {
+	instanceId: "examples",
+	config: { verbatim: { private: true } },
+	exclude: ["^packages/"],
+});
+```
+
+IDs don't depend on the order of the `policies` array.
+
+## Excluding files
+
+repopo checks every file Git knows about: tracked files and untracked files that are not ignored.
+
+- `excludeFiles` at the top level of the configuration removes matching files from all policies.
+- `exclude` in a policy's options removes matching files from that policy instance only.
+
+Both take an array of strings or `RegExp` values, matched against repo-relative paths:
+
+- Strings are **case-insensitive regular expressions, not globs**. Use `"^vendor/"`, not `"**/vendor/**"`.
+- `RegExp` values keep their own flags. `/^README/` is case-sensitive and does not exclude `readme.md`. `/^README/i` does.
+
+An invalid regular expression stops the check before any policy runs.
+
+```ts
+export default {
+	excludeFiles: ["^vendor/", /\.snap$/],
+	policies: [
+		makePolicy(PackageJsonProperties, {
+			config: { verbatim: { license: "MIT" } },
+			exclude: ["^examples/"],
+		}),
+	],
+} satisfies RepopoConfig;
+```
+
+## Repository policies
+
+File policies run once per matching selected file. Policies with `scope: "repository"` run once after all file policies, even when no files are selected. Both kinds go in the same `policies` array and use the same `makePolicy()` function.
+
+Repository policies receive the full Git file inventory after global and per-instance exclusions, even with `--stdin`. Exclusions filter that inventory, but the policy still runs when the filtered inventory is empty. With `--fix`, repository policies run one at a time in configuration order and can change files outside the stdin selection. The inventory is refreshed before each repository policy runs. These rules apply to both `check` and `check-native`.
+
+The built-in repository policies are [LicenseFileExists](/policies/repository/#licensefileexists) and [SharedDependencyVersions](/policies/rust/#shareddependencyversions). To write your own, see [Repository policies](/policies/custom/#repository-policies).

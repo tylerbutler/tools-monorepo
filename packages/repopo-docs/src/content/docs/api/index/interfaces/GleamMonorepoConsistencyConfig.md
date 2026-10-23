@@ -18,7 +18,7 @@ Configuration for the GleamMonorepoConsistency policy.
 Defined in: [policies/GleamMonorepoConsistency.ts:28](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/GleamMonorepoConsistency.ts#L28)
 
 Paths to gleam.toml files to compare (relative to repo root).
-If not specified, the policy only checks the file it matches against.
+With fewer than two paths, the policy reports no findings.
 
 ***
 

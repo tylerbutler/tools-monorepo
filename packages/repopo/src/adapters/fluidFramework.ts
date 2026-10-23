@@ -150,7 +150,7 @@ function fromFluidHandler(
  *
  * @example
  * ```typescript
- * import { fromFluidHandlers, makePolicy } from "repopo";
+ * import { fromFluidHandlers, makePolicy, type RepopoConfig } from "repopo";
  * import { copyrightFileHeaderHandlers, fluidCaseHandler } from "@fluidframework/build-tools";
  *
  * // Convert multiple handlers with a namespace prefix
@@ -163,7 +163,7 @@ function fromFluidHandler(
  *
  * const config: RepopoConfig = {
  *   policies: [
- *     ...FluidCopyrightPolicies.map(p => makePolicy(p)),
+ *     ...FluidCopyrightPolicies.map((p) => makePolicy(p)),
  *     makePolicy(FluidCasePolicy),
  *   ],
  * };

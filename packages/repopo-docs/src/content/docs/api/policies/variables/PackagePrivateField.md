@@ -7,7 +7,7 @@ title: "PackagePrivateField"
 
 > `const` **PackagePrivateField**: [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<[`PackagePrivateFieldConfig`](/api/index/interfaces/packageprivatefieldconfig/) \| `undefined`\> & `object`
 
-Defined in: [policies/PackagePrivateField.ts:211](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackagePrivateField.ts#L211)
+Defined in: [policies/PackagePrivateField.ts:213](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackagePrivateField.ts#L213)
 
 A policy that enforces the `private` field in package.json based on package scope or name.
 
@@ -41,10 +41,12 @@ import { PackagePrivateField } from "repopo/policies";
 const config: RepopoConfig = {
   policies: [
     makePolicy(PackagePrivateField, {
-      mustPublish: ["@myorg/*"],
-      mustBePrivate: ["@internal/*"],
-      mayPublish: ["@experimental/*"],
-      unmatchedPackages: "private",
+      config: {
+        mustPublish: ["@myorg/*"],
+        mustBePrivate: ["@internal/*"],
+        mayPublish: ["@experimental/*"],
+        unmatchedPackages: "private",
+      },
     }),
   ],
 };

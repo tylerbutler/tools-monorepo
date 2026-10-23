@@ -140,7 +140,21 @@
 				"executor": "nx:noop"
 			},
 			"test": {},
-			"ci": {}
+			"ci": {},
+			"build:readme": {
+				"inputs": [
+					"sharedGlobals",
+					"{projectRoot}/package.json",
+					"{projectRoot}/oclif.manifest.json",
+					"{projectRoot}/README.md",
+					"{workspaceRoot}/packages/dill-docs/src/content/docs/cli-reference.md"
+				],
+				"outputs": [
+					"{projectRoot}/README.md",
+					"{projectRoot}/docs/**",
+					"{workspaceRoot}/packages/dill-docs/src/content/docs/cli-reference.md"
+				]
+			}
 		}
 	}
 }

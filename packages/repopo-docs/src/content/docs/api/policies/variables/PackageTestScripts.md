@@ -7,7 +7,7 @@ title: "PackageTestScripts"
 
 > `const` **PackageTestScripts**: [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<[`PackageTestScriptsConfig`](/api/index/interfaces/packagetestscriptsconfig/) \| `undefined`\> & `object`
 
-Defined in: [policies/PackageTestScripts.ts:213](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageTestScripts.ts#L213)
+Defined in: [policies/PackageTestScripts.ts:215](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageTestScripts.ts#L215)
 
 A policy that ensures packages have test scripts when test files exist.
 
@@ -38,9 +38,11 @@ import { PackageTestScripts } from "repopo/policies";
 const config: RepopoConfig = {
   policies: [
     makePolicy(PackageTestScripts, {
-      testDirectories: ["test", "tests"],
-      testDependencies: ["vitest", "jest"],
-      requiredScripts: ["test"],
+      config: {
+        testDirectories: ["test", "tests"],
+        testDependencies: ["vitest", "jest"],
+        requiredScripts: ["test"],
+      },
     }),
   ],
 };

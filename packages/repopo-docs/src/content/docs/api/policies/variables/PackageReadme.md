@@ -7,7 +7,7 @@ title: "PackageReadme"
 
 > `const` **PackageReadme**: [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<[`PackageReadmeSettings`](/api/index/interfaces/packagereadmesettings/) \| `undefined`\>
 
-Defined in: [policies/PackageReadme.ts:242](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageReadme.ts#L242)
+Defined in: [policies/PackageReadme.ts:243](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageReadme.ts#L243)
 
 A repo policy that ensures each package has a README.md file with proper content.
 
@@ -29,11 +29,12 @@ import { PackageReadme } from "repopo/policies";
 const config: RepopoConfig = {
   policies: [
     // Basic README validation
-    makePolicy(PackageReadme),
+    makePolicy(PackageReadme, { instanceId: "readme" }),
 
     // Require trademark notice in all READMEs
     makePolicy(PackageReadme, {
-      requiredContent: "## Trademark",
+      instanceId: "readme-trademark",
+      config: { requiredContent: "## Trademark" },
     }),
   ],
 };

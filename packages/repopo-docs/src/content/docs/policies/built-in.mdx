@@ -1,625 +1,136 @@
 ---
 title: Built-in policies
+description: An overview of the policies included with repopo and how to enable them.
 sidebar:
   order: 2
 ---
 
-repopo includes built-in policies for common repository standards. Only
-`NoJsFileExtensions`, `PackageJsonRepoDirectoryProperty`, and `PackageJsonSorted`
-are enabled by default. Other policies are opt-in.
+repopo includes policies for JavaScript and package.json, Rust and Cargo, Gleam, and repository-wide checks. Import them from `repopo/policies` and add them to the `policies` array in your configuration.
 
-Configure definitions with `makePolicy(definition, { config, exclude, instanceId })`.
-Configuration replaces defaults; it is not merged. Header policies and
-`PackageJsonProperties` require settings. The focused `RequiredScripts`,
-`ExactScripts`, `MutuallyExclusiveScripts`, `ConditionalScripts`, and
-`ScriptContains` policies also require settings; prefer them to `PackageScripts`.
-See [the migration guide](/usage/migration/) for finding arrays and required config.
+## Default policies
 
-## Policy Overview
+If your configuration has no `policies` array, repopo runs `DefaultPolicies`:
 
-| Policy | Category | Auto-fixable | Purpose |
-|--------|----------|--------------|---------|
-| [HtmlFileHeaders](#htmlfileheaders) | File Headers | Yes | Enforce consistent headers in HTML files |
-| [JsTsFileHeaders](#jstsfileheaders) | File Headers | Yes | Enforce consistent headers in JS/TS files |
-| [NoJsFileExtensions](#nojsfileextensions) | File Extensions | No | Prevent ambiguous `.js` extensions |
-| [NoPrivateWorkspaceDependencies](#noprivateworkspacedependencies) | Dependencies | No | Prevent publishable packages from depending on private packages |
-| [PackageAllowedScopes](#packageallowedscopes) | Package.json | No | Validate packages use approved scopes |
-| [PackageEsmType](#packageesmtype) | Package.json | Yes | Enforce ESM/CommonJS type field |
-| [PackageFolderName](#packagefoldername) | Package.json | No | Ensure folder names match package names |
-| [PackageJsonProperties](#packagejsonproperties) | Package.json | Yes | Enforce specific package.json fields |
-| [PackageJsonRepoDirectoryProperty](#packagejsonrepodirectoryproperty) | Package.json | Yes | Validate repository.directory path |
-| [PackageJsonSorted](#packagejsonsorted) | Package.json | Yes | Ensure sorted package.json files |
-| [PackageLicense](#packagelicense) | Package.json | Yes | Sync LICENSE files from root |
-| [PackagePrivateField](#packageprivatefield) | Package.json | Yes | Enforce private/public based on scope |
-| [PackageReadme](#packagereadme) | Package.json | Yes | Validate README existence and content |
-| [PackageScripts](#packagescripts) | Package.json | Partial | Validate package.json scripts |
-| [PackageTestScripts](#packagetestscripts) | Package.json | No | Require test scripts when tests exist |
+- [NoJsFileExtensions](/policies/javascript/#nojsfileextensions)
+- [PackageJsonRepoDirectoryProperty](/policies/javascript/#packagejsonrepodirectoryproperty)
+- [PackageJsonSorted](/policies/javascript/#packagejsonsorted)
 
-## File Header Policies
+No other built-in policy runs until you configure it. Once you set `policies`, only the listed policies run. Use `policies: []` to run none.
 
-### HtmlFileHeaders
+## Enabling and configuring policies
 
-Enforces consistent file headers in HTML files using HTML comment syntax.
-
-**Configuration:**
+Pass each policy to `makePolicy(definition, { config, exclude, instanceId })`. The options object is optional:
 
 ```ts title="repopo.config.ts"
-import { makePolicy } from "repopo";
-import { HtmlFileHeaders } from "repopo/policies";
-
-const config = {
-  policies: [
-    makePolicy(HtmlFileHeaders, { config: {
-      headerText: "Copyright (c) 2024 Your Company. All rights reserved."
-    } })
-  ]
-};
-```
-
-The policy wraps the header text in HTML comment tags (`<!-- ... -->`). Multi-line headers are automatically formatted with proper comment delimiters on each line.
-
-**Auto-fixable:** Yes
-
-### JsTsFileHeaders
-
-Enforces consistent file headers in JavaScript and TypeScript files using JSDoc-style block comments.
-
-**Configuration:**
-
-```ts title="repopo.config.ts"
-import { makePolicy } from "repopo";
-import { JsTsFileHeaders } from "repopo/policies";
-
-const config = {
-  policies: [
-    makePolicy(JsTsFileHeaders, { config: {
-      headerText: `Copyright (c) 2024 Your Company.
-Licensed under the MIT License.`
-    } })
-  ]
-};
-```
-
-The policy creates a block comment with `/*!` syntax to ensure it's preserved during minification. Multi-line headers are formatted with `* ` prefix on each line. The policy respects hashbang (`#!`) declarations and places the header after them.
-
-**Auto-fixable:** Yes
-
-## File Extension Policies
-
-### NoJsFileExtensions
-
-Prevents ambiguous `.js` file extensions in favor of explicit `.mjs` (ESM) or `.cjs` (CommonJS) extensions.
-
-**Why:** JavaScript files with just the `.js` extension may be interpreted by Node.js as either CommonJS or ESM based on the `type` field in the nearest package.json. Using explicit extensions reduces ambiguity and ensures consistent module resolution.
-
-**Auto-fixable:** No
-
-## Dependency Policies
-
-### NoPrivateWorkspaceDependencies
-
-Prevents publishable packages from depending on private workspace packages via the `workspace:` protocol.
-
-**Why:** When a package is published to npm, any `workspace:` dependencies are resolved to actual versions. However, if a publishable package depends on a private workspace package (one with `"private": true`), that dependency won't be available on npm, causing installation failures for consumers.
-
-**How it works:**
-
-1. **Private packages are skipped:** Packages with `"private": true` can depend on anything since they won't be published
-2. **Workspace dependencies are checked:** For publishable packages, all `workspace:` dependencies are examined
-3. **Private dependency detection:** If a `workspace:` dependency points to a package marked as private, the policy fails
-
-**Configuration:**
-
-```ts title="repopo.config.ts"
-import { makePolicy } from "repopo";
-import { NoPrivateWorkspaceDependencies } from "repopo/policies";
-
-const config = {
-  policies: [
-    // Default: only check dependencies (not devDependencies)
-    makePolicy(NoPrivateWorkspaceDependencies, { instanceId: "production-deps" }),
-
-    // Or: also check devDependencies
-    makePolicy(NoPrivateWorkspaceDependencies, { instanceId: "all-deps", config: {
-      checkDevDependencies: true
-    } })
-  ]
-};
-```
-
-**Configuration Options:**
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `checkDevDependencies` | `boolean` | `false` | Whether to also check devDependencies for private workspace dependencies |
-
-**Example Scenario:**
-
-Given a monorepo with:
-- `packages/shared-utils` - `"private": true` (internal tooling)
-- `packages/public-lib` - `"private": false` (published to npm)
-
-If `public-lib` has:
-```json
-{
-  "dependencies": {
-    "shared-utils": "workspace:^"
-  }
-}
-```
-
-The policy will fail because `shared-utils` is private and won't be available when `public-lib` is published.
-
-**Resolution:**
-- Make `shared-utils` publishable (remove `"private": true`)
-- Move shared code to a publishable package
-- Remove the dependency if not needed at runtime
-
-**Auto-fixable:** No
-
-## Package.json Policies
-
-### PackageAllowedScopes
-
-Validates that packages use only approved npm scopes or package names. This prevents accidental introduction of new scopes and maintains naming consistency across a monorepo.
-
-**Configuration:**
-
-```ts title="repopo.config.ts"
-import { makePolicy } from "repopo";
-import { PackageAllowedScopes } from "repopo/policies";
-
-const config = {
-  policies: [
-    makePolicy(PackageAllowedScopes, { config: {
-      // Only these scopes are allowed
-      allowedScopes: ["@myorg", "@internal", "@experimental"],
-      // These specific unscoped packages are also allowed
-      unscopedPackages: ["legacy-tool", "special-package"]
-    } })
-  ]
-};
-```
-
-**Validation Rules:**
-
-- Scoped packages must use a scope from `allowedScopes`
-- Unscoped packages must be listed in `unscopedPackages`
-- The "root" package (common in monorepos) is automatically skipped
-
-**Auto-fixable:** No (package names cannot be auto-fixed)
-
-### PackageEsmType
-
-Ensures the `type` field in package.json is correctly set to indicate ESM or CommonJS module format.
-
-**Configuration:**
-
-```ts title="repopo.config.ts"
-import { makePolicy } from "repopo";
-import { PackageEsmType } from "repopo/policies";
-
-const config = {
-  policies: [
-    // Option 1: Require all packages to be ESM
-    makePolicy(PackageEsmType, { instanceId: "esm", config: { requiredType: "module" } }),
-
-    // Option 2: Detect based on exports/main field
-    makePolicy(PackageEsmType, { instanceId: "detected", config: { detectFromExports: true } }),
-
-    // Option 3: With exclusions
-    makePolicy(PackageEsmType, { instanceId: "esm-exceptions", config: {
-      requiredType: "module",
-      excludePackages: ["@myorg/legacy-cjs-package"]
-    } })
-  ]
-};
-```
-
-**Detection Logic (when `detectFromExports: true`):**
-
-- `.mjs` extensions or `"import"` conditions → expects `"module"`
-- `.cjs` extensions or `"require"` conditions → expects `"commonjs"`
-- `module` field present → expects `"module"`
-
-**Auto-fixable:** Yes
-
-### PackageFolderName
-
-Ensures package folder names match their package names, making packages easier to find in the file system.
-
-**Configuration:**
-
-```ts title="repopo.config.ts"
-import { makePolicy } from "repopo";
-import { PackageFolderName } from "repopo/policies";
-
-const config = {
-  policies: [
-    makePolicy(PackageFolderName, { config: {
-      // Strip all scopes when matching: @myorg/my-package → folder "my-package"
-      stripScopes: ["@*"],
-
-      // Or strip specific scopes only
-      // stripScopes: ["@myorg", "@internal"],
-
-      // Or use glob patterns: @fluid-anything/pkg → folder "pkg"
-      // stripScopes: ["@fluid*"],
-
-      // Exclude packages with intentionally different folder names
-      excludePackages: ["@myorg/special-case"]
-    } })
-  ]
-};
-```
-
-**Examples:**
-
-| Package Name | stripScopes | Expected Folder |
-|-------------|-------------|-----------------|
-| `@myorg/my-lib` | `["@*"]` | `my-lib` |
-| `@myorg/my-lib` | `["@myorg"]` | `my-lib` |
-| `@other/my-lib` | `["@myorg"]` | `@other/my-lib` |
-| `my-lib` | `["@*"]` | `my-lib` |
-
-**Auto-fixable:** No (folder names cannot be auto-fixed)
-
-### PackageJsonProperties
-
-Enforces specific fields and values in package.json files across the repository.
-
-**Configuration:**
-
-```ts title="repopo.config.ts"
-import { makePolicy } from "repopo";
-import { PackageJsonProperties } from "repopo/policies";
-
-const config = {
-  policies: [
-    makePolicy(PackageJsonProperties, { config: {
-      verbatim: {
-        license: "MIT",
-        author: "Tyler Butler <tyler@tylerbutler.com>",
-        bugs: "https://github.com/tylerbutler/tools-monorepo/issues",
-        repository: {
-          type: "git",
-          url: "git+https://github.com/tylerbutler/tools-monorepo.git",
-        }
-      }
-    } })
-  ]
-};
-```
-
-The `verbatim` configuration merges the specified fields into each package.json file. Fields in `verbatim` will override any existing values.
-
-**Auto-fixable:** Yes
-
-### PackageJsonRepoDirectoryProperty
-
-Validates that the `repository.directory` property in package.json is set correctly based on the package's location in the repository.
-
-The policy automatically calculates the correct directory path relative to the repository root and ensures the `repository.directory` field matches.
-
-**Note:** If the repository field is a string instead of an object, the package will be ignored.
-
-**Auto-fixable:** Yes
-
-### PackageJsonSorted
-
-Ensures package.json files are sorted according to a standard key order (using `sort-package-json`).
-
-**Auto-fixable:** Yes
-
-### PackageLicense
-
-Ensures each package has a LICENSE file that matches the root repository LICENSE. Essential for monorepos where individual packages are published to npm.
-
-**Configuration:**
-
-```ts title="repopo.config.ts"
-import { makePolicy } from "repopo";
-import { PackageLicense } from "repopo/policies";
-
-const config = {
-  policies: [
-    // Use defaults (skip private packages, look for LICENSE)
-    makePolicy(PackageLicense, { instanceId: "default-license" }),
-
-    // Require LICENSE for all packages including private
-    makePolicy(PackageLicense, { instanceId: "all-license", config: { skipPrivate: false } }),
-
-    // Use a different license file name
-    makePolicy(PackageLicense, { instanceId: "markdown-license", config: { licenseFileName: "LICENSE.md" } })
-  ]
-};
-```
-
-**Behavior:**
-
-1. Checks if LICENSE file exists in the package directory
-2. Compares it with the root LICENSE file
-3. Auto-fixes by copying the root LICENSE to the package directory
-
-**Auto-fixable:** Yes
-
-### PackagePrivateField
-
-Enforces the `private` field in package.json based on package scope or name. Essential for monorepos where publishing control is important.
-
-**Configuration:**
-
-```ts title="repopo.config.ts"
-import { makePolicy } from "repopo";
-import { PackagePrivateField } from "repopo/policies";
-
-const config = {
-  policies: [
-    makePolicy(PackagePrivateField, { config: {
-      // Packages in these scopes must be published (no private: true)
-      mustPublish: ["@myorg", "@myorg-tools"],
-
-      // Packages in these scopes must be private
-      mustBePrivate: ["@internal", "@private"],
-
-      // Packages in these scopes can choose
-      mayPublish: ["@experimental"],
-
-      // Default for packages not matching any list
-      // Options: "private" (default), "public", "ignore"
-      unmatchedPackages: "private"
-    } })
-  ]
-};
-```
-
-**Evaluation Order:**
-
-1. If package matches `mustPublish` → must NOT have `private: true`
-2. If package matches `mustBePrivate` → must have `private: true`
-3. If package matches `mayPublish` → no enforcement
-4. Otherwise, `unmatchedPackages` setting applies
-
-**Auto-fixable:** Yes (adds or removes `private` field)
-
-### PackageReadme
-
-Validates that packages have README.md files with proper content.
-
-**Configuration:**
-
-```ts title="repopo.config.ts"
-import { makePolicy } from "repopo";
-import { PackageReadme } from "repopo/policies";
-
-const config = {
-  policies: [
-    // Basic README validation
-    makePolicy(PackageReadme, { instanceId: "readme-exists" }),
-
-    // Require README title to match package name
-    makePolicy(PackageReadme, { instanceId: "readme-title", config: { requireMatchingTitle: true } }),
-
-    // Require specific content (e.g., trademark notice)
-    makePolicy(PackageReadme, { instanceId: "readme-content", config: {
-      requiredContent: "## Trademark",
-      skipPrivate: true
-    } })
-  ]
-};
-```
-
-**Validation:**
-
-- Checks README.md file exists
-- Optionally validates first H1 heading matches package name
-- Optionally requires specific content to be present
-- Auto-fixes by creating README or appending required content
-
-**Auto-fixable:** Yes (creates README or appends required content)
-
-### PackageScripts
-
-Validates package.json scripts with comprehensive rules including required scripts, exact content matching, conditional requirements, and content validation.
-
-**Configuration:**
-
-```ts title="repopo.config.ts"
-import { makePolicy } from "repopo";
-import { PackageScripts } from "repopo/policies";
-
-const config = {
-  policies: [
-    makePolicy(PackageScripts, { config: {
-      // Scripts that must exist (with optional defaults for auto-fix)
-      must: [
-        "test",                        // Must exist, no auto-fix
-        { build: "tsc" },              // Must exist, auto-fix adds "tsc" if missing
-        { lint: "biome lint ." }       // Must exist, auto-fix available
-      ],
-
-      // Scripts that must exist AND have exact content
-      exact: {
-        clean: "rimraf dist esm",
-        format: "biome format --write ."
-      },
-
-      // If a script exists, other scripts must also exist
-      conditionalRequired: [
-        // If "build" exists, "clean" must exist (with auto-fix default)
-        { ifPresent: "build", requires: [{ clean: "rimraf dist" }] },
-        // Mixed: "test" required without default, "lint" with default
-        { ifPresent: "ci", requires: ["test", { lint: "biome lint" }] }
-      ],
-
-      // Validate script body contains required substrings
-      scriptMustContain: [
-        { script: "clean", mustContain: ["rimraf"] },
-        { script: "build", mustContain: ["tsc"] }
-      ],
-
-      // Only one script from each group can exist
-      mutuallyExclusive: [
-        ["test:unit", "test:vitest"],
-        ["lint:eslint", "lint:biome"]
-      ]
-    } })
-  ]
-};
-```
-
-**Validation Rules:**
-
-| Option | Purpose | Auto-fixable |
-|--------|---------|--------------|
-| `must` | Scripts that must exist | Yes (if default provided) |
-| `exact` | Scripts with exact required content | Yes |
-| `conditionalRequired` | If X exists, Y must exist | Yes (if default provided) |
-| `scriptMustContain` | Script body must include substrings | No |
-| `mutuallyExclusive` | Only one from group can exist | No |
-
-**Auto-fixable:** Partial (depends on configuration)
-
-### PackageTestScripts
-
-Requires test scripts when test files or test dependencies exist in a package.
-
-**Configuration:**
-
-```ts title="repopo.config.ts"
-import { makePolicy } from "repopo";
-import { PackageTestScripts } from "repopo/policies";
-
-const config = {
-  policies: [
-    makePolicy(PackageTestScripts, { config: {
-      // Check for these test directories
-      testDirectories: ["test", "tests", "__tests__"],
-
-      // Require test script if these devDependencies exist
-      testDependencies: ["vitest", "jest", "mocha", "@jest/globals"],
-
-      // Required test script names
-      requiredScripts: ["test"],
-
-      // Exclude specific packages
-      excludePackages: ["@myorg/docs", "@myorg/examples"]
-    } })
-  ]
-};
-```
-
-**Detection Logic:**
-
-- If `testDirectories` is configured → checks for test directories
-- If `testDependencies` is configured → checks devDependencies
-- If either condition is met → requires scripts from `requiredScripts`
-
-**Auto-fixable:** No
-
-## Configuration and Exclusions
-
-### Configuring Policies
-
-To configure a built-in policy, use the `makePolicy` function with your custom settings:
-
-```ts title="repopo.config.ts"
-import { makePolicy } from "repopo";
-import { PackageScripts, JsTsFileHeaders } from "repopo/policies";
-
-const config = {
-  policies: [
-    // Configure with settings
-    makePolicy(PackageScripts, { config: {
-      must: ["build", "test"],
-      mutuallyExclusive: [["lint:eslint", "lint:biome"]]
-    } }),
-
-    // Configure with settings and exclusions
-    makePolicy(JsTsFileHeaders, {
-      config: { headerText: "Copyright 2024" },
-      exclude: ["(^|/)generated/"]
-    })
-  ]
-};
-```
-
-### Disabling Policies
-
-To disable a built-in policy, omit it from your explicit policies array. Omitted
-`policies` uses the three defaults listed above; `policies: []` disables all:
-
-```ts title="repopo.config.ts"
-import { makePolicy } from "repopo";
-import { PackageJsonSorted, NoJsFileExtensions } from "repopo/policies";
-
-// Only enable these two policies
-const config = {
-  policies: [
-    makePolicy(PackageJsonSorted),
-    makePolicy(NoJsFileExtensions)
-  ]
-};
-```
-
-### Excluding Files
-
-You can exclude files from specific policies or from all policies:
-
-```ts title="repopo.config.ts"
-import { makePolicy } from "repopo";
-import { PackageJsonProperties } from "repopo/policies";
-
-const config = {
-  // Exclude files from ALL policies
-  excludeFiles: [
-    /node_modules/,
-    /\.coverage/,
-    /dist/
-  ],
-
-  policies: [
-    // Exclude files from specific policy
-    makePolicy(PackageJsonProperties, {
-      config: { verbatim: { license: "MIT" } },
-      exclude: [/packages\/experimental/]
-    })
-  ]
-};
-```
-
-## Additional exported settings
-
-All built-in configuration types are covered in the generated
-[API reference](/api/readme/), including Cargo and Gleam policies.
-The following settings are available from `repopo/policies`, `repopo/api`,
-and `repopo`:
-
-| Type | Policy | Settings |
-| --- | --- | --- |
-| `PackageJsonPropertiesSettings` | `PackageJsonProperties` | `verbatim` fields and values; nested objects preserve unspecified fields and arrays replace existing arrays. Configuration is required. |
-| `NoLargeBinaryFilesSettings` | `NoLargeBinaryFiles` | Optional `maxSizeBytes` (default 10 MiB), `excludeExtensions`, and policy-specific glob `excludePatterns`. These config fields are not instance regex exclusions. |
-| `LicenseFileExistsSettings` | `LicenseFileExists` | Optional `acceptedNames` for a repository-root license; defaults include LICENSE/LICENCE with common extensions. Repository scope, no standalone fixer. |
-| `RequiredGitignorePatternsSettings` | `RequiredGitignorePatterns` | `patterns` entries are strings or `{ pattern, comment? }`; fixes add missing entries. Omit config to use the built-in default patterns. |
-| `NoPrivateWorkspaceDependenciesSettings` | `NoPrivateWorkspaceDependencies` | Optional `checkDevDependencies` (default false). |
-
-For example:
-
-```ts
-import { makePolicy, type RepopoConfig } from "repopo/api";
+import { makePolicy, type RepopoConfig } from "repopo";
 import {
-	LicenseFileExists,
-	NoLargeBinaryFiles,
-	RequiredGitignorePatterns,
+	JsTsFileHeaders,
+	NoJsFileExtensions,
+	PackageJsonSorted,
+	RequiredScripts,
 } from "repopo/policies";
 
 export default {
 	policies: [
-		makePolicy(LicenseFileExists, { config: { acceptedNames: ["LICENSE.md"] } }),
-		makePolicy(NoLargeBinaryFiles, { config: { maxSizeBytes: 5 * 1024 * 1024 } }),
-		makePolicy(RequiredGitignorePatterns, {
-			config: { patterns: ["node_modules/", { pattern: ".env", comment: "Secrets" }] },
+		// No configuration
+		makePolicy(PackageJsonSorted),
+
+		// Configuration
+		makePolicy(RequiredScripts, { config: { scripts: ["build", "test"] } }),
+
+		// Default configuration, with exclusions
+		makePolicy(NoJsFileExtensions, { exclude: ["^bin/"] }),
+
+		// Configuration and exclusions
+		makePolicy(JsTsFileHeaders, {
+			config: { headerText: "Copyright (c) Example Corp." },
+			exclude: ["/generated/"],
 		}),
 	],
 } satisfies RepopoConfig;
 ```
+
+Explicit configuration replaces a policy's default configuration; it isn't merged. Options you leave out still use their documented defaults. Policies marked **required** in the tables below have no usable default, so you must pass `config` when you add them.
+
+Exclusion patterns are case-insensitive regular expressions matched against repo-relative paths, not globs. See [Configuration](/usage/config/) for global exclusions and using a policy more than once.
+
+To disable a built-in policy, remove it from the `policies` array.
+
+## All built-in policies
+
+**Scope** is *file* for policies that check each matching file and *repository* for policies that run once per check. **Fix** says whether `repopo check --fix` can correct violations; *partial* means only some violations can be fixed. **Config** is *required* when the policy has no usable default configuration.
+
+### JavaScript and package.json
+
+| Policy | Scope | Fix | Config | Purpose |
+| --- | --- | --- | --- | --- |
+| [HtmlFileHeaders](/policies/javascript/#htmlfileheaders) | file | yes | required | Header comment in HTML files |
+| [JsTsFileHeaders](/policies/javascript/#jstsfileheaders) | file | yes | required | Header comment in JS/TS files |
+| [NoJsFileExtensions](/policies/javascript/#nojsfileextensions) | file | no |  | Use `.mjs`/`.cjs` instead of `.js` |
+| [NoPrivateWorkspaceDependencies](/policies/javascript/#noprivateworkspacedependencies) | file | no |  | Publishable packages can't depend on private workspace packages |
+| [PackageAllowedScopes](/policies/javascript/#packageallowedscopes) | file | no | required | Only approved npm scopes and names |
+| [PackageEsmType](/policies/javascript/#packageesmtype) | file | yes | required | Correct `type` field |
+| [PackageFolderName](/policies/javascript/#packagefoldername) | file | no |  | Folder name matches package name |
+| [PackageJsonProperties](/policies/javascript/#packagejsonproperties) | file | yes | required | Required package.json field values |
+| [PackageJsonRepoDirectoryProperty](/policies/javascript/#packagejsonrepodirectoryproperty) | file | yes |  | Correct `repository.directory` |
+| [PackageJsonSorted](/policies/javascript/#packagejsonsorted) | file | yes |  | Sorted package.json |
+| [PackageLicense](/policies/javascript/#packagelicense) | file | yes |  | Package LICENSE matches the root LICENSE |
+| [PackagePrivateField](/policies/javascript/#packageprivatefield) | file | yes | required | `private` field matches publishing rules |
+| [PackageReadme](/policies/javascript/#packagereadme) | file | yes |  | README exists, with the expected title and content |
+| [RequiredScripts](/policies/javascript/#requiredscripts) | file | partial | required | Required scripts exist |
+| [ExactScripts](/policies/javascript/#exactscripts) | file | yes | required | Scripts have exact content |
+| [ConditionalScripts](/policies/javascript/#conditionalscripts) | file | partial | required | A script requires other scripts |
+| [MutuallyExclusiveScripts](/policies/javascript/#mutuallyexclusivescripts) | file | no | required | At most one script per group |
+| [ScriptContains](/policies/javascript/#scriptcontains) | file | no | required | Scripts contain required substrings |
+| [PackageScripts](/policies/javascript/#packagescripts) | file | partial | required | Legacy combined script checks |
+| [PackageTestScripts](/policies/javascript/#packagetestscripts) | file | no | required | Test scripts exist when tests exist |
+
+### Rust and Cargo
+
+| Policy | Scope | Fix | Config | Purpose |
+| --- | --- | --- | --- | --- |
+| [CargoTomlRequired](/policies/rust/#cargotomlrequired) | file | no |  | Required `[package]` fields |
+| [CargoLicenceValidated](/policies/rust/#cargolicencevalidated) | file | yes |  | Valid SPDX `license` |
+| [CargoLintsConfigured](/policies/rust/#cargolintsconfigured) | file | no |  | `[lints.clippy]` configured |
+| [PublicApiDocumented](/policies/rust/#publicapidocumented) | file | no |  | `missing_docs` lint enabled |
+| [CargoTomlSorted](/policies/rust/#cargotomlsorted) | file | yes |  | Sorted dependency sections |
+| [NoWildcardDependencies](/policies/rust/#nowildcarddependencies) | file | no |  | No wildcard or loose versions |
+| [CargoLockPolicy](/policies/rust/#cargolockpolicy) | file | no |  | Commit `Cargo.lock` based on crate type |
+| [WorkspaceMembersValid](/policies/rust/#workspacemembersvalid) | file | no |  | Workspace member paths exist |
+| [WorkspaceInheritance](/policies/rust/#workspaceinheritance) | file | no |  | Members inherit workspace fields |
+| [SharedDependencyVersions](/policies/rust/#shareddependencyversions) | repository | no |  | Same dependency versions across members |
+| [RustToolchainExists](/policies/rust/#rusttoolchainexists) | file | no |  | `rust-toolchain.toml` exists |
+| [RustfmtConfigExists](/policies/rust/#rustfmtconfigexists) | file | no |  | `rustfmt.toml` exists |
+| [RustDocExists](/policies/rust/#rustdocexists) | file | no |  | Crate documentation files exist |
+| [NoUnsafeWithoutJustification](/policies/rust/#nounsafewithoutjustification) | file | no |  | `// SAFETY:` comments on `unsafe` |
+| [NoTargetArtifacts](/policies/rust/#notargetartifacts) | file | no |  | No committed build artifacts |
+
+### Gleam
+
+| Policy | Scope | Fix | Config | Purpose |
+| --- | --- | --- | --- | --- |
+| [GleamTomlRequired](/policies/gleam/#gleamtomlrequired) | file | no |  | Required `gleam.toml` fields |
+| [GleamVersionConstraint](/policies/gleam/#gleamversionconstraint) | file | no |  | Compiler version constraint set |
+| [GleamLicenceConfigured](/policies/gleam/#gleamlicenceconfigured) | file | yes |  | `licences` configured |
+| [GleamNameRestrictions](/policies/gleam/#gleamnamerestrictions) | file | no |  | Package naming rules |
+| [GleamInternalModulesConfigured](/policies/gleam/#gleaminternalmodulesconfigured) | file | no |  | `internal_modules` configured |
+| [GleamTomlSorted](/policies/gleam/#gleamtomlsorted) | file | yes |  | Sorted dependency sections |
+| [GleamDepVersions](/policies/gleam/#gleamdepversions) | file | no |  | Dependency version constraints |
+| [GleamPathDepsValid](/policies/gleam/#gleampathdepsvalid) | file | no |  | Path dependencies exist |
+| [GleamNoPathDepsInPublished](/policies/gleam/#gleamnopathdepsinpublished) | file | no |  | No path dependencies in published packages |
+| [GleamMonorepoConsistency](/policies/gleam/#gleammonorepoconsistency) | file | no | required | Matching metadata across packages |
+| [GleamSharedDependencyVersions](/policies/gleam/#gleamshareddependencyversions) | file | no | required | Matching dependency versions across packages |
+| [GleamProjectStructure](/policies/gleam/#gleamprojectstructure) | file | no |  | Standard `src/` and `test/` layout |
+| [GleamManifestCommitted](/policies/gleam/#gleammanifestcommitted) | file | no |  | `manifest.toml` committed |
+| [GleamDocExists](/policies/gleam/#gleamdocexists) | file | no |  | Package documentation files exist |
+| [NoBuildDirectory](/policies/gleam/#nobuilddirectory) | file | no |  | No committed `build/` output |
+
+### General
+
+| Policy | Scope | Fix | Config | Purpose |
+| --- | --- | --- | --- | --- |
+| [LicenseFileExists](/policies/repository/#licensefileexists) | repository | no |  | License file at the repository root |
+| [NoLargeBinaryFiles](/policies/repository/#nolargebinaryfiles) | file | no |  | No files over a size limit |
+| [RequiredGitignorePatterns](/policies/repository/#requiredgitignorepatterns) | file | yes |  | Required `.gitignore` entries |
+
+To write your own policies, see [Custom policies](/policies/custom/).

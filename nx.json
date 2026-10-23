@@ -209,7 +209,15 @@
 
 		"build:readme": {
 			"dependsOn": ["build:manifest"],
-			"inputs": ["production", "{projectRoot}/oclif.manifest.json"],
+			// oclif rewrites README.md in place, so its hand-written parts are an input;
+			// otherwise a cache hit restores a stale README over local edits. Don't use
+			// "production" here: its "!**/*.md" exclusion applies to the whole input set.
+			"inputs": [
+				"sharedGlobals",
+				"{projectRoot}/package.json",
+				"{projectRoot}/oclif.manifest.json",
+				"{projectRoot}/README.md"
+			],
 			"outputs": ["{projectRoot}/README.md", "{projectRoot}/docs/**"],
 			"cache": true
 		},

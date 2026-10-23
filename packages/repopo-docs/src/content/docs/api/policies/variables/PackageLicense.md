@@ -36,7 +36,7 @@ const config: RepopoConfig = {
     makePolicy(PackageLicense),
 
     // Or require LICENSE for all packages including private
-    makePolicy(PackageLicense, { skipPrivate: false }),
+    // makePolicy(PackageLicense, { config: { skipPrivate: false } }),
   ],
 };
 ```

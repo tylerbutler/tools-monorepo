@@ -130,8 +130,10 @@ function getExpectedFolderName(
  * const config: RepopoConfig = {
  *   policies: [
  *     makePolicy(PackageFolderName, {
- *       stripScopes: ["@myorg", "@internal"],
- *       excludePackages: ["@myorg/special-case"],
+ *       config: {
+ *         stripScopes: ["@myorg", "@internal"],
+ *         excludePackages: ["@myorg/special-case"],
+ *       },
  *     }),
  *   ],
  * };

@@ -41,6 +41,15 @@ Omitted policies enable `NoJsFileExtensions`,
 `PackageJsonRepoDirectoryProperty`, and `PackageJsonSorted`; `[]` disables all.
 Other built-ins are opt-in. Header and focused script policies require settings.
 
+## Built-in policy documentation
+
+Built-ins are exported from `src/policies.ts` and documented on the docs site,
+one page per ecosystem under `packages/repopo-docs/src/content/docs/policies/`:
+`javascript.mdx`, `rust.mdx`, `gleam.mdx`, and `repository.mdx` (general).
+`built-in.mdx` has a table of every policy with its scope, fix support, and
+whether it requires configuration. When adding or changing a built-in, update
+its `###` section and table row; every export must appear exactly once.
+
 ## Findings and resolution
 
 Async functions and Effection generator handlers return

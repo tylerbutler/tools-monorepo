@@ -200,9 +200,11 @@ function shouldSkipValidation(
  * const config: RepopoConfig = {
  *   policies: [
  *     makePolicy(PackageTestScripts, {
- *       testDirectories: ["test", "tests"],
- *       testDependencies: ["vitest", "jest"],
- *       requiredScripts: ["test"],
+ *       config: {
+ *         testDirectories: ["test", "tests"],
+ *         testDependencies: ["vitest", "jest"],
+ *         requiredScripts: ["test"],
+ *       },
  *     }),
  *   ],
  * };

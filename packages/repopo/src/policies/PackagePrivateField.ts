@@ -197,10 +197,12 @@ function getRequiredPrivateState(
  * const config: RepopoConfig = {
  *   policies: [
  *     makePolicy(PackagePrivateField, {
- *       mustPublish: ["@myorg/*"],
- *       mustBePrivate: ["@internal/*"],
- *       mayPublish: ["@experimental/*"],
- *       unmatchedPackages: "private",
+ *       config: {
+ *         mustPublish: ["@myorg/*"],
+ *         mustBePrivate: ["@internal/*"],
+ *         mayPublish: ["@experimental/*"],
+ *         unmatchedPackages: "private",
+ *       },
  *     }),
  *   ],
  * };

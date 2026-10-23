@@ -22,14 +22,14 @@ to locate workspace packages, rather than hardcoding directory conventions.
 
 ```typescript
 // In repopo.config.ts
+import { makePolicy } from "repopo";
 import { NoPrivateWorkspaceDependencies } from "repopo/policies";
 
-makePolicy(NoPrivateWorkspaceDependencies, {
-  checkDevDependencies: false, // Only check production dependencies (default)
-});
+// Only check production dependencies (default)
+makePolicy(NoPrivateWorkspaceDependencies);
 
 // Or check both dependencies and devDependencies
 makePolicy(NoPrivateWorkspaceDependencies, {
-  checkDevDependencies: true,
+  config: { checkDevDependencies: true },
 });
 ```

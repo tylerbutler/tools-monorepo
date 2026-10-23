@@ -7,7 +7,7 @@ title: "PackageFolderName"
 
 > `const` **PackageFolderName**: [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<[`PackageFolderNameConfig`](/api/index/interfaces/packagefoldernameconfig/) \| `undefined`\>
 
-Defined in: [policies/PackageFolderName.ts:142](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageFolderName.ts#L142)
+Defined in: [policies/PackageFolderName.ts:144](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageFolderName.ts#L144)
 
 A policy that ensures package folder names match package names.
 
@@ -35,8 +35,10 @@ import { PackageFolderName } from "repopo/policies";
 const config: RepopoConfig = {
   policies: [
     makePolicy(PackageFolderName, {
-      stripScopes: ["@myorg", "@internal"],
-      excludePackages: ["@myorg/special-case"],
+      config: {
+        stripScopes: ["@myorg", "@internal"],
+        excludePackages: ["@myorg/special-case"],
+      },
     }),
   ],
 };

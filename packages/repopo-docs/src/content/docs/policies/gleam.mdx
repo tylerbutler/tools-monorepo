@@ -1,0 +1,184 @@
+---
+title: Gleam policies
+description: Built-in policies for gleam.toml manifests and Gleam projects.
+sidebar:
+  label: Gleam
+  order: 5
+---
+
+These policies check `gleam.toml` manifests and the layout of Gleam projects. Unless noted, a policy checks every `gleam.toml` in the repository. Policies marked **root only** check only the `gleam.toml` at the repository root.
+
+```ts title="repopo.config.ts"
+import { makePolicy, type RepopoConfig } from "repopo";
+import { GleamTomlRequired, GleamTomlSorted } from "repopo/policies";
+
+export default {
+	policies: [
+		makePolicy(GleamTomlRequired, { config: { requireGleamVersion: true } }),
+		makePolicy(GleamTomlSorted),
+	],
+} satisfies RepopoConfig;
+```
+
+## Manifest fields
+
+### GleamTomlRequired
+
+Checks that top-level fields exist in `gleam.toml`.
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `required` | `string[]` | `["name", "version"]` | Fields that must exist. |
+| `requireGleamVersion` | `boolean` | `false` | Require the `gleam` compiler version constraint. |
+| `requireRepository` | `boolean` | `false` | Require a `[repository]` section. |
+
+**Auto-fixable:** No.
+
+### GleamVersionConstraint
+
+Checks that the `gleam` compiler version constraint is set.
+
+| Option | Type | Description |
+| --- | --- | --- |
+| `minimumVersion` | `string` | The constraint must allow at least this version, such as `"1.0.0"`. |
+
+**Auto-fixable:** No.
+
+### GleamLicenceConfigured
+
+Checks that `licences` is set in `gleam.toml`.
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `allowedLicences` | `string[]` | | Only these SPDX identifiers are accepted. |
+| `validateSpdx` | `boolean` | `false` | Validate against SPDX with `spdx-correct`. |
+
+SPDX validation needs the optional peer dependency `spdx-correct`.
+
+**Auto-fixable:** Yes, when `validateSpdx` is enabled. `--fix` replaces correctable identifiers with the canonical ones.
+
+### GleamNameRestrictions
+
+Checks the package name against naming rules.
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `denyPrefixes` | `string[]` | `["gleam_"]` | Prefixes that names can't use. |
+| `requireSnakeCase` | `boolean` | `true` | Require snake_case names. |
+
+**Auto-fixable:** No.
+
+### GleamInternalModulesConfigured
+
+Checks that `internal_modules` is set, so implementation modules are hidden from generated documentation.
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `suggestPatterns` | `boolean` | `true` | Suggest common patterns in the error message. |
+
+**Auto-fixable:** No.
+
+### GleamTomlSorted
+
+Checks that keys in `gleam.toml` dependency sections are in alphabetical order.
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `sections` | `string[]` | `["dependencies", "dev-dependencies"]` | Sections to check. |
+
+**Auto-fixable:** Yes. `--fix` sorts the sections and keeps comments.
+
+## Dependencies
+
+### GleamDepVersions
+
+Checks dependency version constraints in `dependencies` and `dev-dependencies`.
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `requireVersions` | `boolean` | `true` | Every dependency needs a version constraint. |
+| `warnUnbounded` | `boolean` | `false` | Warn about ranges with no upper bound, such as `">= 1.0.0"`. |
+
+**Auto-fixable:** No.
+
+### GleamPathDepsValid
+
+Checks that each path dependency points to a directory that contains a `gleam.toml`.
+
+**Auto-fixable:** No.
+
+### GleamNoPathDepsInPublished
+
+Reports path dependencies in packages intended for publishing. Hex can't resolve them.
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `onlyPublishable` | `boolean` | `false` | Skip packages without a `description`. Gleam has no `private` field, so a missing description serves as the signal. |
+
+**Auto-fixable:** No.
+
+## Monorepos
+
+### GleamMonorepoConsistency
+
+**Root only.** Checks that metadata matches across the Gleam packages in a monorepo.
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `packages` | `string[]` | | Required. Repo-relative paths of the `gleam.toml` files to compare. With fewer than two paths, the policy checks nothing. |
+| `syncFields` | `string[]` | `["licences"]` | Top-level fields that must match. |
+| `syncGleamVersion` | `boolean` | `true` | The `gleam` version constraint must match. |
+
+**Configuration:** Required. This policy has no default configuration.
+
+**Auto-fixable:** No.
+
+### GleamSharedDependencyVersions
+
+**Root only.** Reports dependencies with different versions in different Gleam packages.
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `packages` | `string[]` | | Required. Repo-relative paths of the `gleam.toml` files to compare. With fewer than two paths, the policy checks nothing. |
+| `detectMismatches` | `boolean` | `true` | Report version mismatches. |
+| `includeDev` | `boolean` | `false` | Also compare `dev-dependencies`. |
+
+**Configuration:** Required. This policy has no default configuration.
+
+**Auto-fixable:** No.
+
+## Project layout
+
+### GleamProjectStructure
+
+Checks that each Gleam project has the standard directories.
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `requireSrcDir` | `boolean` | `true` | Require `src/`. |
+| `requireTestDir` | `boolean` | `false` | Require `test/`. |
+
+**Auto-fixable:** No.
+
+### GleamManifestCommitted
+
+Checks that `manifest.toml` is committed next to each `gleam.toml` so builds are reproducible. Run `gleam build` to create it.
+
+**Auto-fixable:** No.
+
+### GleamDocExists
+
+Checks that documentation files exist next to each `gleam.toml`.
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `required` | `string[]` | `["README.md"]` | Files that must exist. |
+| `recommended` | `string[]` | | Files that produce a warning when missing. |
+
+**Auto-fixable:** No.
+
+### NoBuildDirectory
+
+Reports committed files inside a `build/` directory, Gleam's build output.
+
+**Auto-fixable:** No. Remove the files from Git and add `build/` to `.gitignore`.

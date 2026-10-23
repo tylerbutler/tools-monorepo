@@ -7,7 +7,7 @@ title: "PackageScripts"
 
 > `const` **PackageScripts**: [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<[`PackageScriptsSettings`](/api/index/interfaces/packagescriptssettings/) \| `undefined`\> & `object`
 
-Defined in: [policies/PackageScripts.ts:706](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageScripts.ts#L706)
+Defined in: [policies/PackageScripts.ts:708](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageScripts.ts#L708)
 
 A RepoPolicy that validates package.json scripts based on configurable rules.
 
@@ -35,23 +35,25 @@ import { PackageScripts } from "repopo/policies";
 const config: RepopoConfig = {
   policies: [
     makePolicy(PackageScripts, {
-      // Scripts that must exist
-      must: [
-        "test",                        // Must exist, no auto-fix
-        { build: "tsc" },              // Must exist, auto-fix available
-        { lint: "biome lint ." },      // Must exist, auto-fix available
-      ],
-      // Scripts that must exist AND match exactly
-      exact: {
-        clean: "rimraf dist esm",
-        format: "biome format --write .",
+      config: {
+        // Scripts that must exist
+        must: [
+          "test",                        // Must exist, no auto-fix
+          { build: "tsc" },              // Must exist, auto-fix available
+          { lint: "biome lint ." },      // Must exist, auto-fix available
+        ],
+        // Scripts that must exist AND match exactly
+        exact: {
+          clean: "rimraf dist esm",
+          format: "biome format --write .",
+        },
+        // If "build" exists, "clean" must also exist (with inline auto-fix default)
+        conditionalRequired: [{ ifPresent: "build", requires: [{ clean: "rimraf dist" }] }],
+        // Script body must contain these substrings
+        scriptMustContain: [{ script: "build", mustContain: ["tsc"] }],
+        // Only one of these can exist
+        mutuallyExclusive: [["lint:eslint", "lint:biome"]],
       },
-      // If "build" exists, "clean" must also exist (with inline auto-fix default)
-      conditionalRequired: [{ ifPresent: "build", requires: [{ clean: "rimraf dist" }] }],
-      // Script body must contain these substrings
-      scriptMustContain: [{ script: "build", mustContain: ["tsc"] }],
-      // Only one of these can exist
-      mutuallyExclusive: [["lint:eslint", "lint:biome"]],
     }),
   ],
 };

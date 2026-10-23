@@ -23,7 +23,7 @@ export interface GleamMonorepoConsistencyConfig {
 
 	/**
 	 * Paths to gleam.toml files to compare (relative to repo root).
-	 * If not specified, the policy only checks the file it matches against.
+	 * With fewer than two paths, the policy reports no findings.
 	 */
 	packages?: string[];
 }

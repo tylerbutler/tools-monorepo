@@ -360,10 +360,10 @@ async function applyFix(
  * import { PackageEsmType } from "repopo/policies";
  *
  * // Require all packages to be ESM
- * makePolicy(PackageEsmType, { requiredType: "module" })
+ * makePolicy(PackageEsmType, { config: { requiredType: "module" } })
  *
  * // Or detect based on exports
- * makePolicy(PackageEsmType, { detectFromExports: true })
+ * makePolicy(PackageEsmType, { config: { detectFromExports: true } })
  * ```
  *
  * @public
