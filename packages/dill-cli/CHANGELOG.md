@@ -1,5 +1,11 @@
 # dill-cli
 
+## 0.4.3
+
+### Patch Changes
+
+- Reject tar and zip entries that would escape the extraction directory. _[`#769`](https://github.com/tylerbutler/tools-monorepo/pull/769) [`c8574a0`](https://github.com/tylerbutler/tools-monorepo/commit/c8574a08292c0a3d051a5eb6ca66bf3aba209ba8) [@bm1016bm-svg](https://github.com/bm1016bm-svg)_
+
 ## 0.4.2
 
 ### Patch Changes
