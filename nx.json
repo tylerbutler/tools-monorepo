@@ -24,14 +24,29 @@
 	// ============================================
 	"plugins": [
 		{
+			"plugin": "@nx/js/typescript",
+			"include": ["packages/*/tsconfig.json"],
+			"options": {
+				"typecheck": {
+					"targetName": "typecheck"
+				}
+			}
+		},
+		{
 			"plugin": "@nx/vite/plugin",
 			"exclude": [
 				"packages/dill-docs/**", // Astro site
 				"packages/repopo-docs/**" // Astro site
 			],
 			"options": {
-				"testTargetName": "test:vitest", // Avoid conflicts with existing test:unit
 				"serveTargetName": "serve:vite" // Avoid conflicts with existing dev targets
+			}
+		},
+		{
+			"plugin": "@nx/vitest",
+			"exclude": ["packages/dill-docs/**", "packages/repopo-docs/**"],
+			"options": {
+				"testTargetName": "test:vitest" // Avoid conflicts with existing test:unit
 			}
 		}
 	],
@@ -450,5 +465,8 @@
 		}
 	},
 	"nxCloudId": "68fa4834e4d66c5b22e74804",
-	"analytics": false
+	"analytics": false,
+	"affected": {
+		"legacy": true
+	}
 }

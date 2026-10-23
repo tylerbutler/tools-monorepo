@@ -1,7 +1,6 @@
 import { type ChildProcess, fork } from "node:child_process";
 import type { EventEmitter } from "node:events";
 import { freemem } from "node:os";
-import type { Readable } from "node:stream";
 import { Worker } from "node:worker_threads";
 
 import type { WorkerExecResult, WorkerMessage } from "./worker.js";
@@ -58,7 +57,7 @@ export class WorkerPool {
 		const workerMessage: WorkerMessage = { workerName, command, cwd };
 		const cleanup: (() => void)[] = [];
 		const installTemporaryListener = (
-			object: EventEmitter | Readable,
+			object: EventEmitter,
 			event: string,
 			handler: (...args: unknown[]) => void,
 		) => {
