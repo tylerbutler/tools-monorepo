@@ -1,6 +1,5 @@
 import { call, type Operation } from "effection";
 import jsonfile from "jsonfile";
-import { resolve } from "pathe";
 import type { PackageJson } from "type-fest";
 import { ExecutionContractError } from "../executionContractError.js";
 import { readParsedFile } from "../fileCache.js";
@@ -12,6 +11,7 @@ import type {
 	PolicyResult,
 } from "../policy.js";
 import { settlePolicyPromise } from "../settlePolicyPromise.js";
+import { resolveRepoFilePath } from "../utils/safePaths.js";
 
 const { readFile: readJson } = jsonfile;
 
@@ -120,10 +120,9 @@ export function definePackagePolicy<J = PackageJson, C = void>(
 		defaultConfig,
 		requiresConfig: args.requiresConfig,
 		handler: function* (innerArgs) {
+			const filePath = resolveRepoFilePath(innerArgs.root, innerArgs.file);
 			const json: J = yield* call(() =>
-				readParsedFile(innerArgs, "json", () =>
-					readJson(resolve(innerArgs.root, innerArgs.file)),
-				),
+				readParsedFile(innerArgs, "json", () => readJson(filePath)),
 			);
 			const result = packageHandler(json, innerArgs);
 

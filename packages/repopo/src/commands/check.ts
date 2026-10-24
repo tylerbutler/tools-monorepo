@@ -10,6 +10,7 @@ import {
 	type PolicyRunFinding,
 	runPolicies,
 } from "../runner.js";
+import { normalizeRepoRelativeFilePath } from "../utils/safePaths.js";
 
 async function readStdin(): Promise<string> {
 	if (process.stdin.isTTY) {
@@ -62,7 +63,7 @@ export class CheckPolicy<
 			this.info("Resolving errors if possible.");
 		}
 		const context = await this.getContext();
-		const files = await this.collectFilePaths();
+		const files = await this.collectFilePaths(context.gitRoot);
 		this.verbose(`${context.policies.length} policies loaded.`);
 		for (const policy of context.policies) {
 			this.verbose(policy.instanceId);
@@ -122,10 +123,20 @@ export class CheckPolicy<
 		);
 	}
 
-	private async collectFilePaths(): Promise<string[]> {
-		return this.flags.stdin
+	private async collectFilePaths(gitRoot: string): Promise<string[]> {
+		const paths = this.flags.stdin
 			? parseFilePaths(await readStdin())
-			: this.collectRepositoryFiles();
+			: await this.collectRepositoryFiles();
+		return paths.map((filePath) => {
+			try {
+				return normalizeRepoRelativeFilePath(gitRoot, filePath);
+			} catch (error: unknown) {
+				const message = error instanceof Error ? error.message : String(error);
+				throw new Error(`Invalid file path '${filePath}': ${message}`, {
+					cause: error,
+				});
+			}
+		});
 	}
 
 	private async collectRepositoryFiles(): Promise<string[]> {

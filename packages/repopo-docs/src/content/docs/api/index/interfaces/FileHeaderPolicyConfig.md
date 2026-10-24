@@ -5,7 +5,7 @@ prev: false
 title: "FileHeaderPolicyConfig"
 ---
 
-Defined in: [policyDefiners/defineFileHeaderPolicy.ts:14](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L14)
+Defined in: [policyDefiners/defineFileHeaderPolicy.ts:15](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L15)
 
 Header text required by a file-header policy.
 
@@ -15,7 +15,7 @@ Header text required by a file-header policy.
 
 > `optional` **autoGenText?**: `string`
 
-Defined in: [policyDefiners/defineFileHeaderPolicy.ts:23](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L23)
+Defined in: [policyDefiners/defineFileHeaderPolicy.ts:24](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L24)
 
 An optional string that will be appended to the headerText.
 
@@ -25,6 +25,6 @@ An optional string that will be appended to the headerText.
 
 > **headerText**: `string`
 
-Defined in: [policyDefiners/defineFileHeaderPolicy.ts:18](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L18)
+Defined in: [policyDefiners/defineFileHeaderPolicy.ts:19](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L19)
 
 The text to use as the header.
