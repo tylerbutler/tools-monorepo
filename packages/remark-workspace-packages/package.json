@@ -1,6 +1,6 @@
 {
 	"name": "remark-workspace-packages",
-	"version": "0.0.1",
+	"version": "0.1.0",
 	"description": "Remark plugin to generate and update workspace package tables in markdown",
 	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/remark-workspace-packages#remark-workspace-packages",
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
