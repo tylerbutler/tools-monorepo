@@ -9,7 +9,7 @@ title: "defineFileHeaderPolicy"
 
 > **defineFileHeaderPolicy**(`args`): [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<[`FileHeaderPolicyConfig`](/api/index/interfaces/fileheaderpolicyconfig/)\> & `object`
 
-Defined in: [policyDefiners/defineFileHeaderPolicy.ts:114](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L114)
+Defined in: [policyDefiners/defineFileHeaderPolicy.ts:115](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L115)
 
 Creates a file-header policy that detects missing or incorrect headers and can replace them.
 
@@ -44,7 +44,7 @@ const MyHeaderPolicy = defineFileHeaderPolicy({
 
 > **defineFileHeaderPolicy**(`args`): [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<[`FileHeaderPolicyConfig`](/api/index/interfaces/fileheaderpolicyconfig/)\> & `object`
 
-Defined in: [policyDefiners/defineFileHeaderPolicy.ts:121](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L121)
+Defined in: [policyDefiners/defineFileHeaderPolicy.ts:122](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L122)
 
 Define a header policy that requires explicit header configuration.
 

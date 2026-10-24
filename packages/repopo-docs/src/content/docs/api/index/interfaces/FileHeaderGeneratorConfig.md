@@ -5,7 +5,7 @@ prev: false
 title: "FileHeaderGeneratorConfig"
 ---
 
-Defined in: [policyDefiners/defineFileHeaderPolicy.ts:35](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L35)
+Defined in: [policyDefiners/defineFileHeaderPolicy.ts:36](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L36)
 
 Configuration for generating file headers with specific formatting rules.
 
@@ -24,7 +24,7 @@ properties to control how headers are inserted into different file types.
 
 > `optional` **autoGenText?**: `string`
 
-Defined in: [policyDefiners/defineFileHeaderPolicy.ts:23](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L23)
+Defined in: [policyDefiners/defineFileHeaderPolicy.ts:24](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L24)
 
 An optional string that will be appended to the headerText.
 
@@ -38,7 +38,7 @@ An optional string that will be appended to the headerText.
 
 > `optional` **headerEnd?**: [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp)
 
-Defined in: [policyDefiners/defineFileHeaderPolicy.ts:58](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L58)
+Defined in: [policyDefiners/defineFileHeaderPolicy.ts:59](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L59)
 
 Regex matching the header postfix.
 
@@ -48,7 +48,7 @@ Regex matching the header postfix.
 
 > `optional` **headerStart?**: [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp)
 
-Defined in: [policyDefiners/defineFileHeaderPolicy.ts:43](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L43)
+Defined in: [policyDefiners/defineFileHeaderPolicy.ts:44](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L44)
 
 Regex matching the header prefix, such as a block-comment opener.
 
@@ -58,7 +58,7 @@ Regex matching the header prefix, such as a block-comment opener.
 
 > `optional` **headerText?**: `string`
 
-Defined in: [policyDefiners/defineFileHeaderPolicy.ts:18](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L18)
+Defined in: [policyDefiners/defineFileHeaderPolicy.ts:19](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L19)
 
 The text to use as the header.
 
@@ -72,7 +72,7 @@ The text to use as the header.
 
 > **lineEnd**: [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp)
 
-Defined in: [policyDefiners/defineFileHeaderPolicy.ts:53](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L53)
+Defined in: [policyDefiners/defineFileHeaderPolicy.ts:54](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L54)
 
 Regex matching the end of each line (e.g., `\r?\n`)
 
@@ -82,7 +82,7 @@ Regex matching the end of each line (e.g., `\r?\n`)
 
 > **lineStart**: [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp)
 
-Defined in: [policyDefiners/defineFileHeaderPolicy.ts:48](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L48)
+Defined in: [policyDefiners/defineFileHeaderPolicy.ts:49](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L49)
 
 Regex matching beginning of each line (e.g. ' * ')
 
@@ -92,7 +92,7 @@ Regex matching beginning of each line (e.g. ' * ')
 
 > **match**: [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp)
 
-Defined in: [policyDefiners/defineFileHeaderPolicy.ts:38](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L38)
+Defined in: [policyDefiners/defineFileHeaderPolicy.ts:39](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L39)
 
 Regular expression that matches files this header generator applies to
 
@@ -102,7 +102,7 @@ Regular expression that matches files this header generator applies to
 
 > **replacer**: (`content`, `config`) => `string`
 
-Defined in: [policyDefiners/defineFileHeaderPolicy.ts:67](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L67)
+Defined in: [policyDefiners/defineFileHeaderPolicy.ts:68](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L68)
 
 Function that generates the properly formatted header content for insertion into files.
 
