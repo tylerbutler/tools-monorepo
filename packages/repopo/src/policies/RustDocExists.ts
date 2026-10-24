@@ -1,6 +1,6 @@
 import { existsSync } from "node:fs";
 import path from "pathe";
-import type { PolicyShape } from "../policy.js";
+import type { FilePolicyDefinition } from "../policy.js";
 import {
 	type CargoToml,
 	defineCargoPolicy,
@@ -9,7 +9,7 @@ import {
 /**
  * Configuration for the RustDocExists policy.
  *
- * @alpha
+ * @public
  */
 export interface RustDocExistsConfig {
 	/**
@@ -29,58 +29,56 @@ const DEFAULT_REQUIRED = ["README.md"];
 /**
  * A policy that validates documentation files exist for Rust crates.
  *
- * @alpha
+ * @public
  */
-export const RustDocExists: PolicyShape<RustDocExistsConfig> =
-	defineCargoPolicy({
-		name: "RustDocExists",
-		description:
-			"Validates that documentation files (README.md, etc.) exist for Rust crates.",
-		handler: async (toml: CargoToml, { file, root, config }) => {
-			// Skip workspace root
-			if (toml.workspace !== undefined && toml.package === undefined) {
-				return true;
+export const RustDocExists = defineCargoPolicy({
+	name: "RustDocExists",
+	description:
+		"Validates that documentation files (README.md, etc.) exist for Rust crates.",
+	handler: async (toml: CargoToml, { file, root, config }) => {
+		// Skip workspace root
+		if (toml.workspace !== undefined && toml.package === undefined) {
+			return [];
+		}
+
+		const dir = path.dirname(path.resolve(root, file));
+		const required = config?.required ?? DEFAULT_REQUIRED;
+		const recommended = config?.recommended ?? [];
+
+		const missingRequired: string[] = [];
+		const missingRecommended: string[] = [];
+
+		for (const fileName of required) {
+			if (!existsSync(path.join(dir, fileName))) {
+				missingRequired.push(fileName);
 			}
+		}
 
-			const dir = path.dirname(path.resolve(root, file));
-			const required = config?.required ?? DEFAULT_REQUIRED;
-			const recommended = config?.recommended ?? [];
-
-			const missingRequired: string[] = [];
-			const missingRecommended: string[] = [];
-
-			for (const fileName of required) {
-				if (!existsSync(path.join(dir, fileName))) {
-					missingRequired.push(fileName);
-				}
+		for (const fileName of recommended) {
+			if (!existsSync(path.join(dir, fileName))) {
+				missingRecommended.push(fileName);
 			}
+		}
 
-			for (const fileName of recommended) {
-				if (!existsSync(path.join(dir, fileName))) {
-					missingRecommended.push(fileName);
-				}
-			}
+		const errors: string[] = [];
+		if (missingRequired.length > 0) {
+			errors.push(
+				`Missing required documentation: ${missingRequired.join(", ")}`,
+			);
+		}
+		if (missingRecommended.length > 0) {
+			errors.push(
+				`Missing recommended documentation: ${missingRecommended.join(", ")}`,
+			);
+		}
 
-			const errors: string[] = [];
-			if (missingRequired.length > 0) {
-				errors.push(
-					`Missing required documentation: ${missingRequired.join(", ")}`,
-				);
-			}
-			if (missingRecommended.length > 0) {
-				errors.push(
-					`Missing recommended documentation: ${missingRecommended.join(", ")}`,
-				);
-			}
-
-			if (errors.length > 0) {
-				return {
-					error: errors.join("; "),
-					manualFix:
-						"Create the missing documentation files alongside Cargo.toml.",
-				};
-			}
-
-			return true;
-		},
-	});
+		if (errors.length > 0) {
+			return errors.map((message) => ({
+				message,
+				manualFix:
+					"Create the missing documentation files alongside Cargo.toml.",
+			}));
+		}
+		return [];
+	},
+}) satisfies FilePolicyDefinition<RustDocExistsConfig>;

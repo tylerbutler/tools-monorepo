@@ -1,15 +1,13 @@
 import { existsSync } from "node:fs";
 import path from "pathe";
-import { makePolicyDefinition } from "../makePolicy.js";
-import type { PolicyDefinition } from "../policy.js";
-
+import type { FilePolicyDefinition } from "../policy.js";
 /**
  * A policy that ensures manifest.toml is committed alongside gleam.toml
  * for reproducible Gleam builds.
  *
- * @alpha
+ * @public
  */
-export const GleamManifestCommitted: PolicyDefinition = makePolicyDefinition({
+export const GleamManifestCommitted = {
 	name: "GleamManifestCommitted",
 	description:
 		"Ensures manifest.toml is committed alongside gleam.toml for reproducible builds.",
@@ -19,14 +17,15 @@ export const GleamManifestCommitted: PolicyDefinition = makePolicyDefinition({
 		const manifestPath = path.join(dir, "manifest.toml");
 
 		if (existsSync(manifestPath)) {
-			return true;
+			return [];
 		}
-
-		return {
-			error:
-				"Missing manifest.toml. Gleam projects should commit manifest.toml for reproducible builds.",
-			manualFix:
-				"Run `gleam build` to generate manifest.toml, then commit it to source control.",
-		};
+		return [
+			{
+				message:
+					"Missing manifest.toml. Gleam projects should commit manifest.toml for reproducible builds.",
+				manualFix:
+					"Run `gleam build` to generate manifest.toml, then commit it to source control.",
+			},
+		];
 	},
-});
+} satisfies FilePolicyDefinition;

@@ -1,14 +1,13 @@
 import { readFile } from "node:fs/promises";
 import path from "pathe";
 import { glob } from "tinyglobby";
-import { makePolicyDefinition } from "../makePolicy.js";
-import type { PolicyDefinition } from "../policy.js";
+import type { PolicyFinding, RepositoryPolicyDefinition } from "../policy.js";
 import { parseToml } from "../policyDefiners/tomlParser.js";
 
 /**
  * Configuration for the SharedDependencyVersions policy.
  *
- * @alpha
+ * @public
  */
 export interface SharedDependencyVersionsConfig {
 	/**
@@ -109,6 +108,7 @@ async function collectMemberDeps(
 	members: string[],
 	root: string,
 	exclude: string[],
+	files: readonly string[],
 ): Promise<Map<string, Map<string, string[]>>> {
 	const allDeps = new Map<string, Map<string, string[]>>();
 	const memberCargoPaths = await glob(
@@ -120,6 +120,9 @@ async function collectMemberDeps(
 	);
 
 	for (const memberCargoPath of memberCargoPaths) {
+		if (!files.includes(memberCargoPath)) {
+			continue;
+		}
 		const memberContent = await readFile(
 			path.resolve(root, memberCargoPath),
 			"utf-8",
@@ -128,7 +131,7 @@ async function collectMemberDeps(
 		const deps = collectDeps(memberToml);
 
 		for (const [name, version] of deps) {
-			recordDependency(allDeps, name, version, path.dirname(memberCargoPath));
+			recordDependency(allDeps, name, version, memberCargoPath);
 		}
 	}
 
@@ -138,63 +141,64 @@ async function collectMemberDeps(
 /**
  * A policy that detects dependency version mismatches across Cargo workspace members.
  *
- * @alpha
+ * @public
  */
-export const SharedDependencyVersions: PolicyDefinition<SharedDependencyVersionsConfig> =
-	makePolicyDefinition({
-		name: "SharedDependencyVersions",
-		description:
-			"Detects dependency version mismatches across Cargo workspace members.",
-		match: /^Cargo\.toml$/,
-		handler: async ({ file, root, config }) => {
-			const detectMismatches = config?.detectMismatches ?? true;
-			const content = await readFile(path.resolve(root, file), "utf-8");
-			const toml = await parseToml(content);
+export const SharedDependencyVersions = {
+	name: "SharedDependencyVersions",
+	description:
+		"Detects dependency version mismatches across Cargo workspace members.",
+	scope: "repository",
+	handler: async ({ files, root, config }) => {
+		if (!files.includes("Cargo.toml")) {
+			return [];
+		}
+		const detectMismatches = config?.detectMismatches ?? true;
+		const content = await readFile(path.resolve(root, "Cargo.toml"), "utf-8");
+		const toml = await parseToml(content);
 
-			const workspace = toml.workspace as Record<string, unknown> | undefined;
-			if (!workspace) {
-				return true;
-			}
+		const workspace = toml.workspace as Record<string, unknown> | undefined;
+		if (!workspace) {
+			return [];
+		}
 
-			const members = workspace.members as string[] | undefined;
-			if (!members || members.length === 0) {
-				return true;
-			}
+		const members = workspace.members as string[] | undefined;
+		if (!members || members.length === 0) {
+			return [];
+		}
 
-			const errors: string[] = [];
+		const errors: string[] = [];
+		const findings: PolicyFinding[] = [];
+		const manualFix =
+			"Use [workspace.dependencies] with `dep.workspace = true` in member Cargo.toml files to share versions.";
 
-			// Check required workspace deps
-			const workspaceDeps = (workspace.dependencies ?? {}) as Record<
-				string,
-				unknown
-			>;
-			checkRequiredWorkspaceDeps(config, workspaceDeps, errors);
+		// Check required workspace deps
+		const workspaceDeps = (workspace.dependencies ?? {}) as Record<
+			string,
+			unknown
+		>;
+		checkRequiredWorkspaceDeps(config, workspaceDeps, errors);
+		for (const error of errors) {
+			findings.push({ message: error, files: ["Cargo.toml"], manualFix });
+		}
 
-			// Detect mismatches across members
-			if (detectMismatches) {
-				const exclude = (workspace.exclude ?? []) as string[];
-				const allDeps = await collectMemberDeps(members, root, exclude);
+		// Detect mismatches across members
+		if (detectMismatches) {
+			const exclude = (workspace.exclude ?? []) as string[];
+			const allDeps = await collectMemberDeps(members, root, exclude, files);
 
-				for (const [dep, versionMap] of allDeps) {
-					if (versionMap.size > 1) {
-						const details = [...versionMap.entries()]
-							.map(
-								([ver, memberList]) => `"${ver}" in ${memberList.join(", ")}`,
-							)
-							.join("; ");
-						errors.push(`Version mismatch for "${dep}": ${details}`);
-					}
+			for (const [dep, versionMap] of allDeps) {
+				if (versionMap.size > 1) {
+					const details = [...versionMap.entries()]
+						.map(([ver, memberList]) => `"${ver}" in ${memberList.join(", ")}`)
+						.join("; ");
+					findings.push({
+						message: `Version mismatch for "${dep}": ${details}`,
+						files: [...versionMap.values()].flat(),
+						manualFix,
+					});
 				}
 			}
-
-			if (errors.length > 0) {
-				return {
-					error: errors.join("; "),
-					manualFix:
-						"Use [workspace.dependencies] with `dep.workspace = true` in member Cargo.toml files to share versions.",
-				};
-			}
-
-			return true;
-		},
-	});
+		}
+		return findings.length > 0 ? findings : [];
+	},
+} satisfies RepositoryPolicyDefinition<SharedDependencyVersionsConfig>;

@@ -1,4 +1,5 @@
 import { readFile, writeFile } from "node:fs/promises";
+import type { PolicyResult } from "../policy.js";
 
 /**
  * Lazily load spdx-correct. It's an optional peer dependency.
@@ -110,18 +111,26 @@ export async function tryAutoFix(
 	filePath: string,
 	corrections: Map<string, string>,
 	errors: string[],
-): Promise<{ error: string; fixable: boolean; fixed: boolean }> {
+): Promise<PolicyResult> {
 	try {
 		const content = await readFile(filePath, "utf-8");
 		const fixed = applyCorrections(content, corrections);
 		await writeFile(filePath, fixed);
-		return { error: errors.join("; "), fixable: true, fixed: true };
+		const correctedMessages = new Set(
+			[...corrections].map(
+				([original, corrected]) =>
+					`Licence "${original}" should be "${corrected}"`,
+			),
+		);
+		return errors.map((message) => ({
+			message,
+			fixStatus: correctedMessages.has(message) ? "fixed" : undefined,
+		}));
 	} catch {
-		return {
-			error: `${errors.join("; ")}. Auto-fix failed.`,
-			fixable: true,
-			fixed: false,
-		};
+		return errors.map((message) => ({
+			message: `${message}. Auto-fix failed.`,
+			fixStatus: "failed",
+		}));
 	}
 }
 
@@ -131,7 +140,7 @@ export async function tryAutoFix(
  * Combines spdx-correct validation with allowlist checking and auto-fix
  * into a single helper used by both Cargo and Gleam licence policies.
  *
- * @returns `true` if valid, or a PolicyError-compatible object on failure.
+ * @returns An empty array if valid, or findings that describe invalid expressions.
  * Returns `undefined` if no validation was requested (both allowlist and
  * validateSpdx are empty/false).
  *
@@ -144,11 +153,7 @@ export async function validateLicenceField(options: {
 	shouldResolve: boolean;
 	filePath: string;
 	manualFixMessage: string;
-}): Promise<
-	| true
-	| { error: string; fixable?: boolean; fixed?: boolean; manualFix?: string }
-	| undefined
-> {
+}): Promise<PolicyResult> {
 	const {
 		licences,
 		allowedLicences,
@@ -162,7 +167,10 @@ export async function validateLicenceField(options: {
 	if (allowedLicences) {
 		const errors = validateAllowlist(licences, allowedLicences);
 		if (errors.length > 0) {
-			return { error: errors.join("; "), manualFix: manualFixMessage };
+			return errors.map((message) => ({
+				message,
+				manualFix: manualFixMessage,
+			}));
 		}
 	}
 
@@ -171,15 +179,24 @@ export async function validateLicenceField(options: {
 		const { errors, corrections } = await validateWithSpdxCorrect(licences);
 		if (errors.length > 0) {
 			if (shouldResolve && corrections.size > 0) {
-				return tryAutoFix(filePath, corrections, errors);
+				const findings = await tryAutoFix(filePath, corrections, errors);
+				return findings.map((finding) => ({
+					...finding,
+					manualFix: manualFixMessage,
+				}));
 			}
-			return {
-				error: errors.join("; "),
-				fixable: corrections.size > 0,
+			return errors.map((message) => ({
+				message,
+				fixStatus: [...corrections].some(
+					([original, corrected]) =>
+						message === `Licence "${original}" should be "${corrected}"`,
+				)
+					? "available"
+					: undefined,
 				manualFix: manualFixMessage,
-			};
+			}));
 		}
 	}
 
-	return undefined;
+	return [];
 }

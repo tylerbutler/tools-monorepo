@@ -1,233 +1,88 @@
-import { mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
+import { run } from "effection";
 import { join } from "pathe";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { makePolicy } from "../../src/makePolicy.js";
 import { LicenseFileExists } from "../../src/policies/LicenseFileExists.js";
-import { runHandler } from "../test-helpers.js";
+import { PolicyRunner } from "../../src/runner.js";
 
 describe("LicenseFileExists", () => {
-	let testDir: string;
+	let root: string;
 
-	beforeEach(() => {
-		// Create a unique test directory
-		testDir = join(
-			tmpdir(),
-			`repopo-test-${Date.now()}-${Math.random().toString(36).slice(2)}`,
-		);
-		mkdirSync(testDir, { recursive: true });
+	beforeEach(async () => {
+		root = await mkdtemp(join(tmpdir(), "repopo-license-"));
 	});
 
-	afterEach(() => {
-		// Clean up test directory
-		rmSync(testDir, { recursive: true, force: true });
+	afterEach(async () => {
+		await rm(root, { recursive: true, force: true });
 	});
 
-	describe("policy matching", () => {
-		it("should match package.json", () => {
-			expect(LicenseFileExists.match.test("package.json")).toBe(true);
-		});
-
-		it("should not match other files", () => {
-			expect(LicenseFileExists.match.test("README.md")).toBe(false);
-			expect(LicenseFileExists.match.test("LICENSE")).toBe(false);
-			expect(LicenseFileExists.match.test("src/index.ts")).toBe(false);
-			expect(LicenseFileExists.match.test("docs/README.md")).toBe(false);
-			expect(LicenseFileExists.match.test("test/example.test.ts")).toBe(false);
-		});
+	it.each([
+		"LICENSE",
+		"LICENSE.txt",
+		"LICENSE.md",
+		"LICENSE.rst",
+		"LICENCE",
+		"LICENCE.txt",
+		"LICENCE.md",
+		"LICENCE.rst",
+	])("accepts %s without a package.json anchor", async (name) => {
+		await writeFile(join(root, name), "License content");
+		expect(
+			await LicenseFileExists.handler({
+				root,
+				files: [name],
+				resolve: false,
+			}),
+		).toEqual([]);
 	});
 
-	describe("LICENSE file exists", () => {
-		beforeEach(() => {
-			writeFileSync(join(testDir, "LICENSE"), "MIT License\n\nCopyright...");
+	it("reports a repository finding even with no selected files or inventory", async () => {
+		const runner = new PolicyRunner({
+			root,
+			inventory: [],
+			files: [],
+			policies: [makePolicy(LicenseFileExists)],
+			fix: true,
 		});
-
-		it("should pass when LICENSE file exists", async () => {
-			const result = await runHandler(LicenseFileExists.handler, {
-				file: "package.json",
-				root: testDir,
-				resolve: false,
-			});
-
-			expect(result).toBe(true);
-		});
+		const result = await run(() => runner.run());
+		expect(result.findings).toEqual([
+			{
+				scope: "repository",
+				policy: "LicenseFileExists",
+				policyId: "LicenseFileExists",
+				message: expect.stringContaining("No LICENSE file found"),
+			},
+		]);
 	});
 
-	describe("LICENSE file variations", () => {
-		const licenseVariants = [
-			"LICENSE",
-			"LICENSE.txt",
-			"LICENSE.md",
-			"LICENSE.rst",
-			"LICENCE",
-			"LICENCE.txt",
-			"LICENCE.md",
-			"LICENCE.rst",
-		];
-
-		for (const variant of licenseVariants) {
-			it(`should pass when ${variant} exists`, async () => {
-				writeFileSync(join(testDir, variant), "License content");
-
-				const result = await runHandler(LicenseFileExists.handler, {
-					file: "package.json",
-					root: testDir,
-					resolve: false,
-				});
-
-				expect(result).toBe(true);
-			});
-		}
+	it("accepts configured names and ignores files outside the eligible inventory", async () => {
+		await writeFile(join(root, "COPYING"), "License content");
+		const args = {
+			root,
+			files: ["COPYING"],
+			resolve: false,
+			config: { acceptedNames: ["COPYING"] },
+		};
+		expect(await LicenseFileExists.handler(args)).toEqual([]);
+		expect(await LicenseFileExists.handler({ ...args, files: [] })).toEqual([
+			expect.objectContaining({ message: expect.stringContaining("COPYING") }),
+		]);
 	});
 
-	describe("missing LICENSE file", () => {
-		it("should fail when no LICENSE file exists", async () => {
-			const result = await runHandler(LicenseFileExists.handler, {
-				file: "package.json",
-				root: testDir,
+	it("does not accept a directory or a deleted tracked file as a license", async () => {
+		await mkdir(join(root, "LICENSE"));
+		expect(
+			await LicenseFileExists.handler({
+				root,
+				files: ["LICENSE", "LICENSE.txt"],
 				resolve: false,
-			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object") {
-				expect(result.name).toBe("LicenseFileExists");
-				expect(result.file).toBe(".");
-				expect(result.autoFixable).toBe(false);
-				expect(result.errorMessages.join()).toContain("No LICENSE file found");
-				expect(result.errorMessages.join()).toContain("LICENSE, LICENSE.txt");
-			}
-		});
-	});
-
-	describe("custom configuration", () => {
-		it("should use custom accepted names when provided", async () => {
-			// Create a file with custom name
-			writeFileSync(join(testDir, "COPYING"), "GPL License content");
-
-			const customConfig = {
-				acceptedNames: ["COPYING", "COPYING.txt"],
-			};
-
-			const result = await runHandler(LicenseFileExists.handler, {
-				file: "package.json",
-				root: testDir,
-				resolve: false,
-				config: customConfig,
-			});
-
-			expect(result).toBe(true);
-		});
-
-		it("should fail with custom config when file doesn't match", async () => {
-			// Create standard LICENSE file
-			writeFileSync(join(testDir, "LICENSE"), "MIT License");
-
-			const customConfig = {
-				acceptedNames: ["COPYING"],
-			};
-
-			const result = await runHandler(LicenseFileExists.handler, {
-				file: "package.json",
-				root: testDir,
-				resolve: false,
-				config: customConfig,
-			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("COPYING");
-				expect(result.errorMessages.join()).not.toContain("LICENSE.txt");
-			}
-		});
-	});
-
-	describe("resolve behavior", () => {
-		it("should not auto-fix missing LICENSE files", async () => {
-			const result = await runHandler(LicenseFileExists.handler, {
-				file: "package.json",
-				root: testDir,
-				resolve: true,
-			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object") {
-				expect(result.autoFixable).toBe(false);
-				expect("resolved" in result).toBe(false);
-			}
-		});
-	});
-
-	describe("edge cases", () => {
-		it("should handle empty directory", async () => {
-			const emptyDir = join(testDir, "empty");
-			mkdirSync(emptyDir);
-
-			const result = await runHandler(LicenseFileExists.handler, {
-				file: "package.json",
-				root: emptyDir,
-				resolve: false,
-			});
-
-			expect(result).not.toBe(true);
-		});
-
-		it("should handle case sensitivity based on file system", async () => {
-			// Create lowercase license file
-			writeFileSync(join(testDir, "license"), "License content");
-
-			const result = await runHandler(LicenseFileExists.handler, {
-				file: "package.json",
-				root: testDir,
-				resolve: false,
-			});
-
-			// Behavior depends on filesystem case sensitivity
-			// On case-insensitive FS (macOS default): passes because "license" matches "LICENSE"
-			// On case-sensitive FS (Linux): fails because "license" !== "LICENSE"
-			// We test that the policy doesn't crash and returns a valid result
-			if (result === true) {
-				// Case-insensitive filesystem
-				expect(result).toBe(true);
-			} else {
-				// Case-sensitive filesystem
-				expect(result).not.toBe(true);
-				if (typeof result === "object") {
-					expect(result.errorMessages.join()).toContain(
-						"No LICENSE file found",
-					);
-				}
-			}
-		});
-
-		it("should accept lowercase license with custom config", async () => {
-			// Create lowercase license file
-			writeFileSync(join(testDir, "license"), "License content");
-
-			const customConfig = {
-				acceptedNames: ["license", "LICENSE"],
-			};
-
-			const result = await runHandler(LicenseFileExists.handler, {
-				file: "package.json",
-				root: testDir,
-				resolve: false,
-				config: customConfig,
-			});
-
-			// Should pass with custom config that includes lowercase variant
-			expect(result).toBe(true);
-		});
-
-		it("should handle multiple LICENSE files gracefully", async () => {
-			writeFileSync(join(testDir, "LICENSE"), "MIT License");
-			writeFileSync(join(testDir, "LICENSE.txt"), "Also MIT License");
-
-			const result = await runHandler(LicenseFileExists.handler, {
-				file: "package.json",
-				root: testDir,
-				resolve: false,
-			});
-
-			expect(result).toBe(true);
-		});
+			}),
+		).toEqual([
+			expect.objectContaining({
+				message: expect.stringContaining("No LICENSE file found"),
+			}),
+		]);
 	});
 });

@@ -1,4 +1,4 @@
-import type { PolicyShape } from "../policy.js";
+import type { FilePolicyDefinition } from "../policy.js";
 import {
 	type CargoToml,
 	defineCargoPolicy,
@@ -7,7 +7,7 @@ import {
 /**
  * Configuration for the NoWildcardDependencies policy.
  *
- * @alpha
+ * @public
  */
 export interface NoWildcardDependenciesConfig {
 	/**
@@ -18,7 +18,7 @@ export interface NoWildcardDependenciesConfig {
 
 	/**
 	 * Version patterns to warn about.
-	 * @defaultValue [">="]
+	 * @defaultValue `[">="]`
 	 */
 	warn?: string[];
 
@@ -96,55 +96,53 @@ function checkSectionDeps(
 /**
  * A policy that prevents wildcard or overly permissive version specifications in Cargo.toml.
  *
- * @alpha
+ * @public
  */
-export const NoWildcardDependencies: PolicyShape<NoWildcardDependenciesConfig> =
-	defineCargoPolicy({
-		name: "NoWildcardDependencies",
-		description:
-			"Prevents wildcard or overly permissive dependency version specifications in Cargo.toml.",
-		handler: async (toml: CargoToml, { config }) => {
-			// Skip workspace root
-			if (toml.workspace !== undefined && toml.package === undefined) {
-				return true;
+export const NoWildcardDependencies = defineCargoPolicy({
+	name: "NoWildcardDependencies",
+	description:
+		"Prevents wildcard or overly permissive dependency version specifications in Cargo.toml.",
+	handler: async (toml: CargoToml, { config }) => {
+		// Skip workspace root
+		if (toml.workspace !== undefined && toml.package === undefined) {
+			return [];
+		}
+
+		const denyPatterns = config?.deny ?? DEFAULT_DENY;
+		const warnPatterns = config?.warn ?? DEFAULT_WARN;
+		const allowDev = config?.allowDev ?? true;
+		const errors: string[] = [];
+
+		const sections = [
+			{ name: "dependencies", isDev: false },
+			{ name: "build-dependencies", isDev: false },
+			{ name: "dev-dependencies", isDev: true },
+		];
+
+		for (const { name, isDev } of sections) {
+			const deps = toml[name] as Record<string, unknown> | undefined;
+			if (!deps) {
+				continue;
 			}
 
-			const denyPatterns = config?.deny ?? DEFAULT_DENY;
-			const warnPatterns = config?.warn ?? DEFAULT_WARN;
-			const allowDev = config?.allowDev ?? true;
-			const errors: string[] = [];
+			checkSectionDeps(
+				deps,
+				name,
+				isDev,
+				allowDev,
+				denyPatterns,
+				warnPatterns,
+				errors,
+			);
+		}
 
-			const sections = [
-				{ name: "dependencies", isDev: false },
-				{ name: "build-dependencies", isDev: false },
-				{ name: "dev-dependencies", isDev: true },
-			];
-
-			for (const { name, isDev } of sections) {
-				const deps = toml[name] as Record<string, unknown> | undefined;
-				if (!deps) {
-					continue;
-				}
-
-				checkSectionDeps(
-					deps,
-					name,
-					isDev,
-					allowDev,
-					denyPatterns,
-					warnPatterns,
-					errors,
-				);
-			}
-
-			if (errors.length > 0) {
-				return {
-					error: errors.join("; "),
-					manualFix:
-						'Use specific version ranges (e.g., "1.0", "^1.0", "~1.0") instead of wildcards.',
-				};
-			}
-
-			return true;
-		},
-	});
+		if (errors.length > 0) {
+			return errors.map((message) => ({
+				message,
+				manualFix:
+					'Use specific version ranges (e.g., "1.0", "^1.0", "~1.0") instead of wildcards.',
+			}));
+		}
+		return [];
+	},
+}) satisfies FilePolicyDefinition<NoWildcardDependenciesConfig>;

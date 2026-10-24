@@ -1,4 +1,3 @@
-import netlify from "@astrojs/netlify";
 import starlight from "@astrojs/starlight";
 import a11yEmoji from "@fec/remark-a11y-emoji";
 import { includeMarkdown } from "@hashicorp/platform-remark-plugins";
@@ -6,21 +5,13 @@ import { defineConfig } from "astro/config";
 // import starlightLinksValidator from "starlight-links-validator";
 import starlightTypeDoc, { typeDocSidebarGroup } from "starlight-typedoc";
 
-// import deno from "@astrojs/deno";
-
-// Get the current script URL
-const scriptUrl = new URL(import.meta.url);
-
 // Get the directory name from the script URL
 const rootDir = new URL("../..", import.meta.url).pathname;
 
 // https://astro.build/config
 export default defineConfig({
-	output: "server",
-	// adapter: deno(),
-	adapter: netlify({
-		// edgeMiddleware: true
-	}),
+	output: "static",
+	site: "https://repopo.tylerbutler.com",
 	// Prevent zod from being externalized to avoid conflicts between
 	// Astro's bundled zod v3 and user-installed zod v4
 	// See: https://github.com/withastro/astro/issues/14117
@@ -44,7 +35,11 @@ export default defineConfig({
 			plugins: [
 				// Generate the documentation.
 				starlightTypeDoc({
-					entryPoints: ["../repopo/src/index.ts"],
+					entryPoints: [
+						"../repopo/src/index.ts",
+						"../repopo/src/api.ts",
+						"../repopo/src/policies.ts",
+					],
 					tsconfig: "../repopo/tsconfig.json",
 					sidebar: {
 						label: "API Reference",
@@ -52,6 +47,8 @@ export default defineConfig({
 					},
 					typeDoc: {
 						excludeExternals: true,
+						excludeInternal: true,
+						cleanOutputDir: true,
 						// router: "module",
 						// publicPath: "https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo",
 						mergeReadme: true,
@@ -72,7 +69,7 @@ export default defineConfig({
 				{
 					icon: "github",
 					label: "GitHub",
-					href: "https://github.com/tylerbutler/tools-monorepo/packages/repopo",
+					href: "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/repopo",
 				},
 			],
 			sidebar: [

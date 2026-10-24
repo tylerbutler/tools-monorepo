@@ -11,6 +11,7 @@ allowBuilds:
   nx: true
   sharp: true
   unrs-resolver: true
+  workerd: true
   yarn: true
 minimumReleaseAgeExclude:
   - generate-license-file@4.2.1

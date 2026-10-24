@@ -7,7 +7,7 @@ import {
 /**
  * A RepoPolicy that checks that HTML files have the configured header comment.
  *
- * @alpha
+ * @public
  */
 export const HtmlFileHeaders = defineFileHeaderPolicy({
 	name: "HtmlFileHeaders",
@@ -20,10 +20,7 @@ export const HtmlFileHeaders = defineFileHeaderPolicy({
 			content: string,
 			{ headerText }: FileHeaderPolicyConfig,
 		): string => {
-			const newContent = `<!-- ${headerText.replace(
-				newline,
-				` -->${newline}<!-- `,
-			)} -->${newline}${newline}${content}`;
+			const newContent = `<!-- ${headerText.replace(newline, ` -->${newline}<!-- `)} -->${newline}${newline}${content}`;
 			return newContent;
 		},
 	},

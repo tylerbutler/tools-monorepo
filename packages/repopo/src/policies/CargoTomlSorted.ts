@@ -1,6 +1,6 @@
 import { writeFile } from "node:fs/promises";
 import { resolve } from "pathe";
-import type { PolicyShape } from "../policy.js";
+import type { FilePolicyDefinition } from "../policy.js";
 import {
 	type CargoToml,
 	defineCargoPolicy,
@@ -9,7 +9,7 @@ import {
 /**
  * Configuration for the CargoTomlSorted policy.
  *
- * @alpha
+ * @public
  */
 export interface CargoTomlSortedConfig {
 	/**
@@ -45,9 +45,22 @@ const KEY_VALUE_REGEX = /^(\S+)\s*=/;
  */
 function processEntryLine(
 	entryLine: string,
-	entries: { key: string; lines: string[] }[],
-	currentEntry: { key: string; lines: string[] } | undefined,
-): { key: string; lines: string[] } | undefined {
+	entries: {
+		key: string;
+		lines: string[];
+	}[],
+	currentEntry:
+		| {
+				key: string;
+				lines: string[];
+		  }
+		| undefined,
+):
+	| {
+			key: string;
+			lines: string[];
+	  }
+	| undefined {
 	// Comment line - attach to next entry
 	if (entryLine.trim().startsWith("#")) {
 		if (currentEntry) {
@@ -79,9 +92,23 @@ function processEntryLine(
 function collectAndSortEntries(
 	lines: string[],
 	startIndex: number,
-): { entries: { key: string; lines: string[] }[]; nextIndex: number } {
-	const entries: { key: string; lines: string[] }[] = [];
-	let currentEntry: { key: string; lines: string[] } | undefined;
+): {
+	entries: {
+		key: string;
+		lines: string[];
+	}[];
+	nextIndex: number;
+} {
+	const entries: {
+		key: string;
+		lines: string[];
+	}[] = [];
+	let currentEntry:
+		| {
+				key: string;
+				lines: string[];
+		  }
+		| undefined;
 	let i = startIndex;
 
 	while (i < lines.length) {
@@ -151,62 +178,62 @@ function sortTomlSections(content: string, sectionsToSort: string[]): string {
 /**
  * A policy that ensures dependency sections in Cargo.toml are sorted alphabetically.
  *
- * @alpha
+ * @public
  */
-export const CargoTomlSorted: PolicyShape<CargoTomlSortedConfig> =
-	defineCargoPolicy({
-		name: "CargoTomlSorted",
-		description:
-			"Ensures dependency sections in Cargo.toml are sorted alphabetically.",
-		handler: async (
-			toml: CargoToml,
-			{ file, root, resolve: shouldResolve, config },
-		) => {
-			const sections = config?.sections ?? DEFAULT_SORTED_SECTIONS;
-			const unsortedSections: string[] = [];
+export const CargoTomlSorted = defineCargoPolicy({
+	name: "CargoTomlSorted",
+	description:
+		"Ensures dependency sections in Cargo.toml are sorted alphabetically.",
+	handler: async (
+		toml: CargoToml,
+		{ file, root, resolve: shouldResolve, config },
+	) => {
+		const sections = config?.sections ?? DEFAULT_SORTED_SECTIONS;
+		const unsortedSections: string[] = [];
 
-			for (const section of sections) {
-				const sectionData = toml[section] as
-					| Record<string, unknown>
-					| undefined;
-				if (sectionData !== undefined) {
-					const keys = Object.keys(sectionData);
-					if (!isSorted(keys)) {
-						unsortedSections.push(section);
-					}
+		for (const section of sections) {
+			const sectionData = toml[section] as Record<string, unknown> | undefined;
+			if (sectionData !== undefined) {
+				const keys = Object.keys(sectionData);
+				if (!isSorted(keys)) {
+					unsortedSections.push(section);
 				}
 			}
+		}
 
-			if (unsortedSections.length === 0) {
-				return true;
+		if (unsortedSections.length === 0) {
+			return [];
+		}
+
+		if (shouldResolve) {
+			try {
+				const { readFile } = await import("node:fs/promises");
+				const filePath = resolve(root, file);
+				const content = await readFile(filePath, "utf-8");
+				const sorted = sortTomlSections(content, unsortedSections);
+				await writeFile(filePath, sorted);
+				return [
+					{
+						message: `Unsorted sections: [${unsortedSections.join("], [")}]`,
+						fixStatus: "fixed",
+					},
+				];
+			} catch {
+				return [
+					{
+						message: `Unsorted sections: [${unsortedSections.join("], [")}]. Auto-fix failed.`,
+						fixStatus: "failed",
+					},
+				];
 			}
-
-			if (shouldResolve) {
-				try {
-					const { readFile } = await import("node:fs/promises");
-					const filePath = resolve(root, file);
-					const content = await readFile(filePath, "utf-8");
-					const sorted = sortTomlSections(content, unsortedSections);
-					await writeFile(filePath, sorted);
-					return {
-						error: `Unsorted sections: [${unsortedSections.join("], [")}]`,
-						fixable: true,
-						fixed: true,
-					};
-				} catch {
-					return {
-						error: `Unsorted sections: [${unsortedSections.join("], [")}]. Auto-fix failed.`,
-						fixable: true,
-						fixed: false,
-					};
-				}
-			}
-
-			return {
-				error: `Unsorted sections: [${unsortedSections.join("], [")}]`,
-				fixable: true,
+		}
+		return [
+			{
+				message: `Unsorted sections: [${unsortedSections.join("], [")}]`,
+				fixStatus: "available",
 				manualFix:
 					"Sort the dependency keys alphabetically in the listed sections.",
-			};
-		},
-	});
+			},
+		];
+	},
+}) satisfies FilePolicyDefinition<CargoTomlSortedConfig>;

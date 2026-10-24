@@ -1,7 +1,7 @@
 import jsonfile from "jsonfile";
 import { resolve as resolvePath } from "pathe";
 import type { PackageJson } from "type-fest";
-import type { PolicyFailure, PolicyFixResult } from "../policy.js";
+import type { PolicyFinding } from "../policy.js";
 import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
 import { detectIndentation } from "../utils/indentation.js";
 
@@ -23,7 +23,7 @@ const { writeFile: writeJson } = jsonfile;
  * };
  * ```
  *
- * @alpha
+ * @public
  */
 export interface PackageEsmTypeConfig {
 	/**
@@ -305,22 +305,32 @@ async function applyFix(
 	file: string,
 	root: string,
 	expectedType: "module" | "commonjs",
-	failResult: PolicyFailure,
-): Promise<PolicyFixResult> {
-	const fixResult: PolicyFixResult = {
-		...failResult,
-		resolved: false,
-	};
-
+	failResult: PolicyFinding[],
+): Promise<PolicyFinding[]> {
+	const fixResult: PolicyFinding[] = failResult.map((finding) => ({
+		...finding,
+		fixStatus: "failed",
+	}));
 	try {
 		json.type = expectedType;
 		const filePath = resolvePath(root, file);
 		const indent = await detectIndentation(filePath);
 		await writeJson(filePath, json, { spaces: indent });
-		fixResult.resolved = true;
+		for (const finding of fixResult) {
+			finding.fixStatus = "fixed";
+		}
 	} catch {
-		fixResult.resolved = false;
-		fixResult.errorMessages = [`Failed to update ${file}`];
+		for (const finding of fixResult) {
+			finding.fixStatus = "failed";
+		}
+		fixResult.splice(
+			0,
+			fixResult.length,
+			...[`Failed to update ${file}`].map((message) => ({
+				...fixResult[0],
+				message,
+			})),
+		);
 	}
 
 	return fixResult;
@@ -350,32 +360,33 @@ async function applyFix(
  * import { PackageEsmType } from "repopo/policies";
  *
  * // Require all packages to be ESM
- * makePolicy(PackageEsmType, { requiredType: "module" })
+ * makePolicy(PackageEsmType, { config: { requiredType: "module" } })
  *
  * // Or detect based on exports
- * makePolicy(PackageEsmType, { detectFromExports: true })
+ * makePolicy(PackageEsmType, { config: { detectFromExports: true } })
  * ```
  *
- * @alpha
+ * @public
  */
 export const PackageEsmType = definePackagePolicy<
 	PackageJson,
 	PackageEsmTypeConfig | undefined
 >({
 	name: "PackageEsmType",
+	requiresConfig: true,
 	description:
 		"Ensures the type field in package.json correctly indicates ESM or CommonJS module format.",
 	handler: async (json, { file, root, config, resolve }) => {
 		// If no config provided, skip validation
 		if (config === undefined) {
-			return true;
+			return [];
 		}
 
 		const packageName = json.name;
 
 		// Check if package should be skipped
 		if (shouldSkipPackage(packageName, config)) {
-			return true;
+			return [];
 		}
 
 		// Determine the expected type
@@ -387,35 +398,26 @@ export const PackageEsmType = definePackagePolicy<
 		// Handle case where type cannot be detected
 		if (expectedType === undefined) {
 			if (config.onDetectionFailure === "fail") {
-				return {
-					name: "PackageEsmType",
-					file,
-					autoFixable: false,
-					errorMessages: [
-						`Package "${packageName}": ${detectionReason ?? "Could not detect module type"}. Set "type" field explicitly or use "requiredType" config.`,
-					],
-				};
+				return [
+					`Package "${packageName}": ${detectionReason ?? "Could not detect module type"}. Set "type" field explicitly or use "requiredType" config.`,
+				].map((message) => ({ message }));
 			}
 			// "skip" and "warn" both pass validation
-			return true;
+			return [];
 		}
 
 		// Check if current type matches expected
 		if (json.type === expectedType) {
-			return true;
+			return [];
 		}
 
 		// Build failure result
-		const failResult: PolicyFailure = {
-			name: PackageEsmType.name,
-			file,
-			autoFixable: true,
-			// packageName is guaranteed to be defined here due to shouldSkipPackage check
-			errorMessages: [
-				buildErrorMessage(packageName as string, json.type, expectedType),
-			],
-		};
-
+		const failResult: PolicyFinding[] = [
+			buildErrorMessage(packageName as string, json.type, expectedType),
+		].map((message) => ({
+			message,
+			fixStatus: "available",
+		}));
 		if (resolve) {
 			return applyFix(json, file, root, expectedType, failResult);
 		}

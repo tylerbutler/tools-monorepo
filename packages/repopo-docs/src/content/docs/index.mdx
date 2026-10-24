@@ -8,7 +8,7 @@ hero:
     file: ../../assets/repopo-police.jpg
   actions:
     - text: Get started
-      link: /usage/cli-usage/
+      link: /installation/
       icon: right-arrow
       variant: primary
     - text: What is repopo?
@@ -26,9 +26,24 @@ import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
 
 <CardGrid>
 	<Card title="Lint-like rules" icon="seti:git">
-		Apply lint-like rules to any file in your git repository.
+		Apply lint-like rules to any file in your git repository, and fix many violations automatically with `--fix`.
+	</Card>
+	<Card title="Built-in policies" icon="list-format">
+		Over 50 policies for package.json, Cargo, Gleam, and general repository hygiene.
 	</Card>
 	<Card title="Custom policies" icon="seti:javascript">
 		You can create your own policies as easily as writing a function.
-</Card>
+	</Card>
+	<Card title="Repository policies" icon="seti:folder">
+		Check rules that span many files, or a file that's missing, once per run.
+	</Card>
+</CardGrid>
+
+## Learn more
+
+<CardGrid>
+	<LinkCard title="Configuration" href="/usage/config/" description="Choose and configure policies." />
+	<LinkCard title="Built-in policies" href="/policies/built-in/" description="Every policy included with repopo." />
+	<LinkCard title="Custom policies" href="/policies/custom/" description="Write policies for your own conventions." />
+	<LinkCard title="CLI reference" href="/cli-reference/" description="Every command and flag." />
 </CardGrid>

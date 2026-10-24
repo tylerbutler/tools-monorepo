@@ -1,6 +1,5 @@
 import type { Operation } from "effection";
-import { makePolicyDefinition } from "../makePolicy.js";
-import type { PolicyDefinition, PolicyFailure } from "../policy.js";
+import type { FilePolicyDefinition, PolicyFinding } from "../policy.js";
 
 /**
  * Build artifact extensions that should not be committed to source control.
@@ -24,29 +23,24 @@ const ARTIFACT_REGEX = new RegExp(
 /**
  * A policy that prevents accidental commits of Rust build artifacts.
  *
- * @alpha
+ * @public
  */
-export const NoTargetArtifacts: PolicyDefinition = makePolicyDefinition({
+export const NoTargetArtifacts = {
 	name: "NoTargetArtifacts",
 	description:
 		"Prevents accidental commits of Rust build artifacts (.rlib, .rmeta, .so, .dylib, etc.).",
 	match: ARTIFACT_REGEX,
-	// biome-ignore lint/correctness/useYield: no yield needed
-	handler: function* ({ file }): Operation<PolicyFailure> {
+	handler: function* ({ file }): Operation<PolicyFinding[]> {
 		// Allow files inside test/fixture directories
 		if (file.includes("test/") || file.includes("fixture")) {
-			return true as unknown as PolicyFailure;
+			return [];
 		}
-
-		return {
-			name: NoTargetArtifacts.name,
-			file,
-			autoFixable: false,
-			errorMessages: [
-				`Build artifact detected: ${file}. Rust build artifacts should not be committed to source control.`,
-			],
+		return [
+			`Build artifact detected: ${file}. Rust build artifacts should not be committed to source control.`,
+		].map((message) => ({
+			message,
 			manualFix:
 				"Remove the file from source control and ensure /target/ is in .gitignore.",
-		};
+		}));
 	},
-});
+} satisfies FilePolicyDefinition;

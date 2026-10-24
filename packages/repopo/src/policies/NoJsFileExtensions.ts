@@ -1,7 +1,5 @@
 import type { Operation } from "effection";
-import { makePolicyDefinition } from "../makePolicy.js";
-import type { PolicyDefinition, PolicyFailure } from "../policy.js";
-
+import type { FilePolicyDefinition, PolicyFinding } from "../policy.js";
 /**
  * A repo policy that checks for JavaScript source files that just use the .js file extension. Such files may be
  * interpreted by node as either CommonJS or ESM based on the `type` field in the nearest package.json file. This
@@ -9,23 +7,19 @@ import type { PolicyDefinition, PolicyFailure } from "../policy.js";
  * is processed by node. Using explicit file extensions reduces ambiguity and ensures a CJS file isn't suddenly treated
  * like an ESM file.
  *
- * @alpha
+ * @public
  */
-export const NoJsFileExtensions: PolicyDefinition = makePolicyDefinition({
+export const NoJsFileExtensions = {
 	name: "NoJsFileExtensions",
 	description:
 		"Prevents ambiguous .js files by requiring explicit .mjs or .cjs extensions based on module format.",
 	match: /(^|\/)[^/]+\.js$/i,
-	// biome-ignore lint/correctness/useYield: no yield needed
-	handler: function* ({ file }): Operation<PolicyFailure> {
-		return {
-			name: NoJsFileExtensions.name,
-			file,
-			autoFixable: false,
-			errorMessages: [
-				"JavaScript files should have a .cjs or .mjs file extension based on the module format of the file.",
-			],
+	handler: function* (): Operation<PolicyFinding[]> {
+		return [
+			"JavaScript files should have a .cjs or .mjs file extension based on the module format of the file.",
+		].map((message) => ({
+			message,
 			manualFix: "Rename the file to have a .cjs or .mjs file extension.",
-		};
+		}));
 	},
-});
+} satisfies FilePolicyDefinition;

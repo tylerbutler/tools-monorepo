@@ -1,5 +1,5 @@
 import type { PackageJson } from "type-fest";
-import type { PolicyFailure } from "../policy.js";
+import type { PolicyFinding } from "../policy.js";
 import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
 import { getPackageScope, isScoped } from "../utils/packageName.js";
 
@@ -19,7 +19,7 @@ import { getPackageScope, isScoped } from "../utils/packageName.js";
  * };
  * ```
  *
- * @alpha
+ * @public
  */
 export interface PackageAllowedScopesConfig {
 	/**
@@ -129,49 +129,51 @@ function isUnscopedPackageAllowed(
  * const config: RepopoConfig = {
  *   policies: [
  *     makePolicy(PackageAllowedScopes, {
- *       allowedScopes: ["@myorg", "@internal"],
- *       unscopedPackages: ["legacy-package"],
+ *       config: {
+ *         allowedScopes: ["@myorg", "@internal"],
+ *         unscopedPackages: ["legacy-package"],
+ *       },
  *     }),
  *   ],
  * };
  * ```
  *
- * @alpha
+ * @public
  */
 export const PackageAllowedScopes = definePackagePolicy<
 	PackageJson,
 	PackageAllowedScopesConfig | undefined
 >({
 	name: "PackageAllowedScopes",
+	requiresConfig: true,
 	description:
 		"Ensures packages use only allowed npm scopes and package names.",
-	// biome-ignore lint/correctness/useYield: no yield needed
-	handler: function* (json, { file, config }) {
+	handler: function* (json, { config }) {
 		// If no config provided, skip validation
 		if (config === undefined) {
-			return true;
+			return [];
 		}
 
 		const packageName = json.name;
 
 		// Skip packages without a name
 		if (packageName === undefined) {
-			return true;
+			return [];
 		}
 
 		// Skip the root package (common in monorepos)
 		if (packageName === "root") {
-			return true;
+			return [];
 		}
 
 		// Check if the package uses an allowed scope
 		if (isScopeAllowed(packageName, config.allowedScopes)) {
-			return true;
+			return [];
 		}
 
 		// Check if the package is an allowed unscoped package
 		if (isUnscopedPackageAllowed(packageName, config.unscopedPackages)) {
-			return true;
+			return [];
 		}
 
 		// Package doesn't match any allowed pattern - build error message
@@ -184,13 +186,9 @@ export const PackageAllowedScopes = definePackagePolicy<
 			// Package is unscoped but not in the allowed list
 			errorMessage = `Package "${packageName}" is an unscoped package that is not in the allowed unscoped packages list. Allowed unscoped packages: ${config.unscopedPackages?.join(", ") ?? "(none)"}`;
 		}
-
-		const failResult: PolicyFailure = {
-			name: PackageAllowedScopes.name,
-			file,
-			autoFixable: false, // Can't auto-fix package names
-			errorMessages: [errorMessage],
-		};
+		const failResult: PolicyFinding[] = [errorMessage].map((message) => ({
+			message,
+		}));
 		return failResult;
 	},
 });

@@ -1,4 +1,4 @@
-import { copyFile, readFile } from "node:fs/promises";
+import { copyFile, readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import path from "pathe";
 import { withDir } from "tmp-promise";
@@ -19,6 +19,22 @@ describe("tsconfig", async () => {
 		const testFile = path.join(__dirname, testFiles.sorted);
 		const result = isSorted(testFile);
 		expect(result).to.be.true;
+	});
+
+	it.each([
+		{ skipLibCheck: true },
+		{ skipLibCheck: true, outDir: "./esm", rootDir: "./src" },
+	])("detects sorted late compiler options: %j", async (compilerOptions) => {
+		await withDir(
+			async ({ path: tempDir }) => {
+				const testFile = path.join(tempDir, "tsconfig.json");
+				await writeFile(testFile, JSON.stringify({ compilerOptions }));
+
+				expect(isSorted(testFile)).to.be.true;
+				expect(sortTsconfigFile(testFile, false).alreadySorted).to.be.true;
+			},
+			{ unsafeCleanup: true },
+		);
 	});
 
 	it("detects unsorted unknown keys", () => {

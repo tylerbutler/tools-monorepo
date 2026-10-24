@@ -1,4 +1,4 @@
-import type { PolicyShape } from "../policy.js";
+import type { FilePolicyDefinition } from "../policy.js";
 import {
 	defineGleamPolicy,
 	type GleamToml,
@@ -7,7 +7,7 @@ import {
 /**
  * Configuration for the GleamNameRestrictions policy.
  *
- * @alpha
+ * @public
  */
 export interface GleamNameRestrictionsConfig {
 	/**
@@ -41,42 +41,40 @@ function checkDeniedPrefixes(
 /**
  * A policy that enforces naming conventions for Gleam packages.
  *
- * @alpha
+ * @public
  */
-export const GleamNameRestrictions: PolicyShape<GleamNameRestrictionsConfig> =
-	defineGleamPolicy({
-		name: "GleamNameRestrictions",
-		description:
-			'Enforces Gleam package naming conventions: no "gleam_" prefix, snake_case required.',
-		handler: async (toml: GleamToml, { config }) => {
-			const name = toml.name as string | undefined;
-			if (!name) {
-				return true;
-			}
+export const GleamNameRestrictions = defineGleamPolicy({
+	name: "GleamNameRestrictions",
+	description:
+		'Enforces Gleam package naming conventions: no "gleam_" prefix, snake_case required.',
+	handler: async (toml: GleamToml, { config }) => {
+		const name = toml.name as string | undefined;
+		if (!name) {
+			return [];
+		}
 
-			const errors: string[] = [];
-			const denyPrefixes = config?.denyPrefixes ?? DEFAULT_DENY_PREFIXES;
-			const requireSnakeCase = config?.requireSnakeCase ?? true;
+		const errors: string[] = [];
+		const denyPrefixes = config?.denyPrefixes ?? DEFAULT_DENY_PREFIXES;
+		const requireSnakeCase = config?.requireSnakeCase ?? true;
 
-			const prefixError = checkDeniedPrefixes(name, denyPrefixes);
-			if (prefixError) {
-				errors.push(prefixError);
-			}
+		const prefixError = checkDeniedPrefixes(name, denyPrefixes);
+		if (prefixError) {
+			errors.push(prefixError);
+		}
 
-			if (requireSnakeCase && !SNAKE_CASE_REGEX.test(name)) {
-				errors.push(
-					`Package name "${name}" is not snake_case. Gleam package names should use lowercase letters, digits, and underscores.`,
-				);
-			}
+		if (requireSnakeCase && !SNAKE_CASE_REGEX.test(name)) {
+			errors.push(
+				`Package name "${name}" is not snake_case. Gleam package names should use lowercase letters, digits, and underscores.`,
+			);
+		}
 
-			if (errors.length > 0) {
-				return {
-					error: errors.join("; "),
-					manualFix:
-						"Rename the package to follow Gleam naming conventions (snake_case, no gleam_ prefix).",
-				};
-			}
-
-			return true;
-		},
-	});
+		if (errors.length > 0) {
+			return errors.map((message) => ({
+				message,
+				manualFix:
+					"Rename the package to follow Gleam naming conventions (snake_case, no gleam_ prefix).",
+			}));
+		}
+		return [];
+	},
+}) satisfies FilePolicyDefinition<GleamNameRestrictionsConfig>;

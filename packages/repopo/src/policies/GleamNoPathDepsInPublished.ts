@@ -1,4 +1,4 @@
-import type { PolicyShape } from "../policy.js";
+import type { FilePolicyDefinition } from "../policy.js";
 import {
 	defineGleamPolicy,
 	type GleamToml,
@@ -7,7 +7,7 @@ import {
 /**
  * Configuration for the GleamNoPathDepsInPublished policy.
  *
- * @alpha
+ * @public
  */
 export interface GleamNoPathDepsInPublishedConfig {
 	/**
@@ -35,38 +35,36 @@ function findPathDeps(deps: Record<string, unknown>): string[] {
 /**
  * A policy that warns when path dependencies are used in packages intended for publishing.
  *
- * @alpha
+ * @public
  */
-export const GleamNoPathDepsInPublished: PolicyShape<GleamNoPathDepsInPublishedConfig> =
-	defineGleamPolicy({
-		name: "GleamNoPathDepsInPublished",
-		description:
-			"Warns when path dependencies are used in packages intended for publishing to Hex.",
-		handler: async (toml: GleamToml, { config }) => {
-			if (config?.onlyPublishable && !toml.description) {
-				return true;
+export const GleamNoPathDepsInPublished = defineGleamPolicy({
+	name: "GleamNoPathDepsInPublished",
+	description:
+		"Warns when path dependencies are used in packages intended for publishing to Hex.",
+	handler: async (toml: GleamToml, { config }) => {
+		if (config?.onlyPublishable && !toml.description) {
+			return [];
+		}
+
+		const errors: string[] = [];
+
+		const deps = toml.dependencies as Record<string, unknown> | undefined;
+		if (deps) {
+			const pathDeps = findPathDeps(deps);
+			for (const dep of pathDeps) {
+				errors.push(
+					`[dependencies] "${dep}" uses a path dependency, which will break when published to Hex`,
+				);
 			}
+		}
 
-			const errors: string[] = [];
-
-			const deps = toml.dependencies as Record<string, unknown> | undefined;
-			if (deps) {
-				const pathDeps = findPathDeps(deps);
-				for (const dep of pathDeps) {
-					errors.push(
-						`[dependencies] "${dep}" uses a path dependency, which will break when published to Hex`,
-					);
-				}
-			}
-
-			if (errors.length > 0) {
-				return {
-					error: errors.join("; "),
-					manualFix:
-						"Replace path dependencies with version constraints before publishing.",
-				};
-			}
-
-			return true;
-		},
-	});
+		if (errors.length > 0) {
+			return errors.map((message) => ({
+				message,
+				manualFix:
+					"Replace path dependencies with version constraints before publishing.",
+			}));
+		}
+		return [];
+	},
+}) satisfies FilePolicyDefinition<GleamNoPathDepsInPublishedConfig>;

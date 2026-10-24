@@ -3,14 +3,14 @@ import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { Command, Flags } from "@oclif/core";
 import { dirname, resolve } from "pathe";
+import { DEFAULT_CONCURRENCY, validateConcurrency } from "../concurrency.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /**
  * Runs the Rust-based repopo-core engine with the Node.js sidecar for
- * policy handler execution. This command provides the same functionality
- * as `check` but uses the Rust engine for file enumeration, regex matching,
- * and orchestration.
+ * per-policy execution. Rust owns matching, ordering, concurrency, exception
+ * boundaries, repository scheduling and aggregation.
  */
 export class CheckNative extends Command {
 	public static override readonly summary =
@@ -18,10 +18,17 @@ export class CheckNative extends Command {
 
 	public static override readonly description =
 		"Runs the Rust-based repopo-core engine with the Node.js sidecar. " +
-		"This provides the same policy checking as 'check' but with Rust-based " +
-		"file enumeration, regex matching, and orchestration for better performance.";
+		"Rust handles file matching, scheduling and reporting; the sidecar shares per-policy contracts with 'check'. " +
+		"Repository policies always run with the full repository inventory, including with --stdin. " +
+		"With --fix, repository policies can modify files outside the stdin selection.";
 
 	public static override readonly flags = {
+		concurrency: Flags.integer({
+			description:
+				"Maximum concurrent files in read-only checks. Fixes remain sequential.",
+			default: DEFAULT_CONCURRENCY,
+			parse: async (value) => validateConcurrency(Number(value)),
+		}),
 		fix: Flags.boolean({
 			aliases: ["resolve"],
 			description: "Fix errors if possible.",
@@ -72,6 +79,7 @@ export class CheckNative extends Command {
 		const sidecarPath = this.resolveSidecarPath(flags["sidecar-path"]);
 
 		const args: string[] = ["check", "--sidecar-path", sidecarPath];
+		args.push("--concurrency", String(flags.concurrency));
 
 		if (flags.fix) {
 			args.push("--fix");
@@ -98,8 +106,17 @@ export class CheckNative extends Command {
 				// biome-ignore lint/style/noProcessEnv: Need to pass parent environment to child process
 				env: { ...process.env },
 			});
+			const interrupt = () => child.kill("SIGINT");
+			const terminate = () => child.kill("SIGTERM");
+			const cleanup = () => {
+				process.removeListener("SIGINT", interrupt);
+				process.removeListener("SIGTERM", terminate);
+			};
+			process.on("SIGINT", interrupt);
+			process.on("SIGTERM", terminate);
 
 			child.on("error", (err) => {
+				cleanup();
 				reject(
 					new Error(
 						`Failed to spawn repopo-core: ${err.message}\n` +
@@ -109,9 +126,12 @@ export class CheckNative extends Command {
 				);
 			});
 
-			child.on("close", (code) => {
+			child.on("close", (code, signal) => {
+				cleanup();
 				if (code !== 0) {
-					process.exitCode = code ?? 1;
+					process.exitCode =
+						code ??
+						(signal === "SIGINT" ? 130 : signal === "SIGTERM" ? 143 : 1);
 				}
 				resolvePromise();
 			});

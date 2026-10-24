@@ -1,13 +1,12 @@
 import { readFile } from "node:fs/promises";
 import path from "pathe";
-import { makePolicyDefinition } from "../makePolicy.js";
-import type { PolicyDefinition } from "../policy.js";
+import type { FilePolicyDefinition } from "../policy.js";
 import { parseToml } from "../policyDefiners/tomlParser.js";
 
 /**
  * Configuration for the GleamSharedDependencyVersions policy.
  *
- * @alpha
+ * @public
  */
 export interface GleamSharedDependencyVersionsConfig {
 	/**
@@ -88,60 +87,59 @@ function recordDependency(
 /**
  * A policy that detects dependency version mismatches across Gleam packages in a monorepo.
  *
- * @alpha
+ * @public
  */
-export const GleamSharedDependencyVersions: PolicyDefinition<GleamSharedDependencyVersionsConfig> =
-	makePolicyDefinition({
-		name: "GleamSharedDependencyVersions",
-		description:
-			"Detects dependency version mismatches across Gleam packages in a monorepo.",
-		match: /^gleam\.toml$/,
-		handler: async ({ root, config }) => {
-			const packagePaths = config?.packages;
-			if (!packagePaths || packagePaths.length < 2) {
-				return true;
-			}
+export const GleamSharedDependencyVersions = {
+	name: "GleamSharedDependencyVersions",
+	requiresConfig: true,
+	description:
+		"Detects dependency version mismatches across Gleam packages in a monorepo.",
+	match: /^gleam\.toml$/,
+	handler: async ({ root, config }) => {
+		const packagePaths = config?.packages;
+		if (!packagePaths || packagePaths.length < 2) {
+			return [];
+		}
 
-			const detectMismatches = config?.detectMismatches ?? true;
-			if (!detectMismatches) {
-				return true;
-			}
+		const detectMismatches = config?.detectMismatches ?? true;
+		if (!detectMismatches) {
+			return [];
+		}
 
-			const includeDev = config?.includeDev ?? false;
-			const allDeps = new Map<string, Map<string, string[]>>();
+		const includeDev = config?.includeDev ?? false;
+		const allDeps = new Map<string, Map<string, string[]>>();
 
-			for (const pkgPath of packagePaths) {
-				try {
-					const content = await readFile(path.resolve(root, pkgPath), "utf-8");
-					const toml = await parseToml(content);
-					const deps = collectDeps(toml, includeDev);
+		for (const pkgPath of packagePaths) {
+			try {
+				const content = await readFile(path.resolve(root, pkgPath), "utf-8");
+				const toml = await parseToml(content);
+				const deps = collectDeps(toml, includeDev);
 
-					for (const [name, version] of deps) {
-						recordDependency(allDeps, name, version, pkgPath);
-					}
-				} catch {
-					// Package might not exist
+				for (const [name, version] of deps) {
+					recordDependency(allDeps, name, version, pkgPath);
 				}
+			} catch {
+				// Package might not exist
 			}
+		}
 
-			const errors: string[] = [];
-			for (const [dep, versionMap] of allDeps) {
-				if (versionMap.size > 1) {
-					const details = [...versionMap.entries()]
-						.map(([ver, pkgs]) => `"${ver}" in ${pkgs.join(", ")}`)
-						.join("; ");
-					errors.push(`Version mismatch for "${dep}": ${details}`);
-				}
+		const errors: string[] = [];
+		for (const [dep, versionMap] of allDeps) {
+			if (versionMap.size > 1) {
+				const details = [...versionMap.entries()]
+					.map(([ver, pkgs]) => `"${ver}" in ${pkgs.join(", ")}`)
+					.join("; ");
+				errors.push(`Version mismatch for "${dep}": ${details}`);
 			}
+		}
 
-			if (errors.length > 0) {
-				return {
-					error: errors.join("; "),
-					manualFix:
-						"Align dependency versions across all Gleam packages in the monorepo.",
-				};
-			}
-
-			return true;
-		},
-	});
+		if (errors.length > 0) {
+			return errors.map((message) => ({
+				message,
+				manualFix:
+					"Align dependency versions across all Gleam packages in the monorepo.",
+			}));
+		}
+		return [];
+	},
+} satisfies FilePolicyDefinition<GleamSharedDependencyVersionsConfig>;

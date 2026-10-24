@@ -10,7 +10,8 @@
 function loadBuildProject<P>(
    searchPath, 
    infer?, 
-upstreamRemotePartialUrl?): IBuildProject<P>;
+   upstreamRemotePartialUrl?
+): IBuildProject<P>;
 ```
 
 Defined in: [packages/sail-infrastructure/src/buildProject.ts:325](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/buildProject.ts#L325)

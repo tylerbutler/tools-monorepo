@@ -48,8 +48,7 @@ describe("RustDocExists", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should skip workspace root", async () => {
@@ -63,8 +62,7 @@ describe("RustDocExists", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -80,11 +78,14 @@ describe("RustDocExists", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("Missing required documentation");
-				expect(result.error).toContain("README.md");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"Missing required documentation",
+				);
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"README.md",
+				);
 			}
 		});
 	});
@@ -103,8 +104,7 @@ describe("RustDocExists", () => {
 				resolve: false,
 				config: { required: ["CHANGELOG.md"] },
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should report missing recommended files", async () => {
@@ -123,11 +123,14 @@ describe("RustDocExists", () => {
 					recommended: ["CONTRIBUTING.md"],
 				},
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("Missing recommended documentation");
-				expect(result.error).toContain("CONTRIBUTING.md");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"Missing recommended documentation",
+				);
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"CONTRIBUTING.md",
+				);
 			}
 		});
 
@@ -143,11 +146,14 @@ describe("RustDocExists", () => {
 				resolve: false,
 				config: { required: ["CHANGELOG.md", "README.md"] },
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("CHANGELOG.md");
-				expect(result.error).toContain("README.md");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"CHANGELOG.md",
+				);
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"README.md",
+				);
 			}
 		});
 	});

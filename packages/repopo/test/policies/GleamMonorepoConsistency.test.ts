@@ -31,8 +31,7 @@ describe("GleamMonorepoConsistency", () => {
 				packages: ["gleam.toml"],
 			},
 		});
-
-		expect(result).toBe(true);
+		expect(result).toEqual([]);
 	});
 
 	it("should pass when all packages have same licences and gleam version", async () => {
@@ -56,8 +55,7 @@ describe("GleamMonorepoConsistency", () => {
 				packages: ["pkg_a/gleam.toml", "pkg_b/gleam.toml"],
 			},
 		});
-
-		expect(result).toBe(true);
+		expect(result).toEqual([]);
 	});
 
 	it("should fail when licences differ across packages", async () => {
@@ -81,11 +79,14 @@ describe("GleamMonorepoConsistency", () => {
 				packages: ["pkg_a/gleam.toml", "pkg_b/gleam.toml"],
 			},
 		});
-
-		expect(result).not.toBe(true);
-		if (typeof result === "object" && "error" in result) {
-			expect(result.error).toContain("Inconsistent");
-			expect(result.error).toContain("licences");
+		expect(result).not.toEqual([]);
+		if (typeof result === "object" && result.length > 0) {
+			expect(result.map((finding) => finding.message).join("; ")).toContain(
+				"Inconsistent",
+			);
+			expect(result.map((finding) => finding.message).join("; ")).toContain(
+				"licences",
+			);
 		}
 	});
 
@@ -111,11 +112,14 @@ describe("GleamMonorepoConsistency", () => {
 				syncGleamVersion: true,
 			},
 		});
-
-		expect(result).not.toBe(true);
-		if (typeof result === "object" && "error" in result) {
-			expect(result.error).toContain("Inconsistent");
-			expect(result.error).toContain("gleam");
+		expect(result).not.toEqual([]);
+		if (typeof result === "object" && result.length > 0) {
+			expect(result.map((finding) => finding.message).join("; ")).toContain(
+				"Inconsistent",
+			);
+			expect(result.map((finding) => finding.message).join("; ")).toContain(
+				"gleam",
+			);
 		}
 	});
 
@@ -141,8 +145,7 @@ describe("GleamMonorepoConsistency", () => {
 				syncGleamVersion: false,
 			},
 		});
-
-		expect(result).toBe(true);
+		expect(result).toEqual([]);
 	});
 
 	it("should support custom syncFields", async () => {
@@ -168,11 +171,14 @@ describe("GleamMonorepoConsistency", () => {
 				syncGleamVersion: false,
 			},
 		});
-
-		expect(result).not.toBe(true);
-		if (typeof result === "object" && "error" in result) {
-			expect(result.error).toContain("Inconsistent");
-			expect(result.error).toContain("description");
+		expect(result).not.toEqual([]);
+		if (typeof result === "object" && result.length > 0) {
+			expect(result.map((finding) => finding.message).join("; ")).toContain(
+				"Inconsistent",
+			);
+			expect(result.map((finding) => finding.message).join("; ")).toContain(
+				"description",
+			);
 		}
 	});
 });

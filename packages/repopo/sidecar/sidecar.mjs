@@ -1,468 +1,399 @@
 /**
- * Node.js sidecar process for repopo-core (Rust).
+ * Newline-delimited JSON bridge for the native CLI.
  *
- * This process loads the TypeScript repopo configuration and executes
- * policy handlers on behalf of the Rust core engine. Communication
- * happens over stdin/stdout using newline-delimited JSON.
- *
- * Protocol:
- *   Rust -> Node: JSON request (one per line)
- *   Node -> Rust: JSON response (one per line)
- *
- * Request format:
- *   { "method": "load_config", "params": { "configPath": "...", "gitRoot": "..." } }
- *   { "method": "run_handler", "params": { "policyName": "...", "file": "...", "root": "...", "resolve": false } }
- *   { "method": "run_resolver", "params": { "policyName": "...", "file": "...", "root": "..." } }
- *   { "method": "run_handler_batch", "params": { "policyName": "...", "files": [...], "root": "...", "resolve": false } }
- *   { "method": "run_resolver_batch", "params": { "policyName": "...", "files": [...], "root": "..." } }
- *   { "method": "shutdown" }
- *
- * Response format:
- *   { "ok": true, "data": ... }
- *   { "ok": false, "error": "message" }
+ * Rust owns matching and scheduling. This bridge executes only explicitly
+ * selected policy units, sharing contracts and reconciliation with `check`.
  */
-
+import { Console } from "node:console";
 import { stat } from "node:fs/promises";
 import { createInterface } from "node:readline";
+import { types } from "node:util";
 import { TypeScriptLoader } from "@tylerbu/lilconfig-loader-ts";
-import { run } from "effection";
+import { all, run } from "effection";
 import { lilconfig } from "lilconfig";
+import { DefaultPolicyConfig } from "../esm/config.js";
+import { createExcludedPolicyFileMap, exclusionRegex } from "../esm/context.js";
+import { ParsedFileCache } from "../esm/fileCache.js";
+import { identifyPolicyInstances, makePolicy } from "../esm/makePolicy.js";
+import { newPerfStats } from "../esm/perf.js";
+import { executionMessage, PolicyExecutor } from "../esm/policyExecution.js";
 
-/** @type {Map<string, import("../src/policy.js").ConfiguredPolicy>} */
-let policiesByName = new Map();
+// Policy logging must not corrupt the JSON response stream.
+globalThis.console = new Console(process.stderr);
+const nativeStackGetter = Object.getOwnPropertyDescriptor(
+	new Error(),
+	"stack",
+)?.get;
+const nativePrepareStackTrace = Object.getOwnPropertyDescriptor(
+	Error,
+	"prepareStackTrace",
+)?.value;
 
-/** @type {Array<import("../src/policy.js").ConfiguredPolicy>} */
-let policiesByIndex = [];
-
-/** @type {string} */
-let storedGitRoot = "";
-
-/** @type {import("../src/config.js").RepopoConfig | undefined} */
-let loadedConfig = undefined;
-
-/**
- * Respond to the Rust side with a JSON message on stdout.
- * @param {object} response
- */
-function respond(response) {
-	const json = JSON.stringify(response);
-	process.stdout.write(json + "\n");
-}
-
-/**
- * Serialize a RegExp to a pattern string and flags for the Rust side.
- * @param {RegExp} regex
- * @returns {{ source: string, flags: string }}
- */
-function serializeRegex(regex) {
-	return {
-		source: regex.source,
-		flags: regex.flags,
-	};
-}
-
-/**
- * Serialize policy metadata for the Rust side.
- * Strips out functions and sends only what Rust needs for matching.
- * @param {import("../src/policy.js").ConfiguredPolicy} policy
- * @returns {object}
- */
-function serializePolicy(policy) {
-	const match = serializeRegex(policy.match);
-
-	// Convert excludeFiles to regex pattern strings
-	const excludeFiles = (policy.excludeFiles ?? policy.exclude ?? []).map(
-		(e) => {
-			if (e instanceof RegExp) {
-				return e.source;
-			}
-			return String(e);
-		},
-	);
-
-	return {
-		name: policy.name,
-		description: policy.description,
-		matchPattern: match.source,
-		matchFlags: match.flags,
-		hasResolver: typeof policy.resolver === "function",
-		excludeFiles,
-	};
-}
-
-/**
- * Check if a value is an Effection Operation (generator).
- * @param {unknown} value
- * @returns {boolean}
- */
-function isOperation(value) {
-	return (
-		typeof value === "object" &&
-		value !== null &&
-		"next" in value &&
-		typeof value.next === "function"
-	);
-}
-
-/**
- * Execute a policy handler, handling both async and generator (Effection) return types.
- * @param {import("../src/policy.js").PolicyHandler} handler
- * @param {import("../src/policy.js").PolicyArgs} args
- * @returns {Promise<import("../src/policy.js").PolicyHandlerResult>}
- */
-async function executeHandler(handler, args) {
-	const result = handler(args);
-
-	if (result instanceof Promise) {
-		return result;
-	}
-
-	if (isOperation(result)) {
-		// Run the generator through Effection
-		return run(function* () {
-			return yield* result;
-		});
-	}
-
-	// Shouldn't happen, but handle it
-	return result;
-}
-
-/**
- * Handle a load_config request.
- * @param {object} params
- */
-async function handleLoadConfig(params) {
-	try {
-		const searchPath = params.configPath ?? process.cwd();
-
-		// Load config using lilconfig (same mechanism as CommandWithConfig)
-		const configLoader = lilconfig("repopo", {
-			searchPlaces: [
-				"repopo.config.ts",
-				"repopo.config.mjs",
-				"repopo.config.cjs",
-			],
-			loaders: {
-				".ts": TypeScriptLoader,
-			},
-		});
-
-		const pathStats = await stat(searchPath);
-		const maybeConfig = pathStats.isDirectory()
-			? await configLoader.search(searchPath)
-			: await configLoader.load(searchPath);
-
-		if (maybeConfig !== null) {
-			loadedConfig = maybeConfig.config?.default ?? maybeConfig.config;
-		} else {
-			// Use default config
-			const { DefaultPolicyConfig } = await import("../esm/config.js");
-			loadedConfig = DefaultPolicyConfig;
-		}
-
-		// Store git root for reuse in batch calls
-		storedGitRoot = params.gitRoot ?? process.cwd();
-
-		// Build the policy map and index array
-		policiesByName.clear();
-		policiesByIndex = [];
-		const policies =
-			loadedConfig?.policies ??
-			(await import("../esm/config.js")).DefaultPolicyConfig.policies;
-		for (const p of policies) {
-			policiesByName.set(p.name, p);
-			policiesByIndex.push(p);
-		}
-
-		// Serialize for Rust
-		const serializedPolicies = policies.map(serializePolicy);
-		const excludeFiles = (loadedConfig?.excludeFiles ?? []).map((e) => {
-			if (e instanceof RegExp) {
-				return e.source;
-			}
-			return String(e);
-		});
-
-		respond({
-			ok: true,
-			data: {
-				policies: serializedPolicies,
-				excludeFiles,
-			},
-		});
-	} catch (err) {
-		respond({
-			ok: false,
-			error: `Failed to load config: ${err.message}`,
-		});
-	}
-}
-
-/**
- * Handle a run_handler request.
- * @param {object} params
- */
-async function handleRunHandler(params) {
-	try {
-		const policy = policiesByName.get(params.policyName);
-		if (!policy) {
-			respond({
-				ok: false,
-				error: `Unknown policy: ${params.policyName}`,
-			});
-			return;
-		}
-
-		const handler = policy._internalHandler ?? policy.handler;
-		const args = {
-			file: params.file,
-			root: params.root,
-			resolve: params.resolve ?? false,
-			config: policy.config,
-		};
-
-		const result = await executeHandler(handler, args);
-
-		// Serialize the result — `true` passes through as-is,
-		// objects (PolicyError/PolicyFailure) are serialized.
-		respond({ ok: true, data: result });
-	} catch (err) {
-		respond({
-			ok: false,
-			error: `Handler error for ${params.policyName}: ${err.message}`,
-		});
-	}
-}
-
-/**
- * Handle a run_handler_batch request.
- * Runs the handler for each file sequentially and returns compact results.
- * Accepts policyId (index) and uses stored gitRoot.
- * @param {object} params
- */
-async function handleRunHandlerBatch(params) {
-	try {
-		const policy = policiesByIndex[params.policyId];
-		if (!policy) {
-			respond({
-				ok: false,
-				error: `Unknown policy index: ${params.policyId}`,
-			});
-			return;
-		}
-
-		const handler = policy._internalHandler ?? policy.handler;
-		const resolve = params.resolve ?? false;
-		/** @type {string[]} */
-		const pass = [];
-		/** @type {Array<{file: string, error?: string, errorMessages?: string[], fixable?: boolean, fixed?: boolean, manualFix?: string}>} */
-		const fail = [];
-
-		for (const file of params.files) {
-			try {
-				const args = {
-					file,
-					root: storedGitRoot,
-					resolve,
-					config: policy.config,
-				};
-				const result = await executeHandler(handler, args);
-				if (result === true) {
-					pass.push(file);
-				} else {
-					fail.push({
-						file,
-						error: result.error,
-						errorMessages: result.errorMessages,
-						fixable: result.fixable ?? result.autoFixable,
-						fixed: result.fixed ?? result.resolved,
-						manualFix: result.manualFix,
-					});
-				}
-			} catch (err) {
-				fail.push({
-					file,
-					error: `Handler error: ${err.message}`,
-					fixable: false,
-				});
-			}
-		}
-
-		respond({ ok: true, data: { pass, fail } });
-	} catch (err) {
-		respond({
-			ok: false,
-			error: `Batch handler error for policy index ${params.policyId}: ${err.message}`,
-		});
-	}
-}
-
-/**
- * Handle a run_resolver request.
- * @param {object} params
- */
-async function handleRunResolver(params) {
-	try {
-		const policy = policiesByName.get(params.policyName);
-		if (!policy) {
-			respond({
-				ok: false,
-				error: `Unknown policy: ${params.policyName}`,
-			});
-			return;
-		}
-
-		if (typeof policy.resolver !== "function") {
-			respond({
-				ok: false,
-				error: `Policy ${params.policyName} has no resolver`,
-			});
-			return;
-		}
-
-		const args = {
-			file: params.file,
-			root: params.root,
-			config: policy.config,
-		};
-
-		const result = await executeHandler(policy.resolver, args);
-		respond({ ok: true, data: result });
-	} catch (err) {
-		respond({
-			ok: false,
-			error: `Resolver error for ${params.policyName}: ${err.message}`,
-		});
-	}
-}
-
-/**
- * Handle a run_resolver_batch request.
- * Runs the resolver for each file sequentially and returns compact results.
- * Accepts policyId (index) and uses stored gitRoot.
- * @param {object} params
- */
-async function handleRunResolverBatch(params) {
-	try {
-		const policy = policiesByIndex[params.policyId];
-		if (!policy) {
-			respond({
-				ok: false,
-				error: `Unknown policy index: ${params.policyId}`,
-			});
-			return;
-		}
-
-		if (typeof policy.resolver !== "function") {
-			respond({
-				ok: false,
-				error: `Policy index ${params.policyId} has no resolver`,
-			});
-			return;
-		}
-
-		/** @type {string[]} */
-		const pass = [];
-		/** @type {Array<{file: string, error?: string, errorMessages?: string[], fixable?: boolean, fixed?: boolean, manualFix?: string}>} */
-		const fail = [];
-
-		for (const file of params.files) {
-			try {
-				const args = {
-					file,
-					root: storedGitRoot,
-					config: policy.config,
-				};
-				const result = await executeHandler(policy.resolver, args);
-				if (result === true) {
-					pass.push(file);
-				} else {
-					fail.push({
-						file,
-						error: result.error,
-						errorMessages: result.errorMessages,
-						fixable: result.fixable ?? result.autoFixable,
-						fixed: result.fixed ?? result.resolved,
-						manualFix: result.manualFix,
-					});
-				}
-			} catch (err) {
-				fail.push({
-					file,
-					error: `Resolver error: ${err.message}`,
-					fixable: false,
-					fixed: false,
-				});
-			}
-		}
-
-		respond({ ok: true, data: { pass, fail } });
-	} catch (err) {
-		respond({
-			ok: false,
-			error: `Batch resolver error for policy index ${params.policyId}: ${err.message}`,
-		});
-	}
-}
-
-/**
- * Main loop: read JSON requests from stdin, dispatch, respond on stdout.
- */
-async function main() {
-	const rl = createInterface({
-		input: process.stdin,
-		terminal: false,
+let registration;
+let active;
+let session;
+let interrupted = false;
+let closeInput;
+for (const signal of ["SIGINT", "SIGTERM"]) {
+	process.on(signal, () => {
+		interrupted = true;
+		active?.abort(new Error(`Sidecar received ${signal}`));
+		closeInput?.();
 	});
-
-	for await (const line of rl) {
-		if (!line.trim()) continue;
-
-		let request;
-		try {
-			request = JSON.parse(line);
-		} catch {
-			respond({ ok: false, error: `Invalid JSON: ${line}` });
-			continue;
-		}
-
-		const { method, params } = request;
-
-		switch (method) {
-			case "load_config":
-				await handleLoadConfig(params ?? {});
-				break;
-
-			case "run_handler":
-				await handleRunHandler(params ?? {});
-				break;
-
-			case "run_resolver":
-				await handleRunResolver(params ?? {});
-				break;
-
-			case "run_handler_batch":
-				await handleRunHandlerBatch(params ?? {});
-				break;
-
-			case "run_resolver_batch":
-				await handleRunResolverBatch(params ?? {});
-				break;
-
-			case "shutdown":
-				process.exit(0);
-				break;
-
-			default:
-				respond({ ok: false, error: `Unknown method: ${method}` });
-		}
-	}
-
-	// stdin closed — exit cleanly
-	process.exit(0);
 }
 
-main().catch((err) => {
-	process.stderr.write(`Sidecar fatal error: ${err.message}\n`);
+async function respond(response) {
+	await new Promise((resolve, reject) => {
+		process.stdout.write(`${JSON.stringify(response)}\n`, (error) =>
+			error ? reject(error) : resolve(),
+		);
+	});
+}
+
+function serializeRegex(regex) {
+	return { source: regex.source, flags: regex.flags };
+}
+
+function serializeExclusion(pattern) {
+	return pattern instanceof RegExp ? serializeRegex(pattern) : pattern;
+}
+
+/** Preserve Error's non-enumerable details and safely encode non-JSON causes. */
+function serializeCause(value, seen = new WeakSet(), depth = 0) {
+	try {
+		return serializeValue(value, seen, depth);
+	} catch {
+		return { type: "uninspectable" };
+	}
+}
+
+function serializeValue(value, seen, depth) {
+	if (value === undefined) return { type: "undefined" };
+	if (typeof value === "bigint" || typeof value === "symbol") {
+		return { type: typeof value, value: String(value) };
+	}
+	if (typeof value === "function") return { type: "function" };
+	if (typeof value === "number" && !Number.isFinite(value)) {
+		return { type: "number", value: String(value) };
+	}
+	if (value === null || typeof value !== "object") return value;
+	// Proxy traps are arbitrary code, including during descriptor inspection.
+	if (types.isProxy(value)) return { type: "proxy" };
+	if (seen.has(value)) return { type: "circular" };
+	if (depth >= 20) return { type: "truncated" };
+	seen.add(value);
+	try {
+		if (Array.isArray(value)) {
+			const length = Object.getOwnPropertyDescriptor(value, "length").value;
+			const array = Array.from(
+				{ length: Math.min(length, 10000) },
+				(_, index) => {
+					const descriptor = Object.getOwnPropertyDescriptor(
+						value,
+						String(index),
+					);
+					return descriptor && "value" in descriptor
+						? serializeCause(descriptor.value, seen, depth + 1)
+						: { type: descriptor ? "accessor" : "hole" };
+				},
+			);
+			if (length > array.length) array.push({ type: "truncated" });
+			return array;
+		}
+		const entries = [];
+		if (types.isNativeError(value)) {
+			for (const key of ["name", "message"]) {
+				let current = value;
+				let found = false;
+				while (current && !types.isProxy(current)) {
+					const descriptor = Object.getOwnPropertyDescriptor(current, key);
+					if (descriptor) {
+						found = true;
+						entries.push([
+							key,
+							"value" in descriptor
+								? serializeCause(descriptor.value, seen, depth + 1)
+								: { type: "accessor" },
+						]);
+						break;
+					}
+					current = Object.getPrototypeOf(current);
+				}
+				if (!found && current) entries.push([key, { type: "proxy" }]);
+			}
+		}
+		for (const key of Object.getOwnPropertyNames(value)) {
+			const descriptor = Object.getOwnPropertyDescriptor(value, key);
+			// V8 lazily exposes native Error stacks via a native accessor.
+			// Never call a user getter or Error.prepareStackTrace hook.
+			if (key === "stack" && types.isNativeError(value) && descriptor?.get) {
+				const prepare = Object.getOwnPropertyDescriptor(
+					Error,
+					"prepareStackTrace",
+				);
+				const plain = ["name", "message"].every((field) => {
+					const entry = entries.find(([name]) => name === field)?.[1];
+					return entry === undefined || typeof entry === "string";
+				});
+				if (
+					descriptor.get === nativeStackGetter &&
+					(!prepare ||
+						("value" in prepare &&
+							prepare.value === nativePrepareStackTrace)) &&
+					plain
+				) {
+					const stack = descriptor.get.call(value);
+					entries.push([
+						key,
+						typeof stack === "string" ? stack : { type: "uninspectable" },
+					]);
+					continue;
+				}
+			}
+			entries.push([
+				key,
+				descriptor && "value" in descriptor
+					? serializeCause(descriptor.value, seen, depth + 1)
+					: { type: "accessor" },
+			]);
+		}
+		return Object.fromEntries(entries);
+	} finally {
+		seen.delete(value);
+	}
+}
+
+function serializeRun(result) {
+	return {
+		...result,
+		errors: result.errors.map((error) => ({
+			...error,
+			cause: serializeCause(error.cause),
+		})),
+		perfStats: {
+			...result.perfStats,
+			data: Object.fromEntries(
+				[...result.perfStats.data].map(([action, timings]) => [
+					action,
+					Object.fromEntries(timings),
+				]),
+			),
+		},
+	};
+}
+
+async function loadConfig(params) {
+	registration = undefined;
+	session?.cache?.clear();
+	session = undefined;
+	const searchPath = params.configPath ?? process.cwd();
+	const loader = lilconfig("repopo", {
+		searchPlaces: [
+			"repopo.config.ts",
+			"repopo.config.mjs",
+			"repopo.config.cjs",
+		],
+		loaders: { ".ts": TypeScriptLoader },
+	});
+	const pathStats = await stat(searchPath);
+	const loaded = pathStats.isDirectory()
+		? await loader.search(searchPath)
+		: await loader.load(searchPath);
+	const config =
+		loaded?.config?.default ?? loaded?.config ?? DefaultPolicyConfig;
+	const policies = identifyPolicyInstances(
+		(config.policies ?? DefaultPolicyConfig.policies).map((policy) => {
+			if ("excludeFiles" in policy) {
+				throw new TypeError(
+					"Per-instance excludeFiles is retired; use exclude.",
+				);
+			}
+			return makePolicy(policy, {
+				config: policy.config,
+				exclude: policy.exclude,
+				instanceId: policy.instanceId,
+			});
+		}),
+	);
+	const options = {
+		policies,
+		root: params.gitRoot ?? process.cwd(),
+		exclude: config.excludeFiles ?? [],
+	};
+	options.exclude.forEach(exclusionRegex);
+	createExcludedPolicyFileMap(policies);
+	const metadata = {
+		policies: policies.map((policy) => ({
+			name: policy.name,
+			instanceId: policy.instanceId,
+			description: policy.description,
+			scope: policy.scope ?? "file",
+			...(policy.scope === "repository"
+				? {}
+				: { match: serializeRegex(policy.match) }),
+			hasResolver: typeof policy.resolver === "function",
+			exclude: (policy.exclude ?? []).map(serializeExclusion),
+		})),
+		excludeFiles: options.exclude.map(serializeExclusion),
+	};
+	registration = options;
+	return metadata;
+}
+
+function beginRun(params) {
+	if (!registration)
+		throw new Error("Load configuration before running policies.");
+	session?.cache?.clear();
+	session = {
+		executor: new PolicyExecutor(registration.root, params.fix ?? false),
+		cache: params.fix ? undefined : new ParsedFileCache(),
+	};
+	return {};
+}
+
+async function executeUnits(params) {
+	if (!registration || !session)
+		throw new Error(
+			"Load configuration and begin a run before executing units.",
+		);
+	active = new AbortController();
+	const task = run(function* () {
+		return yield* all(
+			params.units.map((unit) =>
+				(function* () {
+					const policy = registration.policies.find(
+						(entry) => entry.instanceId === unit.policyId,
+					);
+					if (!policy)
+						throw new Error(`Unknown policy instance: ${unit.policyId}`);
+					const result = {
+						findings: [],
+						errors: [],
+						skipped: [],
+						perfStats: newPerfStats(),
+					};
+					if (policy.scope === "repository") {
+						if (!Array.isArray(unit.files))
+							throw new Error("Repository units require explicit inventory.");
+						yield* session.executor.repository(policy, unit.files, result);
+					} else {
+						if (typeof unit.file !== "string")
+							throw new Error("File units require a file.");
+						yield* session.executor.file(
+							unit.file,
+							policy,
+							result,
+							session.cache,
+						);
+					}
+					return serializeRun(result);
+				})(),
+			),
+		);
+	});
+	const abort = () => {
+		task.halt().catch(() => undefined);
+	};
+	active.signal.addEventListener("abort", abort, { once: true });
+	try {
+		return await task;
+	} finally {
+		active.signal.removeEventListener("abort", abort);
+		active = undefined;
+	}
+}
+
+function matchFiles(params) {
+	const regex =
+		typeof params.pattern === "string"
+			? exclusionRegex(params.pattern)
+			: new RegExp(params.pattern.source, params.pattern.flags);
+	return params.files.map((file) => {
+		regex.lastIndex = 0;
+		return regex.test(file);
+	});
+}
+
+async function main() {
+	const rl = createInterface({ input: process.stdin, terminal: false });
+	closeInput = () => rl.close();
+	let closing = false;
+	let shutdownRequested = false;
+	let pendingWork = 0;
+	rl.on("line", (line) => {
+		try {
+			const { method } = JSON.parse(line);
+			if (method === "execute_units") pendingWork++;
+			if (method === "shutdown") {
+				closing = true;
+				shutdownRequested = true;
+				if (active || pendingWork > 0) {
+					interrupted = true;
+					active?.abort(new Error("Native parent requested shutdown"));
+				}
+			}
+		} catch {
+			// The request loop reports malformed JSON.
+		}
+	});
+	// A dead native parent closes the pipe. Halt owned operations before exit.
+	rl.on("close", () => {
+		if (!closing) {
+			interrupted = true;
+			active?.abort(new Error("Native parent closed the request stream"));
+		}
+	});
+	for await (const line of rl) {
+		if (interrupted || shutdownRequested) break;
+		if (!line.trim()) continue;
+		try {
+			const { method, params = {} } = JSON.parse(line);
+			if (method === "shutdown") {
+				closing = true;
+				break;
+			}
+			let data;
+			switch (method) {
+				case "load_config":
+					data = await loadConfig(params);
+					break;
+				case "begin_run":
+					data = beginRun(params);
+					break;
+				case "execute_units":
+					try {
+						data = await executeUnits(params);
+					} finally {
+						pendingWork--;
+					}
+					break;
+				case "match_files":
+					if (!registration)
+						throw new Error("Load configuration before matching.");
+					data = matchFiles(params);
+					break;
+				default:
+					throw new Error(`Unknown method: ${method}`);
+			}
+			if (interrupted) break;
+			await respond({ ok: true, data });
+		} catch (error) {
+			if (interrupted) break;
+			await respond({
+				ok: false,
+				error: executionMessage(error),
+				cause: serializeCause(error),
+			});
+		}
+		if (interrupted) break;
+	}
+	closing = true;
+	session?.cache?.clear();
+	rl.close();
+	process.exit(interrupted ? 130 : 0);
+}
+
+main().catch((error) => {
+	process.stderr.write(`Sidecar fatal error: ${error.message}\n`);
 	process.exit(1);
 });

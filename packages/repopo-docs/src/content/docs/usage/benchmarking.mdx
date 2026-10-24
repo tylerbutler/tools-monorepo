@@ -1,0 +1,59 @@
+---
+title: Benchmarking
+description: Compare the performance of the TypeScript and Rust policy engines.
+sidebar:
+  order: 5
+---
+
+The benchmark script compares the TypeScript engine (`check`), the Rust engine run directly, and the `check-native` CLI, each with Node.js and Bun. It runs from a source checkout of the [tools-monorepo](https://github.com/tylerbutler/tools-monorepo).
+
+## Running the benchmark
+
+Compile the TypeScript, build the release engine, and run the script:
+
+```bash
+pnpm nx run repopo:build:compile
+cargo build --release --manifest-path packages/repopo/crates/core/Cargo.toml
+./packages/repopo/benchmark.sh --quick
+./packages/repopo/benchmark.sh --json /tmp/repopo-benchmark.json
+```
+
+The benchmark needs Node.js and the release binary. Bun is optional, and Hyperfine is not used.
+
+| Option | Description |
+| --- | --- |
+| `--quick` | One warmup round and three timed rounds instead of the defaults, three and ten. |
+| `--warmup N` | Number of warmup rounds. |
+| `--runs N` | Number of timed rounds. |
+| `--scenario NAME` | Run only this scenario. Repeat to select several. |
+| `--json PATH` | Write the results as JSON. |
+
+Each round runs every case once, in shuffled order, to reduce ordering bias. Every command must exit successfully: a policy violation or runtime error stops the benchmark and prints diagnostics. No fixes are applied. Native cases use the release binary explicitly, and all stdin cases share one snapshot of the Git file list.
+
+## Scenarios
+
+| Scenario | Workload |
+| --- | --- |
+| `startup` | Top-level help: CLI and binary startup with no policy check |
+| `empty` | Empty config and empty stdin: check initialization and sidecar startup |
+| `inventory-stdin` | Empty config with the file snapshot: input parsing and file routing |
+| `inventory-git` | Empty config, with Git listing the files instead of stdin |
+| `config` | Twenty synthetic policies with empty stdin: policy setup without file matching |
+| `matching` | The same policies and snapshot, with no matches: matching without handlers |
+| `noop` | Twenty policies that match every path and return `true`: dispatch and no-op handlers |
+| `real-stdin` | The repository's own config with the snapshot |
+| `real-git` | A normal check with the repository's config, with Git listing the files |
+
+## Reading the results
+
+The JSON output includes machine and runtime metadata, the commands and inputs, and raw samples with their round and order. It also has the median, mean, standard deviation, quartiles, and range in milliseconds.
+
+Useful comparisons:
+
+- `inventory-git` vs. `inventory-stdin`: the cost of listing files with Git.
+- `config` vs. `empty`: setting up synthetic policies.
+- `noop` vs. `matching`: successful matching, dispatch, and handler overhead.
+- (`matching` − `config`) vs. (`inventory-stdin` − `empty`): matching overhead beyond basic routing.
+- Each `cli-*` case vs. its `core-*` counterpart: the overhead of the CLI wrapper.
+
+These comparisons isolate workloads but don't time individual phases exclusively. They include interactions, serialization, and scheduling noise. Repository policies still list and check the full inventory in `real-stdin`. The real workloads include config imports, file I/O, and policy-specific work. Results reflect warm filesystem caches, not a cold-cache run.

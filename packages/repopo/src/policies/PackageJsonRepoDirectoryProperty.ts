@@ -1,70 +1,44 @@
 import assert from "node:assert/strict";
 import { updatePackageJsonFile } from "@fluid-tools/build-infrastructure";
 import path from "pathe";
-import type { PackageJson } from "type-fest";
-import type { PolicyFailure, PolicyFixResult } from "../policy.js";
 import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
 
-/**
- * A RepoPolicy that checks that the repository.directory property in package.json is set correctly. If the repository
- * field is a string instead of an object the package will be ignored.
- *
- * @alpha
- */
-export const PackageJsonRepoDirectoryProperty = definePackagePolicy<
-	PackageJson,
-	undefined
->({
+/** Ensures repository.directory matches each package's repository-relative directory. @public */
+export const PackageJsonRepoDirectoryProperty = definePackagePolicy({
 	name: "PackageJsonRepoDirectoryProperty",
 	description:
 		"Ensures the repository.directory property in package.json is set correctly for monorepo packages.",
-	handler: function* (json, { file, root, resolve }) {
-		const failResult: PolicyFailure = {
-			name: PackageJsonRepoDirectoryProperty.name,
-			file,
-			autoFixable: true,
-			errorMessages: [],
-		};
-
-		const fixResult: PolicyFixResult = {
-			...failResult,
-			resolved: false,
-		};
-
+	handler: async (json, { file, root, resolve }) => {
 		const packageJsonPath = path.resolve(root, file);
-		const pkgDir = path.dirname(packageJsonPath);
-		const maybeDir = path.relative(root, pkgDir);
-		const relativePkgDir = maybeDir === "" ? undefined : maybeDir;
-
+		const directory =
+			path.relative(root, path.dirname(packageJsonPath)) || undefined;
 		if (
-			typeof json.repository === "object" &&
-			json.repository.directory !== relativePkgDir
+			typeof json.repository !== "object" ||
+			json.repository.directory === directory
 		) {
-			if (resolve) {
-				try {
-					updatePackageJsonFile(packageJsonPath, (pkgJson) => {
-						assert(typeof pkgJson.repository === "object");
-						if (relativePkgDir === undefined) {
-							delete pkgJson.repository.directory;
-						} else {
-							pkgJson.repository.directory = relativePkgDir;
-						}
-					});
-					fixResult.resolved = true;
-				} catch (error: unknown) {
-					fixResult.resolved = false;
-					fixResult.errorMessages.push(
-						`${(error as Error).message}\n${(error as Error).stack}`,
-					);
-				}
-				return fixResult;
-			}
-			failResult.errorMessages.push(
-				`repository.directory value is wrong. Expected '${relativePkgDir}', got '${json.repository.directory}'`,
-			);
-			return failResult;
+			return [];
 		}
-
-		return true;
+		const message = `repository.directory value is wrong. Expected '${directory}', got '${json.repository.directory}'`;
+		if (!resolve) {
+			return [{ message, fixStatus: "available" }];
+		}
+		try {
+			updatePackageJsonFile(packageJsonPath, (pkg) => {
+				assert(typeof pkg.repository === "object");
+				if (directory === undefined) {
+					delete pkg.repository.directory;
+				} else {
+					pkg.repository.directory = directory;
+				}
+			});
+		} catch (error: unknown) {
+			return [
+				{
+					message: `${message}: ${error instanceof Error ? error.message : String(error)}`,
+					fixStatus: "failed",
+				},
+			];
+		}
+		return [{ message, fixStatus: "fixed" }];
 	},
 });

@@ -171,10 +171,16 @@ export default config;
 ### Policy Configuration
 
 ```typescript
-makePolicy(SortTsconfigsPolicy, undefined, {
-  excludeFiles: ["**/node_modules/**"]  // Exclude specific paths
+makePolicy(SortTsconfigsPolicy, {
+  exclude: ["^vendor/"]  // Repo-relative regex, not a glob
 })
 ```
+
+`SortTsconfigsPolicy` is a `FilePolicyDefinition`. Its async handler returns
+`PolicyResult` finding arrays: `[]` passes; an unsorted file returns a finding
+with `fixStatus: "available"`, and a successful fix uses `"fixed"`.
+Use only `makePolicy(definition, { config, exclude, instanceId })`; there is no
+third settings argument. See [Repopo's migration guide](../repopo-docs/src/content/docs/usage/migration.md).
 
 ## Project Structure
 

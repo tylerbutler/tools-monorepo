@@ -1,18 +1,22 @@
 import { readFile } from "node:fs/promises";
 import { call, type Operation } from "effection";
 import { resolve } from "pathe";
+import { ExecutionContractError } from "../executionContractError.js";
+import { readParsedFile } from "../fileCache.js";
 import { GleamTomlRegexMatch } from "../policies/constants.js";
 import type {
+	DefinedConfig,
+	FilePolicyDefinition,
 	PolicyArgs,
-	PolicyHandlerResult,
-	PolicyShape,
+	PolicyResult,
 } from "../policy.js";
+import { settlePolicyPromise } from "../settlePolicyPromise.js";
 import { parseToml } from "./tomlParser.js";
 
 /**
  * A parsed gleam.toml represented as a record of sections and values.
  *
- * @alpha
+ * @public
  */
 export type GleamToml = Record<string, unknown>;
 
@@ -22,12 +26,12 @@ export type GleamToml = Record<string, unknown>;
  * @remarks
  * Receives the parsed TOML content and the standard policy arguments.
  *
- * @alpha
+ * @public
  */
 export type GleamTomlHandler<C> = (
 	toml: GleamToml,
 	args: PolicyArgs<C>,
-) => Operation<PolicyHandlerResult> | Promise<PolicyHandlerResult>;
+) => Operation<PolicyResult> | Promise<PolicyResult>;
 
 /**
  * Type guard to check if a value is an Effection Operation (generator).
@@ -44,7 +48,7 @@ function isOperation<T>(value: unknown): value is Operation<T> {
 /**
  * Input arguments for defining a gleam.toml policy.
  *
- * @alpha
+ * @public
  */
 export interface DefineGleamPolicyArgs<C> {
 	/**
@@ -66,6 +70,7 @@ export interface DefineGleamPolicyArgs<C> {
 	 * Optional default configuration for the policy.
 	 */
 	defaultConfig?: C;
+	requiresConfig?: boolean;
 }
 
 /**
@@ -75,6 +80,9 @@ export interface DefineGleamPolicyArgs<C> {
  * This is a helper function that creates a policy pre-configured to match
  * gleam.toml files. The handler receives the parsed TOML content.
  *
+ * @param args - Policy metadata, parsed-TOML handler, and optional defaults.
+ * @returns A file policy that reads and parses matching gleam.toml files.
+ *
  * @example
  * ```typescript
  * const MyGleamPolicy = defineGleamPolicy({
@@ -82,38 +90,57 @@ export interface DefineGleamPolicyArgs<C> {
  *   description: "Ensures gleam.toml has required fields",
  *   handler: async (toml, { file }) => {
  *     if (!toml.name) {
- *       return { error: "Missing name field", fixable: false };
+ *       return [{ message: "Missing name field" }];
  *     }
- *     return true;
+ *     return [];
  *   },
  * });
  * ```
  *
- * @alpha
+ * @public
  */
-export function defineGleamPolicy<C = undefined>(
+export function defineGleamPolicy<C = void>(
+	args: DefineGleamPolicyArgs<C> & { defaultConfig: DefinedConfig<C> },
+): FilePolicyDefinition<C> & { defaultConfig: DefinedConfig<C> };
+/** Define a Gleam policy that requires explicit configuration. @public */
+export function defineGleamPolicy<C = void>(
+	args: DefineGleamPolicyArgs<C> & { requiresConfig: true },
+): FilePolicyDefinition<C> & { requiresConfig: true };
+/** Define a Gleam policy with optional configuration. @public */
+export function defineGleamPolicy<C = void>(
 	args: DefineGleamPolicyArgs<C>,
-): PolicyShape<C> {
+): FilePolicyDefinition<C>;
+export function defineGleamPolicy<C = void>(
+	args: DefineGleamPolicyArgs<C>,
+): FilePolicyDefinition<C> {
 	const { name, description, handler: gleamHandler, defaultConfig } = args;
 	return {
 		name,
 		description,
 		match: GleamTomlRegexMatch,
 		defaultConfig,
+		requiresConfig: args.requiresConfig,
 		handler: function* (innerArgs) {
-			const content: string = yield* call(() =>
-				readFile(resolve(innerArgs.root, innerArgs.file), "utf-8"),
+			const toml: GleamToml = yield* call(() =>
+				readParsedFile(innerArgs, "toml", async () => {
+					const content = await readFile(
+						resolve(innerArgs.root, innerArgs.file),
+						"utf-8",
+					);
+					return parseToml(content);
+				}),
 			);
-			const toml: GleamToml = yield* call(() => parseToml(content));
 			const result = gleamHandler(toml, innerArgs);
 
 			if (result instanceof Promise) {
-				return yield* call(() => result);
+				return yield* settlePolicyPromise(result);
 			}
-			if (isOperation<PolicyHandlerResult>(result)) {
+			if (isOperation<PolicyResult>(result)) {
 				return yield* result;
 			}
-			throw new Error(`Unexpected handler result type: ${typeof result}`);
+			throw new ExecutionContractError(
+				`Unexpected handler result type: ${typeof result}`,
+			);
 		},
 	};
 }

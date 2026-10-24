@@ -1,6 +1,6 @@
 import { existsSync } from "node:fs";
 import path from "pathe";
-import type { PolicyShape } from "../policy.js";
+import type { FilePolicyDefinition } from "../policy.js";
 import {
 	defineGleamPolicy,
 	type GleamToml,
@@ -9,7 +9,7 @@ import {
 /**
  * Configuration for the GleamDocExists policy.
  *
- * @alpha
+ * @public
  */
 export interface GleamDocExistsConfig {
 	/**
@@ -29,50 +29,48 @@ const DEFAULT_REQUIRED = ["README.md"];
 /**
  * A policy that validates documentation files exist for Gleam packages.
  *
- * @alpha
+ * @public
  */
-export const GleamDocExists: PolicyShape<GleamDocExistsConfig> =
-	defineGleamPolicy({
-		name: "GleamDocExists",
-		description:
-			"Validates that documentation files (README.md, etc.) exist for Gleam packages.",
-		handler: async (toml: GleamToml, { file, root, config }) => {
-			// Skip if the package looks like it's not for publishing
-			if (!(toml.description || toml.licences)) {
-				return true;
-			}
+export const GleamDocExists = defineGleamPolicy({
+	name: "GleamDocExists",
+	description:
+		"Validates that documentation files (README.md, etc.) exist for Gleam packages.",
+	handler: async (toml: GleamToml, { file, root, config }) => {
+		// Skip if the package looks like it's not for publishing
+		if (!(toml.description || toml.licences)) {
+			return [];
+		}
 
-			const dir = path.dirname(path.resolve(root, file));
-			const required = config?.required ?? DEFAULT_REQUIRED;
-			const recommended = config?.recommended ?? [];
-			const errors: string[] = [];
+		const dir = path.dirname(path.resolve(root, file));
+		const required = config?.required ?? DEFAULT_REQUIRED;
+		const recommended = config?.recommended ?? [];
+		const errors: string[] = [];
 
-			const missingRequired = required.filter(
-				(f) => !existsSync(path.join(dir, f)),
+		const missingRequired = required.filter(
+			(f) => !existsSync(path.join(dir, f)),
+		);
+		const missingRecommended = recommended.filter(
+			(f) => !existsSync(path.join(dir, f)),
+		);
+
+		if (missingRequired.length > 0) {
+			errors.push(
+				`Missing required documentation: ${missingRequired.join(", ")}`,
 			);
-			const missingRecommended = recommended.filter(
-				(f) => !existsSync(path.join(dir, f)),
+		}
+		if (missingRecommended.length > 0) {
+			errors.push(
+				`Missing recommended documentation: ${missingRecommended.join(", ")}`,
 			);
+		}
 
-			if (missingRequired.length > 0) {
-				errors.push(
-					`Missing required documentation: ${missingRequired.join(", ")}`,
-				);
-			}
-			if (missingRecommended.length > 0) {
-				errors.push(
-					`Missing recommended documentation: ${missingRecommended.join(", ")}`,
-				);
-			}
-
-			if (errors.length > 0) {
-				return {
-					error: errors.join("; "),
-					manualFix:
-						"Create the missing documentation files alongside gleam.toml.",
-				};
-			}
-
-			return true;
-		},
-	});
+		if (errors.length > 0) {
+			return errors.map((message) => ({
+				message,
+				manualFix:
+					"Create the missing documentation files alongside gleam.toml.",
+			}));
+		}
+		return [];
+	},
+}) satisfies FilePolicyDefinition<GleamDocExistsConfig>;

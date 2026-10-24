@@ -1,52 +1,30 @@
-import { EOL as newline } from "node:os";
 import process from "node:process";
 import { Flags } from "@oclif/core";
-import { StringBuilder } from "@rushstack/node-core-library";
-import { call, run } from "effection";
-import chalk from "picocolors";
-
 import { BaseRepopoCommand } from "../baseCommand.js";
-import type { RepopoCommandContext } from "../context.js";
+import { DEFAULT_CONCURRENCY, validateConcurrency } from "../concurrency.js";
 import { parseFilePaths } from "../filePaths.js";
 import { logStats } from "../perf.js";
+import { readRepositoryFiles } from "../repositoryFiles.js";
 import {
-	isPolicyError,
-	isPolicyFixResult,
-	type PolicyError,
-	type PolicyFailure,
-} from "../policy.js";
-import { type PolicyFileResult, PolicyRunner } from "../runner.js";
+	type PolicyExecutionError,
+	type PolicyRunFinding,
+	runPolicies,
+} from "../runner.js";
 import { normalizeRepoRelativeFilePath } from "../utils/safePaths.js";
 
 async function readStdin(): Promise<string> {
-	return new Promise((resolve) => {
-		const stdin = process.stdin;
-		stdin.setEncoding("utf8");
-
-		let data = "";
-		stdin.on("data", (chunk) => {
-			data += chunk;
-		});
-
-		stdin.on("end", () => {
-			resolve(data);
-		});
-
-		if (stdin.isTTY) {
-			resolve("");
-		}
-	});
+	if (process.stdin.isTTY) {
+		return "";
+	}
+	process.stdin.setEncoding("utf8");
+	let data = "";
+	for await (const chunk of process.stdin) {
+		data += chunk;
+	}
+	return data;
 }
 
-/**
- * This tool enforces policies across the code base via a series of handler functions. The handler functions are
- * associated with a regular expression, and all files matching that expression are passed to the handler function.
- *
- * By default, the list of files to check comes from `git ls-files. You can also pipe in file names from stdin. For
- * example:
- *
- * `git ls-files -co --exclude-standard --full-name | repopo check --stdin --verbose`
- */
+/** Check selected files and the complete repository inventory. */
 export class CheckPolicy<
 	T extends typeof BaseRepopoCommand & {
 		args: typeof CheckPolicy.args;
@@ -56,7 +34,17 @@ export class CheckPolicy<
 	public static override readonly summary =
 		"Checks and applies policies to the files in the repository.";
 
+	public static override readonly description =
+		"File policies check selected files. Repository policies always run with the full repository file inventory, " +
+		"including with --stdin. With --fix, repository policies can modify files outside the stdin selection.";
+
 	public static override readonly flags = {
+		concurrency: Flags.integer({
+			description:
+				"Maximum concurrent files in read-only checks. Fixes remain sequential.",
+			default: DEFAULT_CONCURRENCY,
+			parse: async (value) => validateConcurrency(Number(value)),
+		}),
 		fix: Flags.boolean({
 			aliases: ["resolve"],
 			description: "Fix errors if possible.",
@@ -74,210 +62,84 @@ export class CheckPolicy<
 		if (this.flags.fix) {
 			this.info("Resolving errors if possible.");
 		}
-
-		const context: RepopoCommandContext = await this.getContext();
+		const context = await this.getContext();
+		const files = await this.collectFilePaths(context.gitRoot);
 		this.verbose(`${context.policies.length} policies loaded.`);
-		for (const configuredPolicy of context.policies) {
-			this.verbose(configuredPolicy.instanceId);
+		for (const policy of context.policies) {
+			this.verbose(policy.instanceId);
+		}
+		const results = await runPolicies({
+			policies: context.policies,
+			root: context.gitRoot,
+			files,
+			inventory: () => this.collectRepositoryFiles(),
+			exclude: context.excludeFromAll,
+			fix: this.flags.fix,
+			concurrency: this.flags.concurrency,
+		});
+		for (const finding of results.findings) {
+			this.reportFinding(finding);
+		}
+		for (const error of results.errors) {
+			this.reportError(error);
 		}
 
-		const filePathsToCheck = await this.collectFilePaths(context.gitRoot);
-		const runner = new PolicyRunner({
-			policies: context.policies,
-			excludeFromAll: context.excludeFromAll,
-			excludePoliciesForFiles: context.excludePoliciesForFiles,
-			gitRoot: context.gitRoot,
-			resolve: this.flags.fix,
-			logger: this.logger,
-		});
-
-		const runResults = await run(() => runner.run(filePathsToCheck));
-
-		// Format and log results
-		for (const result of runResults.results) {
-			this.formatResult(result);
+		for (const skipped of results.skipped) {
+			this.verbose(
+				`Skipped ${skipped.policyId}: ${skipped.scope === "file" ? skipped.file : "repository"} (${skipped.reason})`,
+			);
 		}
 
 		if (!this.flags.quiet) {
-			logStats(runResults.perfStats, this.logger);
+			logStats(results.perfStats, this.logger);
 		}
 	}
 
-	/**
-	 * Collects file paths to check from either stdin or git ls-files.
-	 */
+	private reportFinding(finding: PolicyRunFinding): void {
+		const location =
+			finding.scope === "file"
+				? finding.file
+				: finding.files?.join(", ") || "repository";
+		const message = `${finding.policyId}: ${location}: ${finding.message}`;
+		if (finding.fixStatus === "fixed") {
+			this.info(`Resolved ${message}`);
+			return;
+		}
+		process.exitCode = 1;
+		this.warning(message);
+		if (finding.manualFix) {
+			this.warning(`Manual fix: ${finding.manualFix}`);
+		}
+	}
+
+	private reportError(error: PolicyExecutionError): void {
+		process.exitCode = 1;
+		const location =
+			error.scope === "file"
+				? error.file
+				: error.files.join(", ") || "repository";
+		this.warning(
+			`Execution error (${error.kind}, ${error.phase}) ${error.policyId}: ${location}: ${error.message}`,
+		);
+	}
+
 	private async collectFilePaths(gitRoot: string): Promise<string[]> {
-		if (this.flags.stdin) {
-			const stdInput = await run(function* () {
-				return yield* call(() => readStdin());
-			});
-
-			if (stdInput !== undefined && stdInput !== null) {
-				return this.normalizePathsToCheck(parseFilePaths(stdInput), gitRoot);
-			}
-
-			return [];
-		}
-
-		const gitFiles =
-			(await this.git.raw(
-				"ls-files",
-				// include staged files and untracked files
-				"-co",
-				// NUL-delimited paths are not quoted or escaped by Git.
-				"-z",
-				// exclude gitignored files and other standard ignore rules
-				"--exclude-standard",
-				// Outputs paths relative to the root of the repository, regardless of the current working directory.
-				"--full-name",
-			)) ?? "";
-
-		return this.normalizePathsToCheck(parseFilePaths(gitFiles), gitRoot);
-	}
-
-	private normalizePathsToCheck(paths: string[], gitRoot: string): string[] {
-		return paths.map((path) => {
+		const paths = this.flags.stdin
+			? parseFilePaths(await readStdin())
+			: await this.collectRepositoryFiles();
+		return paths.map((filePath) => {
 			try {
-				return normalizeRepoRelativeFilePath(gitRoot, path);
+				return normalizeRepoRelativeFilePath(gitRoot, filePath);
 			} catch (error: unknown) {
-				throw new Error(
-					`Invalid file path '${path}': ${(error as Error).message}`,
-				);
+				const message = error instanceof Error ? error.message : String(error);
+				throw new Error(`Invalid file path '${filePath}': ${message}`, {
+					cause: error,
+				});
 			}
 		});
 	}
 
-	/**
-	 * Formats a single policy file result, logging messages and setting exit codes.
-	 */
-	private formatResult(result: PolicyFileResult): void {
-		const { outcome, resolution } = result;
-
-		// Handle fix results (legacy format with resolved property)
-		if (isPolicyFixResult(outcome)) {
-			this.formatFixResult(outcome.resolved, outcome.file, result.policyId);
-			return;
-		}
-
-		// Handle new PolicyError with fixed property (fix was attempted inline)
-		if (isPolicyError(outcome) && outcome.fixed !== undefined) {
-			this.formatPolicyErrorFixResult(outcome, result.file, result.policyId);
-			return;
-		}
-
-		// Handle failure with standalone resolver result
-		if (resolution !== undefined) {
-			this.formatResolutionResult(resolution, result.file, result.policyId);
-			return;
-		}
-
-		// Handle plain failure (no fix attempted)
-		// The runner only collects non-true results, but TypeScript needs explicit narrowing
-		if (outcome === true) {
-			return;
-		}
-		this.formatPolicyFailure(outcome, result.file, result.policyId);
-	}
-
-	private formatFixResult(
-		resolved: boolean,
-		file: string,
-		policyName: string,
-	): void {
-		const messages = new StringBuilder();
-
-		if (resolved) {
-			messages.append(
-				`Resolved ${policyName} policy failure for file: ${file}`,
-			);
-		} else {
-			messages.append(`Error fixing ${policyName} policy failure in ${file}`);
-			process.exitCode = 1;
-		}
-
-		this.logMessages(messages);
-	}
-
-	private formatPolicyErrorFixResult(
-		result: PolicyError,
-		file: string,
-		policyName: string,
-	): void {
-		const messages = new StringBuilder();
-
-		if (result.fixed) {
-			messages.append(
-				`Resolved ${policyName} policy failure for file: ${file}`,
-			);
-		} else {
-			messages.append(`Error fixing ${policyName} policy failure in ${file}`);
-			if (result.error) {
-				messages.append(`${newline}\t${result.error}`);
-			}
-			process.exitCode = 1;
-		}
-
-		this.logMessages(messages);
-	}
-
-	private formatResolutionResult(
-		resolution: { resolved: boolean; errorMessages?: string[] },
-		file: string,
-		policyName: string,
-	): void {
-		const messages = new StringBuilder();
-		messages.append(
-			`${newline}Attempting to resolve '${policyName}' policy failure for file: ${file}`,
-		);
-
-		if (!resolution.resolved) {
-			process.exitCode = 1;
-		}
-
-		if (resolution.errorMessages && resolution.errorMessages.length > 0) {
-			messages.append(newline + resolution.errorMessages.join(newline));
-		}
-
-		this.logMessages(messages);
-	}
-
-	private formatPolicyFailure(
-		result: PolicyFailure | PolicyError,
-		file: string,
-		policyName: string,
-	): void {
-		const messages = new StringBuilder();
-
-		// Handle both legacy PolicyFailure and new PolicyError formats
-		if (isPolicyError(result)) {
-			const autoFixable = result.fixable ? chalk.green(" (autofixable)") : "";
-			messages.append(
-				`'${chalk.bold(policyName)}' policy failure${autoFixable}: ${file}`,
-			);
-			messages.append(`${newline}\t${result.error}`);
-		} else {
-			const autoFixable = result.autoFixable
-				? chalk.green(" (autofixable)")
-				: "";
-			messages.append(
-				`'${chalk.bold(policyName)}' policy failure${autoFixable}: ${result.file}`,
-			);
-			if (result.errorMessages?.length > 0) {
-				messages.append(
-					`${newline}\t${result.errorMessages.join(`${newline}\t`)}`,
-				);
-			}
-		}
-		process.exitCode = 1;
-
-		this.logMessages(messages);
-	}
-
-	private logMessages(messages: StringBuilder): void {
-		if ((process.exitCode ?? 0) === 0) {
-			this.info(messages.toString());
-		} else {
-			this.warning(messages.toString());
-		}
+	private async collectRepositoryFiles(): Promise<string[]> {
+		return readRepositoryFiles(this.git);
 	}
 }

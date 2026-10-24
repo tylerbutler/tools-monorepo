@@ -1,309 +1,314 @@
-import type { Logger } from "@tylerbu/cli-api";
-import { all, call, type Operation } from "effection";
-
+import { all, call, type Operation, run, spawn } from "effection";
+import { DEFAULT_CONCURRENCY, validateConcurrency } from "./concurrency.js";
 import {
 	createExcludedPolicyFileMap,
 	type ExcludedPolicyFileMap,
+	exclusionRegex,
 } from "./context.js";
+import { ParsedFileCache } from "./fileCache.js";
 import { identifyPolicyInstances } from "./makePolicy.js";
-import {
-	newPerfStats,
-	type PolicyHandlerPerfStats,
-	runWithPerf,
-} from "./perf.js";
+import { newPerfStats, type PolicyHandlerPerfStats } from "./perf.js";
 import type {
+	ConfiguredPolicy,
 	IdentifiedPolicy,
-	PolicyFixResult,
-	PolicyHandlerResult,
-	PolicyInstance,
-	PolicyInstanceId,
-	PolicyName,
-	PolicyStandaloneResolver,
+	PolicyFinding,
 } from "./policy.js";
-import { isPolicyError, isPolicyFixResult } from "./policy.js";
+import { PolicyExecutor } from "./policyExecution.js";
 
-function isOperation<T>(value: unknown): value is Operation<T> {
-	return (
-		typeof value === "object" &&
-		value !== null &&
-		"next" in value &&
-		typeof (value as { next: unknown }).next === "function"
-	);
+/** A finding with runner-owned identity and scope-safe location. @public */
+export type PolicyRunFinding =
+	| (Omit<PolicyFinding, "files"> & {
+			scope: "file";
+			file: string;
+			files?: never;
+			policy: string;
+			policyId: string;
+	  })
+	| (PolicyFinding & {
+			scope: "repository";
+			file?: never;
+			policy: string;
+			policyId: string;
+	  });
+
+/** An execution failure, separate from ordinary policy findings. @public */
+export type PolicyExecutionError = {
+	policy: string;
+	policyId: string;
+	phase: "handle" | "resolve";
+	kind: "contract" | "exception";
+	message: string;
+	cause: unknown;
+} & (
+	| { scope: "file"; file: string; files?: never }
+	| { scope: "repository"; files: readonly string[]; file?: never }
+);
+
+/** A unit that was not executed. @public */
+export type PolicySkippedWork = {
+	policy: string;
+	policyId: string;
+	reason: "excluded" | "file-fix-error" | "repository-fix-error";
+} & ({ scope: "file"; file: string } | { scope: "repository"; file?: never });
+
+/** Findings, failures, skipped units, and file/per-instance timing statistics. @public */
+export interface PolicyRunResults {
+	findings: PolicyRunFinding[];
+	errors: PolicyExecutionError[];
+	skipped: PolicySkippedWork[];
+	perfStats: PolicyHandlerPerfStats;
 }
 
-function matches(regex: RegExp, value: string): boolean {
-	if (!(regex.global || regex.sticky)) {
-		return regex.test(value);
-	}
+/** Full repository inventory, never inferred from a file selection. @public */
+export type RepositoryInventory =
+	| readonly string[]
+	| (() => Promise<readonly string[]>);
 
-	const savedLastIndex = regex.lastIndex;
+/** Shared Promise and Effection runner options. @public */
+export interface PolicyRunnerOptions {
+	policies: readonly ConfiguredPolicy[];
+	root: string;
+	inventory?: RepositoryInventory | undefined;
+	/** Selection limits only file policies. Defaults to inventory when supplied. */
+	files?: readonly string[] | undefined;
+	exclude?: readonly (string | RegExp)[] | undefined;
+	fix?: boolean | undefined;
+	concurrency?: number | undefined;
+	signal?: AbortSignal | undefined;
+}
+
+function matches(regex: RegExp, file: string): boolean {
+	const index = regex.lastIndex;
 	try {
 		regex.lastIndex = 0;
-		return regex.test(value);
+		return regex.test(file);
 	} finally {
-		regex.lastIndex = savedLastIndex;
+		regex.lastIndex = index;
 	}
 }
 
-/**
- * Result of running a single policy on a single file.
- * @alpha
- */
-export interface PolicyFileResult {
-	file: string;
-	policy: PolicyName;
-	/** Stable identity of the configured policy instance */
-	policyId: PolicyInstanceId;
-	/** The raw result from the policy handler */
-	outcome: PolicyHandlerResult;
-	/** Set when a standalone resolver was attempted (legacy resolver path) */
-	resolution?: PolicyFixResult;
-}
-
-/**
- * Aggregated results from a full policy run.
- * @alpha
- */
-export interface PolicyRunResults {
-	results: PolicyFileResult[];
-	perfStats: PolicyHandlerPerfStats;
-}
-
-interface PolicyRunState {
-	results: PolicyFileResult[];
-	perfStats: PolicyHandlerPerfStats;
-}
-
-/**
- * Options for configuring a {@link PolicyRunner}.
- * @alpha
- */
-export interface PolicyRunnerOptions {
-	policies: PolicyInstance[];
-	excludeFromAll: RegExp[];
-	excludePoliciesForFiles: ExcludedPolicyFileMap;
-	gitRoot: string;
-	resolve: boolean;
-	logger?: Pick<Logger, "verbose">;
-}
-
-/**
- * Runs configured policies against files and collects results.
- * @alpha
- */
+/** Effection runner; cancellation unwinds active generator handlers and resolvers. @public */
 export class PolicyRunner {
 	private readonly policies: IdentifiedPolicy[];
-	private readonly excludeFromAll: RegExp[];
-	private readonly excludePoliciesForFiles: ExcludedPolicyFileMap;
-	private readonly gitRoot: string;
-	private readonly resolve: boolean;
-	private readonly logger: Pick<Logger, "verbose"> | undefined;
+	private readonly exclusions: RegExp[];
+	private readonly policyExclusions: ExcludedPolicyFileMap;
+	private readonly concurrency: number;
 
-	public constructor(options: PolicyRunnerOptions) {
-		this.policies = identifyPolicyInstances(options.policies);
-		this.excludeFromAll = options.excludeFromAll;
-		this.excludePoliciesForFiles = createExcludedPolicyFileMap(this.policies);
-		for (const [instanceId, exclusions] of options.excludePoliciesForFiles) {
-			this.excludePoliciesForFiles.set(instanceId, exclusions);
+	public constructor(private readonly options: PolicyRunnerOptions) {
+		this.policies = identifyPolicyInstances(
+			options.policies.map((policy) => ({
+				...policy,
+				config:
+					policy.config === undefined ? policy.defaultConfig : policy.config,
+			})),
+		);
+		this.exclusions = (options.exclude ?? []).map(exclusionRegex);
+		this.policyExclusions = createExcludedPolicyFileMap(this.policies);
+		this.concurrency = validateConcurrency(
+			options.concurrency ?? DEFAULT_CONCURRENCY,
+		);
+		if (
+			this.policies.some((policy) => policy.scope === "repository") &&
+			options.inventory === undefined
+		) {
+			throw new TypeError(
+				"Repository policies require an explicit inventory array or loader; files is only a selection.",
+			);
 		}
-		this.gitRoot = options.gitRoot;
-		this.resolve = options.resolve;
-		this.logger = options.logger;
+		for (const policy of this.policies) {
+			if (policy.scope === "repository" && policy.resolver !== undefined) {
+				throw new TypeError(
+					"Repository policies support inline fixes only; remove resolver.",
+				);
+			}
+			if (
+				policy.requiresConfig &&
+				policy.config === undefined &&
+				policy.defaultConfig === undefined
+			) {
+				throw new TypeError(`Policy '${policy.name}' requires config.`);
+			}
+		}
 	}
 
-	public *run(filePaths: string[]): Operation<PolicyRunResults> {
-		const state: PolicyRunState = {
-			results: [],
+	public *run(): Operation<PolicyRunResults> {
+		const signal = this.options.signal;
+		if (signal?.aborted) {
+			throw signal.reason;
+		}
+		const task = yield* spawn(() => this.runInternal());
+		// halt() is lazy; consuming it initiates teardown. The task retains any teardown error.
+		const abort = () => {
+			task.halt().catch(() => undefined);
+		};
+		signal?.addEventListener("abort", abort, { once: true });
+		try {
+			if (signal?.aborted) {
+				abort();
+			}
+			return yield* task;
+		} finally {
+			signal?.removeEventListener("abort", abort);
+		}
+	}
+
+	private *runInternal(): Operation<PolicyRunResults> {
+		const result: PolicyRunResults = {
+			findings: [],
+			errors: [],
+			skipped: [],
 			perfStats: newPerfStats(),
 		};
-
-		for (const filePath of filePaths) {
-			yield* this.checkOrExcludeFile(filePath, state);
+		const fix = this.options.fix ?? false;
+		const cache = fix ? undefined : new ParsedFileCache();
+		let inventory: readonly string[] | undefined;
+		if (this.options.files === undefined) {
+			inventory = yield* this.loadInventory();
 		}
-
-		return {
-			results: state.results,
-			perfStats: state.perfStats,
-		};
-	}
-
-	private *checkOrExcludeFile(
-		relPath: string,
-		state: PolicyRunState,
-	): Operation<void> {
-		state.perfStats.count++;
+		const files = this.options.files ?? inventory ?? [];
+		let fileFixError = false;
 		try {
-			yield* this.routeToPolicies(relPath, state);
-		} catch (error: unknown) {
-			throw new Error(
-				`Error routing ${relPath} to handler: ${error}\nStack:\n${(error as Error).stack}`,
-			);
-		}
-	}
-
-	private *routeToPolicies(
-		relPath: string,
-		state: PolicyRunState,
-	): Operation<void> {
-		if (this.excludeFromAll.some((regex) => matches(regex, relPath))) {
-			this.logger?.verbose(`Excluded all handlers: ${relPath}`);
-			return;
-		}
-
-		state.perfStats.processed++;
-
-		const matchingPolicies = this.policies.filter((policy) =>
-			matches(policy.match, relPath),
-		);
-		if (this.resolve) {
-			// Fixers can read and rewrite the same file.
-			for (const policy of matchingPolicies) {
-				yield* this.runPolicyOnFile(relPath, policy, state);
-			}
-			return;
-		}
-
-		yield* all(
-			matchingPolicies.map((policy) => {
-				return this.runPolicyOnFile(relPath, policy, state);
-			}),
-		);
-	}
-
-	private *runPolicyOnFile(
-		relPath: string,
-		policy: IdentifiedPolicy,
-		state: PolicyRunState,
-	): Operation<void> {
-		if (this.isPolicyExcluded(relPath, policy)) {
-			this.logger?.verbose(
-				`Excluded from '${policy.instanceId}' policy: ${relPath}`,
-			);
-			return;
-		}
-
-		try {
-			const result = yield* this.executePolicyHandler(relPath, policy, state);
-
-			// Success — nothing to report
-			if (result === true) {
-				return;
-			}
-
-			const fileResult: PolicyFileResult = {
-				file: relPath,
-				policy: policy.name,
-				policyId: policy.instanceId,
-				outcome: result,
-			};
-
-			// Check if resolution should be attempted: result is a failure that
-			// wasn't already fixed, resolve mode is on, and a standalone resolver exists.
-			const alreadyFixed =
-				isPolicyFixResult(result) ||
-				(isPolicyError(result) && result.fixed !== undefined);
-
-			if (!alreadyFixed && this.resolve && policy.resolver) {
-				const resolution = yield* this.attemptResolution(
-					relPath,
-					policy,
-					policy.resolver,
-					state,
-				);
-				fileResult.resolution = resolution;
-			}
-
-			state.results.push(fileResult);
-		} catch (error: unknown) {
-			const message = error instanceof Error ? error.message : String(error);
-			state.results.push({
-				file: relPath,
-				policy: policy.name,
-				policyId: policy.instanceId,
-				outcome: {
-					error: `System Error: Error executing policy '${policy.instanceId}' for file '${relPath}': ${message}`,
-				},
-			});
-		}
-	}
-
-	private isPolicyExcluded(relPath: string, policy: IdentifiedPolicy): boolean {
-		return (
-			this.excludePoliciesForFiles
-				.get(policy.instanceId)
-				?.some((regex) => matches(regex, relPath)) ?? false
-		);
-	}
-
-	private *executePolicyHandler(
-		relPath: string,
-		policy: IdentifiedPolicy,
-		state: PolicyRunState,
-	): Operation<PolicyHandlerResult> {
-		const { resolve, gitRoot } = this;
-
-		const result = yield* runWithPerf(
-			policy.instanceId,
-			"handle",
-			state.perfStats,
-			function* () {
-				const args = {
-					file: relPath,
-					root: gitRoot,
-					resolve,
-					config: policy.config,
-				};
-
-				if (policy._internalHandler) {
-					return yield* policy._internalHandler(args);
+			if (fix) {
+				for (const file of files) {
+					if (yield* this.runFile(file, result, cache)) {
+						fileFixError = true;
+					}
 				}
-
-				const handlerResult = policy.handler(args);
-				if (handlerResult instanceof Promise) {
-					return yield* call(() => handlerResult);
-				}
-				if (isOperation<PolicyHandlerResult>(handlerResult)) {
-					return yield* handlerResult;
-				}
-				throw new Error(
-					`Unexpected handler result type: ${typeof handlerResult}`,
-				);
-			},
-		);
-
-		if (result === undefined) {
-			throw new Error("Policy result was undefined.");
+			} else {
+				yield* this.runReadOnlyFiles(files, result, cache);
+			}
+		} finally {
+			cache?.clear();
 		}
-
+		yield* this.runRepositories(result, inventory, fileFixError);
 		return result;
 	}
 
-	private *attemptResolution(
-		relPath: string,
-		policy: IdentifiedPolicy,
-		resolver: PolicyStandaloneResolver,
-		state: PolicyRunState,
-	): Operation<PolicyFixResult> {
-		const { gitRoot } = this;
+	private *runReadOnlyFiles(
+		files: readonly string[],
+		result: PolicyRunResults,
+		cache: ParsedFileCache | undefined,
+	): Operation<void> {
+		const entries = files.entries();
+		const outputs: PolicyRunResults[] = [];
+		const runner = this;
+		yield* all(
+			Array.from(
+				{ length: Math.min(this.concurrency, files.length) },
+				function* () {
+					for (
+						let entry = entries.next();
+						!entry.done;
+						entry = entries.next()
+					) {
+						const [index, file] = entry.value;
+						const local: PolicyRunResults = {
+							findings: [],
+							errors: [],
+							skipped: [],
+							perfStats: result.perfStats,
+						};
+						yield* runner.runFile(file, local, cache);
+						outputs[index] = local;
+					}
+				},
+			),
+		);
+		for (const output of outputs) {
+			result.findings.push(...output.findings);
+			result.errors.push(...output.errors);
+			result.skipped.push(...output.skipped);
+		}
+	}
 
-		return yield* runWithPerf(
-			policy.instanceId,
-			"resolve",
-			state.perfStats,
-			function* () {
-				const result = resolver({
-					file: relPath,
-					root: gitRoot,
-					config: policy.config,
+	private *runRepositories(
+		result: PolicyRunResults,
+		initialInventory: readonly string[] | undefined,
+		fileFixError: boolean,
+	): Operation<void> {
+		let inventory = initialInventory;
+		const fix = this.options.fix ?? false;
+		let repositoryFixError = false;
+		for (const policy of this.policies) {
+			if (policy.scope !== "repository") {
+				continue;
+			}
+			if (fileFixError || repositoryFixError) {
+				result.skipped.push({
+					scope: "repository",
+					policy: policy.name,
+					policyId: policy.instanceId,
+					reason: fileFixError ? "file-fix-error" : "repository-fix-error",
 				});
-				if (result instanceof Promise) {
-					return yield* call(() => result);
-				}
-				if (isOperation<PolicyFixResult>(result)) {
-					return yield* result;
-				}
-				throw new Error(`Unexpected resolver result type: ${typeof result}`);
-			},
+				continue;
+			}
+			if (inventory === undefined || fix) {
+				inventory = yield* this.loadInventory();
+			}
+			const eligible = (inventory ?? []).filter(
+				(file) => !this.excluded(file, policy),
+			);
+			repositoryFixError = yield* new PolicyExecutor(
+				this.options.root,
+				fix,
+			).repository(policy, eligible, result);
+		}
+	}
+
+	private *loadInventory(): Operation<readonly string[] | undefined> {
+		const inventory = this.options.inventory;
+		return typeof inventory === "function" ? yield* call(inventory) : inventory;
+	}
+
+	private excluded(file: string, policy: IdentifiedPolicy): boolean {
+		return (
+			this.exclusions.some((regex) => matches(regex, file)) ||
+			(this.policyExclusions.get(policy.instanceId) ?? []).some((regex) =>
+				matches(regex, file),
+			)
 		);
 	}
+
+	private *runFile(
+		file: string,
+		output: PolicyRunResults,
+		cache: ParsedFileCache | undefined,
+	): Operation<boolean> {
+		output.perfStats.count++;
+		const globallyExcluded = this.exclusions.some((regex) =>
+			matches(regex, file),
+		);
+		if (!globallyExcluded) {
+			output.perfStats.processed++;
+		}
+		let stopped = false;
+		for (const policy of this.policies) {
+			if (policy.scope === "repository" || !matches(policy.match, file)) {
+				continue;
+			}
+			if (stopped || this.excluded(file, policy)) {
+				output.skipped.push({
+					scope: "file",
+					file,
+					policy: policy.name,
+					policyId: policy.instanceId,
+					reason: stopped ? "file-fix-error" : "excluded",
+				});
+				continue;
+			}
+			stopped = yield* new PolicyExecutor(
+				this.options.root,
+				this.options.fix ?? false,
+			).file(file, policy, output, cache);
+		}
+		return stopped;
+	}
+}
+
+/** Promise entry point sharing the Effection runner's contracts and cancellation. @public */
+export async function runPolicies(
+	options: PolicyRunnerOptions,
+): Promise<PolicyRunResults> {
+	const runner = new PolicyRunner(options);
+	return await run(() => runner.run());
 }

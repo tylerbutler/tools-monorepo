@@ -34,7 +34,8 @@ The type of [IPackage](../interfaces/IPackage.md) the repo uses. This can be any
 new BuildProject<P>(
    searchPath, 
    infer?, 
-upstreamRemotePartialUrl?): BuildProject<P>;
+   upstreamRemotePartialUrl?
+): BuildProject<P>;
 ```
 
 Defined in: [packages/sail-infrastructure/src/buildProject.ts:56](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/buildProject.ts#L56)
@@ -119,7 +120,7 @@ exists.
 ### upstreamRemotePartialUrl?
 
 ```ts
-readonly optional upstreamRemotePartialUrl?: string;
+readonly upstreamRemotePartialUrl?: string;
 ```
 
 Defined in: [packages/sail-infrastructure/src/buildProject.ts:63](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/buildProject.ts#L63)

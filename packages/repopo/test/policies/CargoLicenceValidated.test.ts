@@ -48,10 +48,11 @@ describe("CargoLicenceValidated", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("Missing or empty license");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"Missing or empty license",
+				);
 			}
 		});
 
@@ -66,10 +67,11 @@ describe("CargoLicenceValidated", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("Missing or empty license");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"Missing or empty license",
+				);
 			}
 		});
 	});
@@ -86,8 +88,7 @@ describe("CargoLicenceValidated", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should not skip workspace when skipWorkspace is false", async () => {
@@ -102,10 +103,11 @@ describe("CargoLicenceValidated", () => {
 				resolve: false,
 				config: { skipWorkspace: false },
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("Missing or empty license");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"Missing or empty license",
+				);
 			}
 		});
 	});
@@ -122,8 +124,7 @@ describe("CargoLicenceValidated", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should pass with Apache-2.0", async () => {
@@ -137,8 +138,7 @@ describe("CargoLicenceValidated", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -154,12 +154,17 @@ describe("CargoLicenceValidated", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain('"mit"');
-				expect(result.error).toContain('"MIT"');
-				expect(result.fixable).toBe(true);
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					'"mit"',
+				);
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					'"MIT"',
+				);
+				expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+					true,
+				);
 			}
 		});
 
@@ -176,10 +181,11 @@ describe("CargoLicenceValidated", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("not a recognized SPDX identifier");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"not a recognized SPDX identifier",
+				);
 			}
 		});
 
@@ -195,10 +201,12 @@ describe("CargoLicenceValidated", () => {
 				root: testDir,
 				resolve: true,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.fixed).toBe(true);
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toBe(true);
 			}
 
 			const content = readFileSync(filePath, "utf-8");
@@ -220,8 +228,7 @@ describe("CargoLicenceValidated", () => {
 				resolve: false,
 				config: { allowedLicences: ["MIT", "Apache-2.0"] },
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should fail when licence is not in allowed list", async () => {
@@ -238,10 +245,11 @@ describe("CargoLicenceValidated", () => {
 				resolve: false,
 				config: { allowedLicences: ["MIT", "Apache-2.0"] },
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("not in the allowed list");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"not in the allowed list",
+				);
 			}
 		});
 	});
@@ -261,7 +269,7 @@ describe("CargoLicenceValidated", () => {
 			});
 
 			// With validateSpdx disabled, "mit" passes (only presence is checked)
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 });

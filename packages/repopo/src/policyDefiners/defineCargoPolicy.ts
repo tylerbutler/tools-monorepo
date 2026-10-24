@@ -1,18 +1,22 @@
 import { readFile } from "node:fs/promises";
 import { call, type Operation } from "effection";
 import { resolve } from "pathe";
+import { ExecutionContractError } from "../executionContractError.js";
+import { readParsedFile } from "../fileCache.js";
 import { CargoTomlRegexMatch } from "../policies/constants.js";
 import type {
+	DefinedConfig,
+	FilePolicyDefinition,
 	PolicyArgs,
-	PolicyHandlerResult,
-	PolicyShape,
+	PolicyResult,
 } from "../policy.js";
+import { settlePolicyPromise } from "../settlePolicyPromise.js";
 import { parseToml } from "./tomlParser.js";
 
 /**
  * A parsed Cargo.toml represented as a record of sections and values.
  *
- * @alpha
+ * @public
  */
 export type CargoToml = Record<string, unknown>;
 
@@ -22,12 +26,12 @@ export type CargoToml = Record<string, unknown>;
  * @remarks
  * Receives the parsed TOML content and the standard policy arguments.
  *
- * @alpha
+ * @public
  */
 export type CargoTomlHandler<C> = (
 	toml: CargoToml,
 	args: PolicyArgs<C>,
-) => Operation<PolicyHandlerResult> | Promise<PolicyHandlerResult>;
+) => Operation<PolicyResult> | Promise<PolicyResult>;
 
 /**
  * Type guard to check if a value is an Effection Operation (generator).
@@ -44,7 +48,7 @@ function isOperation<T>(value: unknown): value is Operation<T> {
 /**
  * Input arguments for defining a Cargo.toml policy.
  *
- * @alpha
+ * @public
  */
 export interface DefineCargoPolicyArgs<C> {
 	/**
@@ -66,6 +70,7 @@ export interface DefineCargoPolicyArgs<C> {
 	 * Optional default configuration for the policy.
 	 */
 	defaultConfig?: C;
+	requiresConfig?: boolean;
 }
 
 /**
@@ -75,6 +80,9 @@ export interface DefineCargoPolicyArgs<C> {
  * This is a helper function that creates a policy pre-configured to match
  * Cargo.toml files. The handler receives the parsed TOML content.
  *
+ * @param args - Policy metadata, parsed-TOML handler, and optional defaults.
+ * @returns A file policy that reads and parses matching Cargo.toml files.
+ *
  * @example
  * ```typescript
  * const MyCargoPolicy = defineCargoPolicy({
@@ -83,38 +91,57 @@ export interface DefineCargoPolicyArgs<C> {
  *   handler: async (toml, { file }) => {
  *     const pkg = toml.package as Record<string, unknown> | undefined;
  *     if (!pkg?.name) {
- *       return { error: "Missing package name", fixable: false };
+ *       return [{ message: "Missing package name" }];
  *     }
- *     return true;
+ *     return [];
  *   },
  * });
  * ```
  *
- * @alpha
+ * @public
  */
-export function defineCargoPolicy<C = undefined>(
+export function defineCargoPolicy<C = void>(
+	args: DefineCargoPolicyArgs<C> & { defaultConfig: DefinedConfig<C> },
+): FilePolicyDefinition<C> & { defaultConfig: DefinedConfig<C> };
+/** Define a Cargo policy that requires explicit configuration. @public */
+export function defineCargoPolicy<C = void>(
+	args: DefineCargoPolicyArgs<C> & { requiresConfig: true },
+): FilePolicyDefinition<C> & { requiresConfig: true };
+/** Define a Cargo policy with optional configuration. @public */
+export function defineCargoPolicy<C = void>(
 	args: DefineCargoPolicyArgs<C>,
-): PolicyShape<C> {
+): FilePolicyDefinition<C>;
+export function defineCargoPolicy<C = void>(
+	args: DefineCargoPolicyArgs<C>,
+): FilePolicyDefinition<C> {
 	const { name, description, handler: cargoHandler, defaultConfig } = args;
 	return {
 		name,
 		description,
 		match: CargoTomlRegexMatch,
 		defaultConfig,
+		requiresConfig: args.requiresConfig,
 		handler: function* (innerArgs) {
-			const content: string = yield* call(() =>
-				readFile(resolve(innerArgs.root, innerArgs.file), "utf-8"),
+			const toml: CargoToml = yield* call(() =>
+				readParsedFile(innerArgs, "toml", async () => {
+					const content = await readFile(
+						resolve(innerArgs.root, innerArgs.file),
+						"utf-8",
+					);
+					return parseToml(content);
+				}),
 			);
-			const toml: CargoToml = yield* call(() => parseToml(content));
 			const result = cargoHandler(toml, innerArgs);
 
 			if (result instanceof Promise) {
-				return yield* call(() => result);
+				return yield* settlePolicyPromise(result);
 			}
-			if (isOperation<PolicyHandlerResult>(result)) {
+			if (isOperation<PolicyResult>(result)) {
 				return yield* result;
 			}
-			throw new Error(`Unexpected handler result type: ${typeof result}`);
+			throw new ExecutionContractError(
+				`Unexpected handler result type: ${typeof result}`,
+			);
 		},
 	};
 }

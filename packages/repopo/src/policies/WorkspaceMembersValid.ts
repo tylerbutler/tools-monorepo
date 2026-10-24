@@ -1,14 +1,13 @@
 import { existsSync, readdirSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import path from "pathe";
-import { makePolicyDefinition } from "../makePolicy.js";
-import type { PolicyDefinition } from "../policy.js";
+import type { FilePolicyDefinition } from "../policy.js";
 import { parseToml } from "../policyDefiners/tomlParser.js";
 
 /**
  * Configuration for the WorkspaceMembersValid policy.
  *
- * @alpha
+ * @public
  */
 export interface WorkspaceMembersValidConfig {
 	/**
@@ -71,48 +70,46 @@ function validateMember(member: string, root: string, errors: string[]): void {
 /**
  * A policy that validates Cargo workspace member paths exist.
  *
- * @alpha
+ * @public
  */
-export const WorkspaceMembersValid: PolicyDefinition<WorkspaceMembersValidConfig> =
-	makePolicyDefinition({
-		name: "WorkspaceMembersValid",
-		description:
-			"Validates that all Cargo workspace member paths exist and contain Cargo.toml files.",
-		match: /^Cargo\.toml$/,
-		handler: async ({ file, root, config }) => {
-			const validatePaths = config?.validatePaths ?? true;
+export const WorkspaceMembersValid = {
+	name: "WorkspaceMembersValid",
+	description:
+		"Validates that all Cargo workspace member paths exist and contain Cargo.toml files.",
+	match: /^Cargo\.toml$/,
+	handler: async ({ file, root, config }) => {
+		const validatePaths = config?.validatePaths ?? true;
 
-			const content = await readFile(path.resolve(root, file), "utf-8");
-			const toml = await parseToml(content);
+		const content = await readFile(path.resolve(root, file), "utf-8");
+		const toml = await parseToml(content);
 
-			const workspace = toml.workspace as Record<string, unknown> | undefined;
-			if (!workspace) {
-				return true;
-			}
+		const workspace = toml.workspace as Record<string, unknown> | undefined;
+		if (!workspace) {
+			return [];
+		}
 
-			const members = workspace.members as string[] | undefined;
-			if (!members || members.length === 0) {
-				return true;
-			}
+		const members = workspace.members as string[] | undefined;
+		if (!members || members.length === 0) {
+			return [];
+		}
 
-			if (!validatePaths) {
-				return true;
-			}
+		if (!validatePaths) {
+			return [];
+		}
 
-			const errors: string[] = [];
+		const errors: string[] = [];
 
-			for (const member of members) {
-				validateMember(member, root, errors);
-			}
+		for (const member of members) {
+			validateMember(member, root, errors);
+		}
 
-			if (errors.length > 0) {
-				return {
-					error: errors.join("; "),
-					manualFix:
-						"Fix the workspace.members paths in root Cargo.toml to point to valid crate directories.",
-				};
-			}
-
-			return true;
-		},
-	});
+		if (errors.length > 0) {
+			return errors.map((message) => ({
+				message,
+				manualFix:
+					"Fix the workspace.members paths in root Cargo.toml to point to valid crate directories.",
+			}));
+		}
+		return [];
+	},
+} satisfies FilePolicyDefinition<WorkspaceMembersValidConfig>;

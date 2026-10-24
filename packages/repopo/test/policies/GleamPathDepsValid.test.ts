@@ -33,8 +33,7 @@ describe("GleamPathDepsValid", () => {
 			root: testDir,
 			resolve: false,
 		});
-
-		expect(result).toBe(true);
+		expect(result).toEqual([]);
 	});
 
 	it("should fail when path dep points to non-existent directory", async () => {
@@ -48,10 +47,11 @@ describe("GleamPathDepsValid", () => {
 			root: testDir,
 			resolve: false,
 		});
-
-		expect(result).not.toBe(true);
-		if (typeof result === "object" && "error" in result) {
-			expect(result.error).toContain("does not exist");
+		expect(result).not.toEqual([]);
+		if (typeof result === "object" && result.length > 0) {
+			expect(result.map((finding) => finding.message).join("; ")).toContain(
+				"does not exist",
+			);
 		}
 	});
 
@@ -67,10 +67,11 @@ describe("GleamPathDepsValid", () => {
 			root: testDir,
 			resolve: false,
 		});
-
-		expect(result).not.toBe(true);
-		if (typeof result === "object" && "error" in result) {
-			expect(result.error).toContain("has no gleam.toml");
+		expect(result).not.toEqual([]);
+		if (typeof result === "object" && result.length > 0) {
+			expect(result.map((finding) => finding.message).join("; ")).toContain(
+				"has no gleam.toml",
+			);
 		}
 	});
 
@@ -85,8 +86,7 @@ describe("GleamPathDepsValid", () => {
 			root: testDir,
 			resolve: false,
 		});
-
-		expect(result).toBe(true);
+		expect(result).toEqual([]);
 	});
 
 	it("should validate path deps in dev-dependencies", async () => {
@@ -100,11 +100,14 @@ describe("GleamPathDepsValid", () => {
 			root: testDir,
 			resolve: false,
 		});
-
-		expect(result).not.toBe(true);
-		if (typeof result === "object" && "error" in result) {
-			expect(result.error).toContain("dev-dependencies");
-			expect(result.error).toContain("does not exist");
+		expect(result).not.toEqual([]);
+		if (typeof result === "object" && result.length > 0) {
+			expect(result.map((finding) => finding.message).join("; ")).toContain(
+				"dev-dependencies",
+			);
+			expect(result.map((finding) => finding.message).join("; ")).toContain(
+				"does not exist",
+			);
 		}
 	});
 });
