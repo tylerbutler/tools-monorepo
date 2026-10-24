@@ -36,6 +36,8 @@ This is a TypeScript monorepo containing personal tools and CLI utilities, manag
 
 **Note on Task Naming**: Root scripts use user-friendly names (`pnpm build`, `pnpm test`) which run Nx targets across packages (e.g., `nx run-many -t build`). Individual packages define implementation tasks like `build:compile`, `build:api`, etc. See Architecture Patterns section for details.
 
+Root Nx targets for `build`, `test`, and `ci` use `nx:noop` and inherit dependencies from `nx.json`. Do not make these targets invoke `nx run-many` for the same target: it selects the root project again and causes recursive task invocations. Keep workspace-wide commands in the root package scripts.
+
 ### Root-Level Development
 
 ```bash
