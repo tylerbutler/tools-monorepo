@@ -11,7 +11,7 @@ import type {
 } from "mdast";
 import { toString as mdastToString } from "mdast-util-to-string";
 import micromatch from "micromatch";
-import { dirname, join } from "pathe";
+import { dirname, join, resolve } from "pathe";
 import resolveWorkspacePkg from "resolve-workspace-root";
 import { globSync } from "tinyglobby";
 import type { Plugin } from "unified";
@@ -452,7 +452,7 @@ export const remarkWorkspacePackages: Plugin<
 			return;
 		}
 
-		const dir = dirname(filePath);
+		const dir = dirname(resolve(filePath));
 		const workspaceRoot = workspaceRootOption
 			? join(dir, workspaceRootOption)
 			: resolveWorkspaceRoot(dir);

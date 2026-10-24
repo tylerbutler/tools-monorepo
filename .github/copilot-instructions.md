@@ -1,72 +1,90 @@
 # Copilot Instructions for tools-monorepo
 
-## Overview
-**pnpm workspace monorepo** with TypeScript, Nx build system, Biome linting/formatting, and Vitest testing. Contains 13 workspace packages including CLI tools (@tylerbu/cli, dill-cli, repopo, sort-tsconfig) and libraries.
+pnpm workspace monorepo with TypeScript, Nx build orchestration, Biome formatting/linting, and Vitest testing. Contains CLI tools (OCLIF-based) and libraries in `packages/`.
 
-**Tech Stack:** pnpm 10.10.0 (via corepack) | Node 20+ | Nx 21+ | Biome 2.0.4 | Vitest 3.2+ | TypeScript 5.5
-
-## Setup & Build (CRITICAL)
+## Commands
 
 ```bash
-# 1. ALWAYS enable corepack first (REQUIRED before pnpm works)
-corepack enable
+# Setup
+corepack enable                          # REQUIRED before pnpm works
+pnpm install --ignore-scripts            # --ignore-scripts avoids slow native deps (re2, sharp)
 
-# 2. Install dependencies (use --ignore-scripts for speed, native deps like re2 are slow)
-pnpm install --ignore-scripts
+# Build & test
+pnpm build                               # Build all packages (Nx-cached)
+pnpm test                                # Test all packages
+pnpm nx run <pkg>:<task>                 # Target one package: pnpm nx run cli:build
+pnpm nx affected -t build               # Build only packages affected by your changes
+pnpm nx affected -t test                # Test only affected packages
 
-# 3. Build all packages (uses Nx cache, ~200ms when cached, ~20-30s clean)
-pnpm run build
+# Run a single test file or pattern
+pnpm vitest <pattern>                    # e.g. pnpm vitest sort-tsconfig
 
-# 4. Run checks before committing
-pnpm run ci:check    # format, deps, policies, lint
-pnpm run test        # run tests (@tylerbu/xkcd2-api has pre-existing failures - ignore)
+# Format, lint, policy
+pnpm format                              # Auto-fix formatting (Biome)
+pnpm lint:fix                            # Auto-fix lint issues (Biome)
+pnpm run fix:policy                      # Auto-fix repo policy violations (repopo)
+
+# Pre-commit validation
+pnpm run ci:check                        # format + deps + policies + lint
+pnpm run ci                              # full CI pipeline (check, build, lint, test)
 ```
 
-## Common Commands
+## Architecture
 
-**Build:** `pnpm run build` (cached) | `pnpm run clean && pnpm run build` (clean) | `pnpm run ci:build` (with generation)
-**Test:** `pnpm run test` | `pnpm run test:coverage` | `pnpm run ci:test`
-**Format:** `pnpm format` (fix) | `pnpm run check:format` (check)
-**Lint:** `pnpm lint` | `pnpm run lint:fix`
-**Policy:** `pnpm run check:policy` | `pnpm run fix:policy`
-**Full CI:** `pnpm run ci` (runs ci:check, ci:build, ci:lint, ci:test)
+### Two-Tier Task System
 
-## Project Layout
+Nx uses **orchestration targets** (e.g. `build`, `test`, `ci`) defined in `nx.json` that coordinate **implementation tasks** (e.g. `build:compile`, `test:vitest`) defined in each package's `package.json` scripts. Orchestration targets have no implementation themselves — they only declare `dependsOn` relationships.
 
-**Root:** pnpm-workspace.yaml (workspace def) | nx.json (build config) | biome.jsonc (lint/format) | repopo.config.ts (policies) | syncpack.config.cjs (dep sync)
+**Package-type build pipelines:**
+- **Libraries:** `build:compile` → `build:api` → `build:docs`
+- **CLI tools:** `build:compile` → `build:manifest` → `build:readme`
+- **Doc sites (Astro):** `build:site`
 
-**Packages (packages/*):**
-- CLI: @tylerbu/cli, dill-cli, repopo, sort-tsconfig
-- Libs: @tylerbu/cli-api, fundamentals, xkcd2-api, lilconfig-loader-ts, levee-client
-- Docs (Astro): dill-docs, repopo-docs
-- Config: config/ (shared tsconfig, biome configs)
+All orchestration config lives in root `nx.json` — there are no package-level `project.json` files.
 
-**Build Outputs:** esm/ (compiled TS), dist/ (Astro), oclif.manifest.json (CLI), _temp/ (gitignored)
+### OCLIF CLI Packages
 
-## CI Pipeline (.github/workflows/pr-build.yml)
-Order: `pnpm install --frozen-lockfile` → `ci:check` (format/deps/policies/lint) → `ci:build` → `ci:check:typedoc` → `ci:lint` → `ci:test`. Workflow uses `continue-on-error` and fails at end if any step failed. Run `pnpm run ci` locally to mirror CI.
+CLI packages (`cli`, `dill-cli`, `repopo`, `sort-tsconfig`) use OCLIF:
+- Commands live in `src/commands/`, compiled to `esm/commands/`
+- `bin/dev.js` — development mode (runs from TypeScript source)
+- `bin/run.js` — production mode (runs from compiled output)
+- `oclif.manifest.json` and README are auto-generated during build
 
-**Package Scripts:** Most use `compile` (tsc), `check:format` (biome), `format`, `lint`, `clean` (rimraf), `test` (vitest). Oclif packages add `manifest`, `readme`, `generate`.
+### Testing
 
-## Key Conventions
+Vitest with shared base config (`config/vitest.config.ts`). Test files: `test/**/*.test.ts`.
 
-**Workspace Deps:** Use `workspace:^` for internal dependencies
-**Package.json:** Policies enforce license: "MIT", author, bugs URL, repository with directory field
-**TypeScript:** All `.ts` files (no `.js` except bin/), type: "module"
-**Biome:** Extends `@tylerbu/local-config/biome/*`, ignores _temp/, .coverage/, dist/, esm/
+### Key Configuration Files
+
+| File | Purpose |
+|------|---------|
+| `nx.json` | Task orchestration, caching, dependency chains |
+| `biome.jsonc` | Formatting and linting rules |
+| `repopo.config.ts` | Repository policy enforcement |
+| `syncpack.config.cjs` | Dependency version synchronization |
+| `config/tsconfig*.json` | Shared TypeScript base configs |
+
+## Conventions
+
+- **pnpm only** — never use npm or yarn. Version enforced via `packageManager` field.
+- **Tabs for indentation** — not spaces.
+- **No `.js` files** — use `.mjs` or `.cjs` for JavaScript. Enforced by repopo `NoJsFileExtensions` policy.
+- **Use `pathe`** instead of `node:path` for cross-platform path operations.
+- **Async file I/O** — prefer `fs/promises` (e.g. `readFile`) over sync variants.
+- **No barrel re-exports** — import from the source module directly, not through index files.
+- **`workspace:^`** for all internal workspace dependencies.
+- **Sorted configs** — `package.json` and `tsconfig.json` files must be sorted (enforced by repopo).
+- **`type: "module"`** — all packages are ESM.
 
 ## Troubleshooting
 
-**pnpm not found:** Run `corepack enable` first
-**Native dep failures (re2, sharp):** Use `pnpm install --ignore-scripts` (faster, deps not required)
-**Stale Nx cache:** `pnpm nx reset && pnpm run build`
-**xkcd2-api test failures:** Pre-existing, ignore unless modifying that package
-**Format/lint errors:** `pnpm format && pnpm run lint:fix && pnpm run fix:policy`
-**Uncommitted files after build:** Some commands generate files (manifests, READMEs). Commit if expected.
+- **pnpm not found:** Run `corepack enable` first.
+- **Stale Nx cache:** `pnpm nx reset && pnpm build`
+- **Format/lint/policy errors:** `pnpm format && pnpm lint:fix && pnpm run fix:policy`
+- **xkcd2-api test failures:** Pre-existing — ignore unless modifying that package.
+- **Uncommitted files after build:** CLI manifests and READMEs are auto-generated. Commit them if expected.
 
-## Rules
+## Additional Context
 
-**DO:** (1) `corepack enable` before `pnpm install` (2) Use `pnpm install --ignore-scripts` (3) Run `pnpm run build` after changes (4) Run `pnpm run ci:check` before committing (5) Run `pnpm run test` (6) Trust these instructions
-**DON'T:** (1) Use npm (2) Manually edit pnpm-lock.yaml (3) Add deps without `workspace:^` (4) Skip CI validation (5) Fix unrelated xkcd2-api failures
-
-**For more info:** Check package README.md, .github/workflows/pr-build.yml, nx.json, or package.json scripts.
+- `CLAUDE.md` at root has comprehensive architecture documentation.
+- Many packages have their own `CLAUDE.md` with package-specific guidance — check `packages/<name>/CLAUDE.md`.

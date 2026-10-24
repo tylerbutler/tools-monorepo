@@ -7,7 +7,7 @@ import {
 	PackageFolderName,
 	type PackageFolderNameConfig,
 } from "../../src/policies/PackageFolderName.js";
-import type { PolicyFunctionArguments } from "../../src/policy.js";
+import type { PolicyArgs } from "../../src/policy.js";
 import { runHandler } from "../test-helpers.js";
 
 describe("PackageFolderName policy", () => {
@@ -32,7 +32,7 @@ describe("PackageFolderName policy", () => {
 	const createArgs = (
 		filePath: string,
 		config?: PackageFolderNameConfig,
-	): PolicyFunctionArguments<typeof config> => ({
+	): PolicyArgs<typeof config> => ({
 		file: filePath,
 		root: tempDir,
 		resolve: false,
@@ -51,7 +51,7 @@ describe("PackageFolderName policy", () => {
 				PackageFolderName.handler,
 				createArgs(filePath, undefined),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -67,7 +67,7 @@ describe("PackageFolderName policy", () => {
 				PackageFolderName.handler,
 				createArgs(filePath, {}),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should fail when folder name does not match package name", async () => {
@@ -81,12 +81,17 @@ describe("PackageFolderName policy", () => {
 				PackageFolderName.handler,
 				createArgs(filePath, {}),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("wrong-folder");
-				expect(result.errorMessages.join()).toContain("my-package");
-				expect(result.autoFixable).toBe(false);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"wrong-folder",
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"my-package",
+				);
+				expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+					false,
+				);
 			}
 		});
 	});
@@ -111,11 +116,14 @@ describe("PackageFolderName policy", () => {
 				PackageFolderName.handler,
 				createArgs(filePath, {}),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("my-package");
-				expect(result.errorMessages.join()).toContain("@myorg/my-package");
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"my-package",
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"@myorg/my-package",
+				);
 			}
 		});
 
@@ -130,11 +138,14 @@ describe("PackageFolderName policy", () => {
 				PackageFolderName.handler,
 				createArgs(filePath, {}),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("my-package");
-				expect(result.errorMessages.join()).toContain("@myorg/my-package");
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"my-package",
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"@myorg/my-package",
+				);
 			}
 		});
 	});
@@ -151,7 +162,7 @@ describe("PackageFolderName policy", () => {
 				PackageFolderName.handler,
 				createArgs(filePath, { stripScopes: ["@myorg"] }),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should fail when folder name does not match stripped name", async () => {
@@ -165,11 +176,14 @@ describe("PackageFolderName policy", () => {
 				PackageFolderName.handler,
 				createArgs(filePath, { stripScopes: ["@myorg"] }),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("wrong-folder");
-				expect(result.errorMessages.join()).toContain("my-package");
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"wrong-folder",
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"my-package",
+				);
 			}
 		});
 
@@ -187,7 +201,7 @@ describe("PackageFolderName policy", () => {
 			);
 
 			// Should fail because @other is not in stripScopes, so full name is expected
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 		});
 
 		it("should handle multiple scopes in stripScopes", async () => {
@@ -203,7 +217,7 @@ describe("PackageFolderName policy", () => {
 					stripScopes: ["@myorg", "@internal", "@tools"],
 				}),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should strip all scopes with @* glob pattern", async () => {
@@ -217,7 +231,7 @@ describe("PackageFolderName policy", () => {
 				PackageFolderName.handler,
 				createArgs(filePath, { stripScopes: ["@*"] }),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should strip scopes matching prefix glob pattern", async () => {
@@ -231,7 +245,7 @@ describe("PackageFolderName policy", () => {
 				PackageFolderName.handler,
 				createArgs(filePath, { stripScopes: ["@fluid*"] }),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should not strip scopes not matching glob pattern", async () => {
@@ -247,7 +261,7 @@ describe("PackageFolderName policy", () => {
 			);
 
 			// Should fail because @other doesn't match @fluid*
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 		});
 	});
 
@@ -263,7 +277,7 @@ describe("PackageFolderName policy", () => {
 				PackageFolderName.handler,
 				createArgs(filePath, { excludePackages: ["@myorg/special-case"] }),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should still validate non-excluded packages", async () => {
@@ -277,8 +291,7 @@ describe("PackageFolderName policy", () => {
 				PackageFolderName.handler,
 				createArgs(filePath, { excludePackages: ["@myorg/other-package"] }),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 		});
 	});
 
@@ -294,7 +307,7 @@ describe("PackageFolderName policy", () => {
 				PackageFolderName.handler,
 				createArgs(filePath, {}),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should skip packages without a name", async () => {
@@ -307,7 +320,7 @@ describe("PackageFolderName policy", () => {
 				PackageFolderName.handler,
 				createArgs(filePath, {}),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -327,10 +340,11 @@ describe("PackageFolderName policy", () => {
 				PackageFolderName.handler,
 				createArgs(filePath, {}),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.autoFixable).toBe(false);
+				expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+					false,
+				);
 			}
 		});
 	});

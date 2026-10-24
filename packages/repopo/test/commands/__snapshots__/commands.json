@@ -10,9 +10,35 @@
             "v"
         ],
         "flags": [
+            "concurrency",
             "config",
             "fix",
             "quiet",
+            "stdin",
+            "verbose"
+        ],
+        "plugin": "repopo"
+    },
+    {
+        "alias": [],
+        "command": "check-native",
+        "flagAliases": [
+            "resolve"
+        ],
+        "flagChars": [
+            "c",
+            "f",
+            "q",
+            "v"
+        ],
+        "flags": [
+            "binary-path",
+            "concurrency",
+            "config",
+            "fix",
+            "quiet",
+            "runtime",
+            "sidecar-path",
             "stdin",
             "verbose"
         ],

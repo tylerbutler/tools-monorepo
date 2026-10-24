@@ -21,15 +21,24 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
-    permissions: write-all
+    permissions:
+      actions: write # For repopo-core release workflow dispatch
+      contents: write # For changesets PR creation
+      pull-requests: write # For changesets PR updates
+      id-token: write # OIDC token for npm trusted publishing
+      attestations: write # For GitHub build attestations
 
     steps:
-      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # ratchet:actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # ratchet:actions/checkout@v7
         with:
           token: ${{ secrets.CHANGESET_TOKEN }}
           fetch-depth: 0
 
       - uses: ./.github/actions/setup-node-pnpm
+
+      - uses: tylerbutler/actions/setup-rust@ed7d5e5f1d4370a5ccf06503916e3c301102ab1c # ratchet:tylerbutler/actions/setup-rust@main
+        with:
+          tools: ''
 
       - uses: ./.github/actions/setup-nx
         with:
@@ -41,7 +50,7 @@ jobs:
       # the action that was actually taken.
       - name: Process changesets
         id: changesets
-        uses: changesets/action@e0145edc7d9d8679003495b11f87bd8ef63c0cba # ratchet:changesets/action@v1
+        uses: changesets/action@a45c4d594aa4e2c509dc14a9f2b3b67ba3780d0d # ratchet:changesets/action@v1
         with:
           version: pnpm ci:version
           title: "🚀 release: Update versions"
@@ -100,12 +109,43 @@ jobs:
       - name: Create table
         if: steps.publish.outputs.report != null && steps.publish.outputs.report != '[]'
         id: create-table
-        uses: parkerbxyz/json-to-markdown-table@564b4821b8128f1cd7a0eb6b5616680a818719ab # ratchet:parkerbxyz/json-to-markdown-table@v1
+        uses: parkerbxyz/json-to-markdown-table@85a9c13bbd4d87113503b5802fb3d7cbacb5f43f # ratchet:parkerbxyz/json-to-markdown-table@v1
         with:
           json: '${{ steps.publish.outputs.report }}'
+
+      # Generate GitHub-native attestations for published packages (public npm only)
+      # This creates SLSA-compliant build provenance verifiable via `gh attestation verify`
+      - name: Generate build attestations
+        if: |
+          steps.publish.outputs.report != null &&
+          steps.publish.outputs.report != '[]' &&
+          github.event.inputs.publish_public != 'false'
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # ratchet:actions/attest-build-provenance@v4
+        with:
+          subject-path: |
+            packages/*/esm/**/*.js
+            packages/*/esm/**/*.mjs
 
       - name: No packages published
         if: steps.publish.outputs.report == '[]'
         run: |
           echo "### No packages to publish" >> $GITHUB_STEP_SUMMARY
           echo "There were no packages to publish." >> $GITHUB_STEP_SUMMARY
+
+      - name: Trigger repopo-core binary release
+        if: steps.publish.outputs.report != '[]' && steps.publish.outputs.report != null
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # ratchet:actions/github-script@v9
+        with:
+          script: |
+            const packages = JSON.parse('${{ steps.publish.outputs.report }}');
+            const repopo = packages.find(p => p.name === 'repopo');
+            if (repopo) {
+              await github.rest.actions.createWorkflowDispatch({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                workflow_id: 'repopo-core-release.yml',
+                ref: 'main',
+                inputs: { version: repopo.version },
+              });
+              console.log(`Triggered repopo-core binary release for v${repopo.version}`);
+            }

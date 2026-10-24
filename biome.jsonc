@@ -102,6 +102,42 @@
 			},
 		},
 		{
+			// Astro component package entry points re-export .astro files directly.
+			// Biome's useImportExtensions rule doesn't recognise .astro as a valid
+			// extension and suggests rewriting to .js, which breaks the imports.
+			"includes": ["packages/astro-tinylytics/**"],
+			"linter": {
+				"rules": {
+					"correctness": {
+						"useImportExtensions": "off",
+					},
+				},
+			},
+		},
+		{
+			// Astro files - biome can parse the frontmatter but not the template
+			// below it, so it treats any variable referenced only in the template
+			// as unused. Disable the affected correctness rules for .astro.
+			// Also disable formatter and assist: biome's partial .astro support
+			// mangles the frontmatter (e.g. inserts blank line after ---).
+			"includes": ["**/*.astro"],
+			"formatter": {
+				"enabled": false,
+			},
+			"assist": {
+				"enabled": false,
+			},
+			"linter": {
+				"rules": {
+					"correctness": {
+						"noUnusedVariables": "off",
+						"noUnusedImports": "off",
+						"noUndeclaredVariables": "off",
+					},
+				},
+			},
+		},
+		{
 			// Svelte files - official Biome recommended configuration for partial support
 			// https://biomejs.dev/internals/language-support/
 			"includes": ["**/*.svelte"],
@@ -216,6 +252,7 @@
 			// Package entry points and UI component barrels (shadcn-svelte patterns)
 			"includes": [
 				"**/src/index.ts",
+				"packages/repopo/src/api.ts",
 				"**/components/ui/**/index.ts",
 				"**/lib/index.ts",
 			],
@@ -253,6 +290,18 @@
 						"useTopLevelRegex": "off",
 					},
 					"nursery": {},
+				},
+			},
+		},
+		{
+			// Auto-generated TypeScript files from JSON schemas
+			"includes": ["**/generated/**/*.ts"],
+			"linter": {
+				"rules": {
+					"nursery": {
+						// json2ts generates nested index signatures that shadow variable names
+						"noShadow": "off",
+					},
 				},
 			},
 		},

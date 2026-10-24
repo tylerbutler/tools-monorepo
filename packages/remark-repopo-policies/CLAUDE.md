@@ -23,7 +23,7 @@ Remark plugin that generates documentation tables for repopo repository policies
 interface PolicyInfo {
   name: string;              // Policy name from PolicyDefinition
   description: string;       // From policy or user-edited
-  hasAutoFix: boolean;       // true if resolver is defined
+  hasAutoFix: boolean;       // true if a standalone resolver is defined
   filePattern: string;       // RegExp.source from match
   filePatternReadable: string; // Human-readable pattern description
   configSummary?: string;    // Brief config summary (keys only)
@@ -31,6 +31,14 @@ interface PolicyInfo {
   excludedFiles: string[];   // Patterns excluded from policy
 }
 ```
+
+`RepopoConfig.policies` contains `ConfiguredPolicy` objects produced by
+`makePolicy(definition, { config, exclude, instanceId })`. Read canonical
+definition metadata directly; there are no public normalized handlers or
+exclusion maps. Repository definitions have no `match`; the current generator
+uses its wildcard fallback for those definitions. Inline fixes cannot be
+inferred solely from resolver presence.
+Per-instance exclusions are `exclude`; `RepopoConfig.excludeFiles` stays global.
 
 ### Options
 

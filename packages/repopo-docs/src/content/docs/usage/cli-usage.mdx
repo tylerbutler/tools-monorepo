@@ -1,9 +1,70 @@
 ---
 title: Using repopo as a command-line tool
+description: Check and fix files with the repopo CLI.
 sidebar:
+  label: CLI usage
   order: 1
 ---
 
-import { Badge } from '@astrojs/starlight/components';
+After you [install repopo](/installation/) and [create a configuration](/usage/config/), run it from the repository root.
 
-To use repopo, [install it](/installation) then run `repopo check` to check files.
+## Check files
+
+```sh
+repopo check
+```
+
+`check` runs every configured policy against the files in the repository and reports violations. It exits with a non-zero status when any policy fails, so it can run in CI or a Git hook.
+
+Many violations can be fixed automatically:
+
+```sh
+repopo check --fix
+```
+
+Failures that can't be fixed automatically print the policy's guidance for a manual fix.
+
+## Check selected files
+
+Use `--stdin` to check only the files whose paths you pipe in, for example only the changed files:
+
+```sh
+git diff --name-only main | repopo check --stdin
+```
+
+Only file policies are limited to the piped paths. Repository policies still run with the full repository file inventory, including when stdin is empty. With `--fix`, a repository policy can change files outside the piped selection.
+
+## Concurrency
+
+Read-only checks process up to 8 files at a time. Change the limit with `--concurrency`:
+
+```sh
+repopo check --concurrency 16
+```
+
+Use `--concurrency 1` if a custom policy needs files processed one at a time. With `--fix`, files are always processed one at a time.
+
+## List policies
+
+```sh
+repopo list
+```
+
+Prints the policies that `check` would run.
+
+## The native engine
+
+`check-native` runs the same policies as `check` with a Rust engine. Rust handles file enumeration, regex matching, and orchestration, and a Node.js or Bun sidecar process runs the policy handlers.
+
+```sh
+repopo check-native
+repopo check-native --runtime bun
+```
+
+It accepts `--fix`, `--stdin`, and `--concurrency`, and adds:
+
+- `--config` to use a configuration file at another path.
+- `--runtime` (`auto`, `node`, or `bun`) to choose the sidecar runtime.
+- `--binary-path` and `--sidecar-path` to override the engine binary and sidecar script.
+
+See the [CLI reference](/cli-reference/) for every command and flag.

@@ -1,12 +1,10 @@
 import { statSync } from "node:fs";
 import path from "pathe";
-import { makePolicyDefinition } from "../makePolicy.js";
-import type { PolicyDefinition, PolicyFailure } from "../policy.js";
-
+import type { FilePolicyDefinition, PolicyFinding } from "../policy.js";
 /**
  * Policy settings for the NoLargeBinaryFiles repo policy.
  *
- * @alpha
+ * @public
  */
 export interface NoLargeBinaryFilesSettings {
 	/**
@@ -120,52 +118,44 @@ function formatBytes(bytes: number): string {
  * A repo policy that prevents large binary files from being committed to the repository.
  * Large files can bloat the repository and slow down clones. Consider using Git LFS for large assets.
  *
- * @alpha
+ * @public
  */
-export const NoLargeBinaryFiles: PolicyDefinition<NoLargeBinaryFilesSettings> =
-	makePolicyDefinition({
-		name: "NoLargeBinaryFiles",
-		description:
-			"Prevents large binary files from being committed to avoid repository bloat; consider using Git LFS for large assets.",
-		// Match all files
-		match: /.*/,
-		handler: async ({ file, root, config }) => {
-			const maxSizeBytes = config?.maxSizeBytes ?? DEFAULT_MAX_SIZE;
-			const excludeExtensions =
-				config?.excludeExtensions ?? DEFAULT_EXCLUDE_EXTENSIONS;
-			const excludePatterns = config?.excludePatterns ?? [];
+export const NoLargeBinaryFiles = {
+	name: "NoLargeBinaryFiles",
+	description:
+		"Prevents large binary files from being committed to avoid repository bloat; consider using Git LFS for large assets.",
+	// Match all files
+	match: /.*/,
+	handler: async ({ file, root, config }) => {
+		const maxSizeBytes = config?.maxSizeBytes ?? DEFAULT_MAX_SIZE;
+		const excludeExtensions =
+			config?.excludeExtensions ?? DEFAULT_EXCLUDE_EXTENSIONS;
+		const excludePatterns = config?.excludePatterns ?? [];
 
-			// Skip excluded files
-			if (isExcluded(file, excludePatterns, excludeExtensions)) {
-				return true;
+		// Skip excluded files
+		if (isExcluded(file, excludePatterns, excludeExtensions)) {
+			return [];
+		}
+
+		try {
+			const filePath = path.resolve(root, file);
+			const stats = statSync(filePath);
+
+			// Skip directories
+			if (stats.isDirectory()) {
+				return [];
 			}
 
-			try {
-				const filePath = path.resolve(root, file);
-				const stats = statSync(filePath);
-
-				// Skip directories
-				if (stats.isDirectory()) {
-					return true;
-				}
-
-				if (stats.size > maxSizeBytes) {
-					const result: PolicyFailure = {
-						name: NoLargeBinaryFiles.name,
-						file,
-						autoFixable: false,
-						errorMessages: [
-							`File is too large: ${formatBytes(stats.size)} (max: ${formatBytes(maxSizeBytes)}). Consider using Git LFS or removing the file.`,
-						],
-					};
-
-					return result;
-				}
-
-				return true;
-			} catch (_error: unknown) {
-				// File doesn't exist or can't be accessed, skip it
-				return true;
+			if (stats.size > maxSizeBytes) {
+				const result: PolicyFinding[] = [
+					`File is too large: ${formatBytes(stats.size)} (max: ${formatBytes(maxSizeBytes)}). Consider using Git LFS or removing the file.`,
+				].map((message) => ({ message }));
+				return result;
 			}
-		},
-	});
+			return [];
+		} catch (_error: unknown) {
+			// File doesn't exist or can't be accessed, skip it
+			return [];
+		}
+	},
+} satisfies FilePolicyDefinition<NoLargeBinaryFilesSettings>;

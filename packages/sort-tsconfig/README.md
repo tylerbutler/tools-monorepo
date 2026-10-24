@@ -25,7 +25,7 @@ Sorts a tsconfig file in place or checks that one is sorted.
 
 ```
 USAGE
-  $ sort-tsconfig  TSCONFIG [-v | --quiet] [-w] [--config <value>]
+  $ sort-tsconfig  TSCONFIG [-v | --quiet] [-w] [-c <value>]
 
 ARGUMENTS
   TSCONFIG  A path to the tsconfig file to sort, or a glob pattern to select multiple tsconfigs. The node_modules folder
@@ -35,12 +35,12 @@ FLAGS
   -w, --write  Write the sorted contents back to the file. Without this flag, the command only checks that the file is
                sorted.
 
+CONFIGURATION FLAGS
+  -c, --config=<value>  Path to configuration file.
+
 LOGGING FLAGS
   -v, --verbose  Enable verbose logging.
       --quiet    Disable all logging.
-
-CONFIGURATION FLAGS
-  --config=<value>  The path to a configuration file.
 
 DESCRIPTION
   Sorts a tsconfig file in place or checks that one is sorted.
@@ -74,6 +74,20 @@ See [sort-tsconfig.api.md][API].
 # Repopo Policy
 
 sort-tsconfig provides a policy for use with [repopo][].
+
+```ts
+import { makePolicy, type RepopoConfig } from "repopo/api";
+import { SortTsconfigsPolicy } from "sort-tsconfig";
+
+export default {
+	policies: [makePolicy(SortTsconfigsPolicy, { exclude: ["^vendor/"] })],
+} satisfies RepopoConfig;
+```
+
+`SortTsconfigsPolicy` is a `FilePolicyDefinition` and returns finding arrays.
+An empty array passes. Unsorted files have `fixStatus: "available"`; successful
+fixes have `"fixed"`. This exported policy contract is an intentional pre-1.0
+breaking change. See [the Repopo migration guide](https://repopo.tylerbutler.com/usage/migration/).
 
 [API]: ./api-docs/sort-tsconfig.api.md
 [repopo]:

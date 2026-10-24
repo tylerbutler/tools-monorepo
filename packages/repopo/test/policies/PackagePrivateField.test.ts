@@ -1,13 +1,13 @@
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "pathe";
+import { join, relative } from "pathe";
 import type { PackageJson } from "type-fest";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
 	PackagePrivateField,
 	type PackagePrivateFieldConfig,
 } from "../../src/policies/PackagePrivateField.js";
-import type { PolicyFunctionArguments } from "../../src/policy.js";
+import type { PolicyArgs } from "../../src/policy.js";
 import { runHandler } from "../test-helpers.js";
 
 describe("PackagePrivateField policy", () => {
@@ -30,8 +30,8 @@ describe("PackagePrivateField policy", () => {
 	const createArgs = (
 		filePath: string,
 		config?: PackagePrivateFieldConfig,
-	): PolicyFunctionArguments<typeof config> => ({
-		file: filePath,
+	): PolicyArgs<typeof config> => ({
+		file: relative(tempDir, filePath),
 		root: tempDir,
 		resolve: false,
 		config,
@@ -49,7 +49,7 @@ describe("PackagePrivateField policy", () => {
 				PackagePrivateField.handler,
 				createArgs(filePath, undefined),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -65,7 +65,7 @@ describe("PackagePrivateField policy", () => {
 				PackagePrivateField.handler,
 				createArgs(filePath, { mustPublish: ["@myorg/*"] }),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should pass when package in mustPublish scope has private: false", async () => {
@@ -80,7 +80,7 @@ describe("PackagePrivateField policy", () => {
 				PackagePrivateField.handler,
 				createArgs(filePath, { mustPublish: ["@myorg/*"] }),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should fail when package in mustPublish scope has private: true", async () => {
@@ -95,13 +95,14 @@ describe("PackagePrivateField policy", () => {
 				PackagePrivateField.handler,
 				createArgs(filePath, { mustPublish: ["@myorg/*"] }),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain(
+				expect(result.map((finding) => finding.message).join()).toContain(
 					"must not be marked private",
 				);
-				expect(result.autoFixable).toBe(true);
+				expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+					true,
+				);
 			}
 		});
 
@@ -117,10 +118,9 @@ describe("PackagePrivateField policy", () => {
 				PackagePrivateField.handler,
 				createArgs(filePath, { mustPublish: ["my-special-package"] }),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain(
+				expect(result.map((finding) => finding.message).join()).toContain(
 					"must not be marked private",
 				);
 			}
@@ -140,7 +140,7 @@ describe("PackagePrivateField policy", () => {
 				PackagePrivateField.handler,
 				createArgs(filePath, { mustBePrivate: ["@internal/*"] }),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should fail when package in mustBePrivate scope is not private", async () => {
@@ -154,11 +154,14 @@ describe("PackagePrivateField policy", () => {
 				PackagePrivateField.handler,
 				createArgs(filePath, { mustBePrivate: ["@internal/*"] }),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("must be marked private");
-				expect(result.autoFixable).toBe(true);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"must be marked private",
+				);
+				expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+					true,
+				);
 			}
 		});
 
@@ -174,8 +177,7 @@ describe("PackagePrivateField policy", () => {
 				PackagePrivateField.handler,
 				createArgs(filePath, { mustBePrivate: ["@internal/*"] }),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 		});
 	});
 
@@ -192,7 +194,7 @@ describe("PackagePrivateField policy", () => {
 				PackagePrivateField.handler,
 				createArgs(filePath, { mayPublish: ["@experimental/*"] }),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should pass when package in mayPublish scope is not private", async () => {
@@ -206,7 +208,7 @@ describe("PackagePrivateField policy", () => {
 				PackagePrivateField.handler,
 				createArgs(filePath, { mayPublish: ["@experimental/*"] }),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -225,10 +227,11 @@ describe("PackagePrivateField policy", () => {
 					// unmatchedPackages defaults to "private"
 				}),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("must be marked private");
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"must be marked private",
+				);
 			}
 		});
 
@@ -247,10 +250,9 @@ describe("PackagePrivateField policy", () => {
 					unmatchedPackages: "public",
 				}),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain(
+				expect(result.map((finding) => finding.message).join()).toContain(
 					"must not be marked private",
 				);
 			}
@@ -271,8 +273,7 @@ describe("PackagePrivateField policy", () => {
 					unmatchedPackages: "ignore",
 				}),
 			);
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -295,9 +296,9 @@ describe("PackagePrivateField policy", () => {
 			);
 
 			// mustPublish is checked first, so package should not be private
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain(
+				expect(result.map((finding) => finding.message).join()).toContain(
 					"must not be marked private",
 				);
 			}
@@ -319,9 +320,11 @@ describe("PackagePrivateField policy", () => {
 			);
 
 			// mustBePrivate is checked before mayPublish
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("must be marked private");
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"must be marked private",
+				);
 			}
 		});
 	});
@@ -340,8 +343,7 @@ describe("PackagePrivateField policy", () => {
 					mustBePrivate: ["root"],
 				}),
 			);
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should skip packages without a name", async () => {
@@ -356,8 +358,7 @@ describe("PackagePrivateField policy", () => {
 					mustBePrivate: ["@internal/*"],
 				}),
 			);
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -377,8 +378,7 @@ describe("PackagePrivateField policy", () => {
 				PackagePrivateField.handler,
 				createArgs(publicPath, config),
 			);
-			expect(result).toBe(true);
-
+			expect(result).toEqual([]);
 			// Private package with private: true - should pass
 			const privateJson: PackageJson = {
 				name: "@private/pkg",
@@ -390,8 +390,7 @@ describe("PackagePrivateField policy", () => {
 				PackagePrivateField.handler,
 				createArgs(privatePath, config),
 			);
-			expect(result).toBe(true);
-
+			expect(result).toEqual([]);
 			// Experimental package (either state ok) - should pass
 			const expJson: PackageJson = {
 				name: "@experimental/pkg",
@@ -402,8 +401,7 @@ describe("PackagePrivateField policy", () => {
 				PackagePrivateField.handler,
 				createArgs(expPath, config),
 			);
-			expect(result).toBe(true);
-
+			expect(result).toEqual([]);
 			// Unknown package without private: true - should fail (default is private)
 			const unknownJson: PackageJson = {
 				name: "@unknown/pkg",
@@ -414,7 +412,7 @@ describe("PackagePrivateField policy", () => {
 				PackagePrivateField.handler,
 				createArgs(unknownPath, config),
 			);
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 		});
 	});
 
@@ -430,10 +428,12 @@ describe("PackagePrivateField policy", () => {
 				...createArgs(filePath, { mustBePrivate: ["@internal/*"] }),
 				resolve: true,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "resolved" in result) {
-				expect(result.resolved).toBe(true);
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toBe(true);
 			}
 
 			// Verify the file was updated
@@ -453,10 +453,12 @@ describe("PackagePrivateField policy", () => {
 				...createArgs(filePath, { mustPublish: ["@public/*"] }),
 				resolve: true,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "resolved" in result) {
-				expect(result.resolved).toBe(true);
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toBe(true);
 			}
 
 			// Verify the file was updated

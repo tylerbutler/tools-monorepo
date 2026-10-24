@@ -9,8 +9,9 @@
 ```ts
 function loadBuildProject<P>(
    searchPath, 
-   infer, 
-upstreamRemotePartialUrl?): IBuildProject<P>;
+   infer?, 
+   upstreamRemotePartialUrl?
+): IBuildProject<P>;
 ```
 
 Defined in: [packages/sail-infrastructure/src/buildProject.ts:325](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/buildProject.ts#L325)
@@ -33,7 +34,7 @@ The type to use for Packages.
 
 The path to start searching for a BuildProject config.
 
-### infer
+### infer?
 
 `boolean` = `false`
 

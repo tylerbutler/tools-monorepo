@@ -1,0 +1,18 @@
+---
+/**
+ * Tinylytics hit counter widget. Requires the script to be loaded with
+ * `hits` (or `hits="unique"`).
+ *
+ * @see https://tinylytics.app/docs/show_hit_counter
+ */
+import type { WidgetProps } from "./types.ts";
+
+export type Props = WidgetProps;
+
+const { as: Tag = "span", class: className, ignore = false } = Astro.props;
+---
+
+<Tag
+  class:list={["tinylytics_hits", className]}
+  data-ignore={ignore ? "true" : undefined}
+><slot /></Tag>

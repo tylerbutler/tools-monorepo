@@ -29,10 +29,7 @@ export {
 	syncAllPackages,
 	type UpdateVersionRangeOptions,
 } from "./dependency-sync.js";
-export {
-	ConfigFileFlag,
-	RegExpFlag,
-} from "./flags.js";
+export { ConfigFlag, ConfigFlagHidden, RegExpFlag } from "./flags.js";
 export type { CommitMergeability, Repository } from "./git.js";
 export {
 	checkConflicts,

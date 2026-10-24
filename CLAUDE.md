@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Git Workflow
+
+**Never push directly to main.** Always create a branch, commit there, and open a PR — even for small fixes. Only push to main if explicitly instructed.
+
 ## Quick Commands (for Claude)
 
 **Before making changes:**
@@ -371,7 +375,7 @@ This monorepo uses a two-tier task architecture:
 - `check:format`, `check:types`, `check:deps`, `check:policy` - Quality checks
 
 **Plugin-Inferred Tasks** (auto-detected by Nx plugins):
-- `test:vitest` - Auto-inferred from vitest.config.ts (via @nx/vite plugin)
+- `test:vitest` - Auto-inferred from vitest.config.ts (via @nx/vitest)
 
 **Package-Specific Pipelines:**
 - **Libraries**: build:compile → build:api → build:docs
@@ -412,7 +416,13 @@ All packages extend base tsconfig files from `config/`:
 Nx uses plugins to automatically infer tasks from configuration files, reducing manual configuration:
 
 **Active Plugins:**
-- `@nx/vite/plugin` - Auto-infers test tasks from `vitest.config.ts` files
+- `@nx/js/typescript` - Auto-infers TypeScript type-check tasks for package-root configs only, not test fixtures
+- `@nx/vite/plugin` - Auto-infers Vite build and serve tasks
+- `@nx/vitest` - Auto-infers test tasks from `vitest.config.ts` files
+
+Keep `nx` and the `@nx/*` packages on the same version when upgrading. Nx 24
+separates Vitest task inference from the Vite plugin. The `affected.legacy` setting
+preserves project-level affected selection.
 
 **Plugin Exclusions** (projects with non-standard configurations):
 - `packages/ccl-test-viewer/**` - Svelte app with custom Vite setup
@@ -488,7 +498,7 @@ pnpm test:coverage
 - Peer dependencies configured in root package.json
 
 **Key Constraints:**
-- Node >= 18.0.0
+- Node >= 22.13.0
 - TypeScript ~5.5.4 (pinned minor version)
 - Biome 2.0.4 (shared across all packages)
 

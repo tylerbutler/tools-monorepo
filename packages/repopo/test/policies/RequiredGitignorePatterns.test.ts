@@ -67,8 +67,7 @@ Thumbs.db
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -89,12 +88,13 @@ node_modules/
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.name).toBe("RequiredGitignorePatterns");
-				expect(result.autoFixable).toBe(true);
-				expect(result.errorMessages.join()).toContain(
+				expect(result.every((finding) => !("name" in finding))).toBe(true);
+				expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+					true,
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
 					"Missing required .gitignore patterns",
 				);
 			}
@@ -106,10 +106,12 @@ node_modules/
 				root: testDir,
 				resolve: true,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "resolved" in result) {
-				expect(result.resolved).toBe(true);
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toBe(true);
 			}
 
 			// Check that patterns were added
@@ -131,12 +133,13 @@ node_modules/
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.name).toBe("RequiredGitignorePatterns");
-				expect(result.autoFixable).toBe(true);
-				expect(result.errorMessages.join()).toContain(
+				expect(result.every((finding) => !("name" in finding))).toBe(true);
+				expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+					true,
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
 					"No .gitignore file found",
 				);
 			}
@@ -148,10 +151,12 @@ node_modules/
 				root: testDir,
 				resolve: true,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "resolved" in result) {
-				expect(result.resolved).toBe(true);
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toBe(true);
 			}
 
 			// Check that file was created with all patterns
@@ -181,11 +186,14 @@ node_modules/
 				resolve: false,
 				config: customConfig,
 			});
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("custom-pattern/");
-				expect(result.errorMessages.join()).toContain("*.log");
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"custom-pattern/",
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"*.log",
+				);
 			}
 		});
 
@@ -205,9 +213,11 @@ node_modules/
 				resolve: true,
 				config: customConfig,
 			});
-
-			if (typeof result === "object" && "resolved" in result) {
-				expect(result.resolved).toBe(true);
+			if (typeof result === "object" && result.length > 0) {
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toBe(true);
 			}
 
 			const fs = await import("node:fs");
@@ -238,8 +248,7 @@ build/
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should handle .gitignore without final newline", async () => {
@@ -250,9 +259,11 @@ build/
 				root: testDir,
 				resolve: true,
 			});
-
-			if (typeof result === "object" && "resolved" in result) {
-				expect(result.resolved).toBe(true);
+			if (typeof result === "object" && result.length > 0) {
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toBe(true);
 			}
 
 			const fs = await import("node:fs");

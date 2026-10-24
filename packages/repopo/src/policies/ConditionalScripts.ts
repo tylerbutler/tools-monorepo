@@ -1,4 +1,5 @@
 import jsonfile from "jsonfile";
+import { resolve as resolvePath } from "pathe";
 import type { PackageJson } from "type-fest";
 import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
 
@@ -16,14 +17,14 @@ import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
  * { clean: "rimraf dist" }
  * ```
  *
- * @alpha
+ * @public
  */
 export type ConditionalScriptEntry = string | Record<string, string>;
 
 /**
  * Configuration for a conditional script requirement.
  *
- * @alpha
+ * @public
  */
 export interface ConditionalScriptRule {
 	/**
@@ -52,7 +53,7 @@ export interface ConditionalScriptRule {
 /**
  * Configuration for the ConditionalScripts policy.
  *
- * @alpha
+ * @public
  */
 export interface ConditionalScriptsConfig {
 	/**
@@ -106,7 +107,10 @@ interface RuleViolation {
 
 interface ValidationResult {
 	violations: RuleViolation[];
-	missingWithDefaults: Array<{ name: string; defaultValue: string }>;
+	missingWithDefaults: Array<{
+		name: string;
+		defaultValue: string;
+	}>;
 }
 
 function validateConditionalRules(
@@ -114,7 +118,10 @@ function validateConditionalRules(
 	rules: ConditionalScriptRule[],
 ): ValidationResult {
 	const violations: RuleViolation[] = [];
-	const missingWithDefaults: Array<{ name: string; defaultValue: string }> = [];
+	const missingWithDefaults: Array<{
+		name: string;
+		defaultValue: string;
+	}> = [];
 	const seenMissing = new Set<string>();
 
 	for (const rule of rules) {
@@ -156,7 +163,10 @@ function formatViolationErrors(violations: RuleViolation[]): string[] {
 async function fixMissingScripts(
 	json: PackageJson,
 	file: string,
-	missingWithDefaults: Array<{ name: string; defaultValue: string }>,
+	missingWithDefaults: Array<{
+		name: string;
+		defaultValue: string;
+	}>,
 	existingScripts: Record<string, string | undefined>,
 ): Promise<string[]> {
 	const updatedScripts: Record<string, string> = {};
@@ -194,38 +204,39 @@ async function fixMissingScripts(
  *
  * @example
  * ```typescript
- * import { policy } from "repopo";
+ * import { makePolicy } from "repopo";
  * import { ConditionalScripts } from "repopo/policies";
  *
- * policy(ConditionalScripts, {
+ * makePolicy(ConditionalScripts, { config: {
  *   rules: [
  *     // If "build" exists, "clean" must also exist (with auto-fix default)
  *     { ifPresent: "build", requires: [{ clean: "rimraf dist" }] },
  *     // If "test" exists, "test:coverage" must also exist (no auto-fix)
  *     { ifPresent: "test", requires: ["test:coverage"] },
  *   ],
- * })
+ * } })
  * ```
  *
- * @alpha
+ * @public
  */
 export const ConditionalScripts = definePackagePolicy<
 	PackageJson,
 	ConditionalScriptsConfig | undefined
 >({
+	requiresConfig: true,
 	name: POLICY_NAME,
 	description:
 		"Validates that if certain scripts exist, other required scripts must also exist.",
-	handler: async (json, { file, resolve, config }) => {
+	handler: async (json, { file, root, resolve, config }) => {
 		if (config === undefined || config.rules.length === 0) {
-			return true;
+			return [];
 		}
 
 		const scripts = json.scripts ?? {};
 		const validation = validateConditionalRules(scripts, config.rules);
 
 		if (validation.violations.length === 0) {
-			return true;
+			return [];
 		}
 
 		const errors = formatViolationErrors(validation.violations);
@@ -235,7 +246,7 @@ export const ConditionalScripts = definePackagePolicy<
 			try {
 				const fixedScripts = await fixMissingScripts(
 					json,
-					file,
+					resolvePath(root, file),
 					validation.missingWithDefaults,
 					scripts,
 				);
@@ -256,28 +267,26 @@ export const ConditionalScripts = definePackagePolicy<
 					config.rules,
 				);
 				const remainingErrors = formatViolationErrors(revalidation.violations);
-
-				return {
-					name: POLICY_NAME,
-					file,
-					resolved: remainingErrors.length === 0,
-					errorMessages:
-						remainingErrors.length > 0
-							? [
-									`Fixed scripts: ${fixedScripts.join(", ")}. Remaining errors:\n${remainingErrors.join("\n")}`,
-								]
-							: [`Fixed scripts: ${fixedScripts.join(", ")}`],
-				};
+				return [
+					...fixedScripts.map((name) => ({
+						message: `Fixed scripts: ${name}`,
+						fixStatus: "fixed" as const,
+					})),
+					...remainingErrors.map((message) => ({
+						message: `Remaining errors:\n${message}`,
+					})),
+				];
 			} catch {
 				// Fall through to return regular failure
 			}
 		}
-
-		return {
-			name: POLICY_NAME,
-			file,
-			autoFixable: hasAutoFixableErrors,
-			errorMessages: errors,
-		};
+		return errors.map((message) => ({
+			message,
+			fixStatus: hasAutoFixableErrors
+				? resolve
+					? "failed"
+					: "available"
+				: undefined,
+		}));
 	},
 });

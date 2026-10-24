@@ -1,6 +1,6 @@
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "pathe";
+import { join, relative } from "pathe";
 import type { PackageJson } from "type-fest";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
@@ -32,7 +32,7 @@ describe("ConditionalScripts policy", () => {
 		config?: ConditionalScriptsConfig,
 		resolve = false,
 	): PolicyArgs<typeof config> => ({
-		file: filePath,
+		file: relative(tempDir, filePath),
 		root: tempDir,
 		resolve,
 		config,
@@ -47,7 +47,7 @@ describe("ConditionalScripts policy", () => {
 				ConditionalScripts.handler,
 				createArgs(filePath, undefined),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -60,11 +60,48 @@ describe("ConditionalScripts policy", () => {
 				ConditionalScripts.handler,
 				createArgs(filePath, { rules: [] }),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
 	describe("conditional validation", () => {
+		it("retains fixed scripts alongside remaining conditional requirements", async () => {
+			const filePath = createPackageJson({
+				name: "test-package",
+				scripts: { build: "tsc" },
+			});
+			const result = await runHandler(
+				ConditionalScripts.handler,
+				createArgs(
+					filePath,
+					{
+						rules: [
+							{
+								ifPresent: "build",
+								requires: [{ clean: "rimraf dist" }, "test"],
+							},
+						],
+					},
+					true,
+				),
+			);
+			expect(
+				result.some(
+					(finding) =>
+						finding.fixStatus === "fixed" && finding.message.includes("clean"),
+				),
+			).toBe(true);
+			expect(
+				result.some(
+					(finding) =>
+						finding.fixStatus !== "fixed" && finding.message.includes("test"),
+				),
+			).toBe(true);
+			expect(JSON.parse(readFileSync(filePath, "utf8")).scripts.clean).toBe(
+				"rimraf dist",
+			);
+		});
+
 		it("should pass when trigger script is absent", async () => {
 			const json: PackageJson = {
 				name: "test-package",
@@ -79,7 +116,7 @@ describe("ConditionalScripts policy", () => {
 					rules: [{ ifPresent: "build", requires: ["clean"] }],
 				}),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should pass when trigger and required scripts are all present", async () => {
@@ -99,7 +136,7 @@ describe("ConditionalScripts policy", () => {
 					rules: [{ ifPresent: "build", requires: ["clean"] }],
 				}),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should fail when trigger is present but required scripts are missing", async () => {
@@ -116,9 +153,9 @@ describe("ConditionalScripts policy", () => {
 					rules: [{ ifPresent: "build", requires: ["clean"] }],
 				}),
 			);
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result !== "boolean") {
-				expect(result).toHaveProperty("errorMessages");
+				expect(result.length).toBeGreaterThan(0);
 			}
 		});
 
@@ -144,7 +181,7 @@ describe("ConditionalScripts policy", () => {
 				}),
 			);
 			// First rule passes (clean present), second fails (test:coverage missing)
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 		});
 
 		it("should handle object entries in requires", async () => {
@@ -166,9 +203,11 @@ describe("ConditionalScripts policy", () => {
 					],
 				}),
 			);
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result !== "boolean") {
-				expect(result).toHaveProperty("autoFixable", true);
+				expect(
+					result.some((finding) => finding.fixStatus !== undefined),
+				).toEqual(true);
 			}
 		});
 	});
@@ -197,9 +236,12 @@ describe("ConditionalScripts policy", () => {
 					true,
 				),
 			);
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result !== "boolean") {
-				expect(result).toHaveProperty("resolved", true);
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toEqual(true);
 			}
 
 			const updated = JSON.parse(readFileSync(filePath, "utf-8"));
@@ -225,9 +267,11 @@ describe("ConditionalScripts policy", () => {
 					true,
 				),
 			);
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result !== "boolean") {
-				expect(result).toHaveProperty("autoFixable", false);
+				expect(
+					result.some((finding) => finding.fixStatus !== undefined),
+				).toEqual(false);
 			}
 		});
 	});
@@ -246,7 +290,7 @@ describe("ConditionalScripts policy", () => {
 					rules: [{ ifPresent: "build", requires: ["clean"] }],
 				}),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 

@@ -90,7 +90,7 @@ export function transformFootnotesForLittlefoot(
 
 				// Add rel="footnote" for Littlefoot recognition
 				// Use kebab-case for standard HTML attributes
-				linkElement.properties["rel"] = "footnote";
+				linkElement.properties["rel"] = ["footnote"];
 				linkElement.properties["data-footnote-id"] = footnoteId;
 				// Update href to match the transformed footnote definition ID
 				linkElement.properties["href"] = `#fn:${footnoteId}`;

@@ -1,6 +1,6 @@
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "pathe";
+import { join, relative } from "pathe";
 import type { PackageJson } from "type-fest";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
@@ -32,7 +32,7 @@ describe("ExactScripts policy", () => {
 		config?: ExactScriptsConfig,
 		resolve = false,
 	): PolicyArgs<typeof config> => ({
-		file: filePath,
+		file: relative(tempDir, filePath),
 		root: tempDir,
 		resolve,
 		config,
@@ -47,7 +47,7 @@ describe("ExactScripts policy", () => {
 				ExactScripts.handler,
 				createArgs(filePath, undefined),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -60,7 +60,7 @@ describe("ExactScripts policy", () => {
 				ExactScripts.handler,
 				createArgs(filePath, { scripts: {} }),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -85,7 +85,7 @@ describe("ExactScripts policy", () => {
 					},
 				}),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should fail when script content differs", async () => {
@@ -102,10 +102,12 @@ describe("ExactScripts policy", () => {
 					scripts: { clean: "rimraf dist esm" },
 				}),
 			);
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result !== "boolean") {
-				expect(result).toHaveProperty("autoFixable", true);
-				expect(result).toHaveProperty("errorMessages");
+				expect(
+					result.some((finding) => finding.fixStatus !== undefined),
+				).toEqual(true);
+				expect(result.length).toBeGreaterThan(0);
 			}
 		});
 
@@ -123,9 +125,11 @@ describe("ExactScripts policy", () => {
 					scripts: { clean: "rimraf dist" },
 				}),
 			);
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result !== "boolean") {
-				expect(result).toHaveProperty("autoFixable", true);
+				expect(
+					result.some((finding) => finding.fixStatus !== undefined),
+				).toEqual(true);
 			}
 		});
 
@@ -146,9 +150,9 @@ describe("ExactScripts policy", () => {
 					},
 				}),
 			);
-			expect(result).not.toBe(true);
-			if (typeof result !== "boolean" && "errorMessages" in result) {
-				expect(result.errorMessages.length).toBe(2);
+			expect(result).not.toEqual([]);
+			if (typeof result !== "boolean" && result.length > 0) {
+				expect(result.map((finding) => finding.message).length).toBe(2);
 			}
 		});
 	});
@@ -166,9 +170,12 @@ describe("ExactScripts policy", () => {
 				ExactScripts.handler,
 				createArgs(filePath, { scripts: { clean: "rimraf dist" } }, true),
 			);
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result !== "boolean") {
-				expect(result).toHaveProperty("resolved", true);
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toEqual(true);
 			}
 
 			const updated = JSON.parse(readFileSync(filePath, "utf-8"));
@@ -188,9 +195,12 @@ describe("ExactScripts policy", () => {
 				ExactScripts.handler,
 				createArgs(filePath, { scripts: { clean: "rimraf dist" } }, true),
 			);
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result !== "boolean") {
-				expect(result).toHaveProperty("resolved", true);
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toEqual(true);
 			}
 
 			const updated = JSON.parse(readFileSync(filePath, "utf-8"));
@@ -212,7 +222,7 @@ describe("ExactScripts policy", () => {
 					scripts: { build: "tsc" },
 				}),
 			);
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 		});
 	});
 

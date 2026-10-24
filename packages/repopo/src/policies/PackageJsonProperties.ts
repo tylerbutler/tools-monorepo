@@ -1,17 +1,25 @@
-import { defu } from "defu";
+import { createDefu } from "defu";
 import { call } from "effection";
 import jsonfile from "jsonfile";
 import diff from "microdiff";
+import { resolve as resolvePath } from "pathe";
 import type { PackageJson } from "type-fest";
-import type { PolicyFailure, PolicyFixResult } from "../policy.js";
 import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
 
 const { writeFile: writeJson } = jsonfile;
 
+const mergeProperties = createDefu((object, key, value) => {
+	if (Array.isArray(value)) {
+		object[key] = value;
+		return true;
+	}
+	return false;
+});
+
 /**
  * Policy settings for the PackageJsonProperties repo policy.
  *
- * @alpha
+ * @public
  */
 export interface PackageJsonPropertiesSettings {
 	/**
@@ -23,29 +31,22 @@ export interface PackageJsonPropertiesSettings {
 /**
  * A RepoPolicy that checks that package.json properties in packages match expected values.
  *
- * @alpha
+ * @public
  */
 export const PackageJsonProperties = definePackagePolicy<
 	PackageJson,
-	PackageJsonPropertiesSettings | undefined
+	PackageJsonPropertiesSettings
 >({
 	name: "PackageJsonProperties",
 	description:
 		"Ensures package.json files contain required properties with correct values.",
-	handler: function* (json, { file, config, resolve }) {
+	requiresConfig: true,
+	handler: function* (json, { file, root, config, resolve }) {
 		if (config === undefined) {
-			return true;
+			throw new TypeError("PackageJsonProperties requires config.");
 		}
 		const { verbatim } = config;
-
-		const failResult: PolicyFailure = {
-			name: PackageJsonProperties.name,
-			file,
-			autoFixable: true,
-			errorMessages: [],
-		};
-
-		const merged = defu(verbatim, json);
+		const merged = mergeProperties(verbatim, json);
 		const result = diff(merged, json);
 
 		const messages: string[] = [];
@@ -57,22 +58,15 @@ export const PackageJsonProperties = definePackagePolicy<
 
 		if (messages.length > 0) {
 			if (resolve) {
-				const fixResult: PolicyFixResult = {
-					...failResult,
-					resolved: false,
-				};
-
-				yield* call(() => writeJson(file, merged, { spaces: "\t" }));
-
-				fixResult.resolved = true;
-				return fixResult;
+				yield* call(() =>
+					writeJson(resolvePath(root, file), merged, { spaces: "\t" }),
+				);
+				return messages.map((message) => ({ message, fixStatus: "fixed" }));
 			}
 
 			// There were errors, and we're not resolving them, so return a fail result
-			failResult.errorMessages = messages;
-			return failResult;
+			return messages.map((message) => ({ message, fixStatus: "available" }));
 		}
-
-		return true;
+		return [];
 	},
 });

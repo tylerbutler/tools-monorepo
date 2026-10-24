@@ -1,14 +1,20 @@
 import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join } from "pathe";
+import { join, relative } from "pathe";
 import type { PackageJson } from "type-fest";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { PackageJsonRepoDirectoryProperty } from "../../src/policies/PackageJsonRepoDirectoryProperty.js";
-import type { PolicyFailure, PolicyFixResult } from "../../src/policy.js";
 import { runHandler } from "../test-helpers.js";
 
 describe("PackageJsonRepoDirectoryProperty Policy", () => {
 	let testDir: string;
+
+	const createArgs = (file: string, resolve = false) => ({
+		file: relative(testDir, file),
+		root: testDir,
+		resolve,
+		config: undefined,
+	});
 
 	beforeEach(async () => {
 		testDir = await mkdtemp(join(tmpdir(), "repopo-repo-dir-test-"));
@@ -49,18 +55,11 @@ describe("PackageJsonRepoDirectoryProperty Policy", () => {
 
 			await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
 
-			// Note: file is passed as absolute path to the handler
 			const result = await runHandler(
 				PackageJsonRepoDirectoryProperty.handler,
-				{
-					file: packageJsonPath,
-					root: testDir,
-					resolve: false,
-					config: undefined,
-				},
+				createArgs(packageJsonPath),
 			);
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should pass when repository is a string (not an object)", async () => {
@@ -76,15 +75,9 @@ describe("PackageJsonRepoDirectoryProperty Policy", () => {
 
 			const result = await runHandler(
 				PackageJsonRepoDirectoryProperty.handler,
-				{
-					file: packageJsonPath,
-					root: testDir,
-					resolve: false,
-					config: undefined,
-				},
+				createArgs(packageJsonPath),
 			);
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should pass when package is at repo root and directory is undefined", async () => {
@@ -103,15 +96,9 @@ describe("PackageJsonRepoDirectoryProperty Policy", () => {
 
 			const result = await runHandler(
 				PackageJsonRepoDirectoryProperty.handler,
-				{
-					file: packageJsonPath,
-					root: testDir,
-					resolve: false,
-					config: undefined,
-				},
+				createArgs(packageJsonPath),
 			);
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should fail when repository.directory does not match actual directory", async () => {
@@ -130,22 +117,23 @@ describe("PackageJsonRepoDirectoryProperty Policy", () => {
 			};
 
 			await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
-
-			const result = (await runHandler(
+			const result = await runHandler(
 				PackageJsonRepoDirectoryProperty.handler,
-				{
-					file: packageJsonPath,
-					root: testDir,
-					resolve: false,
-					config: undefined,
-				},
-			)) as PolicyFailure;
-
-			expect(result).not.toBe(true);
-			expect(result.autoFixable).toBe(true);
-			expect(result.errorMessages.length).toBeGreaterThan(0);
-			expect(result.errorMessages[0]).toContain("packages/my-package");
-			expect(result.errorMessages[0]).toContain("wrong/path");
+				createArgs(packageJsonPath),
+			);
+			expect(result).not.toEqual([]);
+			expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+				true,
+			);
+			expect(result.map((finding) => finding.message).length).toBeGreaterThan(
+				0,
+			);
+			expect(result.map((finding) => finding.message)[0]).toContain(
+				"packages/my-package",
+			);
+			expect(result.map((finding) => finding.message)[0]).toContain(
+				"wrong/path",
+			);
 		});
 
 		it("should fail when package in subdirectory has repository.directory set to empty string", async () => {
@@ -164,19 +152,14 @@ describe("PackageJsonRepoDirectoryProperty Policy", () => {
 			};
 
 			await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
-
-			const result = (await runHandler(
+			const result = await runHandler(
 				PackageJsonRepoDirectoryProperty.handler,
-				{
-					file: packageJsonPath,
-					root: testDir,
-					resolve: false,
-					config: undefined,
-				},
-			)) as PolicyFailure;
-
-			expect(result).not.toBe(true);
-			expect(result.autoFixable).toBe(true);
+				createArgs(packageJsonPath),
+			);
+			expect(result).not.toEqual([]);
+			expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+				true,
+			);
 		});
 	});
 
@@ -197,19 +180,14 @@ describe("PackageJsonRepoDirectoryProperty Policy", () => {
 			};
 
 			await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
-
-			const result = (await runHandler(
+			const result = await runHandler(
 				PackageJsonRepoDirectoryProperty.handler,
-				{
-					file: packageJsonPath,
-					root: testDir,
-					resolve: true,
-					config: undefined,
-				},
-			)) as PolicyFixResult;
-
-			expect(result.resolved).toBe(true);
-
+				createArgs(packageJsonPath, true),
+			);
+			expect(
+				result.length > 0 &&
+					result.every((finding) => finding.fixStatus === "fixed"),
+			).toBe(true);
 			// Verify the file was updated
 			const content = JSON.parse(await readFile(packageJsonPath, "utf-8"));
 			expect(content.repository.directory).toBe("packages/my-package");
@@ -229,19 +207,14 @@ describe("PackageJsonRepoDirectoryProperty Policy", () => {
 			};
 
 			await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
-
-			const result = (await runHandler(
+			const result = await runHandler(
 				PackageJsonRepoDirectoryProperty.handler,
-				{
-					file: packageJsonPath,
-					root: testDir,
-					resolve: true,
-					config: undefined,
-				},
-			)) as PolicyFixResult;
-
-			expect(result.resolved).toBe(true);
-
+				createArgs(packageJsonPath, true),
+			);
+			expect(
+				result.length > 0 &&
+					result.every((finding) => finding.fixStatus === "fixed"),
+			).toBe(true);
 			// Verify the file was updated - directory should be removed
 			const content = JSON.parse(await readFile(packageJsonPath, "utf-8"));
 			expect(content.repository.directory).toBeUndefined();
@@ -265,12 +238,10 @@ describe("PackageJsonRepoDirectoryProperty Policy", () => {
 			const originalContent = JSON.stringify(packageJson, null, 2);
 			await writeFile(packageJsonPath, originalContent);
 
-			await runHandler(PackageJsonRepoDirectoryProperty.handler, {
-				file: packageJsonPath,
-				root: testDir,
-				resolve: false,
-				config: undefined,
-			});
+			await runHandler(
+				PackageJsonRepoDirectoryProperty.handler,
+				createArgs(packageJsonPath),
+			);
 
 			const content = await readFile(packageJsonPath, "utf-8");
 			expect(content).toBe(originalContent);
@@ -301,19 +272,18 @@ describe("PackageJsonRepoDirectoryProperty Policy", () => {
 			await chmod(packageJsonPath, 0o444); // read-only
 
 			try {
-				const result = (await runHandler(
+				const result = await runHandler(
 					PackageJsonRepoDirectoryProperty.handler,
-					{
-						file: packageJsonPath,
-						root: testDir,
-						resolve: true,
-						config: undefined,
-					},
-				)) as PolicyFixResult;
-
+					createArgs(packageJsonPath, true),
+				);
 				// Policy should return a failure with resolved=false and error messages
-				expect(result.resolved).toBe(false);
-				expect(result.errorMessages.length).toBeGreaterThan(0);
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toBe(false);
+				expect(result.map((finding) => finding.message).length).toBeGreaterThan(
+					0,
+				);
 			} finally {
 				// Restore write permissions so cleanup can succeed
 				await chmod(packageJsonPath, 0o644);
@@ -341,15 +311,9 @@ describe("PackageJsonRepoDirectoryProperty Policy", () => {
 
 			const result = await runHandler(
 				PackageJsonRepoDirectoryProperty.handler,
-				{
-					file: packageJsonPath,
-					root: testDir,
-					resolve: false,
-					config: undefined,
-				},
+				createArgs(packageJsonPath),
 			);
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should preserve other repository properties when fixing", async () => {
@@ -369,12 +333,10 @@ describe("PackageJsonRepoDirectoryProperty Policy", () => {
 
 			await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
 
-			await runHandler(PackageJsonRepoDirectoryProperty.handler, {
-				file: packageJsonPath,
-				root: testDir,
-				resolve: true,
-				config: undefined,
-			});
+			await runHandler(
+				PackageJsonRepoDirectoryProperty.handler,
+				createArgs(packageJsonPath, true),
+			);
 
 			const content = JSON.parse(await readFile(packageJsonPath, "utf-8"));
 			expect(content.repository.type).toBe("git");

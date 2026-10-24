@@ -1,18 +1,12 @@
 import path from "pathe";
-import { makePolicyDefinition } from "../makePolicy.js";
-import type {
-	PolicyDefinition,
-	PolicyFixResult,
-	PolicyHandler,
-	PolicyStandaloneResolver,
-} from "../policy.js";
+import type { FilePolicyDefinition, PolicyHandler } from "../policy.js";
 
 /**
  * A FluidFramework build-tools policy handler interface.
  *
  * This interface matches the `Handler` interface from `@fluidframework/build-tools`.
  *
- * @alpha
+ * @public
  */
 export interface FluidHandler {
 	/**
@@ -45,14 +39,24 @@ export interface FluidHandler {
 		file: string,
 		root: string,
 	) =>
-		| Promise<{ resolved: boolean; message?: string }>
-		| { resolved: boolean; message?: string };
+		| Promise<{
+				/** Whether the violation was fixed. */
+				resolved: boolean;
+				/** Optional explanation of the fix result. */
+				message?: string;
+		  }>
+		| {
+				/** Whether the violation was fixed. */
+				resolved: boolean;
+				/** Optional explanation of the fix result. */
+				message?: string;
+		  };
 }
 
 /**
  * Options for converting FluidFramework handlers to repopo policies.
  *
- * @alpha
+ * @public
  */
 export interface FluidAdapterOptions {
 	/**
@@ -77,7 +81,7 @@ export interface FluidAdapterOptions {
 function fromFluidHandler(
 	fluidHandler: FluidHandler,
 	options?: FluidAdapterOptions,
-): PolicyDefinition {
+): FilePolicyDefinition {
 	const { namePrefix = "" } = options ?? {};
 	const policyName = `${namePrefix}${fluidHandler.name}`;
 
@@ -88,7 +92,7 @@ function fromFluidHandler(
 		const errorMessage = await fluidHandler.handler(absolutePath, root);
 
 		if (errorMessage === undefined) {
-			return true;
+			return [];
 		}
 
 		// Check if resolver exists to determine if auto-fixable
@@ -98,55 +102,29 @@ function fromFluidHandler(
 		if (resolve && fluidHandler.resolver !== undefined) {
 			const resolveResult = await fluidHandler.resolver(absolutePath, root);
 
-			return {
-				name: policyName,
-				file,
-				errorMessages: [resolveResult.message ?? errorMessage],
-				autoFixable: true,
-				resolved: resolveResult.resolved,
-			} satisfies PolicyFixResult;
+			return [
+				{
+					message: resolveResult.message ?? errorMessage,
+					fixStatus: resolveResult.resolved ? "fixed" : "failed",
+				},
+			];
 		}
 
-		return {
-			name: policyName,
-			file,
-			errorMessages: [errorMessage],
-			autoFixable,
-		};
+		return [
+			{
+				message: errorMessage,
+				fixStatus: autoFixable ? "available" : undefined,
+			},
+		];
 	};
 
-	// Create standalone resolver if Fluid handler has one
-	let resolver: PolicyStandaloneResolver | undefined;
-	if (fluidHandler.resolver !== undefined) {
-		resolver = async ({ file, root }) => {
-			const absolutePath = path.join(root, file);
-
-			// First get the error message for context
-			const errorMessage = await fluidHandler.handler(absolutePath, root);
-
-			// biome-ignore lint/style/noNonNullAssertion: we checked this is defined above
-			const resolveResult = await fluidHandler.resolver!(absolutePath, root);
-
-			return {
-				name: policyName,
-				file,
-				errorMessages: [
-					resolveResult.message ?? errorMessage ?? "Unknown error",
-				],
-				autoFixable: true,
-				resolved: resolveResult.resolved,
-			};
-		};
-	}
-
-	return makePolicyDefinition({
+	return {
 		name: policyName,
 		description: `FluidFramework policy: ${fluidHandler.name}`,
 		match: fluidHandler.match,
 		handler,
 		defaultConfig: undefined, // no config
-		resolver,
-	});
+	} satisfies FilePolicyDefinition;
 }
 
 /**
@@ -160,19 +138,19 @@ function fromFluidHandler(
  * Key differences handled by this adapter:
  *
  * - **Handler signature**: Fluid uses `(file, root) => string | undefined`,
- *   repopo uses `(args) => PolicyHandlerResult`
+ *   repopo uses `(args) => Promise<PolicyResult> | Operation<PolicyResult>`
  *
  * - **File paths**: Fluid passes absolute paths, repopo passes repo-relative paths.
  *   The adapter converts between the two.
  *
  * - **Return types**: Fluid returns `string | undefined` (error message or success),
- *   repopo returns `true | PolicyFailure | PolicyFixResult`
+ *   repopo returns `readonly PolicyFinding[]`
  *
  * For a single handler, wrap it in an array: `fromFluidHandlers([handler])`.
  *
  * @example
  * ```typescript
- * import { fromFluidHandlers, makePolicy } from "repopo";
+ * import { fromFluidHandlers, makePolicy, type RepopoConfig } from "repopo";
  * import { copyrightFileHeaderHandlers, fluidCaseHandler } from "@fluidframework/build-tools";
  *
  * // Convert multiple handlers with a namespace prefix
@@ -185,7 +163,7 @@ function fromFluidHandler(
  *
  * const config: RepopoConfig = {
  *   policies: [
- *     ...FluidCopyrightPolicies.map(p => makePolicy(p)),
+ *     ...FluidCopyrightPolicies.map((p) => makePolicy(p)),
  *     makePolicy(FluidCasePolicy),
  *   ],
  * };
@@ -195,11 +173,11 @@ function fromFluidHandler(
  * @param options - Optional configuration applied to all conversions.
  * @returns An array of repopo PolicyDefinitions.
  *
- * @alpha
+ * @public
  */
 export function fromFluidHandlers(
 	fluidHandlers: FluidHandler[],
 	options?: FluidAdapterOptions,
-): PolicyDefinition[] {
+): FilePolicyDefinition[] {
 	return fluidHandlers.map((h) => fromFluidHandler(h, options));
 }

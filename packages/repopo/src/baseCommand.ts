@@ -7,8 +7,12 @@ import { createConsolaLogger } from "@tylerbu/cli-api/loggers/consola";
 import { findGitRootSync } from "@tylerbu/fundamentals/git";
 import { type SimpleGit, simpleGit } from "simple-git";
 import { DefaultPolicyConfig, type RepopoConfig } from "./config.js";
-import type { ExcludedPolicyFileMap, RepopoCommandContext } from "./context.js";
-import { makePolicy } from "./makePolicy.js";
+import {
+	createExcludedPolicyFileMap,
+	exclusionRegex,
+	type RepopoCommandContext,
+} from "./context.js";
+import { identifyPolicyInstances, makePolicy } from "./makePolicy.js";
 import { newPerfStats } from "./perf.js";
 import { DefaultPolicies } from "./policy.js";
 
@@ -43,22 +47,18 @@ export abstract class BaseRepopoCommand<
 		await super.init();
 
 		const excludeFiles: RegExp[] =
-			this.commandConfig?.excludeFiles?.map((e) => new RegExp(e, "i")) ?? [];
+			this.commandConfig?.excludeFiles?.map(exclusionRegex) ?? [];
 
-		const excludePoliciesForFiles: ExcludedPolicyFileMap = new Map();
-		for (const policy of this.commandConfig?.policies ?? []) {
-			const regexes = policy.excludeFiles?.map((e) => new RegExp(e, "i")) ?? [];
-			excludePoliciesForFiles.set(policy.name, regexes);
-		}
-
+		const policies = identifyPolicyInstances(
+			this.commandConfig?.policies ??
+				DefaultPolicies.map((configuredPolicy) => makePolicy(configuredPolicy)),
+		);
 		const gitRoot = findGitRootSync();
 		this._git = simpleGit({ baseDir: gitRoot });
 		this._context = {
 			excludeFromAll: excludeFiles,
-			policies:
-				this.commandConfig?.policies ??
-				DefaultPolicies.map((p) => makePolicy(p)),
-			excludePoliciesForFiles,
+			policies,
+			excludePoliciesForFiles: createExcludedPolicyFileMap(policies),
 			gitRoot,
 			perfStats: newPerfStats(),
 		};

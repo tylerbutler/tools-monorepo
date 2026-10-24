@@ -1,13 +1,13 @@
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "pathe";
+import { join, relative } from "pathe";
 import type { PackageJson } from "type-fest";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
 	PackageEsmType,
 	type PackageEsmTypeConfig,
 } from "../../src/policies/PackageEsmType.js";
-import type { PolicyFunctionArguments } from "../../src/policy.js";
+import type { PolicyArgs } from "../../src/policy.js";
 import { runHandler } from "../test-helpers.js";
 
 describe("PackageEsmType policy", () => {
@@ -31,8 +31,8 @@ describe("PackageEsmType policy", () => {
 		filePath: string,
 		config?: PackageEsmTypeConfig,
 		resolve = false,
-	): PolicyFunctionArguments<typeof config> => ({
-		file: filePath,
+	): PolicyArgs<typeof config> => ({
+		file: relative(tempDir, filePath),
 		root: tempDir,
 		resolve,
 		config,
@@ -50,7 +50,7 @@ describe("PackageEsmType policy", () => {
 				PackageEsmType.handler,
 				createArgs(filePath, undefined),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -67,7 +67,7 @@ describe("PackageEsmType policy", () => {
 				PackageEsmType.handler,
 				createArgs(filePath, { requiredType: "module" }),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should pass when type matches requiredType commonjs", async () => {
@@ -82,7 +82,7 @@ describe("PackageEsmType policy", () => {
 				PackageEsmType.handler,
 				createArgs(filePath, { requiredType: "commonjs" }),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should fail when type is missing but required", async () => {
@@ -96,12 +96,17 @@ describe("PackageEsmType policy", () => {
 				PackageEsmType.handler,
 				createArgs(filePath, { requiredType: "module" }),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("missing");
-				expect(result.errorMessages.join()).toContain("module");
-				expect(result.autoFixable).toBe(true);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"missing",
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"module",
+				);
+				expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+					true,
+				);
 			}
 		});
 
@@ -117,11 +122,14 @@ describe("PackageEsmType policy", () => {
 				PackageEsmType.handler,
 				createArgs(filePath, { requiredType: "module" }),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("commonjs");
-				expect(result.errorMessages.join()).toContain("module");
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"commonjs",
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"module",
+				);
 			}
 		});
 	});
@@ -141,10 +149,11 @@ describe("PackageEsmType policy", () => {
 				PackageEsmType.handler,
 				createArgs(filePath, { detectFromExports: true }),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("module");
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"module",
+				);
 			}
 		});
 
@@ -167,7 +176,7 @@ describe("PackageEsmType policy", () => {
 			);
 
 			// Should detect as module due to "import" condition
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 		});
 
 		it("should detect commonjs from .cjs in exports", async () => {
@@ -182,10 +191,11 @@ describe("PackageEsmType policy", () => {
 				PackageEsmType.handler,
 				createArgs(filePath, { detectFromExports: true }),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("commonjs");
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"commonjs",
+				);
 			}
 		});
 
@@ -201,10 +211,11 @@ describe("PackageEsmType policy", () => {
 				PackageEsmType.handler,
 				createArgs(filePath, { detectFromExports: true }),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("module");
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"module",
+				);
 			}
 		});
 
@@ -221,10 +232,11 @@ describe("PackageEsmType policy", () => {
 				PackageEsmType.handler,
 				createArgs(filePath, { detectFromExports: true }),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("module");
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"module",
+				);
 			}
 		});
 
@@ -241,7 +253,7 @@ describe("PackageEsmType policy", () => {
 				PackageEsmType.handler,
 				createArgs(filePath, { detectFromExports: true }),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should skip when type cannot be detected", async () => {
@@ -256,7 +268,7 @@ describe("PackageEsmType policy", () => {
 				PackageEsmType.handler,
 				createArgs(filePath, { detectFromExports: true }),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -276,7 +288,7 @@ describe("PackageEsmType policy", () => {
 					excludePackages: ["@myorg/excluded"],
 				}),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should skip packages matching scope exclusion", async () => {
@@ -294,7 +306,7 @@ describe("PackageEsmType policy", () => {
 					excludePackages: ["@legacy"],
 				}),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -310,10 +322,12 @@ describe("PackageEsmType policy", () => {
 				PackageEsmType.handler,
 				createArgs(filePath, { requiredType: "module" }, true),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.resolved).toBe(true);
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toBe(true);
 			}
 
 			const updatedJson = JSON.parse(readFileSync(filePath, "utf-8"));
@@ -332,10 +346,12 @@ describe("PackageEsmType policy", () => {
 				PackageEsmType.handler,
 				createArgs(filePath, { requiredType: "module" }, true),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.resolved).toBe(true);
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toBe(true);
 			}
 
 			const updatedJson = JSON.parse(readFileSync(filePath, "utf-8"));
@@ -355,7 +371,7 @@ describe("PackageEsmType policy", () => {
 				PackageEsmType.handler,
 				createArgs(filePath, { requiredType: "module" }),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should skip packages without a name", async () => {
@@ -368,7 +384,7 @@ describe("PackageEsmType policy", () => {
 				PackageEsmType.handler,
 				createArgs(filePath, { requiredType: "module" }),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 

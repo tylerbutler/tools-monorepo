@@ -4,7 +4,7 @@ import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
 /**
  * Configuration for the MutuallyExclusiveScripts policy.
  *
- * @alpha
+ * @public
  */
 export interface MutuallyExclusiveScriptsConfig {
 	/**
@@ -35,29 +35,30 @@ const POLICY_NAME = "MutuallyExclusiveScripts";
  *
  * @example
  * ```typescript
- * import { policy } from "repopo";
+ * import { makePolicy } from "repopo";
  * import { MutuallyExclusiveScripts } from "repopo/policies";
  *
- * policy(MutuallyExclusiveScripts, {
+ * makePolicy(MutuallyExclusiveScripts, { config: {
  *   groups: [
  *     ["lint:eslint", "lint:biome"],
  *     ["test:jest", "test:vitest"],
  *   ],
- * })
+ * } })
  * ```
  *
- * @alpha
+ * @public
  */
 export const MutuallyExclusiveScripts = definePackagePolicy<
 	PackageJson,
 	MutuallyExclusiveScriptsConfig | undefined
 >({
+	requiresConfig: true,
 	name: POLICY_NAME,
 	description:
 		"Validates that at most one script from each exclusive group exists in package.json.",
-	handler: async (json, { file, config }) => {
+	handler: async (json, { config }) => {
 		if (config === undefined || config.groups.length === 0) {
-			return true;
+			return [];
 		}
 
 		const scripts = json.scripts ?? {};
@@ -76,14 +77,8 @@ export const MutuallyExclusiveScripts = definePackagePolicy<
 		}
 
 		if (errors.length === 0) {
-			return true;
+			return [];
 		}
-
-		return {
-			name: POLICY_NAME,
-			file,
-			autoFixable: false,
-			errorMessages: errors,
-		};
+		return errors.map((message) => ({ message }));
 	},
 });

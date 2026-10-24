@@ -13,17 +13,14 @@ const jsTsReplacer = (
 		prevContent.startsWith("\r") || prevContent.startsWith("\n")
 			? newline
 			: newline + newline;
-	const newContent = `/*!${newline} * ${headerText.replace(
-		newline,
-		`${newline} * `,
-	)}${newline} */${separator}${prevContent}`;
+	const newContent = `/*!${newline} * ${headerText.replace(newline, `${newline} * `)}${newline} */${separator}${prevContent}`;
 	return newContent;
 };
 
 /**
  * A RepoPolicy that checks that JavaScript and TypeScript source files have the configured header comment
  *
- * @alpha
+ * @public
  */
 export const JsTsFileHeaders = defineFileHeaderPolicy({
 	name: "JsTsFileHeaders",

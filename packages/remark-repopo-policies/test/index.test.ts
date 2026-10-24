@@ -27,22 +27,23 @@ afterEach(() => {
  */
 function createMockConfig(_policies?: string[]): void {
 	const configContent = `
-import { makePolicy, type RepopoConfig } from "repopo";
+import { makePolicy, type FilePolicyDefinition, type RepopoConfig } from "repopo";
 
 // Mock policies for testing
 const MockPolicy1 = {
 	name: "MockPolicy1",
 	description: "A mock policy for testing",
 	match: /\\.ts$/,
-	handler: async () => true,
-};
+	handler: async () => [],
+} satisfies FilePolicyDefinition;
 
 const MockPolicy2 = {
 	name: "MockPolicy2",
+	description: "A second mock policy",
 	match: /package\\.json$/,
-	handler: async () => true,
-	resolver: async () => ({ name: "MockPolicy2", file: "", resolved: true, errorMessages: [] }),
-};
+	handler: async () => [],
+	resolver: async ({ findings }) => findings.map(finding => ({ ...finding, fixStatus: "fixed" as const })),
+} satisfies FilePolicyDefinition;
 
 const config: RepopoConfig = {
 	policies: [
@@ -87,7 +88,7 @@ describe("remarkRepopoPolicies", () => {
 				.use(remarkRepopoPolicies)
 				.process({
 					value: markdown,
-					path: "/tmp/test/README.md",
+					path: join(testDir, "README.md"),
 				});
 			expect(String(result)).toContain("# My Project");
 		});

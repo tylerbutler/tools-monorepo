@@ -1,6 +1,6 @@
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "pathe";
+import { join, relative } from "pathe";
 import type { PackageJson } from "type-fest";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
@@ -32,7 +32,7 @@ describe("RequiredScripts policy", () => {
 		config?: RequiredScriptsConfig,
 		resolve = false,
 	): PolicyArgs<typeof config> => ({
-		file: filePath,
+		file: relative(tempDir, filePath),
 		root: tempDir,
 		resolve,
 		config,
@@ -47,7 +47,7 @@ describe("RequiredScripts policy", () => {
 				RequiredScripts.handler,
 				createArgs(filePath, undefined),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -60,7 +60,7 @@ describe("RequiredScripts policy", () => {
 				RequiredScripts.handler,
 				createArgs(filePath, { scripts: [] }),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -77,7 +77,7 @@ describe("RequiredScripts policy", () => {
 				RequiredScripts.handler,
 				createArgs(filePath, { scripts: ["build", "test"] }),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should fail when required scripts are missing", async () => {
@@ -92,8 +92,8 @@ describe("RequiredScripts policy", () => {
 				RequiredScripts.handler,
 				createArgs(filePath, { scripts: ["build", "test", "lint"] }),
 			);
-			expect(result).not.toBe(true);
-			expect(result).toHaveProperty("errorMessages");
+			expect(result).not.toEqual([]);
+			expect(result.length).toBeGreaterThan(0);
 		});
 
 		it("should not be auto-fixable for string-only entries", async () => {
@@ -108,9 +108,11 @@ describe("RequiredScripts policy", () => {
 				RequiredScripts.handler,
 				createArgs(filePath, { scripts: ["test"] }),
 			);
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result !== "boolean") {
-				expect(result).toHaveProperty("autoFixable", false);
+				expect(
+					result.some((finding) => finding.fixStatus !== undefined),
+				).toEqual(false);
 			}
 		});
 	});
@@ -128,7 +130,7 @@ describe("RequiredScripts policy", () => {
 				RequiredScripts.handler,
 				createArgs(filePath, { scripts: [{ lint: "biome lint ." }] }),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should fail when scripts with defaults are missing", async () => {
@@ -145,9 +147,11 @@ describe("RequiredScripts policy", () => {
 					scripts: [{ lint: "biome lint ." }],
 				}),
 			);
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result !== "boolean") {
-				expect(result).toHaveProperty("autoFixable", true);
+				expect(
+					result.some((finding) => finding.fixStatus !== undefined),
+				).toEqual(true);
 			}
 		});
 	});
@@ -167,7 +171,7 @@ describe("RequiredScripts policy", () => {
 					scripts: ["build", "test", { lint: "biome lint ." }],
 				}),
 			);
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 		});
 	});
 
@@ -190,9 +194,12 @@ describe("RequiredScripts policy", () => {
 					true,
 				),
 			);
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result !== "boolean") {
-				expect(result).toHaveProperty("resolved", true);
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toEqual(true);
 			}
 
 			// Verify file was updated
@@ -220,10 +227,10 @@ describe("RequiredScripts policy", () => {
 					true,
 				),
 			);
-			expect(result).not.toBe(true);
-			if (typeof result !== "boolean") {
-				expect(result).toHaveProperty("resolved", false);
-			}
+			expect(result).toEqual([
+				{ message: "Fixed scripts: lint", fixStatus: "fixed" },
+				{ message: "Still missing: test" },
+			]);
 		});
 	});
 
@@ -239,7 +246,7 @@ describe("RequiredScripts policy", () => {
 				RequiredScripts.handler,
 				createArgs(filePath, { scripts: ["build"] }),
 			);
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 		});
 	});
 

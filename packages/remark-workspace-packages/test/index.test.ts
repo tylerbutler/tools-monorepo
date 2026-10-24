@@ -521,6 +521,19 @@ old content
 			expect(hasTableRow(result, "remark-task-table")).toBe(true);
 		});
 
+		it("should generate relative links for relative file paths", async () => {
+			const result = String(
+				await remark()
+					.use(remarkGfm)
+					.use(remarkWorkspacePackages)
+					.process({ value: "# Workspace", path: "README.md" }),
+			);
+
+			expect(result).toContain(
+				"[`remark-workspace-packages`](./packages/remark-workspace-packages)",
+			);
+		});
+
 		it("should respect exclude patterns for real packages", async () => {
 			const result = await processMarkdownFromProject("# Workspace", {
 				exclude: ["*-docs", "@tylerbu/*"],

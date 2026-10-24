@@ -13,17 +13,19 @@ import {
 	PackageReadme,
 	type PackageReadmeSettings,
 } from "../../src/policies/PackageReadme.js";
-import type { PolicyFunctionArguments } from "../../src/policy.js";
+import type { PolicyArgs } from "../../src/policy.js";
 import { runHandler } from "../test-helpers.js";
 
 describe("PackageReadme policy", () => {
 	let tempDir: string;
+	const originalCwd = process.cwd();
 
 	beforeEach(() => {
 		tempDir = mkdtempSync(join(tmpdir(), "repopo-readme-test-"));
 	});
 
 	afterEach(() => {
+		process.chdir(originalCwd);
 		rmSync(tempDir, { recursive: true, force: true });
 	});
 
@@ -42,27 +44,28 @@ describe("PackageReadme policy", () => {
 		file: string,
 		config?: PackageReadmeSettings,
 		resolve = false,
-	): PolicyFunctionArguments<typeof config> => ({
-		file: join(tempDir, file),
+	): PolicyArgs<typeof config> => ({
+		file,
 		root: tempDir,
 		resolve,
 		config,
 	});
 
 	describe("when README exists with matching title", () => {
-		it("should pass validation", async () => {
+		it("should resolve the package path from root when run from a repository subdirectory", async () => {
 			const json: PackageJson = {
 				name: "@myorg/test-package",
 				version: "1.0.0",
 			};
 			const file = createPackageJson(json);
+			process.chdir(join(tempDir, "packages"));
 			writeFileSync(
 				join(tempDir, "packages/my-pkg/README.md"),
 				"# @myorg/test-package\n\nSome content.",
 			);
 
 			const result = await runHandler(PackageReadme.handler, createArgs(file));
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -75,11 +78,14 @@ describe("PackageReadme policy", () => {
 			const file = createPackageJson(json);
 
 			const result = await runHandler(PackageReadme.handler, createArgs(file));
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("missing");
-				expect(result.autoFixable).toBe(true);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"missing",
+				);
+				expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+					true,
+				);
 			}
 		});
 
@@ -94,10 +100,12 @@ describe("PackageReadme policy", () => {
 				PackageReadme.handler,
 				createArgs(file, undefined, true),
 			);
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "resolved" in result) {
-				expect(result.resolved).toBe(true);
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toBe(true);
 			}
 
 			// Verify README was created with correct title
@@ -119,10 +127,12 @@ describe("PackageReadme policy", () => {
 				PackageReadme.handler,
 				createArgs(file, { requiredContent: "## Trademark" }, true),
 			);
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "resolved" in result) {
-				expect(result.resolved).toBe(true);
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toBe(true);
 			}
 
 			const createdReadme = readFileSync(
@@ -135,6 +145,29 @@ describe("PackageReadme policy", () => {
 	});
 
 	describe("title validation", () => {
+		it("keeps an unresolved title alongside successfully fixed required content", async () => {
+			const file = createPackageJson({
+				name: "@myorg/test-package",
+				version: "1.0.0",
+			});
+			const readme = join(tempDir, "packages/my-pkg/README.md");
+			writeFileSync(readme, "# Wrong Title\n\nSome content.\n");
+			const result = await runHandler(
+				PackageReadme.handler,
+				createArgs(file, { requiredContent: "## Trademark" }, true),
+			);
+			expect(result).toEqual([
+				{
+					message: `README title "Wrong Title" doesn't match package name "@myorg/test-package"`,
+				},
+				{
+					message: 'README missing required content: "## Trademark"',
+					fixStatus: "fixed",
+				},
+			]);
+			expect(readFileSync(readme, "utf8")).toContain("## Trademark");
+		});
+
 		it("should fail when title doesn't match package name", async () => {
 			const json: PackageJson = {
 				name: "@myorg/test-package",
@@ -147,11 +180,14 @@ describe("PackageReadme policy", () => {
 			);
 
 			const result = await runHandler(PackageReadme.handler, createArgs(file));
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("doesn't match");
-				expect(result.errorMessages.join()).toContain("Wrong Title");
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"doesn't match",
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"Wrong Title",
+				);
 			}
 		});
 
@@ -167,10 +203,11 @@ describe("PackageReadme policy", () => {
 			);
 
 			const result = await runHandler(PackageReadme.handler, createArgs(file));
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("(none)");
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"(none)",
+				);
 			}
 		});
 
@@ -189,7 +226,7 @@ describe("PackageReadme policy", () => {
 				PackageReadme.handler,
 				createArgs(file, { requireMatchingTitle: false }),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -209,7 +246,7 @@ describe("PackageReadme policy", () => {
 				PackageReadme.handler,
 				createArgs(file, { requiredContent: "## Trademark" }),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should fail when required content is missing", async () => {
@@ -227,13 +264,14 @@ describe("PackageReadme policy", () => {
 				PackageReadme.handler,
 				createArgs(file, { requiredContent: "## Trademark" }),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain(
+				expect(result.map((finding) => finding.message).join()).toContain(
 					"missing required content",
 				);
-				expect(result.autoFixable).toBe(true);
+				expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+					true,
+				);
 			}
 		});
 
@@ -252,10 +290,12 @@ describe("PackageReadme policy", () => {
 				PackageReadme.handler,
 				createArgs(file, { requiredContent: "## Trademark" }, true),
 			);
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "resolved" in result) {
-				expect(result.resolved).toBe(true);
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toBe(true);
 			}
 
 			const updatedReadme = readFileSync(
@@ -276,7 +316,7 @@ describe("PackageReadme policy", () => {
 			const file = createPackageJson(json);
 
 			const result = await runHandler(PackageReadme.handler, createArgs(file));
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should validate private packages when skipPrivate: false", async () => {
@@ -291,10 +331,11 @@ describe("PackageReadme policy", () => {
 				PackageReadme.handler,
 				createArgs(file, { skipPrivate: false }),
 			);
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("missing");
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"missing",
+				);
 			}
 		});
 	});
