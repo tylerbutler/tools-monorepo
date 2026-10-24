@@ -59,7 +59,7 @@
 		"readme:main": "oclif readme --no-aliases",
 		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
 		"start": "serve ./test/data --listen 8080",
-		"test:coverage": "vitest run test --coverage",
+		"test:coverage": "mkdir -p .coverage/vitest/.tmp && vitest run test --coverage",
 		"test:snapshots": "pnpm update:test-snapshots",
 		"test:vitest": "vitest run test",
 		"update:test-snapshots": "vitest run test -u"

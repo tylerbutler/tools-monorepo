@@ -34,7 +34,7 @@
 		"lint:fix": "biome lint . --apply",
 		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
 		"test": "vitest run test",
-		"test:coverage": "vitest run test --coverage"
+		"test:coverage": "mkdir -p .coverage/vitest/.tmp && vitest run test --coverage"
 	},
 	"dependencies": {
 		"unified": "^11.0.5",

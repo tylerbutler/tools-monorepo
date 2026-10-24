@@ -119,6 +119,7 @@ const config: RepopoConfig = {
 					"remark-repopo-policies",
 					"remark-shift-headings",
 					"remark-task-table",
+					"remark-workspace-packages",
 					"repopo",
 					"repopo-docs",
 					"sort-tsconfig",

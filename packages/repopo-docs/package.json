@@ -59,7 +59,9 @@
 					"{workspaceRoot}/packages/repopo/api-docs/README.md"
 				]
 			},
-			"ci": {}
+			"ci": {},
+			"ci:full": {},
+			"ci:site": {}
 		}
 	}
 }
