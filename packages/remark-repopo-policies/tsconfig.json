@@ -1,0 +1,14 @@
+{
+	"extends": "../../config/tsconfig.strict.json",
+	"include": ["src/**/*"],
+	"references": [
+		{
+			"path": "../repopo",
+		},
+	],
+	"compilerOptions": {
+		"types": ["node"],
+		"outDir": "./esm",
+		"rootDir": "./src",
+	},
+}

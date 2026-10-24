@@ -4,100 +4,687 @@
 
 ```ts
 
+import { Operation } from 'effection';
 import type { PackageJson } from 'type-fest';
 import { run } from '@oclif/core';
 
-// @alpha (undocumented)
+// @public
+export interface CargoLicenceValidatedConfig {
+    allowedLicences?: string[];
+    skipWorkspace?: boolean;
+    validateSpdx?: boolean;
+}
+
+// @public
+export interface CargoLintsConfiguredConfig {
+    required?: Record<string, string>;
+    requireSection?: boolean;
+}
+
+// @public
+export interface CargoLockPolicyConfig {
+    binaries?: "require" | "warn" | "ignore";
+    libraries?: "require" | "warn" | "ignore";
+}
+
+// @public
+export type CargoToml = Record<string, unknown>;
+
+// @public
+export type CargoTomlHandler<C> = (toml: CargoToml, args: PolicyArgs<C>) => Operation<PolicyResult> | Promise<PolicyResult>;
+
+// @public
+export interface CargoTomlRequiredConfig {
+    expectedValues?: Record<string, string>;
+    minimumEdition?: string;
+    required?: string[];
+    requireRustVersion?: boolean;
+}
+
+// @public
+export interface CargoTomlSortedConfig {
+    sections?: string[];
+}
+
+// @public
+export type ConditionalScriptEntry = string | Record<string, string>;
+
+// @public
+export interface ConditionalScriptRule {
+    ifPresent: string;
+    requires: ConditionalScriptEntry[];
+}
+
+// @public
+export interface ConditionalScriptsConfig {
+    rules: ConditionalScriptRule[];
+}
+
+// @public
+export type ConfiguredFilePolicy<C = void> = FilePolicyDefinition<C> & PolicyOptions<C>;
+
+// @public
+export type ConfiguredPolicy<C = unknown> = ConfiguredFilePolicy<C> | ConfiguredRepositoryPolicy<C>;
+
+// @public
+export type ConfiguredRepositoryPolicy<C = void> = RepositoryPolicyDefinition<C> & PolicyOptions<C>;
+
+// @public
+export function defineCargoPolicy<C = void>(args: DefineCargoPolicyArgs<C> & {
+    defaultConfig: DefinedConfig<C>;
+}): FilePolicyDefinition<C> & {
+    defaultConfig: DefinedConfig<C>;
+};
+
+// @public
+export function defineCargoPolicy<C = void>(args: DefineCargoPolicyArgs<C> & {
+    requiresConfig: true;
+}): FilePolicyDefinition<C> & {
+    requiresConfig: true;
+};
+
+// @public
+export function defineCargoPolicy<C = void>(args: DefineCargoPolicyArgs<C>): FilePolicyDefinition<C>;
+
+// @public
+export interface DefineCargoPolicyArgs<C> {
+    defaultConfig?: C;
+    description: string;
+    handler: CargoTomlHandler<C>;
+    name: string;
+    // (undocumented)
+    requiresConfig?: boolean;
+}
+
+// @public
+export function defineFileHeaderPolicy(args: DefineFileHeaderPolicyArgs & {
+    defaultConfig: FileHeaderPolicyConfig;
+}): FilePolicyDefinition<FileHeaderPolicyConfig> & {
+    requiresConfig: true;
+    defaultConfig: FileHeaderPolicyConfig;
+};
+
+// @public
+export function defineFileHeaderPolicy(args: DefineFileHeaderPolicyArgs): FilePolicyDefinition<FileHeaderPolicyConfig> & {
+    requiresConfig: true;
+};
+
+// @public
+export interface DefineFileHeaderPolicyArgs {
+    config: FileHeaderGeneratorConfig;
+    defaultConfig?: FileHeaderPolicyConfig;
+    description: string;
+    name: string;
+}
+
+// @public
+export function defineGleamPolicy<C = void>(args: DefineGleamPolicyArgs<C> & {
+    defaultConfig: DefinedConfig<C>;
+}): FilePolicyDefinition<C> & {
+    defaultConfig: DefinedConfig<C>;
+};
+
+// @public
+export function defineGleamPolicy<C = void>(args: DefineGleamPolicyArgs<C> & {
+    requiresConfig: true;
+}): FilePolicyDefinition<C> & {
+    requiresConfig: true;
+};
+
+// @public
+export function defineGleamPolicy<C = void>(args: DefineGleamPolicyArgs<C>): FilePolicyDefinition<C>;
+
+// @public
+export interface DefineGleamPolicyArgs<C> {
+    defaultConfig?: C;
+    description: string;
+    handler: GleamTomlHandler<C>;
+    name: string;
+    // (undocumented)
+    requiresConfig?: boolean;
+}
+
+// @public
+export function definePackagePolicy<J = PackageJson, C = void>(args: DefinePackagePolicyArgs<J, C> & {
+    defaultConfig: DefinedConfig<C>;
+}): FilePolicyDefinition<C> & {
+    defaultConfig: DefinedConfig<C>;
+};
+
+// @public
+export function definePackagePolicy<J = PackageJson, C = void>(args: DefinePackagePolicyArgs<J, C> & {
+    requiresConfig: true;
+}): FilePolicyDefinition<C> & {
+    requiresConfig: true;
+};
+
+// @public
+export function definePackagePolicy<J = PackageJson, C = void>(args: DefinePackagePolicyArgs<J, C>): FilePolicyDefinition<C>;
+
+// @public
+export interface DefinePackagePolicyArgs<J, C> {
+    defaultConfig?: C;
+    description: string;
+    handler: PackageJsonHandler<J, C>;
+    name: string;
+    // (undocumented)
+    requiresConfig?: boolean;
+}
+
+// @public
+export interface ExactScriptsConfig {
+    scripts: Record<string, string>;
+}
+
+// @public
 export interface FileHeaderGeneratorConfig extends Partial<FileHeaderPolicyConfig> {
     headerEnd?: RegExp;
     headerStart?: RegExp;
     lineEnd: RegExp;
     lineStart: RegExp;
-    // (undocumented)
     match: RegExp;
-    // (undocumented)
     replacer: (content: string, config: FileHeaderPolicyConfig) => string;
 }
 
-// @alpha (undocumented)
+// @public
 export interface FileHeaderPolicyConfig {
     autoGenText?: string;
     headerText: string;
 }
 
-// @alpha
-export function generateFileHeaderPolicy(name: string, config: FileHeaderGeneratorConfig): PolicyDefinition<FileHeaderPolicyConfig>;
-
-// @alpha
-export function generatePackagePolicy<J = PackageJson, C = undefined>(name: string, packagePolicy: PackageJsonHandler<J, C>): PolicyDefinition<C>;
-
-// @alpha
-export function makePolicy<C>(definition: PolicyDefinition<C>, config?: C, settings?: PolicyInstanceSettings<C>): PolicyInstance<C>;
-
-// @alpha
-export type PackageJsonHandler<J, C> = (json: J, args: PolicyFunctionArguments<C>) => Promise<PolicyHandlerResult>;
-
-// @alpha
-export interface PolicyDefinition<C = undefined> {
+// @public
+export interface FilePolicyDefinition<C = void> {
+    // (undocumented)
     defaultConfig?: C | undefined;
-    description?: string | undefined;
-    handler: PolicyHandler<C>;
+    // (undocumented)
+    description: string;
+    // (undocumented)
+    handler(args: PolicyArgs<C>): Promise<PolicyResult> | Operation<PolicyResult>;
+    // (undocumented)
     match: RegExp;
+    // (undocumented)
     name: PolicyName;
-    resolver?: PolicyStandaloneResolver<C> | undefined;
+    // (undocumented)
+    requiresConfig?: boolean | undefined;
+    // (undocumented)
+    resolver?: PolicyResolver<C> | undefined;
+    // (undocumented)
+    scope?: "file";
 }
 
-// @alpha
-export interface PolicyFailure {
-    autoFixable?: boolean | undefined;
-    errorMessage?: string | undefined;
-    file: string;
-    name: PolicyName;
+// @public
+export interface FluidAdapterOptions {
+    namePrefix?: string;
 }
 
-// @alpha
-export interface PolicyFixResult extends PolicyFailure {
-    resolved: boolean;
+// @public
+export interface FluidHandler {
+    handler: (file: string, root: string) => Promise<string | undefined>;
+    match: RegExp;
+    name: string;
+    resolver?: (file: string, root: string) => Promise<{
+        resolved: boolean;
+        message?: string;
+    }> | {
+        resolved: boolean;
+        message?: string;
+    };
 }
 
-// @alpha
-export interface PolicyFunctionArguments<C> {
+// @public
+export function fromFluidHandlers(fluidHandlers: FluidHandler[], options?: FluidAdapterOptions): FilePolicyDefinition[];
+
+// @public
+export interface GleamDepVersionsConfig {
+    requireVersions?: boolean;
+    warnUnbounded?: boolean;
+}
+
+// @public
+export interface GleamDocExistsConfig {
+    recommended?: string[];
+    required?: string[];
+}
+
+// @public
+export interface GleamInternalModulesConfiguredConfig {
+    suggestPatterns?: boolean;
+}
+
+// @public
+export interface GleamLicenceConfiguredConfig {
+    allowedLicences?: string[];
+    validateSpdx?: boolean;
+}
+
+// @public
+export interface GleamMonorepoConsistencyConfig {
+    packages?: string[];
+    syncFields?: string[];
+    syncGleamVersion?: boolean;
+}
+
+// @public
+export interface GleamNameRestrictionsConfig {
+    denyPrefixes?: string[];
+    requireSnakeCase?: boolean;
+}
+
+// @public
+export interface GleamNoPathDepsInPublishedConfig {
+    onlyPublishable?: boolean;
+}
+
+// @public
+export interface GleamProjectStructureConfig {
+    requireSrcDir?: boolean;
+    requireTestDir?: boolean;
+}
+
+// @public
+export interface GleamSharedDependencyVersionsConfig {
+    detectMismatches?: boolean;
+    includeDev?: boolean;
+    packages?: string[];
+}
+
+// @public
+export type GleamToml = Record<string, unknown>;
+
+// @public
+export type GleamTomlHandler<C> = (toml: GleamToml, args: PolicyArgs<C>) => Operation<PolicyResult> | Promise<PolicyResult>;
+
+// @public
+export interface GleamTomlRequiredConfig {
+    required?: string[];
+    requireGleamVersion?: boolean;
+    requireRepository?: boolean;
+}
+
+// @public
+export interface GleamTomlSortedConfig {
+    sections?: string[];
+}
+
+// @public
+export interface GleamVersionConstraintConfig {
+    minimumVersion?: string;
+}
+
+// @public
+export type IdentifiedPolicy<C = unknown> = ConfiguredPolicy<C> & {
+    instanceId: PolicyInstanceId;
+};
+
+// @public
+export interface LicenseFileExistsSettings {
+    acceptedNames?: string[];
+}
+
+// @public
+export function makePolicy<D extends FilePolicyDefinition<unknown>>(definition: D, ...options: OptionsFor<D>): ConfiguredFilePolicy<ConfigOf<D>>;
+
+// @public
+export function makePolicy<D extends RepositoryPolicyDefinition<unknown>>(definition: D, ...options: OptionsFor<D>): ConfiguredRepositoryPolicy<ConfigOf<D>>;
+
+// @public
+export function makePolicy<D extends PolicyDefinition<unknown>>(definition: D, ...options: OptionsFor<D>): ConfiguredPolicy<ConfigOf<D>>;
+
+// @public
+export interface MutuallyExclusiveScriptsConfig {
+    groups: string[][];
+}
+
+// @public
+export interface NoLargeBinaryFilesSettings {
+    excludeExtensions?: string[];
+    excludePatterns?: string[];
+    maxSizeBytes?: number;
+}
+
+// @public
+export interface NoPrivateWorkspaceDependenciesSettings {
+    checkDevDependencies?: boolean;
+}
+
+// @public
+export interface NoUnsafeWithoutJustificationConfig {
+    excludePaths?: string[];
+    requireComment?: string;
+}
+
+// @public
+export interface NoWildcardDependenciesConfig {
+    allowDev?: boolean;
+    deny?: string[];
+    warn?: string[];
+}
+
+// @public
+export interface PackageAllowedScopesConfig {
+    allowedScopes?: string[];
+    unscopedPackages?: string[];
+}
+
+// @public
+export interface PackageEsmTypeConfig {
+    detectFromExports?: boolean;
+    excludePackages?: string[];
+    onDetectionFailure?: "skip" | "warn" | "fail";
+    requiredType?: "module" | "commonjs";
+}
+
+// @public
+export interface PackageFolderNameConfig {
+    excludePackages?: string[];
+    stripScopes?: string[];
+}
+
+// @public
+export type PackageJsonHandler<J, C> = (json: J, args: PolicyArgs<C>) => Operation<PolicyResult> | Promise<PolicyResult>;
+
+// @public
+export interface PackageJsonPropertiesSettings {
+    verbatim: PackageJson;
+}
+
+// @public
+export interface PackageLicenseSettings {
+    licenseFileName?: string;
+    skipPrivate?: boolean;
+}
+
+// @public
+export interface PackagePrivateFieldConfig {
+    mayPublish?: string[];
+    mustBePrivate?: string[];
+    mustPublish?: string[];
+    unmatchedPackages?: "private" | "public" | "ignore";
+}
+
+// @public
+export interface PackageReadmeSettings {
+    requiredContent?: string;
+    requireMatchingTitle?: boolean;
+    skipPrivate?: boolean;
+}
+
+// @public
+export interface PackageScriptsSettings {
+    conditionalRequired?: ConditionalScriptRule_2[];
+    exact?: Record<string, string>;
+    must?: RequiredScriptEntry_2[];
+    mutuallyExclusive?: string[][];
+    scriptMustContain?: ScriptMustContainRule[];
+}
+
+// @public
+export interface PackageTestScriptsConfig {
+    excludePackages?: string[];
+    requiredScripts?: string[];
+    testDependencies?: string[];
+    testDirectories?: string[];
+}
+
+// @public
+export type PolicyAction = "check" | "resolve" | "handle";
+
+// @public
+export interface PolicyArgs<C = void> {
     // (undocumented)
     config?: C | undefined;
+    // (undocumented)
     file: string;
+    // (undocumented)
     resolve: boolean;
+    // (undocumented)
     root: string;
 }
 
-// @alpha
-export type PolicyHandler<C = unknown | undefined> = (args: PolicyFunctionArguments<C>) => Promise<PolicyHandlerResult>;
+// @public
+export type PolicyDefinition<C = void> = FilePolicyDefinition<C> | RepositoryPolicyDefinition<C>;
 
-// @alpha (undocumented)
-export type PolicyHandlerResult = true | PolicyFailure | PolicyFixResult;
+// @public
+export type PolicyExecutionError = {
+    policy: string;
+    policyId: string;
+    phase: "handle" | "resolve";
+    kind: "contract" | "exception";
+    message: string;
+    cause: unknown;
+} & ({
+    scope: "file";
+    file: string;
+    files?: never;
+} | {
+    scope: "repository";
+    files: readonly string[];
+    file?: never;
+});
 
-// @alpha (undocumented)
-export type PolicyInstance<C = undefined> = PolicyDefinition<C> & PolicyInstanceSettings<C>;
-
-// @alpha (undocumented)
-export interface PolicyInstanceSettings<C> {
-    config?: C | undefined;
-    excludeFiles?: (string | RegExp)[];
+// @public
+export interface PolicyFinding {
+    files?: readonly string[] | undefined;
+    // (undocumented)
+    fixStatus?: "available" | "fixed" | "failed" | undefined;
+    // (undocumented)
+    manualFix?: string | undefined;
+    // (undocumented)
+    message: string;
 }
 
-// @alpha
+// @public
+export type PolicyHandler<C = void> = FilePolicyDefinition<C>["handler"];
+
+// @public
+export interface PolicyHandlerPerfStats {
+    count: number;
+    data: Map<PolicyAction, Map<PolicyInstanceId, number>>;
+    processed: number;
+}
+
+// @public
+export type PolicyInstanceId = string;
+
+// @public
 export type PolicyName = string;
 
-// @alpha
-export type PolicyStandaloneResolver<C = undefined> = (args: Omit<PolicyFunctionArguments<C>, "resolve">) => Promise<PolicyFixResult>;
+// @public
+export interface PolicyOptions<C = void> {
+    // (undocumented)
+    config?: C | undefined;
+    // (undocumented)
+    exclude?: readonly (string | RegExp)[] | undefined;
+    // (undocumented)
+    instanceId?: PolicyInstanceId | undefined;
+}
 
-// @alpha (undocumented)
+// @public
+export type PolicyResolver<C = void> = {
+    resolve(args: Omit<PolicyArgs<C>, "resolve"> & {
+        findings: PolicyResult;
+    }): Promise<PolicyResult> | Operation<PolicyResult>;
+}["resolve"];
+
+// @public
+export type PolicyResult = readonly PolicyFinding[];
+
+// @public
+export type PolicyRunFinding = (Omit<PolicyFinding, "files"> & {
+    scope: "file";
+    file: string;
+    files?: never;
+    policy: string;
+    policyId: string;
+}) | (PolicyFinding & {
+    scope: "repository";
+    file?: never;
+    policy: string;
+    policyId: string;
+});
+
+// @public
+export class PolicyRunner {
+    constructor(options: PolicyRunnerOptions);
+    // (undocumented)
+    run(): Operation<PolicyRunResults>;
+}
+
+// @public
+export interface PolicyRunnerOptions {
+    // (undocumented)
+    concurrency?: number | undefined;
+    // (undocumented)
+    exclude?: readonly (string | RegExp)[] | undefined;
+    files?: readonly string[] | undefined;
+    // (undocumented)
+    fix?: boolean | undefined;
+    // (undocumented)
+    inventory?: RepositoryInventory | undefined;
+    // (undocumented)
+    policies: readonly ConfiguredPolicy[];
+    // (undocumented)
+    root: string;
+    // (undocumented)
+    signal?: AbortSignal | undefined;
+}
+
+// @public
+export interface PolicyRunResults {
+    // (undocumented)
+    errors: PolicyExecutionError[];
+    // (undocumented)
+    findings: PolicyRunFinding[];
+    // (undocumented)
+    perfStats: PolicyHandlerPerfStats;
+    // (undocumented)
+    skipped: PolicySkippedWork[];
+}
+
+// @public
+export type PolicySkippedWork = {
+    policy: string;
+    policyId: string;
+    reason: "excluded" | "file-fix-error" | "repository-fix-error";
+} & ({
+    scope: "file";
+    file: string;
+} | {
+    scope: "repository";
+    file?: never;
+});
+
+// @public
+export interface PublicApiDocumentedConfig {
+    checkCargoLints?: boolean;
+}
+
+// @public
 export interface RepopoConfig {
     excludeFiles?: (string | RegExp)[];
-    policies?: PolicyInstance<any>[];
+    // (undocumented)
+    policies?: ConfiguredPolicy[];
+}
+
+// @public
+export type RepositoryInventory = readonly string[] | (() => Promise<readonly string[]>);
+
+// @public
+export interface RepositoryPolicyArgs<C = void> extends Omit<PolicyArgs<C>, "file"> {
+    // (undocumented)
+    files: readonly string[];
+}
+
+// @public
+export interface RepositoryPolicyDefinition<C = void> {
+    // (undocumented)
+    defaultConfig?: C | undefined;
+    // (undocumented)
+    description: string;
+    // (undocumented)
+    handler(args: RepositoryPolicyArgs<C>): Promise<PolicyResult> | Operation<PolicyResult>;
+    // (undocumented)
+    name: PolicyName;
+    // (undocumented)
+    requiresConfig?: boolean | undefined;
+    // (undocumented)
+    resolver?: never;
+    // (undocumented)
+    scope: "repository";
+}
+
+// @public
+export type RepositoryPolicyHandler<C = void> = RepositoryPolicyDefinition<C>["handler"];
+
+// @public
+export interface RequiredGitignorePatternsSettings {
+    patterns: Array<string | {
+        pattern: string;
+        comment?: string;
+    }>;
+}
+
+// @public
+export type RequiredScriptEntry = string | Record<string, string>;
+
+// @public
+export interface RequiredScriptsConfig {
+    scripts: RequiredScriptEntry[];
 }
 
 export { run }
 
-// (No @packageDocumentation comment for this package)
+// @public
+export function runPolicies(options: PolicyRunnerOptions): Promise<PolicyRunResults>;
+
+// @public
+export interface RustDocExistsConfig {
+    recommended?: string[];
+    required?: string[];
+}
+
+// @public
+export interface RustfmtConfigExistsConfig {
+    acceptedNames?: string[];
+}
+
+// @public
+export interface RustToolchainExistsConfig {
+    acceptedNames?: string[];
+}
+
+// @public
+export interface ScriptContainsConfig {
+    rules: ScriptContainsRule[];
+}
+
+// @public
+export interface ScriptContainsRule {
+    mustContain: string[];
+    script: string;
+}
+
+// @public
+export interface ScriptMustContainRule {
+    mustContain: string[];
+    script: string;
+}
+
+// @public
+export interface SharedDependencyVersionsConfig {
+    detectMismatches?: boolean;
+    requireWorkspaceDeps?: string[];
+}
+
+// @public
+export interface WorkspaceInheritanceConfig {
+    allowOverrides?: string[];
+    inherit?: string[];
+}
+
+// @public
+export interface WorkspaceMembersValidConfig {
+    validatePaths?: boolean;
+}
 
 ```

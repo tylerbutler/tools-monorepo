@@ -3,7 +3,7 @@ https://www.npmjs.com/package/generate-license-file
 
 The following npm package may be included in this product:
 
- - unist-util-visit@5.0.0
+ - unist-util-visit@5.1.0
 
 This package contains the following license:
 

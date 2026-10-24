@@ -1,5 +1,37 @@
 # dill-cli
 
+## 0.4.2
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`dd64d1d`](https://github.com/tylerbutler/tools-monorepo/commit/dd64d1da4f10d6793af9a270216b296edee884a6)
+
+</small>
+
+- `@tylerbu/cli-api@0.11.0`
+
+</details>
+
+## 0.4.1
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`ee059d0`](https://github.com/tylerbutler/tools-monorepo/commit/ee059d02161494c14eb6131aaf32624902fd65e4)
+
+</small>
+
+- `@tylerbu/cli-api@0.10.0`
+
+</details>
+
 ## 0.4.0
 
 ### Minor Changes
@@ -9,7 +41,6 @@
   Replaced Promise.all with Effection's structured concurrency in writeTarFiles() and writeZipFiles() functions. This provides automatic cancellation of pending operations when one fails, preventing partial file extractions and unhandled promise rejections.
 
   Benefits:
-
   - Automatic cancellation when any file operation fails
   - No orphaned file writes or partial extractions
   - Guaranteed resource cleanup on success or failure

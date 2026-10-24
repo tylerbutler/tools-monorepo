@@ -47,11 +47,11 @@
 			"!**/packages/tree-sitter-ccl/src/grammar.json",
 			"!**/packages/tree-sitter-ccl/src/node-types.json",
 
-			// auto-generated data files
-			"!**/packages/ccl-test-viewer/src/lib/data/*.*",
-			"!**/packages/ccl-test-viewer/static/data/*.*",
-
 			"!**/FluidFramework",
+
+			// vendored packages (git subrepo) - exclude all except package.json
+			"!packages/btree-typescript",
+			"packages/btree-typescript/package.json",
 		],
 	},
 	"formatter": {
@@ -63,6 +63,14 @@
 		"includes": ["**/config/**", "**/docs/**", "**/src/**", "**/test/**"],
 	},
 	"overrides": [
+		{
+			// vendored packages - preserve original formatting style (spaces)
+			"includes": ["packages/btree-typescript/package.json"],
+			"formatter": {
+				"indentStyle": "space",
+				"indentWidth": 2,
+			},
+		},
 		{
 			// node projects
 			"includes": [
@@ -83,14 +91,52 @@
 		},
 		{
 			// sail infrastructure packages - allow namespace imports and complexity
+			// [TODO] Remove noBarrelFile override after refactoring sail to eliminate barrel files
 			"includes": ["packages/sail/**", "packages/sail-infrastructure/**"],
 			"linter": {
 				"rules": {
 					"performance": {
+						"noBarrelFile": "off",
 						"noNamespaceImport": "off",
 					},
 					"complexity": {
 						"noExcessiveCognitiveComplexity": "off",
+					},
+				},
+			},
+		},
+		{
+			// Astro component package entry points re-export .astro files directly.
+			// Biome's useImportExtensions rule doesn't recognise .astro as a valid
+			// extension and suggests rewriting to .js, which breaks the imports.
+			"includes": ["packages/astro-tinylytics/**"],
+			"linter": {
+				"rules": {
+					"correctness": {
+						"useImportExtensions": "off",
+					},
+				},
+			},
+		},
+		{
+			// Astro files - biome can parse the frontmatter but not the template
+			// below it, so it treats any variable referenced only in the template
+			// as unused. Disable the affected correctness rules for .astro.
+			// Also disable formatter and assist: biome's partial .astro support
+			// mangles the frontmatter (e.g. inserts blank line after ---).
+			"includes": ["**/*.astro"],
+			"formatter": {
+				"enabled": false,
+			},
+			"assist": {
+				"enabled": false,
+			},
+			"linter": {
+				"rules": {
+					"correctness": {
+						"noUnusedVariables": "off",
+						"noUnusedImports": "off",
+						"noUndeclaredVariables": "off",
 					},
 				},
 			},
@@ -207,14 +253,20 @@
 			},
 		},
 		{
-			// Barrel exports (shadcn-svelte and library patterns)
-			"includes": ["**/components/ui/**/index.ts", "**/lib/index.ts"],
+			// Package entry points and UI component barrels (shadcn-svelte patterns)
+			"includes": [
+				"**/src/index.ts",
+				"packages/repopo/src/api.ts",
+				"**/components/ui/**/index.ts",
+				"**/lib/index.ts",
+			],
 			"linter": {
 				"rules": {
 					"style": {
 						"noExportedImports": "off",
 					},
 					"performance": {
+						"noBarrelFile": "off",
 						"noReExportAll": "off",
 					},
 				},
@@ -246,22 +298,13 @@
 			},
 		},
 		{
-			// ccl-test-viewer specific overrides
-			"includes": ["packages/ccl-test-viewer/**"],
+			// Auto-generated TypeScript files from JSON schemas
+			"includes": ["**/generated/**/*.ts"],
 			"linter": {
 				"rules": {
-					"complexity": {
-						"noUselessUndefinedInitialization": "off",
-						"noVoid": "off",
-					},
-					"correctness": {
-						"useImportExtensions": "off",
-					},
 					"nursery": {
-						"noUselessUndefined": "off",
-					},
-					"suspicious": {
-						"noUnknownAtRules": "off",
+						// json2ts generates nested index signatures that shadow variable names
+						"noShadow": "off",
 					},
 				},
 			},

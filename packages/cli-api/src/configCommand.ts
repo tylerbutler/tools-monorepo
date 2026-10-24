@@ -1,7 +1,7 @@
 import process from "node:process";
 import type { Command } from "@oclif/core";
 import { BaseCommand } from "./baseCommand.js";
-import { ConfigFileFlagHidden } from "./flags.js";
+import { ConfigFlagHidden } from "./flags.js";
 import { loadConfig } from "./loadConfig.js";
 
 /**
@@ -23,7 +23,7 @@ export abstract class CommandWithConfig<
 	private _configPath: string | undefined;
 
 	public static override readonly flags = {
-		config: ConfigFileFlagHidden,
+		config: ConfigFlagHidden,
 		...BaseCommand.flags,
 	} as const;
 
@@ -51,7 +51,7 @@ export abstract class CommandWithConfig<
 		const loaded = await loadConfig<C>(this.config.bin, searchPath, undefined);
 
 		if (loaded === undefined && this.defaultConfig === undefined) {
-			this.error(`Failure to load config: ${searchPath}`, { exit: 1 });
+			this.exit(`Failure to load config: ${searchPath}`, 1);
 		}
 		const { config, location } = loaded ?? {
 			config: this.defaultConfig,

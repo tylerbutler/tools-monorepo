@@ -1,6 +1,6 @@
 import { existsSync, statSync } from "node:fs";
 import { Args, type Command, Flags } from "@oclif/core";
-import { CommandWithConfig, ConfigFileFlag } from "@tylerbu/cli-api";
+import { CommandWithConfig, ConfigFlag } from "@tylerbu/cli-api";
 import { join } from "pathe";
 import { glob } from "tinyglobby";
 import { TsConfigSorter } from "../api.js";
@@ -57,7 +57,7 @@ export default class SortTsconfigCommand extends CommandWithConfig<
 			default: false,
 		}),
 		...CommandWithConfig.flags,
-		config: ConfigFileFlag,
+		config: ConfigFlag,
 	} as const;
 
 	public static override readonly examples: Command.Example[] = [
@@ -88,11 +88,11 @@ export default class SortTsconfigCommand extends CommandWithConfig<
 		const { write } = this.flags;
 
 		if (tsconfigs === undefined) {
-			this.error("No path or glob to tsconfigs provided.");
+			this.exit("No path or glob to tsconfigs provided.");
 		}
 
 		if (tsconfigs.length === 0) {
-			this.error("No files found matching arguments");
+			this.exit("No files found matching arguments");
 		}
 
 		let orderToUse: OrderList;
@@ -123,15 +123,13 @@ export default class SortTsconfigCommand extends CommandWithConfig<
 				const sorted = sorter.isSorted(tsconfig);
 				if (!sorted) {
 					unsortedFiles.push(tsconfig);
-					this.errorLog(`Not sorted! ${tsconfig}`);
+					this.logError(`Not sorted! ${tsconfig}`);
 				}
 			}
 		}
 
 		if (unsortedFiles.length > 0) {
-			this.error(`Found ${unsortedFiles.length} unsorted files.`, {
-				exit: 1,
-			});
+			this.exit(`Found ${unsortedFiles.length} unsorted files.`, 1);
 		}
 		this.log("All files sorted.");
 	}

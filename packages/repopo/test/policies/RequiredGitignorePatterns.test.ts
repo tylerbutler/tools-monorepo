@@ -3,6 +3,7 @@ import { tmpdir } from "node:os";
 import { join } from "pathe";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { RequiredGitignorePatterns } from "../../src/policies/RequiredGitignorePatterns.js";
+import { runHandler } from "../test-helpers.js";
 
 describe("RequiredGitignorePatterns", () => {
 	let testDir: string;
@@ -61,13 +62,12 @@ Thumbs.db
 		});
 
 		it("should pass when all default patterns are present", async () => {
-			const result = await RequiredGitignorePatterns.handler({
+			const result = await runHandler(RequiredGitignorePatterns.handler, {
 				file: ".gitignore",
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -83,32 +83,35 @@ node_modules/
 		});
 
 		it("should fail when patterns are missing", async () => {
-			const result = await RequiredGitignorePatterns.handler({
+			const result = await runHandler(RequiredGitignorePatterns.handler, {
 				file: ".gitignore",
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.name).toBe("RequiredGitignorePatterns");
-				expect(result.autoFixable).toBe(true);
-				expect(result.errorMessage).toContain(
+				expect(result.every((finding) => !("name" in finding))).toBe(true);
+				expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+					true,
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
 					"Missing required .gitignore patterns",
 				);
 			}
 		});
 
 		it("should auto-fix by adding missing patterns", async () => {
-			const result = await RequiredGitignorePatterns.handler({
+			const result = await runHandler(RequiredGitignorePatterns.handler, {
 				file: ".gitignore",
 				root: testDir,
 				resolve: true,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "resolved" in result) {
-				expect(result.resolved).toBe(true);
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toBe(true);
 			}
 
 			// Check that patterns were added
@@ -125,30 +128,35 @@ node_modules/
 
 	describe("missing .gitignore file", () => {
 		it("should fail when .gitignore doesn't exist", async () => {
-			const result = await RequiredGitignorePatterns.handler({
+			const result = await runHandler(RequiredGitignorePatterns.handler, {
 				file: ".gitignore",
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.name).toBe("RequiredGitignorePatterns");
-				expect(result.autoFixable).toBe(true);
-				expect(result.errorMessage).toContain("No .gitignore file found");
+				expect(result.every((finding) => !("name" in finding))).toBe(true);
+				expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+					true,
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"No .gitignore file found",
+				);
 			}
 		});
 
 		it("should auto-fix by creating .gitignore with all patterns", async () => {
-			const result = await RequiredGitignorePatterns.handler({
+			const result = await runHandler(RequiredGitignorePatterns.handler, {
 				file: ".gitignore",
 				root: testDir,
 				resolve: true,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "resolved" in result) {
-				expect(result.resolved).toBe(true);
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toBe(true);
 			}
 
 			// Check that file was created with all patterns
@@ -172,17 +180,20 @@ node_modules/
 				],
 			};
 
-			const result = await RequiredGitignorePatterns.handler({
+			const result = await runHandler(RequiredGitignorePatterns.handler, {
 				file: ".gitignore",
 				root: testDir,
 				resolve: false,
 				config: customConfig,
 			});
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("custom-pattern/");
-				expect(result.errorMessage).toContain("*.log");
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"custom-pattern/",
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"*.log",
+				);
 			}
 		});
 
@@ -196,15 +207,17 @@ node_modules/
 				],
 			};
 
-			const result = await RequiredGitignorePatterns.handler({
+			const result = await runHandler(RequiredGitignorePatterns.handler, {
 				file: ".gitignore",
 				root: testDir,
 				resolve: true,
 				config: customConfig,
 			});
-
-			if (typeof result === "object" && "resolved" in result) {
-				expect(result.resolved).toBe(true);
+			if (typeof result === "object" && result.length > 0) {
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toBe(true);
 			}
 
 			const fs = await import("node:fs");
@@ -230,26 +243,27 @@ build/
 `,
 			);
 
-			const result = await RequiredGitignorePatterns.handler({
+			const result = await runHandler(RequiredGitignorePatterns.handler, {
 				file: ".gitignore",
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should handle .gitignore without final newline", async () => {
 			writeFileSync(gitignoreFile, "node_modules/");
 
-			const result = await RequiredGitignorePatterns.handler({
+			const result = await runHandler(RequiredGitignorePatterns.handler, {
 				file: ".gitignore",
 				root: testDir,
 				resolve: true,
 			});
-
-			if (typeof result === "object" && "resolved" in result) {
-				expect(result.resolved).toBe(true);
+			if (typeof result === "object" && result.length > 0) {
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toBe(true);
 			}
 
 			const fs = await import("node:fs");

@@ -7,7 +7,7 @@
 # Function: getBuildProjectConfig()
 
 ```ts
-function getBuildProjectConfig(searchPath, noCache): object;
+function getBuildProjectConfig(searchPath, noCache?): object;
 ```
 
 Defined in: [packages/sail-infrastructure/src/config.ts:274](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/config.ts#L274)
@@ -22,7 +22,7 @@ Search a path for a build project config file, and return the parsed config and 
 
 The path to start searching for config files in.
 
-### noCache
+### noCache?
 
 `boolean` = `false`
 

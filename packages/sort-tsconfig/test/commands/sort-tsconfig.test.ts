@@ -22,7 +22,7 @@ describe("sort-tsconfig command", () => {
 			root: import.meta.url,
 		});
 		expect(error?.message).to.equal("No files found matching arguments");
-		expect(error?.oclif?.exit).to.equal(2);
+		expect(error?.oclif?.exit).to.equal(1);
 	});
 
 	it("detects unsorted file", async () => {
@@ -44,13 +44,13 @@ describe("sort-tsconfig command", () => {
 				root: import.meta.url,
 			},
 		);
-		expect(stdout.trim()).to.equal("All files sorted.");
+		expect(stdout.trim()).toMatch(/.*?All files sorted./);
 		expect(error?.oclif?.exit).to.equal(undefined);
 	});
 
 	describe("globs", () => {
 		it("detects unsorted", async () => {
-			const { error, stdout } = await runCommand(
+			const { error, stderr } = await runCommand(
 				[
 					".",
 					`--config ${testFiles.config}`,
@@ -60,7 +60,7 @@ describe("sort-tsconfig command", () => {
 					root: import.meta.url,
 				},
 			);
-			expect(stdout).to.contain("ERROR: Not sorted!");
+			expect(stderr).to.contain("ERROR: Not sorted!");
 			expect(error?.oclif?.exit).to.equal(1);
 			expect(error?.message).to.equal("Found 2 unsorted files.");
 		});
@@ -73,7 +73,7 @@ describe("sort-tsconfig command", () => {
 					root: import.meta.url,
 				},
 			);
-			expect(stdout.trim()).to.equal("All files sorted.");
+			expect(stdout.trim()).toMatch(/.*?All files sorted./);
 			expect(error?.oclif?.exit).to.equal(undefined);
 		});
 	});

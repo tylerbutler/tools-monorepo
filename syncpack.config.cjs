@@ -1,8 +1,46 @@
 // @ts-check
 
+// Fixture packages used by sail and sail-infrastructure integration tests.
+// These simulate real-world repos with intentionally varied workspace protocols
+// (workspace:*, workspace:~) and lockfile-pinned dep versions (e.g., TypeScript)
+// that should not be synced with the monorepo.
+const fixturePackages = [
+	"@cache-test/**",
+	"@group2/**",
+	"@group3/**",
+	"@private/**",
+	"@shared/**",
+	"@test/**",
+	"cache-validity-multi-level-multi-task",
+	"diamond-dependency-fixture",
+	"lib-a",
+	"main-release-group-root",
+	"other-pkg-a",
+	"other-pkg-b",
+	"pkg-a",
+	"pkg-b",
+	"second-release-group-root",
+	"simple-monorepo-fixture",
+	"typescript-project-references-fixture",
+	"yarn-release-group-root",
+];
+
 /** @type {import("syncpack").RcFile} */
 const config = {
-	lintFormatting: false,
+	dependencyGroups: [
+		{
+			aliasName: "fluidframework",
+			dependencies: [
+				"@fluidframework/**",
+				"!@fluidframework/protocol-definitions",
+				"fluid-framework",
+			],
+		},
+		{
+			aliasName: "vitest",
+			dependencies: ["vitest", "@vitest/**"],
+		},
+	],
 	customTypes: {
 		engines: {
 			path: "engines",
@@ -13,16 +51,45 @@ const config = {
 			strategy: "name@version",
 		},
 	},
-	dependencyTypes: [
-		"dev",
-		"engines",
-		// Disabled for now because it removes the sha from the field.
-		// "packageManager",
-		// Disabled because of interactions with changeset versioning.
-		// "peer",
-		"prod",
-	],
 	versionGroups: [
+		{
+			label: "Ignore vendored btree-typescript package (git subrepo)",
+			isIgnored: true,
+			dependencies: ["**"],
+			packages: ["@tylerbu/sorted-btree-es6"],
+		},
+		{
+			label: "Ignore levee-client package (being removed from monorepo)",
+			isIgnored: true,
+			dependencies: ["**"],
+			packages: ["@tylerbu/levee-client"],
+		},
+		{
+			label:
+				"Ignore sail/sail-infrastructure integration test fixtures (simulate real-world repos)",
+			isIgnored: true,
+			dependencies: ["**"],
+			packages: fixturePackages,
+		},
+		{
+			label: "Ignore all dependency types except dev, engines, and prod",
+			dependencyTypes: ["!dev", "!engines", "!prod"],
+			isIgnored: true,
+		},
+		{
+			label:
+				"Allow engines.node to differ across packages (each package declares its own runtime floor)",
+			dependencyTypes: ["engines"],
+			isIgnored: true,
+			packages: ["**"],
+		},
+		{
+			label: "Use >= range for repopo peer dependency in sort-tsconfig",
+			dependencies: ["repopo"],
+			dependencyTypes: ["peer"],
+			packages: ["sort-tsconfig"],
+			pinVersion: ">=0.5.0",
+		},
 		{
 			label: "Use workspace protocol for workspace dependencies",
 			dependencies: ["$LOCAL"],
@@ -40,25 +107,61 @@ const config = {
 		{
 			label: "Use * dep for deps on sort-package-json",
 			dependencies: ["sort-package-json"],
-			dependencyTypes: ["dev", "prod"],
+			dependencyTypes: ["dev", "prod", "peer"],
 			pinVersion: "*",
 			packages: ["**"],
 		},
 		{
-			label: "Prefer lowest version when there's a mismatch",
+			label: "Ensure all Fluid Framework packages use consistent versions",
+			dependencies: ["fluidframework"],
+			packages: ["**"],
+			preferVersion: "highestSemver",
+		},
+		{
+			label: "Ensure all vitest packages use consistent versions",
+			dependencies: ["vitest"],
+			packages: ["**"],
+			preferVersion: "highestSemver",
+		},
+		{
+			label: "Prefer highest semver when there's a mismatch",
 			dependencies: ["**"],
 			packages: ["**"],
 			preferVersion: "highestSemver",
 		},
 	],
 	semverGroups: [
-		// Disabled for now because it removes the sha from the field.
-		// {
-		// 	label: "Use exact ranges for packageManager field",
-		// 	range: "",
-		// 	dependencyTypes: ["packageManager"],
-		// 	packages: ["**"],
-		// },
+		{
+			label: "Ignore vendored btree-typescript package (git subrepo)",
+			isIgnored: true,
+			dependencies: ["**"],
+			packages: ["@tylerbu/sorted-btree-es6"],
+		},
+		{
+			label: "Ignore levee-client package (being removed from monorepo)",
+			isIgnored: true,
+			dependencies: ["**"],
+			packages: ["@tylerbu/levee-client"],
+		},
+		{
+			label:
+				"Ignore sail/sail-infrastructure integration test fixtures (simulate real-world repos)",
+			isIgnored: true,
+			dependencies: ["**"],
+			packages: fixturePackages,
+		},
+		{
+			label: "Ignore packageManager field",
+			isIgnored: true,
+			dependencyTypes: ["packageManager"],
+			packages: ["**"],
+		},
+		{
+			label: "Ignore pnpm overrides",
+			isIgnored: true,
+			dependencyTypes: ["pnpmOverrides"],
+			packages: ["**"],
+		},
 		{
 			label: "Ignore GitHub URL dependencies",
 			isIgnored: true,
@@ -68,7 +171,13 @@ const config = {
 		{
 			label: "Use exact ranges for these deps",
 			range: "",
-			dependencies: ["@biomejs/biome", "nx", "sort-package-json"],
+			dependencies: [
+				"@biomejs/biome",
+				"@typescript/native-preview",
+				"nx",
+				"sort-package-json",
+				"syncpack",
+			],
 			packages: ["**"],
 		},
 		{
@@ -88,9 +197,9 @@ const config = {
 			label: "Use tilde range for Fluid Framework packages",
 			range: "~",
 			dependencies: [
-				"@fluidframework/**",
+				"fluidframework",
+				"@fluidframework/protocol-definitions",
 				"@fluid-tools/**",
-				"fluid-framework",
 			],
 			packages: ["**"],
 		},

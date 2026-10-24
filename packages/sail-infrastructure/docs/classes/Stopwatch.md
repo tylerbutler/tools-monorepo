@@ -16,7 +16,7 @@ The stopwatch is started upon creation, and each call to `log` will include the 
 ### Constructor
 
 ```ts
-new Stopwatch(enabled, logFunc): Stopwatch;
+new Stopwatch(enabled, logFunc?): Stopwatch;
 ```
 
 Defined in: [packages/sail-infrastructure/src/stopwatch.ts:11](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/stopwatch.ts#L11)
@@ -27,7 +27,7 @@ Defined in: [packages/sail-infrastructure/src/stopwatch.ts:11](https://github.co
 
 `boolean`
 
-##### logFunc
+##### logFunc?
 
 [`LoggingFunction`](../type-aliases/LoggingFunction.md) = `defaultLogger.log`
 

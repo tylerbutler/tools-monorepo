@@ -1,274 +1,136 @@
 ---
 title: Built-in policies
+description: An overview of the policies included with repopo and how to enable them.
 sidebar:
   order: 2
 ---
 
-repopo includes several built-in policies that enforce common repository standards. All built-in policies are **enabled by default** but can be configured or disabled as needed.
+repopo includes policies for JavaScript and package.json, Rust and Cargo, Gleam, and repository-wide checks. Import them from `repopo/policies` and add them to the `policies` array in your configuration.
 
-## Policy Overview
+## Default policies
 
-| Policy | Category | Auto-fixable | Purpose |
-|--------|----------|--------------|---------|
-| [HtmlFileHeaders](#htmlfileheaders) | File Headers | Yes | Enforce consistent headers in HTML files |
-| [JsTsFileHeaders](#jstsfileheaders) | File Headers | Yes | Enforce consistent headers in JS/TS files |
-| [NoJsFileExtensions](#nojsfileextensions) | File Extensions | No | Prevent ambiguous `.js` extensions |
-| [PackageJsonProperties](#packagejsonproperties) | Package.json | Yes | Enforce specific package.json fields |
-| [PackageJsonRepoDirectoryProperty](#packagejsonrepodirectoryproperty) | Package.json | Yes | Validate repository.directory path |
-| [PackageJsonSorted](#packagejsonsorted) | Package.json | Yes | Ensure sorted package.json files |
-| [PackageScripts](#packagescripts) | Package.json | No | Validate package.json scripts |
+If your configuration has no `policies` array, repopo runs `DefaultPolicies`:
 
-## File Header Policies
+- [NoJsFileExtensions](/policies/javascript/#nojsfileextensions)
+- [PackageJsonRepoDirectoryProperty](/policies/javascript/#packagejsonrepodirectoryproperty)
+- [PackageJsonSorted](/policies/javascript/#packagejsonsorted)
 
-### HtmlFileHeaders
+No other built-in policy runs until you configure it. Once you set `policies`, only the listed policies run. Use `policies: []` to run none.
 
-Enforces consistent file headers in HTML files using HTML comment syntax.
+## Enabling and configuring policies
 
-**Configuration:**
+Pass each policy to `makePolicy(definition, { config, exclude, instanceId })`. The options object is optional:
 
 ```ts title="repopo.config.ts"
-import { makePolicy } from "repopo";
-import { HtmlFileHeaders } from "repopo/policies";
+import { makePolicy, type RepopoConfig } from "repopo";
+import {
+	JsTsFileHeaders,
+	NoJsFileExtensions,
+	PackageJsonSorted,
+	RequiredScripts,
+} from "repopo/policies";
 
-const config = {
-  policies: [
-    makePolicy(HtmlFileHeaders, {
-      headerText: "Copyright (c) 2024 Your Company. All rights reserved."
-    })
-  ]
-};
+export default {
+	policies: [
+		// No configuration
+		makePolicy(PackageJsonSorted),
+
+		// Configuration
+		makePolicy(RequiredScripts, { config: { scripts: ["build", "test"] } }),
+
+		// Default configuration, with exclusions
+		makePolicy(NoJsFileExtensions, { exclude: ["^bin/"] }),
+
+		// Configuration and exclusions
+		makePolicy(JsTsFileHeaders, {
+			config: { headerText: "Copyright (c) Example Corp." },
+			exclude: ["/generated/"],
+		}),
+	],
+} satisfies RepopoConfig;
 ```
 
-The policy wraps the header text in HTML comment tags (`<!-- ... -->`). Multi-line headers are automatically formatted with proper comment delimiters on each line.
+Explicit configuration replaces a policy's default configuration; it isn't merged. Options you leave out still use their documented defaults. Policies marked **required** in the tables below have no usable default, so you must pass `config` when you add them.
 
-**Auto-fixable:** Yes
+Exclusion patterns are case-insensitive regular expressions matched against repo-relative paths, not globs. See [Configuration](/usage/config/) for global exclusions and using a policy more than once.
 
-### JsTsFileHeaders
+To disable a built-in policy, remove it from the `policies` array.
 
-Enforces consistent file headers in JavaScript and TypeScript files using JSDoc-style block comments.
+## All built-in policies
 
-**Configuration:**
+**Scope** is *file* for policies that check each matching file and *repository* for policies that run once per check. **Fix** says whether `repopo check --fix` can correct violations; *partial* means only some violations can be fixed. **Config** is *required* when the policy has no usable default configuration.
 
-```ts title="repopo.config.ts"
-import { makePolicy } from "repopo";
-import { JsTsFileHeaders } from "repopo/policies";
+### JavaScript and package.json
 
-const config = {
-  policies: [
-    makePolicy(JsTsFileHeaders, {
-      headerText: `Copyright (c) 2024 Your Company.
-Licensed under the MIT License.`
-    })
-  ]
-};
-```
+| Policy | Scope | Fix | Config | Purpose |
+| --- | --- | --- | --- | --- |
+| [HtmlFileHeaders](/policies/javascript/#htmlfileheaders) | file | yes | required | Header comment in HTML files |
+| [JsTsFileHeaders](/policies/javascript/#jstsfileheaders) | file | yes | required | Header comment in JS/TS files |
+| [NoJsFileExtensions](/policies/javascript/#nojsfileextensions) | file | no |  | Use `.mjs`/`.cjs` instead of `.js` |
+| [NoPrivateWorkspaceDependencies](/policies/javascript/#noprivateworkspacedependencies) | file | no |  | Publishable packages can't depend on private workspace packages |
+| [PackageAllowedScopes](/policies/javascript/#packageallowedscopes) | file | no | required | Only approved npm scopes and names |
+| [PackageEsmType](/policies/javascript/#packageesmtype) | file | yes | required | Correct `type` field |
+| [PackageFolderName](/policies/javascript/#packagefoldername) | file | no |  | Folder name matches package name |
+| [PackageJsonProperties](/policies/javascript/#packagejsonproperties) | file | yes | required | Required package.json field values |
+| [PackageJsonRepoDirectoryProperty](/policies/javascript/#packagejsonrepodirectoryproperty) | file | yes |  | Correct `repository.directory` |
+| [PackageJsonSorted](/policies/javascript/#packagejsonsorted) | file | yes |  | Sorted package.json |
+| [PackageLicense](/policies/javascript/#packagelicense) | file | yes |  | Package LICENSE matches the root LICENSE |
+| [PackagePrivateField](/policies/javascript/#packageprivatefield) | file | yes | required | `private` field matches publishing rules |
+| [PackageReadme](/policies/javascript/#packagereadme) | file | yes |  | README exists, with the expected title and content |
+| [RequiredScripts](/policies/javascript/#requiredscripts) | file | partial | required | Required scripts exist |
+| [ExactScripts](/policies/javascript/#exactscripts) | file | yes | required | Scripts have exact content |
+| [ConditionalScripts](/policies/javascript/#conditionalscripts) | file | partial | required | A script requires other scripts |
+| [MutuallyExclusiveScripts](/policies/javascript/#mutuallyexclusivescripts) | file | no | required | At most one script per group |
+| [ScriptContains](/policies/javascript/#scriptcontains) | file | no | required | Scripts contain required substrings |
+| [PackageScripts](/policies/javascript/#packagescripts) | file | partial | required | Legacy combined script checks |
+| [PackageTestScripts](/policies/javascript/#packagetestscripts) | file | no | required | Test scripts exist when tests exist |
 
-The policy creates a block comment with `/*!` syntax to ensure it's preserved during minification. Multi-line headers are formatted with `* ` prefix on each line. The policy respects hashbang (`#!`) declarations and places the header after them.
+### Rust and Cargo
 
-**Auto-fixable:** Yes
+| Policy | Scope | Fix | Config | Purpose |
+| --- | --- | --- | --- | --- |
+| [CargoTomlRequired](/policies/rust/#cargotomlrequired) | file | no |  | Required `[package]` fields |
+| [CargoLicenceValidated](/policies/rust/#cargolicencevalidated) | file | yes |  | Valid SPDX `license` |
+| [CargoLintsConfigured](/policies/rust/#cargolintsconfigured) | file | no |  | `[lints.clippy]` configured |
+| [PublicApiDocumented](/policies/rust/#publicapidocumented) | file | no |  | `missing_docs` lint enabled |
+| [CargoTomlSorted](/policies/rust/#cargotomlsorted) | file | yes |  | Sorted dependency sections |
+| [NoWildcardDependencies](/policies/rust/#nowildcarddependencies) | file | no |  | No wildcard or loose versions |
+| [CargoLockPolicy](/policies/rust/#cargolockpolicy) | file | no |  | Commit `Cargo.lock` based on crate type |
+| [WorkspaceMembersValid](/policies/rust/#workspacemembersvalid) | file | no |  | Workspace member paths exist |
+| [WorkspaceInheritance](/policies/rust/#workspaceinheritance) | file | no |  | Members inherit workspace fields |
+| [SharedDependencyVersions](/policies/rust/#shareddependencyversions) | repository | no |  | Same dependency versions across members |
+| [RustToolchainExists](/policies/rust/#rusttoolchainexists) | file | no |  | `rust-toolchain.toml` exists |
+| [RustfmtConfigExists](/policies/rust/#rustfmtconfigexists) | file | no |  | `rustfmt.toml` exists |
+| [RustDocExists](/policies/rust/#rustdocexists) | file | no |  | Crate documentation files exist |
+| [NoUnsafeWithoutJustification](/policies/rust/#nounsafewithoutjustification) | file | no |  | `// SAFETY:` comments on `unsafe` |
+| [NoTargetArtifacts](/policies/rust/#notargetartifacts) | file | no |  | No committed build artifacts |
 
-## File Extension Policies
+### Gleam
 
-### NoJsFileExtensions
+| Policy | Scope | Fix | Config | Purpose |
+| --- | --- | --- | --- | --- |
+| [GleamTomlRequired](/policies/gleam/#gleamtomlrequired) | file | no |  | Required `gleam.toml` fields |
+| [GleamVersionConstraint](/policies/gleam/#gleamversionconstraint) | file | no |  | Compiler version constraint set |
+| [GleamLicenceConfigured](/policies/gleam/#gleamlicenceconfigured) | file | yes |  | `licences` configured |
+| [GleamNameRestrictions](/policies/gleam/#gleamnamerestrictions) | file | no |  | Package naming rules |
+| [GleamInternalModulesConfigured](/policies/gleam/#gleaminternalmodulesconfigured) | file | no |  | `internal_modules` configured |
+| [GleamTomlSorted](/policies/gleam/#gleamtomlsorted) | file | yes |  | Sorted dependency sections |
+| [GleamDepVersions](/policies/gleam/#gleamdepversions) | file | no |  | Dependency version constraints |
+| [GleamPathDepsValid](/policies/gleam/#gleampathdepsvalid) | file | no |  | Path dependencies exist |
+| [GleamNoPathDepsInPublished](/policies/gleam/#gleamnopathdepsinpublished) | file | no |  | No path dependencies in published packages |
+| [GleamMonorepoConsistency](/policies/gleam/#gleammonorepoconsistency) | file | no | required | Matching metadata across packages |
+| [GleamSharedDependencyVersions](/policies/gleam/#gleamshareddependencyversions) | file | no | required | Matching dependency versions across packages |
+| [GleamProjectStructure](/policies/gleam/#gleamprojectstructure) | file | no |  | Standard `src/` and `test/` layout |
+| [GleamManifestCommitted](/policies/gleam/#gleammanifestcommitted) | file | no |  | `manifest.toml` committed |
+| [GleamDocExists](/policies/gleam/#gleamdocexists) | file | no |  | Package documentation files exist |
+| [NoBuildDirectory](/policies/gleam/#nobuilddirectory) | file | no |  | No committed `build/` output |
 
-Prevents ambiguous `.js` file extensions in favor of explicit `.mjs` (ESM) or `.cjs` (CommonJS) extensions.
+### General
 
-**Why:** JavaScript files with just the `.js` extension may be interpreted by Node.js as either CommonJS or ESM based on the `type` field in the nearest package.json. Using explicit extensions reduces ambiguity and ensures consistent module resolution.
+| Policy | Scope | Fix | Config | Purpose |
+| --- | --- | --- | --- | --- |
+| [LicenseFileExists](/policies/repository/#licensefileexists) | repository | no |  | License file at the repository root |
+| [NoLargeBinaryFiles](/policies/repository/#nolargebinaryfiles) | file | no |  | No files over a size limit |
+| [RequiredGitignorePatterns](/policies/repository/#requiredgitignorepatterns) | file | yes |  | Required `.gitignore` entries |
 
-**Auto-fixable:** No
-
-## Package.json Policies
-
-### PackageJsonProperties
-
-Enforces specific fields and values in package.json files across the repository.
-
-**Configuration:**
-
-```ts title="repopo.config.ts"
-import { makePolicy } from "repopo";
-import { PackageJsonProperties } from "repopo/policies";
-
-const config = {
-  policies: [
-    makePolicy(PackageJsonProperties, {
-      verbatim: {
-        license: "MIT",
-        author: "Tyler Butler <tyler@tylerbutler.com>",
-        bugs: "https://github.com/tylerbutler/tools-monorepo/issues",
-        repository: {
-          type: "git",
-          url: "git+https://github.com/tylerbutler/tools-monorepo.git",
-        }
-      }
-    })
-  ]
-};
-```
-
-The `verbatim` configuration merges the specified fields into each package.json file. Fields in `verbatim` will override any existing values.
-
-**Auto-fixable:** Yes
-
-### PackageJsonRepoDirectoryProperty
-
-Validates that the `repository.directory` property in package.json is set correctly based on the package's location in the repository.
-
-The policy automatically calculates the correct directory path relative to the repository root and ensures the `repository.directory` field matches.
-
-**Note:** If the repository field is a string instead of an object, the package will be ignored.
-
-**Auto-fixable:** Yes
-
-### PackageJsonSorted
-
-Ensures package.json files are sorted according to a standard key order (using `sort-package-json`).
-
-**Auto-fixable:** Yes
-
-### PackageScripts
-
-Validates package.json scripts based on configurable rules. Supports required scripts and mutually exclusive script groups.
-
-**Configuration:**
-
-```ts title="repopo.config.ts"
-import { makePolicy } from "repopo";
-import { PackageScripts } from "repopo/policies";
-
-const config = {
-  policies: [
-    makePolicy(PackageScripts, {
-      // Require these scripts in all packages
-      must: ["build", "clean"],
-      // Only allow one script from each group (or none)
-      mutuallyExclusive: [
-        ["test", "test:unit"],        // Either "test" or "test:unit", not both
-        ["lint:eslint", "lint:biome"] // Either "lint:eslint" or "lint:biome", not both
-      ]
-    })
-  ]
-};
-```
-
-**Validation Rules:**
-
-1. All scripts in the `must` array must be present
-2. For each group in `mutuallyExclusive`:
-   - Zero scripts from the group is allowed (all optional)
-   - Exactly one script from the group is allowed
-   - Multiple scripts from the same group will fail
-
-**Use Cases:**
-
-- **Enforcing consistency**: Ensure all packages have core scripts like `build` and `clean`
-- **Preventing conflicts**: Avoid duplicate tool configurations (e.g., both `test:unit` and `test:vitest`)
-- **Migration management**: During tool migrations, enforce that packages use either the old or new tool, but not both
-- **Standardization**: Maintain consistent script naming conventions across a monorepo
-
-**Examples:**
-
-Valid configuration:
-```json
-{
-  "scripts": {
-    "build": "tsc",
-    "clean": "rm -rf dist",
-    "test": "vitest"
-  }
-}
-```
-
-Invalid (missing required script):
-```json
-{
-  "scripts": {
-    "build": "tsc"
-    // Missing "clean"
-  }
-}
-```
-
-Invalid (mutually exclusive violation):
-```json
-{
-  "scripts": {
-    "build": "tsc",
-    "clean": "rm -rf dist",
-    "test": "vitest",
-    "test:unit": "vitest run"  // Both "test" and "test:unit" present
-  }
-}
-```
-
-**Auto-fixable:** No
-
-## Configuration and Exclusions
-
-### Configuring Policies
-
-To configure a built-in policy, use the `makePolicy` function with your custom settings:
-
-```ts title="repopo.config.ts"
-import { makePolicy } from "repopo";
-import { PackageScripts, JsTsFileHeaders } from "repopo/policies";
-
-const config = {
-  policies: [
-    // Configure with settings
-    makePolicy(PackageScripts, {
-      must: ["build", "test"],
-      mutuallyExclusive: [["lint:eslint", "lint:biome"]]
-    }),
-
-    // Configure with settings and exclusions
-    makePolicy(JsTsFileHeaders,
-      { headerText: "Copyright 2024" },
-      { excludeFiles: ["**/generated/**"] }
-    )
-  ]
-};
-```
-
-### Disabling Policies
-
-To disable a built-in policy, simply don't include it in your policies array. By default, all built-in policies are enabled, but you can create a custom configuration that includes only the policies you want:
-
-```ts title="repopo.config.ts"
-import { makePolicy } from "repopo";
-import { PackageJsonSorted, NoJsFileExtensions } from "repopo/policies";
-
-// Only enable these two policies
-const config = {
-  policies: [
-    makePolicy(PackageJsonSorted),
-    makePolicy(NoJsFileExtensions)
-  ]
-};
-```
-
-### Excluding Files
-
-You can exclude files from specific policies or from all policies:
-
-```ts title="repopo.config.ts"
-import { makePolicy } from "repopo";
-import { PackageJsonProperties } from "repopo/policies";
-
-const config = {
-  // Exclude files from ALL policies
-  excludeFiles: [
-    /node_modules/,
-    /\\.coverage/,
-    /dist/
-  ],
-
-  policies: [
-    // Exclude files from specific policy
-    makePolicy(PackageJsonProperties,
-      { verbatim: { license: "MIT" } },
-      { excludeFiles: [/packages\/experimental/] }
-    )
-  ]
-};
-```
+To write your own policies, see [Custom policies](/policies/custom/).

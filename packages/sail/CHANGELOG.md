@@ -1,5 +1,66 @@
 # dill-cli
 
+## 0.2.5
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`dd64d1d`](https://github.com/tylerbutler/tools-monorepo/commit/dd64d1da4f10d6793af9a270216b296edee884a6)
+
+</small>
+
+- `@tylerbu/cli-api@0.11.0`
+
+</details>
+
+## 0.2.4
+
+### Patch Changes
+
+- Maintenance and correctness improvements from code review: _[`#673`](https://github.com/tylerbutler/tools-monorepo/pull/673) [`a4f70e9`](https://github.com/tylerbutler/tools-monorepo/commit/a4f70e9caaa4f2a3d96c10daaa7bcd95ef89961a) [@tylerbutler](https://github.com/tylerbutler)_
+  - Implement `printExecError` function that was previously a no-op with a TODO comment; now logs errors and warnings via the `debug` module
+  - Replace sync file I/O (`existsSync`, `statSync`) with async equivalents in `PersistentFileHashCache`
+  - Remove leftover debug code in `atomicWrite.ts` that dynamically imported `existsSync` for manifest-specific logging
+  - Add `debug`-based logging in `statistics.ts` where errors were previously silently swallowed
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`a4f70e9`](https://github.com/tylerbutler/tools-monorepo/commit/a4f70e9caaa4f2a3d96c10daaa7bcd95ef89961a)
+
+</small>
+
+- `@tylerbu/sail-infrastructure@0.4.1`
+
+</details>
+
+## 0.2.3
+
+### Patch Changes
+
+- Update to use new cli-api logger API _[`#395`](https://github.com/tylerbutler/tools-monorepo/pull/395) [`ee059d0`](https://github.com/tylerbutler/tools-monorepo/commit/ee059d02161494c14eb6131aaf32624902fd65e4) [@tylerbutler](https://github.com/tylerbutler)_
+
+  Updates commands to use the new logger API from @tylerbu/cli-api:
+  - Replace `errorLog()` calls with `logError()`
+  - Use standalone `logIndent()` function where needed
+
+<details><summary>Updated 2 dependencies</summary>
+
+<small>
+
+[`ee059d0`](https://github.com/tylerbutler/tools-monorepo/commit/ee059d02161494c14eb6131aaf32624902fd65e4) [`ee059d0`](https://github.com/tylerbutler/tools-monorepo/commit/ee059d02161494c14eb6131aaf32624902fd65e4)
+
+</small>
+
+- `@tylerbu/cli-api@0.10.0`
+- `@tylerbu/sail-infrastructure@0.4.0`
+
+</details>
+
 ## 0.2.2
 
 ### Patch Changes

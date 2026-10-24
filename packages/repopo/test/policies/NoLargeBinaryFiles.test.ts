@@ -3,6 +3,7 @@ import { tmpdir } from "node:os";
 import { join } from "pathe";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { NoLargeBinaryFiles } from "../../src/policies/NoLargeBinaryFiles.js";
+import { runHandler } from "../test-helpers.js";
 
 describe("NoLargeBinaryFiles", () => {
 	let testDir: string;
@@ -35,13 +36,12 @@ describe("NoLargeBinaryFiles", () => {
 			const smallFile = join(testDir, "small.txt");
 			writeFileSync(smallFile, "Hello world!");
 
-			const result = await NoLargeBinaryFiles.handler({
+			const result = await runHandler(NoLargeBinaryFiles.handler, {
 				file: "small.txt",
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should pass for medium-sized files under default limit", async () => {
@@ -50,13 +50,12 @@ describe("NoLargeBinaryFiles", () => {
 			const content = Buffer.alloc(5 * 1024 * 1024, 0);
 			writeFileSync(mediumFile, content);
 
-			const result = await NoLargeBinaryFiles.handler({
+			const result = await runHandler(NoLargeBinaryFiles.handler, {
 				file: "medium.bin",
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -67,20 +66,29 @@ describe("NoLargeBinaryFiles", () => {
 			const content = Buffer.alloc(15 * 1024 * 1024, 0);
 			writeFileSync(largeFile, content);
 
-			const result = await NoLargeBinaryFiles.handler({
+			const result = await runHandler(NoLargeBinaryFiles.handler, {
 				file: "large.bin",
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.name).toBe("NoLargeBinaryFiles");
-				expect(result.autoFixable).toBe(false);
-				expect(result.errorMessage).toContain("File is too large");
-				expect(result.errorMessage).toContain("15.0 MB");
-				expect(result.errorMessage).toContain("10.0 MB");
-				expect(result.errorMessage).toContain("Git LFS");
+				expect(result.every((finding) => !("name" in finding))).toBe(true);
+				expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+					false,
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"File is too large",
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"15.0 MB",
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"10.0 MB",
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"Git LFS",
+				);
 			}
 		});
 
@@ -89,16 +97,19 @@ describe("NoLargeBinaryFiles", () => {
 			const content = Buffer.alloc(15 * 1024 * 1024, 0);
 			writeFileSync(largeFile, content);
 
-			const result = await NoLargeBinaryFiles.handler({
+			const result = await runHandler(NoLargeBinaryFiles.handler, {
 				file: "large.bin",
 				root: testDir,
 				resolve: true,
 			});
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.autoFixable).toBe(false);
-				expect("resolved" in result).toBe(false);
+				expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+					false,
+				);
+				expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+					false,
+				);
 			}
 		});
 	});
@@ -124,13 +135,12 @@ describe("NoLargeBinaryFiles", () => {
 				const content = "x".repeat(15 * 1024 * 1024);
 				writeFileSync(filePath, content);
 
-				const result = await NoLargeBinaryFiles.handler({
+				const result = await runHandler(NoLargeBinaryFiles.handler, {
 					file: fileName,
 					root: testDir,
 					resolve: false,
 				});
-
-				expect(result).toBe(true);
+				expect(result).toEqual([]);
 			}
 		});
 	});
@@ -146,17 +156,20 @@ describe("NoLargeBinaryFiles", () => {
 				maxSizeBytes: 1 * 1024 * 1024, // 1MB limit
 			};
 
-			const result = await NoLargeBinaryFiles.handler({
+			const result = await runHandler(NoLargeBinaryFiles.handler, {
 				file: "test.bin",
 				root: testDir,
 				resolve: false,
 				config: customConfig,
 			});
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("2.0 MB");
-				expect(result.errorMessage).toContain("1.0 MB");
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"2.0 MB",
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"1.0 MB",
+				);
 			}
 		});
 
@@ -170,14 +183,13 @@ describe("NoLargeBinaryFiles", () => {
 				excludeExtensions: [".data"],
 			};
 
-			const result = await NoLargeBinaryFiles.handler({
+			const result = await runHandler(NoLargeBinaryFiles.handler, {
 				file: "large.data",
 				root: testDir,
 				resolve: false,
 				config: customConfig,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should use custom exclude patterns", async () => {
@@ -192,14 +204,13 @@ describe("NoLargeBinaryFiles", () => {
 				excludePatterns: ["assets/*"],
 			};
 
-			const result = await NoLargeBinaryFiles.handler({
+			const result = await runHandler(NoLargeBinaryFiles.handler, {
 				file: "assets/large-image.png",
 				root: testDir,
 				resolve: false,
 				config: customConfig,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should handle glob-like patterns in excludePatterns", async () => {
@@ -224,53 +235,49 @@ describe("NoLargeBinaryFiles", () => {
 			};
 
 			for (const fileName of files) {
-				const result = await NoLargeBinaryFiles.handler({
+				const result = await runHandler(NoLargeBinaryFiles.handler, {
 					file: fileName,
 					root: testDir,
 					resolve: false,
 					config: customConfig,
 				});
-
-				expect(result).toBe(true);
+				expect(result).toEqual([]);
 			}
 		});
 	});
 
 	describe("edge cases", () => {
 		it("should handle missing files gracefully", async () => {
-			const result = await NoLargeBinaryFiles.handler({
+			const result = await runHandler(NoLargeBinaryFiles.handler, {
 				file: "nonexistent.bin",
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should handle directories", async () => {
 			const subDir = join(testDir, "subdir");
 			mkdirSync(subDir);
 
-			const result = await NoLargeBinaryFiles.handler({
+			const result = await runHandler(NoLargeBinaryFiles.handler, {
 				file: "subdir",
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should handle zero-byte files", async () => {
 			const emptyFile = join(testDir, "empty.bin");
 			writeFileSync(emptyFile, "");
 
-			const result = await NoLargeBinaryFiles.handler({
+			const result = await runHandler(NoLargeBinaryFiles.handler, {
 				file: "empty.bin",
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should format file sizes correctly", async () => {
@@ -286,7 +293,7 @@ describe("NoLargeBinaryFiles", () => {
 				const content = Buffer.alloc(bytes, 0);
 				writeFileSync(file, content);
 
-				const result = await NoLargeBinaryFiles.handler({
+				const result = await runHandler(NoLargeBinaryFiles.handler, {
 					file: `test-${bytes}.bin`,
 					root: testDir,
 					resolve: false,
@@ -294,7 +301,9 @@ describe("NoLargeBinaryFiles", () => {
 				});
 
 				if (typeof result === "object") {
-					expect(result.errorMessage).toContain(expected);
+					expect(result.map((finding) => finding.message).join()).toContain(
+						expected,
+					);
 				}
 			}
 		});

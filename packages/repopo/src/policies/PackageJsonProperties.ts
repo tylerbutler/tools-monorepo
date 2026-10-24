@@ -1,16 +1,25 @@
-import { defu } from "defu";
+import { createDefu } from "defu";
+import { call } from "effection";
 import jsonfile from "jsonfile";
 import diff from "microdiff";
+import { resolve as resolvePath } from "pathe";
 import type { PackageJson } from "type-fest";
-import type { PolicyFailure, PolicyFixResult } from "../policy.js";
 import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
 
 const { writeFile: writeJson } = jsonfile;
 
+const mergeProperties = createDefu((object, key, value) => {
+	if (Array.isArray(value)) {
+		object[key] = value;
+		return true;
+	}
+	return false;
+});
+
 /**
  * Policy settings for the PackageJsonProperties repo policy.
  *
- * @alpha
+ * @public
  */
 export interface PackageJsonPropertiesSettings {
 	/**
@@ -22,50 +31,42 @@ export interface PackageJsonPropertiesSettings {
 /**
  * A RepoPolicy that checks that package.json properties in packages match expected values.
  *
- * @alpha
+ * @public
  */
 export const PackageJsonProperties = definePackagePolicy<
 	PackageJson,
-	PackageJsonPropertiesSettings | undefined
->("PackageJsonProperties", async (json, { file, config, resolve }) => {
-	if (config === undefined) {
-		return true;
-	}
-	const { verbatim } = config;
+	PackageJsonPropertiesSettings
+>({
+	name: "PackageJsonProperties",
+	description:
+		"Ensures package.json files contain required properties with correct values.",
+	requiresConfig: true,
+	handler: function* (json, { file, root, config, resolve }) {
+		if (config === undefined) {
+			throw new TypeError("PackageJsonProperties requires config.");
+		}
+		const { verbatim } = config;
+		const merged = mergeProperties(verbatim, json);
+		const result = diff(merged, json);
 
-	const failResult: PolicyFailure = {
-		name: PackageJsonProperties.name,
-		file,
-		autoFixable: true,
-	};
-
-	const merged = defu(verbatim, json);
-	const result = diff(merged, json);
-
-	const messages: string[] = [];
-	for (const diffResult of result) {
-		messages.push(
-			`Incorrect package.json field value for '${diffResult.path}'.`,
-		);
-	}
-
-	if (messages.length > 0) {
-		if (resolve) {
-			const fixResult: PolicyFixResult = {
-				...failResult,
-				resolved: false,
-			};
-
-			await writeJson(file, merged, { spaces: "\t" });
-
-			fixResult.resolved = true;
-			return fixResult;
+		const messages: string[] = [];
+		for (const diffResult of result) {
+			messages.push(
+				`Incorrect package.json field value for '${diffResult.path}'.`,
+			);
 		}
 
-		// There were errors, and we're not resolving them, so return a fail result
-		failResult.errorMessage = messages.join("\n");
-		return failResult;
-	}
+		if (messages.length > 0) {
+			if (resolve) {
+				yield* call(() =>
+					writeJson(resolvePath(root, file), merged, { spaces: "\t" }),
+				);
+				return messages.map((message) => ({ message, fixStatus: "fixed" }));
+			}
 
-	return true;
+			// There were errors, and we're not resolving them, so return a fail result
+			return messages.map((message) => ({ message, fixStatus: "available" }));
+		}
+		return [];
+	},
 });

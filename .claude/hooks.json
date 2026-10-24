@@ -1,0 +1,20 @@
+{
+	"hooks": [
+		{
+			"event": "preToolCall",
+			"matcher": { "tool": "Write" },
+			"commands": ["echo 'Writing file: $FILE_PATH'"]
+		},
+		{
+			"event": "postToolCall",
+			"matcher": { "tool": "Edit", "filePath": "**/*.ts" },
+			"commands": ["pnpm nx affected:lint --files=$FILE_PATH || true"]
+		},
+		{
+			"event": "stop",
+			"commands": [
+				"./packages/repopo/bin/dev.js check --quiet || echo 'Policy violations found - run pnpm run fix:policy'"
+			]
+		}
+	]
+}

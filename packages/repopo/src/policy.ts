@@ -1,223 +1,110 @@
+import type { Operation } from "effection";
 import { NoJsFileExtensions } from "./policies/NoJsFileExtensions.js";
 import { PackageJsonRepoDirectoryProperty } from "./policies/PackageJsonRepoDirectoryProperty.js";
 import { PackageJsonSorted } from "./policies/PackageJsonSorted.js";
-import { PackageScripts } from "./policies/PackageScripts.js";
 
-/**
- * A type representing a policy name.
- *
- * @alpha
- */
+/** Display name of a policy. @public */
 export type PolicyName = string;
+/** Stable configured-instance identity. @public */
+export type PolicyInstanceId = string;
 
-/**
- * Arguments passed to policy functions.
- *
- * @alpha
- */
-
-export interface PolicyFunctionArguments<C> {
-	/**
-	 * Path to the file, relative to the repo root.
-	 */
+/** Arguments supplied to a file handler. @public */
+export interface PolicyArgs<C = void> {
 	file: string;
-
-	/**
-	 * Absolute path to the root of the repo.
-	 */
 	root: string;
-
-	/**
-	 * If true, the handler should resolve any violations automatically if possible.
-	 */
 	resolve: boolean;
-
-	/**
-	 * @remarks
-	 *
-	 * Note that the handler function receives the config as an argument.
-	 */
 	config?: C | undefined;
 }
 
-/**
- * A policy handler is a function that is called to check policy against a file.
- *
- * @alpha
- */
+/** Arguments supplied to a repository handler; selection never limits files. @public */
+export interface RepositoryPolicyArgs<C = void>
+	extends Omit<PolicyArgs<C>, "file"> {
+	files: readonly string[];
+}
 
-export type PolicyHandler<C = unknown | undefined> = (
-	args: PolicyFunctionArguments<C>,
-) => Promise<PolicyHandlerResult>;
+/** A single independently actionable violation or recorded fix. @public */
+export interface PolicyFinding {
+	message: string;
+	manualFix?: string | undefined;
+	fixStatus?: "available" | "fixed" | "failed" | undefined;
+	/** Repo-relative affected files. Only repository handlers may supply this. */
+	files?: readonly string[] | undefined;
+}
 
-// export type PolicyCheckOnly = (
-// 	file: string,
-// 	root: string,
-// ) => Promise<PolicyHandlerResult>;
+/** Empty means pass. Fixed findings remain visible. @public */
+export type PolicyResult = readonly PolicyFinding[];
 
-/**
- * A standalone function that can be called to resolve a policy failure.
- *
- * @alpha
- */
-export type PolicyStandaloneResolver<C = undefined> = (
-	args: Omit<PolicyFunctionArguments<C>, "resolve">,
-) => Promise<PolicyFixResult>;
+/** Standalone file fixers receive and return the complete findings list. @public */
+export type PolicyResolver<C = void> = {
+	resolve(
+		args: Omit<PolicyArgs<C>, "resolve"> & { findings: PolicyResult },
+	): Promise<PolicyResult> | Operation<PolicyResult>;
+}["resolve"];
 
-// function isPolicyHandler(input: PolicyHandler | PolicyCheckOnly): input is PolicyHandler
-
-/**
- * A RepoPolicyDefinition checks and applies policies to files in the repository.
- *
- * Each policy has a name and a match regex for matching which files it should apply to. Every file in th repo is
- * enumerated and if it matches the regex for a policy, that policy is applied.
- *
- * Each policy includes a handler function that checks a file against the policy and can optionally resolve any problems
- * (automated resolutions depend on the policy implementation).
- *
- * @typeParam C - type of configuration object used by the policy
- *
- * @alpha
- */
-export interface PolicyDefinition<C = undefined> {
-	/**
-	 * The name of the policy; displayed in UI and used in settings.
-	 */
+/** File scope is the default. @public */
+export interface FilePolicyDefinition<C = void> {
 	name: PolicyName;
-
-	/**
-	 * A more detailed description of the policy and its intended function.
-	 */
-	description?: string | undefined;
-
-	/**
-	 * A regular expression that is used to match files in the repo.
-	 */
+	description: string;
+	scope?: "file";
 	match: RegExp;
-
-	/**
-	 * A handler function that checks if a file is compliant with the policy.
-	 *
-	 * @param file - Repo-relative path to the file to check.
-	 * @param root - Absolute path to the root of the repo.
-	 * @param resolve - If true, automated policy fixes will be applied. Not all policies support automated fixes.
-	 * @returns True if the file passed the policy; otherwise a PolicyFailure object will be returned.
-	 */
-
-	handler: PolicyHandler<C>;
-
-	/**
-	 * A resolver function that can be used to automatically address the policy violation.
-	 *
-	 * @param file - Repo-relative path to the file to check.
-	 * @param root - Absolute path to the root of the repo.
-	 * @returns true if the file passed the policy; otherwise a PolicyFailure object will be returned.
-	 */
-	resolver?: PolicyStandaloneResolver<C> | undefined;
-
-	/**
-	 * A default config that will be used if none is provided.
-	 */
+	handler(args: PolicyArgs<C>): Promise<PolicyResult> | Operation<PolicyResult>;
+	resolver?: PolicyResolver<C> | undefined;
 	defaultConfig?: C | undefined;
+	requiresConfig?: boolean | undefined;
 }
 
-/**
- * @alpha
- */
-export interface PolicyInstanceSettings<C> {
-	/**
-	 * An array of strings/regular expressions. File paths that match any of these expressions will be completely excluded
-	 * from policy.
-	 *
-	 * Paths will be matched relative to the root of the repo.
-	 */
-	excludeFiles?: (string | RegExp)[];
-
-	/**
-	 * The config that is applied to the policy instance.
-	 */
-	config?: C | undefined;
-}
-
-/**
- * @alpha
- */
-export type PolicyInstance<C = undefined> = PolicyDefinition<C> &
-	PolicyInstanceSettings<C>;
-
-/**
- * A policy failure.
- *
- * @alpha
- */
-export interface PolicyFailure {
-	/**
-	 * Name of the policy that failed.
-	 */
+/** Repository scope is explicit; repository fixers are inline only. @public */
+export interface RepositoryPolicyDefinition<C = void> {
 	name: PolicyName;
-
-	/**
-	 * Path to the file that failed the policy.
-	 */
-	file: string;
-
-	/**
-	 * Set to `true` if the policy can be fixed automatically.
-	 */
-	autoFixable?: boolean | undefined;
-
-	/**
-	 * An optional error message accompanying the failure.
-	 */
-	errorMessage?: string | undefined;
+	description: string;
+	scope: "repository";
+	handler(
+		args: RepositoryPolicyArgs<C>,
+	): Promise<PolicyResult> | Operation<PolicyResult>;
+	resolver?: never;
+	defaultConfig?: C | undefined;
+	requiresConfig?: boolean | undefined;
 }
 
-/**
- * The result of an automatic fix for a failing policy.
- *
- * @alpha
- */
-export interface PolicyFixResult extends PolicyFailure {
-	/**
-	 * Set to true if the failure was resolved by the automated fixer.
-	 */
-	resolved: boolean;
+/** A canonical policy definition. @public */
+export type PolicyDefinition<C = void> =
+	| FilePolicyDefinition<C>
+	| RepositoryPolicyDefinition<C>;
+
+/** Async and Effection file handlers are supported. @public */
+export type PolicyHandler<C = void> = FilePolicyDefinition<C>["handler"];
+/** Async and Effection repository handlers are supported. @public */
+export type RepositoryPolicyHandler<C = void> =
+	RepositoryPolicyDefinition<C>["handler"];
+
+/** Exclude undefined (including void) while preserving allowed null values. @internal */
+export type DefinedConfig<C> = NonNullable<C> | (C & null);
+
+/** Instance configuration and repo-relative regex exclusions. @public */
+export interface PolicyOptions<C = void> {
+	config?: C | undefined;
+	exclude?: readonly (string | RegExp)[] | undefined;
+	instanceId?: PolicyInstanceId | undefined;
 }
 
-/**
- * @alpha
- */
-export type PolicyHandlerResult = true | PolicyFailure | PolicyFixResult;
+/** A configured file policy. @public */
+export type ConfiguredFilePolicy<C = void> = FilePolicyDefinition<C> &
+	PolicyOptions<C>;
+/** A configured repository policy. @public */
+export type ConfiguredRepositoryPolicy<C = void> =
+	RepositoryPolicyDefinition<C> & PolicyOptions<C>;
+/** A configured policy, retaining scope discrimination. @public */
+export type ConfiguredPolicy<C = unknown> =
+	| ConfiguredFilePolicy<C>
+	| ConfiguredRepositoryPolicy<C>;
+/** A configured policy with a validated stable identity. @public */
+export type IdentifiedPolicy<C = unknown> = ConfiguredPolicy<C> & {
+	instanceId: PolicyInstanceId;
+};
 
-// biome-ignore lint/suspicious/noExplicitAny: type guard
-export function isPolicyFixResult(toCheck: any): toCheck is PolicyFixResult {
-	if (typeof toCheck !== "object") {
-		return false;
-	}
-	return "resolved" in toCheck;
-}
-
-/**
- * Default policies included with repopo.
- *
- * @alpha
- */
-
-// biome-ignore lint/suspicious/noExplicitAny: FIXME
-export const DefaultPolicies: PolicyDefinition<any>[] = [
+/** The default definitions, configured when no policies are supplied. @public */
+export const DefaultPolicies = [
 	NoJsFileExtensions,
 	PackageJsonRepoDirectoryProperty,
 	PackageJsonSorted,
-	PackageScripts,
 ] as const;
-
-export abstract class Policy<C> implements PolicyDefinition<C> {
-	public constructor(
-		public readonly name: string,
-		public readonly match: RegExp,
-		public readonly handler: PolicyHandler<C>,
-		public readonly description?: string,
-		public readonly defaultConfig?: C,
-		public readonly resolver?: PolicyStandaloneResolver<C>,
-	) {}
-}

@@ -1,5 +1,25 @@
 # remark-shift-headings
 
+## 1.0.0
+
+### Major Changes
+
+- 1.0 Release _[`#761`](https://github.com/tylerbutler/tools-monorepo/pull/761) [`e448512`](https://github.com/tylerbutler/tools-monorepo/commit/e44851237eaafa1acbda4a5072fbd7da38951ec4) [@tylerbutler](https://github.com/tylerbutler)_
+
+  API is stable. Future changes will follow SemVer.
+
+## 0.1.1
+
+### Patch Changes
+
+- Add unified/remark/rehype plugin packages for markdown processing _[`#574`](https://github.com/tylerbutler/tools-monorepo/pull/574) [`5d1efd6`](https://github.com/tylerbutler/tools-monorepo/commit/5d1efd6f22e5b1da6f87a02838d73a4295f4597f) [@tylerbutler](https://github.com/tylerbutler)_
+
+  New packages:
+  - **remark-repopo-policies** - Generate documentation tables from repopo config
+  - **remark-lazy-links** - Transform `[*]` placeholders into numbered references
+  - **remark-shift-headings** - Adjust heading levels for content embedding
+  - **rehype-footnotes** - Transform GFM footnotes for Littlefoot.js integration
+
 ## 0.1.0
 
 ### Minor Changes

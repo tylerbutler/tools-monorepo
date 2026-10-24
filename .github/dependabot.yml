@@ -57,7 +57,8 @@ updates:
       svelte:
         patterns:
           - "svelte"
-          - "svelte-kit"
+          - "svelte-*"
+          - "@sveltejs/*"
         update-types:
           - "minor"
           - "major"
@@ -102,6 +103,9 @@ updates:
           - "fluid-framework"
           - "typedoc*"
           - "typescript"
+          - "svelte"
+          - "svelte-*"
+          - "@sveltejs/*"
           - "@biomejs/*"
           - "biome"
           - "vite"

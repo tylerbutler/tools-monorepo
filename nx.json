@@ -24,16 +24,29 @@
 	// ============================================
 	"plugins": [
 		{
+			"plugin": "@nx/js/typescript",
+			"include": ["packages/*/tsconfig.json"],
+			"options": {
+				"typecheck": {
+					"targetName": "typecheck"
+				}
+			}
+		},
+		{
 			"plugin": "@nx/vite/plugin",
 			"exclude": [
-				"packages/ccl-test-viewer/**", // Svelte app with custom Vite setup
-				"packages/ccl-docs/**", // Astro site (uses Vite internally but different config)
 				"packages/dill-docs/**", // Astro site
 				"packages/repopo-docs/**" // Astro site
 			],
 			"options": {
-				"testTargetName": "test:vitest", // Avoid conflicts with existing test:unit
 				"serveTargetName": "serve:vite" // Avoid conflicts with existing dev targets
+			}
+		},
+		{
+			"plugin": "@nx/vitest",
+			"exclude": ["packages/dill-docs/**", "packages/repopo-docs/**"],
+			"options": {
+				"testTargetName": "test:vitest" // Avoid conflicts with existing test:unit
 			}
 		}
 	],
@@ -46,6 +59,8 @@
 		"default": ["{projectRoot}/**/*", "sharedGlobals"],
 		"production": [
 			"default",
+			"!{projectRoot}/esm/**",
+			"!{projectRoot}/dist/**",
 			"!{projectRoot}/**/*.spec.ts",
 			"!{projectRoot}/**/*.test.ts",
 			"!{projectRoot}/test/**/*",
@@ -55,7 +70,13 @@
 
 		// Shared config files that affect all packages
 		// Only truly global files here - task-specific configs belong in target inputs
-		"sharedGlobals": ["{workspaceRoot}/pnpm-workspace.yaml"]
+		"sharedGlobals": [
+			"{workspaceRoot}/pnpm-workspace.yaml",
+			// Exclude Claude Code config files - they don't affect builds
+			"!{workspaceRoot}/.claude/**",
+			"!{workspaceRoot}/CLAUDE.md",
+			"!{workspaceRoot}/.mcp.json"
+		]
 	},
 
 	// ============================================
@@ -80,6 +101,27 @@
 			"cache": true
 		},
 
+		// CI Full target - includes slow tasks that only run on main branch
+		// This extends ci with integration tests and full doc site builds
+		// Use ci:full on main branch, ci on PRs for faster feedback
+		"ci:full": {
+			"executor": "nx:noop",
+			"dependsOn": [
+				"ci", // Run standard CI first
+				"ci:site", // Doc site builds (slow, only on main)
+				"test:integration" // Integration tests (slow, filesystem-heavy)
+			],
+			"cache": true
+		},
+
+		// CI Site target - wraps build:site for doc sites
+		// Only runs on packages that have build:site defined
+		"ci:site": {
+			"executor": "nx:noop",
+			"dependsOn": ["build:site"],
+			"cache": true
+		},
+
 		"build": {
 			"dependsOn": [
 				"^build", // Inter-package dependencies
@@ -91,8 +133,9 @@
 				"build:manifest", // Intra-package: OCLIF manifest
 				"build:readme", // Intra-package: OCLIF readme
 				"build:generate", // Intra-package: OCLIF snapshots
-				"build:site", // Intra-package: Astro/Vite sites
-				"build:vite" // Intra-package: Vite builds
+				// NOTE: build:site moved to ci:site (runs only on main branch via ci:full)
+				"build:vite", // Intra-package: Vite builds
+				"build:rust" // Intra-package: Rust compilation (repopo-core)
 			],
 			"inputs": ["production", "^production"], // Only source code changes affect build, not lint/format results
 			"cache": true
@@ -202,7 +245,15 @@
 
 		"build:readme": {
 			"dependsOn": ["build:manifest"],
-			"inputs": ["production", "{projectRoot}/oclif.manifest.json"],
+			// oclif rewrites README.md in place, so its hand-written parts are an input;
+			// otherwise a cache hit restores a stale README over local edits. Don't use
+			// "production" here: its "!**/*.md" exclusion applies to the whole input set.
+			"inputs": [
+				"sharedGlobals",
+				"{projectRoot}/package.json",
+				"{projectRoot}/oclif.manifest.json",
+				"{projectRoot}/README.md"
+			],
 			"outputs": ["{projectRoot}/README.md", "{projectRoot}/docs/**"],
 			"cache": true
 		},
@@ -216,19 +267,25 @@
 
 		// Vite/Astro builds - plugins will infer these, but we provide defaults
 		"build:site": {
-			"dependsOn": ["^build:compile"],
+			"dependsOn": ["^build:compile", "^build:api"],
 			"inputs": [
 				"{projectRoot}/src/**",
 				"{projectRoot}/*.config.{ts,js,mjs,cjs}",
 				"{projectRoot}/public/**"
 			],
-			"outputs": ["{projectRoot}/dist/**", "{projectRoot}/.astro/**"],
+			"outputs": [
+				"{projectRoot}/dist/**",
+				"{projectRoot}/.astro/**",
+				"{projectRoot}/src/content/docs/api/**"
+			],
 			"cache": true
 		},
 
 		"build:vite": {
+			"dependsOn": ["^build:compile", "build:compile"],
 			"inputs": [
 				"{projectRoot}/src/**",
+				"^production",
 				"{projectRoot}/*.config.{ts,js,mjs,cjs}",
 				"{projectRoot}/public/**",
 				"{projectRoot}/index.html"
@@ -251,6 +308,26 @@
 			"cache": true
 		},
 
+		"build:rust": {
+			"inputs": [
+				"{projectRoot}/crates/**/*.rs",
+				"{projectRoot}/crates/**/Cargo.toml",
+				"{projectRoot}/crates/**/Cargo.lock"
+			],
+			"outputs": ["{projectRoot}/crates/core/target/debug/repopo-core"],
+			"cache": true
+		},
+
+		"build:rust:release": {
+			"inputs": [
+				"{projectRoot}/crates/**/*.rs",
+				"{projectRoot}/crates/**/Cargo.toml",
+				"{projectRoot}/crates/**/Cargo.lock"
+			],
+			"outputs": ["{projectRoot}/crates/core/target/release/repopo-core"],
+			"cache": true
+		},
+
 		// ============================================
 		// TEST IMPLEMENTATION TARGETS
 		// ============================================
@@ -259,6 +336,7 @@
 			"inputs": [
 				"default",
 				"^production",
+				"{workspaceRoot}/config/vitest.config.ts",
 				"{projectRoot}/*.config.{ts,js,mjs,cjs}"
 			],
 			"outputs": ["{projectRoot}/_temp/**", "{projectRoot}/.sonda/**"],
@@ -270,6 +348,7 @@
 			"inputs": [
 				"default",
 				"^production",
+				"{workspaceRoot}/config/vitest.config.ts",
 				"{projectRoot}/*.config.{ts,js,mjs,cjs}"
 			],
 			"outputs": [
@@ -319,6 +398,17 @@
 				"production",
 				"{projectRoot}/*.config.{ts,js,mjs,cjs}",
 				"{projectRoot}/typedoc.{json,js,cjs}",
+				"{workspaceRoot}/config/tsconfig*.json"
+			],
+			"cache": true
+		},
+
+		// TypeScript Native (tsgo) shadow testing - runs alongside tsc for comparison
+		// Use: pnpm check:types:native to validate with the Go-based compiler
+		"check:types:native": {
+			"inputs": [
+				"production",
+				"{projectRoot}/tsconfig*.json",
 				"{workspaceRoot}/config/tsconfig*.json"
 			],
 			"cache": true
@@ -395,5 +485,9 @@
 			"cache": false
 		}
 	},
-	"nxCloudId": "68fa4834e4d66c5b22e74804"
+	"nxCloudId": "68fa4834e4d66c5b22e74804",
+	"analytics": false,
+	"affected": {
+		"legacy": true
+	}
 }

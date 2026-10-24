@@ -1,0 +1,16 @@
+{
+	"subagents": [
+		{
+			"name": "nx-runner",
+			"description": "Use for running Nx tasks across packages",
+			"tools": ["Bash"],
+			"instructions": "Run Nx commands. Prefer affected over run-many. Use --dry-run first for destructive operations."
+		},
+		{
+			"name": "policy-checker",
+			"description": "Use after editing package.json or tsconfig files",
+			"tools": ["Bash", "Read"],
+			"instructions": "Run repopo check and syncpack to validate repo policies."
+		}
+	]
+}

@@ -1,5 +1,24 @@
 # @tylerbu/sail-infrastructure
 
+## 0.4.1
+
+### Patch Changes
+
+- Fix `iterateDependencies` bug where `peerDependencies` were never iterated. The third loop incorrectly read `devDependencies` again (yielding them as `depKind: "peer"`) instead of reading `peerDependencies`. _[`#673`](https://github.com/tylerbutler/tools-monorepo/pull/673) [`a4f70e9`](https://github.com/tylerbutler/tools-monorepo/commit/a4f70e9caaa4f2a3d96c10daaa7bcd95ef89961a) [@tylerbutler](https://github.com/tylerbutler)_
+
+## 0.4.0
+
+### Minor Changes
+
+- Feat!: update Logger interface for consistency with cli-api _[`#395`](https://github.com/tylerbutler/tools-monorepo/pull/395) [`ee059d0`](https://github.com/tylerbutler/tools-monorepo/commit/ee059d02161494c14eb6131aaf32624902fd65e4) [@tylerbutler](https://github.com/tylerbutler)_
+
+  **Breaking changes:**
+  - `errorLog` renamed to `error` in Logger interface
+  - Added `success` method to Logger interface
+  - Added optional `formatError` method to Logger interface
+
+  This aligns the sail-infrastructure Logger interface with the cli-api Logger interface for consistency across packages.
+
 ## 0.3.0
 
 ### Minor Changes

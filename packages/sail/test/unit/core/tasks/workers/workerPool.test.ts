@@ -80,8 +80,25 @@ describe("WorkerPool", () => {
 			},
 		};
 
-		// Mock worker_threads.Worker constructor
-		vi.mocked(Worker).mockImplementation(() => mockWorkerInstance);
+		// Mock worker_threads.Worker constructor - must use function keyword for Vitest 4
+		// Use Object.defineProperty for getter-only properties like stdout/stderr
+		vi.mocked(Worker).mockImplementation(function (this: Worker) {
+			Object.defineProperty(this, "postMessage", {
+				value: mockWorkerInstance.postMessage,
+			});
+			Object.defineProperty(this, "terminate", {
+				value: mockWorkerInstance.terminate,
+			});
+			Object.defineProperty(this, "once", { value: mockWorkerInstance.once });
+			Object.defineProperty(this, "on", { value: mockWorkerInstance.on });
+			Object.defineProperty(this, "off", { value: mockWorkerInstance.off });
+			Object.defineProperty(this, "stdout", {
+				value: mockWorkerInstance.stdout,
+			});
+			Object.defineProperty(this, "stderr", {
+				value: mockWorkerInstance.stderr,
+			});
+		} as unknown as () => Worker);
 
 		// Mock child_process.fork
 		vi.mocked(fork).mockReturnValue(mockChildProcessInstance);

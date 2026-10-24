@@ -1,5 +1,303 @@
 # repopo
 
+## 0.12.0
+
+### Minor Changes
+
+- Distinguish duplicate configured policy instances in exclusions, diagnostics, results, and performance metrics. _[`#783`](https://github.com/tylerbutler/tools-monorepo/pull/783) [`da9f08b`](https://github.com/tylerbutler/tools-monorepo/commit/da9f08bbb90cad92f7419c474a43741eef5d3c2a) [@tylerbutler](https://github.com/tylerbutler)_
+
+  Duplicate instances must now set a unique `instanceId` in the `policy()` options.
+
+### Patch Changes
+
+- Fix policy checks and automatic fixes: _[`#791`](https://github.com/tylerbutler/tools-monorepo/pull/791) [`9236dae`](https://github.com/tylerbutler/tools-monorepo/commit/9236dae487eef8d97c8c5974d3e58cf5338cac66) [@tylerbutler](https://github.com/tylerbutler)_
+  - Run same-file fixers in configuration order to prevent lost edits.
+  - Validate configured header text, avoid duplicate headers, and apply HTML headers to HTML files.
+  - Replace verbatim package.json arrays instead of appending entries.
+  - Check Cargo workspace members selected by globs and honor workspace exclusions.
+  - Preserve Git filenames that contain Unicode, tabs, or newlines in both engines.
+  - Preserve legacy fix results and apply default policies when a native configuration omits `policies`.
+
+## 0.11.1
+
+### Patch Changes
+
+- Make policy and exclusion regular-expression matching deterministic for global and sticky flags. _[`#778`](https://github.com/tylerbutler/tools-monorepo/pull/778) [`b263d07`](https://github.com/tylerbutler/tools-monorepo/commit/b263d07c531baf032f5f8a75444971b91c55f2ab) [@tylerbutler](https://github.com/tylerbutler)_
+- Isolate policy run results and performance statistics across sequential and concurrent `PolicyRunner` invocations. _[`#782`](https://github.com/tylerbutler/tools-monorepo/pull/782) [`bd06230`](https://github.com/tylerbutler/tools-monorepo/commit/bd06230247adf908155ce2a9e35ba0ed5aebac3c) [@tylerbutler](https://github.com/tylerbutler)_
+- Load the optional `sort-package-json` peer dependency only when the package sorting policy runs, allowing Repopo to load without it while preserving sorting support when installed. _[`#780`](https://github.com/tylerbutler/tools-monorepo/pull/780) [`0972973`](https://github.com/tylerbutler/tools-monorepo/commit/0972973fa9df873d3dde101836adb9ff9196b8f8) [@tylerbutler](https://github.com/tylerbutler)_
+- Resolve built-in policy filesystem operations from the repository root when policy file paths are repository-relative. _[`#784`](https://github.com/tylerbutler/tools-monorepo/pull/784) [`fe789fd`](https://github.com/tylerbutler/tools-monorepo/commit/fe789fd4cb33fcab19a63ad2f132b5d91c8a0c73) [@tylerbutler](https://github.com/tylerbutler)_
+- Report unexpected policy execution errors for the affected file and continue checking remaining files. _[`#781`](https://github.com/tylerbutler/tools-monorepo/pull/781) [`32f5afe`](https://github.com/tylerbutler/tools-monorepo/commit/32f5afee62c6ba732650ca23f1669e0c2b2c73df) [@tylerbutler](https://github.com/tylerbutler)_
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`dd64d1d`](https://github.com/tylerbutler/tools-monorepo/commit/dd64d1da4f10d6793af9a270216b296edee884a6)
+
+</small>
+
+- `@tylerbu/cli-api@0.11.0`
+
+</details>
+
+## 0.11.0
+
+### Minor Changes
+
+- Add experimental `check-native` command powered by a Rust core engine for significantly faster policy checking (up to 1.5x faster than the standard `check` command). The Rust engine handles file enumeration, pattern matching, and orchestration while delegating policy evaluation to a Node.js sidecar, so all existing configs and third-party policies work without changes. _[`#623`](https://github.com/tylerbutler/tools-monorepo/pull/623) [`dd15dc9`](https://github.com/tylerbutler/tools-monorepo/commit/dd15dc98c5c2a69c2a6f022a2a0c985f2c26dcf4) [@tylerbutler](https://github.com/tylerbutler)_
+
+  Also adds a simplified `policy()` function for defining policies and new focused script policies (`RequiredScripts`, `ExactScripts`, `MutuallyExclusiveScripts`, `ConditionalScripts`, `ScriptContains`) that replace the monolithic `PackageScripts` policy with more granular, composable alternatives.
+
+- Add `CargoLicenceValidated` policy that validates SPDX licence expressions in `Cargo.toml` files using the `spdx-correct` package. Includes a shared SPDX validator (`spdxValidator`) reused by both Cargo and Gleam licence policies. _[`#654`](https://github.com/tylerbutler/tools-monorepo/pull/654) [`9deb6dc`](https://github.com/tylerbutler/tools-monorepo/commit/9deb6dcce769bbb25fd067f9668cf6031f3d3bc7) [@tylerbutler](https://github.com/tylerbutler)_
+- Extract `PolicyRunner` class from `CheckPolicy` command to fix SRP violation. The new class encapsulates all policy execution logic (file iteration, exclusion checking, policy matching, handler execution, resolution attempts) and returns structured `PolicyRunResults` instead of producing side effects. `PolicyRunner` has no OCLIF dependencies and can be used programmatically. The `CheckPolicy` command is now a thin CLI wrapper handling only flag parsing, file collection, and result formatting. _[`#672`](https://github.com/tylerbutler/tools-monorepo/pull/672) [`5f5bdf9`](https://github.com/tylerbutler/tools-monorepo/commit/5f5bdf90883177258ae6cd2284515f0465347d31) [@tylerbutler](https://github.com/tylerbutler)_
+- Add 15 Gleam language policies for enforcing project conventions, structure, dependency management, documentation, and monorepo consistency. Includes `defineGleamPolicy` helper and shared TOML parser infrastructure. _[`#654`](https://github.com/tylerbutler/tools-monorepo/pull/654) [`9deb6dc`](https://github.com/tylerbutler/tools-monorepo/commit/9deb6dcce769bbb25fd067f9668cf6031f3d3bc7) [@tylerbutler](https://github.com/tylerbutler)_
+- Add 14 new Rust/Cargo.toml policies for enforcing best practices in Rust projects: _[`#654`](https://github.com/tylerbutler/tools-monorepo/pull/654) [`9deb6dc`](https://github.com/tylerbutler/tools-monorepo/commit/9deb6dcce769bbb25fd067f9668cf6031f3d3bc7) [@tylerbutler](https://github.com/tylerbutler)_
+  - **Cargo.toml**: `CargoTomlRequired`, `CargoTomlSorted`, `CargoLintsConfigured`
+  - **Project structure**: `RustToolchainExists`, `RustfmtConfigExists`, `CargoLockPolicy`, `NoTargetArtifacts`
+  - **Security**: `NoWildcardDependencies`, `NoUnsafeWithoutJustification`
+  - **Documentation**: `PublicApiDocumented`, `RustDocExists`
+  - **Workspace**: `WorkspaceMembersValid`, `SharedDependencyVersions`, `WorkspaceInheritance`
+
+  Also adds `defineCargoPolicy` helper for creating Cargo.toml-targeted policies, and `smol-toml` as an optional peer dependency for TOML parsing.
+
+## 0.10.0
+
+### Minor Changes
+
+- Add new `policy()` function as simplified API for defining repository policies, replacing the more complex `makePolicy`/`makePolicyDefinition` workflow. _[`#617`](https://github.com/tylerbutler/tools-monorepo/pull/617) [`becd406`](https://github.com/tylerbutler/tools-monorepo/commit/becd4064e1434b2384cda991f2d0702d91ed5ed9) [@tylerbutler](https://github.com/tylerbutler)_
+
+  New features:
+  - `policy()` function with multiple overload signatures for defining policies concisely
+  - `PolicyShape` interface for object-literal policy definitions
+  - `ConfiguredPolicy` and `PolicyError` types for the new API surface
+  - Five new script-focused policies: `RequiredScripts`, `ExactScripts`, `MutuallyExclusiveScripts`, `ConditionalScripts`, and `ScriptContains`
+  - `isPolicyError` type guard and `convertLegacyResult`/`convertToPolicyFailure` conversion utilities
+
+  Deprecations (old APIs still work but are marked `@deprecated`):
+  - `makePolicy` → use `policy()` instead
+  - `makePolicyDefinition` → use `PolicyShape` object literals instead
+  - `PolicyFailure` → use `PolicyError` instead
+  - `PolicyInstance` → use `ConfiguredPolicy` instead
+  - `PolicyStandaloneResolver` → use `PolicyResolver` instead
+  - `isPolicyFailure` → use `isPolicyError` instead
+
+## 0.9.0
+
+### Minor Changes
+
+- Make `description` required on PolicyDefinition _[`#594`](https://github.com/tylerbutler/tools-monorepo/pull/594) [`c3d1b65`](https://github.com/tylerbutler/tools-monorepo/commit/c3d1b65299f58b9fa605ebd18e7fb4346ae7745f) [@tylerbutler](https://github.com/tylerbutler)_
+
+  BREAKING CHANGE: `PolicyDefinition.description` is now required (was optional). All policies must include a description that explains their purpose.
+
+  All built-in policies now include descriptions.
+
+- Use object parameters for policy factory functions and Policy class _[`#594`](https://github.com/tylerbutler/tools-monorepo/pull/594) [`c3d1b65`](https://github.com/tylerbutler/tools-monorepo/commit/c3d1b65299f58b9fa605ebd18e7fb4346ae7745f) [@tylerbutler](https://github.com/tylerbutler)_
+
+  BREAKING CHANGES:
+  - `makePolicyDefinition()` now takes an object argument: `{ name, description, match, handler, defaultConfig?, resolver? }`
+  - `definePackagePolicy()` now takes an object argument: `{ name, description, handler }`
+  - `defineFileHeaderPolicy()` now takes an object argument: `{ name, description, config }`
+  - `Policy` class constructor now takes a `PolicyDefinition` object instead of positional arguments
+
+  This change makes it easier to add new optional properties in the future without breaking changes.
+
+  New exports:
+  - `makePolicyDefinition` function (previously internal)
+  - `PolicyDefinitionInput` type
+  - `DefinePackagePolicyArgs` interface
+  - `DefineFileHeaderPolicyArgs` interface
+
+### Patch Changes
+
+- Refactor to use Effection 4 for structured concurrency _[`#379`](https://github.com/tylerbutler/tools-monorepo/pull/379) [`1582ad1`](https://github.com/tylerbutler/tools-monorepo/commit/1582ad1abc79b211492dba2e5172e995c9c47fe0) [@tylerbutler](https://github.com/tylerbutler)_
+  - Replace manual async handling with Effection's structured concurrency primitives
+  - Policy handlers now support generator functions for better cancellation and resource management
+  - Improved internal architecture for concurrent policy execution
+  - Added comprehensive test coverage for async/generator patterns
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`c577266`](https://github.com/tylerbutler/tools-monorepo/commit/c577266129da545000aea343256b06129a243987)
+
+</small>
+
+- `@tylerbu/cli-api@0.10.1`
+
+</details>
+
+## 0.8.0
+
+### Minor Changes
+
+- **BREAKING CHANGE**: Change `PolicyFailure.errorMessage` to `errorMessages` array. _[`#552`](https://github.com/tylerbutler/tools-monorepo/pull/552) [`6b6317a`](https://github.com/tylerbutler/tools-monorepo/commit/6b6317a7be0a050dc0665a9af7b187afb1bb4b31) [@tylerbutler](https://github.com/tylerbutler)_
+
+  The `PolicyFailure` interface now uses `errorMessages: string[]` instead of `errorMessage?: string`. This allows policies to report multiple error messages per failure and provides clearer semantics.
+
+  Additionally, a new optional `manualFix?: string` property has been added to provide user guidance on how to resolve policy failures manually.
+
+  Migration:
+  - Change `errorMessage: "message"` to `errorMessages: ["message"]`
+  - For multiple messages, use `errorMessages: ["msg1", "msg2"]`
+  - When checking failures, use `errorMessages.join("\n")` instead of `errorMessage`
+
+- Add NoPrivateWorkspaceDependencies policy that prevents publishable packages from depending on private workspace packages via the `workspace:` protocol. This catches configuration issues where a public npm package would fail to install because its workspace dependencies aren't published. _[`#534`](https://github.com/tylerbutler/tools-monorepo/pull/534) [`b7e4d4b`](https://github.com/tylerbutler/tools-monorepo/commit/b7e4d4b374cae228d246b16c668ba6e55c08f3dc) [@tylerbutler](https://github.com/tylerbutler)_
+
+  The policy:
+  - Detects workspace dependencies using the `workspace:` protocol
+  - Checks if those dependencies are marked as private
+  - Reports violations for publishable packages that depend on private packages
+  - Supports configurable `checkDevDependencies` option (default: false)
+  - Uses workspace configuration (pnpm-workspace.yaml or package.json workspaces) for package discovery
+
+- Make sort-tsconfig and sort-package-json peer dependencies _[`#395`](https://github.com/tylerbutler/tools-monorepo/pull/395) [`ee059d0`](https://github.com/tylerbutler/tools-monorepo/commit/ee059d02161494c14eb6131aaf32624902fd65e4) [@tylerbutler](https://github.com/tylerbutler)_
+
+  Moves `sort-tsconfig` and `sort-package-json` from dependencies to peerDependencies, allowing consumers to control versions and reducing bundle size.
+
+- Add multiple new policies and enhance existing PackageScripts policy _[`#535`](https://github.com/tylerbutler/tools-monorepo/pull/535) [`79e19e8`](https://github.com/tylerbutler/tools-monorepo/commit/79e19e892a5b1193650cab21a4d38187c700fb01) [@tylerbutler](https://github.com/tylerbutler)_
+
+  ## New Policies
+
+  ### PackageAllowedScopes
+
+  Validates that packages use only approved npm scopes or package names, preventing accidental
+  introduction of new scopes and maintaining naming consistency.
+
+  ### PackageLicense
+
+  Ensures each package has a LICENSE file that matches the root repository LICENSE. Supports
+  auto-fixing by copying the root LICENSE to packages. By default, skips private packages.
+
+  ### PackageReadme
+
+  Validates that packages have README.md files with proper content:
+  - Ensures README exists
+  - Validates title matches package name
+  - Can require specific content (e.g., trademark notices)
+  - Supports auto-fixing by creating or updating README files
+
+  ## Enhanced PackageScripts Policy
+
+  Added powerful new validation options with a cleaner, more intuitive configuration API.
+
+  ### must (enhanced)
+
+  The `must` array now accepts either strings (script must exist, no auto-fix) or objects with
+  inline default values (script must exist, auto-fixable with the default):
+
+  ```typescript
+  must: [
+    "test", // Must exist, no auto-fix available
+    { build: "tsc" }, // Must exist, auto-fix adds "tsc" if missing
+    { lint: "biome lint ." }, // Must exist, auto-fix adds "biome lint ." if missing
+  ];
+  ```
+
+  Existing scripts with different content will pass validation - only the existence is enforced.
+
+  ### exact (new)
+
+  Scripts that must exist AND have exact content. Both missing and mismatched scripts are
+  auto-fixable:
+
+  ```typescript
+  exact: {
+    clean: "rimraf dist esm",
+    format: "biome format --write .",
+  }
+  ```
+
+  ### conditionalRequired (enhanced)
+
+  Enforce that certain scripts must exist when other scripts are present. The `requires` field
+  now accepts the same format as `must` - strings or objects with inline defaults for auto-fix:
+
+  ```typescript
+  // With inline default - auto-fixable
+  conditionalRequired: [
+    { ifPresent: "build", requires: [{ clean: "rimraf dist" }] },
+  ];
+
+  // Mixed: "test" required without default, "clean" with default
+  conditionalRequired: [
+    { ifPresent: "build", requires: ["test", { clean: "rimraf dist" }] },
+  ];
+  ```
+
+  ### scriptMustContain
+
+  Validate that script bodies contain required substrings:
+
+  ```typescript
+  scriptMustContain: [{ script: "clean", mustContain: ["rimraf"] }];
+  ```
+
+  ## Usage Examples
+
+  ```typescript
+  import { makePolicy, type RepopoConfig } from "repopo";
+  import {
+    PackageAllowedScopes,
+    PackageLicense,
+    PackageReadme,
+    PackageScripts,
+  } from "repopo/policies";
+
+  const config: RepopoConfig = {
+    policies: [
+      makePolicy(PackageAllowedScopes, {
+        allowedScopes: ["@myorg", "@internal"],
+      }),
+      makePolicy(PackageLicense),
+      makePolicy(PackageReadme, {
+        requiredContent: "## Trademark",
+      }),
+      makePolicy(PackageScripts, {
+        // Scripts that must exist
+        must: [
+          "test", // Must exist, no auto-fix
+          { build: "tsc" }, // Must exist, auto-fix available
+          { lint: "biome lint ." }, // Must exist, auto-fix available
+        ],
+        // Scripts that must exist AND match exactly
+        exact: {
+          clean: "rimraf dist esm",
+          format: "biome format --write .",
+        },
+        // If "build" exists, "clean" must also exist (with inline auto-fix default)
+        conditionalRequired: [
+          { ifPresent: "build", requires: [{ clean: "rimraf dist" }] },
+        ],
+        // Validate script content contains required substrings
+        scriptMustContain: [{ script: "build", mustContain: ["tsc"] }],
+        // Only one of these can exist
+        mutuallyExclusive: [["lint:eslint", "lint:biome"]],
+      }),
+    ],
+  };
+  ```
+
+### Patch Changes
+
+- Update to use new cli-api logger API _[`#395`](https://github.com/tylerbutler/tools-monorepo/pull/395) [`ee059d0`](https://github.com/tylerbutler/tools-monorepo/commit/ee059d02161494c14eb6131aaf32624902fd65e4) [@tylerbutler](https://github.com/tylerbutler)_
+
+  Updates commands to use the new logger API from @tylerbu/cli-api:
+  - Replace `errorLog()` calls with `logError()`
+  - Use standalone `logIndent()` function where needed
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`ee059d0`](https://github.com/tylerbutler/tools-monorepo/commit/ee059d02161494c14eb6131aaf32624902fd65e4)
+
+</small>
+
+- `@tylerbu/cli-api@0.10.0`
+
+</details>
+
 ## 0.7.1
 
 ### Patch Changes
@@ -23,7 +321,6 @@
 - Add configurable PackageScripts policy _[`#376`](https://github.com/tylerbutler/tools-monorepo/pull/376) [`c17462a`](https://github.com/tylerbutler/tools-monorepo/commit/c17462a8af35a8bfbb528f29825a0ef177923946) [@tylerbutler](https://github.com/tylerbutler)_
 
   Enhances the `PackageScripts` policy with flexible configuration options to enforce package.json script requirements across your repository. The policy now supports two validation modes:
-
   1.  **Required Scripts (`must`)**: Specify scripts that must be present in all package.json files
   2.  **Mutually Exclusive Scripts (`mutuallyExclusive`)**: Define groups of scripts where exactly one from each group must exist
 
@@ -39,7 +336,6 @@
   ```
 
   The policy validates that:
-
   - All scripts in the `must` array are present
   - For each group in `mutuallyExclusive`, exactly one script from that group exists (not zero, not multiple)
 
@@ -48,7 +344,6 @@
 - New built-in policies _[`#308`](https://github.com/tylerbutler/tools-monorepo/pull/308) [`1856d58`](https://github.com/tylerbutler/tools-monorepo/commit/1856d582fb92692447b02c89cdb45dcd3c5f7370) [@tylerbutler](https://github.com/tylerbutler)_
 
   Added three new policies for repository quality and safety:
-
   - **LicenseFileExists**: Ensures a LICENSE file exists in the repository root (essential for open source projects)
   - **NoLargeBinaryFiles**: Prevents large binary files from being committed (default 10MB max, suggests Git LFS for large assets)
   - **RequiredGitignorePatterns**: Validates .gitignore contains required patterns to prevent committing sensitive files, dependencies, and build artifacts (auto-fixable)
@@ -112,18 +407,15 @@
   repopo now exports all included policies individually so users can opt in and out of them in their config.
 
 - New policies _[`#31`](https://github.com/tylerbutler/tools-monorepo/pull/31) [`c97a565`](https://github.com/tylerbutler/tools-monorepo/commit/c97a56518d9726667531aa71de9445fed8d56b96) [@tylerbutler](https://github.com/tylerbutler)_
-
   - JsTsFileHeaders
   - HtmlFileHeaders
   - PackageScripts
 
 - API changes: _[`#120`](https://github.com/tylerbutler/tools-monorepo/pull/120) [`1108950`](https://github.com/tylerbutler/tools-monorepo/commit/1108950a7732dcc3ac9b8da10bd014bfec6c45b7) [@tylerbutler](https://github.com/tylerbutler)_
-
   - **Breaking change**: `PolicyConfig` was renamed to `RepopoConfig`.
   - **Breaking change**: Removed several flags from the check command.
 
   Other changes:
-
   - Refactor check command for clarity (more to do)
 
 - Functions to more easily create package.json handlers _[`#190`](https://github.com/tylerbutler/tools-monorepo/pull/190) [`84c4185`](https://github.com/tylerbutler/tools-monorepo/commit/84c4185e76186c3489a4b70e3a3015ba289df139) [@tylerbutler](https://github.com/tylerbutler)_

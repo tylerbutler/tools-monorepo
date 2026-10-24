@@ -2,6 +2,24 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Git Workflow
+
+**Never push directly to main.** Always create a branch, commit there, and open a PR — even for small fixes. Only push to main if explicitly instructed.
+
+## Quick Commands (for Claude)
+
+**Before making changes:**
+- `pnpm nx affected -t build` - Build affected packages
+- `pnpm nx affected -t test` - Test affected packages
+
+**After making changes:**
+- `./packages/repopo/bin/dev.js check --fix` - Fix policy violations
+- `pnpm format` - Format code
+
+**Package-specific work:**
+- Use `pnpm nx run <pkg>:<task>` for targeted execution
+- Check `packages/<name>/CLAUDE.md` for package guidance
+
 ## Project Overview
 
 This is a TypeScript monorepo containing personal tools and CLI utilities, managed with pnpm workspaces and Nx for build orchestration.
@@ -17,6 +35,8 @@ This is a TypeScript monorepo containing personal tools and CLI utilities, manag
 ## Essential Commands
 
 **Note on Task Naming**: Root scripts use user-friendly names (`pnpm build`, `pnpm test`) which run Nx targets across packages (e.g., `nx run-many -t build`). Individual packages define implementation tasks like `build:compile`, `build:api`, etc. See Architecture Patterns section for details.
+
+Root Nx targets for `build`, `test`, and `ci` use `nx:noop` and inherit dependencies from `nx.json`. Do not make these targets invoke `nx run-many` for the same target: it selects the root project again and causes recursive task invocations. Keep workspace-wide commands in the root package scripts.
 
 ### Root-Level Development
 
@@ -113,22 +133,7 @@ pnpm deps
 
 ## Task Reference
 
-This section documents the top-level tasks available in the monorepo and their purposes.
-
-### Orchestration vs Implementation Tasks
-
-The monorepo uses a two-tier task architecture:
-
-**Orchestration Tasks** (no prefix):
-- Defined as empty synthetic targets in `nx.targets` section of package.json
-- Actual orchestration happens via `dependsOn` in `nx.json` targetDefaults
-- Examples: `build`, `test`, `check`, `ci`
-- **Never** run implementation code directly in package.json scripts
-
-**Implementation Tasks** (`:` prefix):
-- Contain actual shell commands to execute
-- Examples: `build:compile`, `build:api`, `test:vitest`, `check:format`
-- Run by Nx based on dependency graph defined in `nx.json`
+This section documents the top-level tasks. See [Architecture Patterns](#build-pipeline--task-architecture) for how the two-tier task system (orchestration vs implementation) works.
 
 ### Top-Level Tasks
 
@@ -372,7 +377,7 @@ This monorepo uses a two-tier task architecture:
 - `check:format`, `check:types`, `check:deps`, `check:policy` - Quality checks
 
 **Plugin-Inferred Tasks** (auto-detected by Nx plugins):
-- `test:vitest` - Auto-inferred from vitest.config.ts (via @nx/vite plugin)
+- `test:vitest` - Auto-inferred from vitest.config.ts (via @nx/vitest)
 
 **Package-Specific Pipelines:**
 - **Libraries**: build:compile → build:api → build:docs
@@ -413,7 +418,13 @@ All packages extend base tsconfig files from `config/`:
 Nx uses plugins to automatically infer tasks from configuration files, reducing manual configuration:
 
 **Active Plugins:**
-- `@nx/vite/plugin` - Auto-infers test tasks from `vitest.config.ts` files
+- `@nx/js/typescript` - Auto-infers TypeScript type-check tasks for package-root configs only, not test fixtures
+- `@nx/vite/plugin` - Auto-infers Vite build and serve tasks
+- `@nx/vitest` - Auto-infers test tasks from `vitest.config.ts` files
+
+Keep `nx` and the `@nx/*` packages on the same version when upgrading. Nx 24
+separates Vitest task inference from the Vite plugin. The `affected.legacy` setting
+preserves project-level affected selection.
 
 **Plugin Exclusions** (projects with non-standard configurations):
 - `packages/ccl-test-viewer/**` - Svelte app with custom Vite setup
@@ -489,7 +500,7 @@ pnpm test:coverage
 - Peer dependencies configured in root package.json
 
 **Key Constraints:**
-- Node >= 18.0.0
+- Node >= 22.13.0
 - TypeScript ~5.5.4 (pinned minor version)
 - Biome 2.0.4 (shared across all packages)
 
@@ -570,11 +581,15 @@ pnpm run ci:lint
 1. **Always use pnpm** - The `packageManager` field enforces pnpm 10.10.0
 2. **No .js files** - Use .mjs or .cjs for JavaScript files (enforced by repopo)
 3. **Use pathe for path handling** - Always use `pathe` instead of `node:path` for cross-platform path operations
-4. **Workspace protocol** - Internal deps use `workspace:^`
-5. **Synchronized versions** - Run `pnpm syncpack:fix` to sync dependency versions
-6. **Sorted configs** - package.json and tsconfig.json must be sorted
-7. **Biome formatting** - Code must pass Biome checks before commit
-8. **Policy compliance** - All packages must pass repopo policy checks
+4. **Async file I/O** - Prefer `fs/promises` over sync fs operations (e.g., `readFile` over `readFileSync`)
+5. **Workspace protocol** - Internal deps use `workspace:^`
+6. **Synchronized versions** - Run `pnpm syncpack:fix` to sync dependency versions
+7. **Sorted configs** - package.json and tsconfig.json must be sorted
+8. **Biome formatting** - Code must pass Biome checks before commit
+9. **Policy compliance** - All packages must pass repopo policy checks
+10. **Tabs for indentation** - This project uses tabs, not spaces
+11. **No re-exports** - Always import from the module directly, not through barrel files
+12. **Vitest for specific tests** - Use `pnpm vitest` to run specific tests; `pnpm test` runs all tests
 
 ## File Organization
 
@@ -639,7 +654,3 @@ If the user wants help with fixing an error in their CI pipeline, use the follow
 
 
 <!-- nx configuration end-->
-
-- This project uses tabs primarily for indentation. Not spaces.
-- We do not use re-export patterns. Always import from the module directly.
-- Use "pnpm vitest" to run specific tests and test files. pnpm test will typically run all tests no matter what arguments you pass.

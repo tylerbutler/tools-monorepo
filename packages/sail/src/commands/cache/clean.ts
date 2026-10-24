@@ -48,6 +48,6 @@ export default class CacheCleanCommand extends BaseSailCommand<
 		this.log("Cache cleaned successfully.");
 
 		// Display statistics after cleaning (should show 0 entries)
-		await displayMinimalCacheStatistics(this, sharedCache);
+		await displayMinimalCacheStatistics(this.logger, sharedCache);
 	}
 }

@@ -98,7 +98,7 @@ export default defineConfig({
 				},
 				{
 					label: "Guides",
-					autogenerate: { directory: "usage" },
+					items: [{ autogenerate: { directory: "usage" } }],
 				},
 				{
 					label: "CLI Reference",

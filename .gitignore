@@ -12,6 +12,7 @@ yarn.lock
 # nx
 .nx/cache
 .nx/workspace-data
+.nx/migrate-runs
 .cursor/rules/nx-rules.mdc
 .github/instructions/nx.instructions.md
 
@@ -24,9 +25,33 @@ yarn.lock
 # svelte build artifacts
 .svelte-kit
 
+# build artifacts
+esm/
+dist/
+
 # coverage reports
 .coverage
+coverage/
+
+# Rust build artifacts
+**/target/
 
 # AI artifacts
-.claude
+**/.claude/settings.local.json
+**/CLAUDE.md
 .serena
+
+# Added by repopo RequiredGitignorePatterns policy
+# Dependencies
+node_modules/
+# Environment files
+.env
+# Environment files
+.env.*
+# Allow example env file
+!.env.example
+# macOS system files
+.DS_Store
+# Windows system files
+Thumbs.db
+**/.claude/settings.local.json

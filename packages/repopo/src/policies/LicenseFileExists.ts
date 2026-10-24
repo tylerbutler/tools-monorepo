@@ -1,12 +1,11 @@
-import { existsSync } from "node:fs";
+import { stat } from "node:fs/promises";
 import path from "pathe";
-import { makePolicyDefinition } from "../makePolicy.js";
-import type { PolicyDefinition, PolicyFailure } from "../policy.js";
+import type { RepositoryPolicyDefinition } from "../policy.js";
 
 /**
  * Policy settings for the LicenseFileExists repo policy.
  *
- * @alpha
+ * @public
  */
 export interface LicenseFileExistsSettings {
 	/**
@@ -33,32 +32,42 @@ const DEFAULT_LICENSE_NAMES = [
  * A repo policy that checks that a LICENSE file exists in the repository root.
  * This is essential for open source projects to clarify usage rights and obligations.
  *
- * @alpha
+ * @public
  */
-export const LicenseFileExists: PolicyDefinition<LicenseFileExistsSettings> =
-	makePolicyDefinition(
-		"LicenseFileExists",
-		// Only trigger on package.json to check once per repository
-		/^package\.json$/,
-		async ({ root, config }) => {
-			const acceptedNames = config?.acceptedNames ?? DEFAULT_LICENSE_NAMES;
+export const LicenseFileExists = {
+	name: "LicenseFileExists",
+	description:
+		"Ensures a LICENSE file exists in the repository root for open source projects.",
+	scope: "repository",
+	handler: async ({ root, files, config }) => {
+		const acceptedNames = config?.acceptedNames ?? DEFAULT_LICENSE_NAMES;
 
-			// Check if any of the accepted license files exist in the root
-			const hasLicenseFile = acceptedNames.some((name) =>
-				existsSync(path.join(root, name)),
-			);
-
-			if (hasLicenseFile) {
-				return true;
+		// Check if any of the accepted license files exist in the root
+		for (const name of acceptedNames) {
+			if (!files.includes(name)) {
+				continue;
 			}
+			try {
+				if ((await stat(path.join(root, name))).isFile()) {
+					return [];
+				}
+			} catch (error: unknown) {
+				if (
+					!(
+						error instanceof Error &&
+						"code" in error &&
+						error.code === "ENOENT"
+					)
+				) {
+					throw error;
+				}
+			}
+		}
 
-			const result: PolicyFailure = {
-				name: LicenseFileExists.name,
-				file: ".", // Report against repository root
-				autoFixable: false,
-				errorMessage: `No LICENSE file found in repository root. Expected one of: ${acceptedNames.join(", ")}`,
-			};
-
-			return result;
-		},
-	);
+		return [
+			{
+				message: `No LICENSE file found in repository root. Expected one of: ${acceptedNames.join(", ")}`,
+			},
+		];
+	},
+} satisfies RepositoryPolicyDefinition<LicenseFileExistsSettings>;

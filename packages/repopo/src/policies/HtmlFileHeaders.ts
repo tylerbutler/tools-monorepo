@@ -7,20 +7,21 @@ import {
 /**
  * A RepoPolicy that checks that HTML files have the configured header comment.
  *
- * @alpha
+ * @public
  */
-export const HtmlFileHeaders = defineFileHeaderPolicy("HtmlFileHeaders", {
-	match: /(^|\/)[^/]+\.[mc]?[jt]sx?$/i,
-	lineStart: /<!-- /, // Lines begin with '<!-- '
-	lineEnd: / -->\r?\n/, // Lines end with ' -->' followed by CRLF or LF
-	replacer: (
-		content: string,
-		{ headerText }: FileHeaderPolicyConfig,
-	): string => {
-		const newContent = `<!-- ${headerText.replace(
-			newline,
-			` -->${newline}<!-- `,
-		)} -->${newline}${newline}${content}`;
-		return newContent;
+export const HtmlFileHeaders = defineFileHeaderPolicy({
+	name: "HtmlFileHeaders",
+	description: "Ensures HTML files have the configured header comment.",
+	config: {
+		match: /(^|\/)[^/]+\.html?$/i,
+		lineStart: /<!-- /, // Lines begin with '<!-- '
+		lineEnd: / -->\r?\n/, // Lines end with ' -->' followed by CRLF or LF
+		replacer: (
+			content: string,
+			{ headerText }: FileHeaderPolicyConfig,
+		): string => {
+			const newContent = `<!-- ${headerText.replace(newline, ` -->${newline}<!-- `)} -->${newline}${newline}${content}`;
+			return newContent;
+		},
 	},
 });

@@ -23,9 +23,9 @@ contains the partialUrl case insensitively.
 
 ### partialUrl
 
-partial URL to match case insensitively
+`string` \| `undefined`
 
-`string` | `undefined`
+partial URL to match case insensitively
 
 ## Returns
 
