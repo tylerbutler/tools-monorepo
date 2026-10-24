@@ -73,4 +73,7 @@ pnpm nx graph                       # Visualize dependency graph
 
 ### Plugin-Inferred Tasks
 
-The `@nx/vite/plugin` auto-creates `test:vitest` for packages with `vitest.config.ts`. These work like manually defined tasks but require no configuration.
+The `@nx/vitest` plugin auto-creates `test:vitest` for packages with `vitest.config.ts`.
+`@nx/vite/plugin` handles Vite tasks. `@nx/js/typescript` handles type-check tasks;
+its include pattern must match only package-root configs, not test fixtures.
+Keep `nx` and the `@nx/*` packages on the same version when upgrading.
