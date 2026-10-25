@@ -1,6 +1,8 @@
 # Build artifacts
 build/
 prebuilds/
+target/
+Cargo.lock
 *.wasm
 *.node
 *.so

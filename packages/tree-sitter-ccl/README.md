@@ -148,6 +148,10 @@ The corpus tests check base trees. Vitest checks continuations, comments,
 injection ranges, incremental edits, and native prebuild loading. Nx runs both;
 the package's `pnpm test` command alone runs the native corpus.
 
+Run `pnpm nx run tree-sitter-ccl:ci` from the workspace root for all checks,
+including TypeScript and Rust. The workspace PR workflow runs this target when
+the package is affected.
+
 See [DEV.md](DEV.md) for development and debugging commands.
 
 ## License

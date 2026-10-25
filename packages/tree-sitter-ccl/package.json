@@ -49,7 +49,8 @@
 		"install": "node-gyp-build",
 		"parse": "tree-sitter parse",
 		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
-		"test": "tree-sitter test"
+		"test": "tree-sitter test",
+		"test:rust": "cargo test"
 	},
 	"dependencies": {
 		"node-addon-api": "^8.5.0",
@@ -78,6 +79,30 @@
 	},
 	"nx": {
 		"targets": {
+			"build": {
+				"inputs": [
+					"production",
+					"^production",
+					{
+						"runtime": "node -p \"process.platform + '-' + process.arch + '-' + process.versions.modules\""
+					}
+				],
+				"outputs": [
+					"{projectRoot}/build",
+					"{projectRoot}/prebuilds"
+				]
+			},
+			"ci": {
+				"dependsOn": [
+					"tools-monorepo:check",
+					"tools-monorepo:lint",
+					"build",
+					"test",
+					"check:types",
+					"test:rust"
+				]
+			},
+			"ci:full": {},
 			"test:vitest": {
 				"dependsOn": [
 					"build"

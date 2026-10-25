@@ -10,11 +10,16 @@ pnpm install --ignore-scripts
 pnpm nx run tree-sitter-ccl:build
 pnpm nx run tree-sitter-ccl:test
 pnpm nx run tree-sitter-ccl:check:types
+pnpm nx run tree-sitter-ccl:ci
 ```
 
 The build regenerates the parser, builds the Node binding, and refreshes native
 prebuilds. Nx runs that build before the Vitest tests, then runs the Tree-sitter
 corpus. Running `pnpm test` inside this package runs only the native corpus.
+The `ci` target also runs the TypeScript checks and Rust tests, so the workspace
+PR workflow includes all of these checks when this package is affected.
+The native build cache includes both `build/` and `prebuilds/` and distinguishes
+the host platform, architecture, and Node ABI.
 
 For a CLI-only build, run `pnpm run build:cli` in this directory. Tree-sitter
 discovers `src/scanner.c` on all supported platforms; no cache setup is needed.

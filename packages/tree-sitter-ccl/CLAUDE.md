@@ -19,6 +19,7 @@ From the workspace root:
 pnpm nx run tree-sitter-ccl:build
 pnpm nx run tree-sitter-ccl:test
 pnpm nx run tree-sitter-ccl:check:types
+pnpm nx run tree-sitter-ccl:ci
 ```
 
 From this package:
@@ -33,6 +34,8 @@ cargo test
 
 Nx builds the native module before running Vitest. The package's `test` script
 alone runs only the Tree-sitter corpus.
+The package's `ci` target includes the corpus, Vitest, type checks, and Rust tests
+and is selected by the workspace's affected CI commands.
 
 ## Required invariants
 
