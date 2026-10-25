@@ -8,7 +8,6 @@
 
 ; Values
 (single_line_value) @string
-(value_line) @string
 
 ; Content lines (raw text in nested blocks)
 (content_line) @text

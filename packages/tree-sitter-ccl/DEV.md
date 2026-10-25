@@ -1,127 +1,64 @@
-# Tree-sitter CCL Development Notes
+# Tree-sitter CCL Development
 
-## Implementation Status
+## Build and test
 
-### ✅ Fully Implemented Features
-- **Single-line comments**: `/= comment text`
-- **Multiline comments**: With indented continuation lines
-- **External C++ Scanner**: Complete INDENT/DEDENT token generation
-- **Basic CCL Parsing**: Keys, values, assignments, multiline keys
-- **List Syntax**: Both bare lists (`= item`) and nested lists 
-- **Complex Nesting**: Multiple indentation levels with proper DEDENT generation
-- **Syntax Highlighting**: Full color-coded output for all constructs
+Run these commands from the monorepo root:
 
-### ⚠️ Known Limitations
-
-#### Multiline Comments at End-of-File
-**Issue**: Multiline comments that end the file without a trailing newline or content after them may parse with errors.
-
-**Example that fails**:
-```ccl
-/= This multiline comment ends the file
-  with indented content
-  but no newline after[EOF]
+```bash
+corepack enable
+pnpm install --ignore-scripts
+pnpm nx run tree-sitter-ccl:build
+pnpm nx run tree-sitter-ccl:test
+pnpm nx run tree-sitter-ccl:check:types
 ```
 
-**Technical Cause**: Tree-sitter's GLR parser must choose between single-line and multiline comment interpretations based on lookahead. At EOF, the parser cannot definitively determine if indented content should be part of a multiline comment since it lacks the DEDENT token needed to complete the grammar rule.
+The build regenerates the parser, builds the Node binding, and refreshes native
+prebuilds. Nx runs that build before the Vitest tests, then runs the Tree-sitter
+corpus. Running `pnpm test` inside this package runs only the native corpus.
 
-**Scanner Capability**: The external scanner (`src/scanner.cc:175-192`) is designed to handle this by auto-generating DEDENT tokens at EOF, but the grammar conflict resolution prevents this from being utilized.
+For a CLI-only build, run `pnpm run build:cli` in this directory. Tree-sitter
+discovers `src/scanner.c` on all supported platforms; no cache setup is needed.
 
-**Workarounds**:
-1. **Add content after multiline comments**: 
-   ```ccl
-   /= Multiline comment
-     with indented lines
-   
-   key = value  # This makes it parse correctly
-   ```
+## Parser changes
 
-2. **Ensure files end with newlines**: Most editors do this automatically
+- Edit `grammar.js` and `src/scanner.c`, then regenerate with
+  `pnpm exec tree-sitter generate`.
+- Keep the generated files in `src/` with the source changes.
+- Add base-tree cases to `test/corpus/` and injection or incremental cases to
+  `test/parser.test.ts`.
+- Treat a decrease that stays above the document baseline as value content.
+- Preserve all scanner state across serialization, including the baseline of
+  injected documents.
 
-3. **Use single-line comments at EOF**:
-   ```ccl
-   /= Single line comment at end works fine
-   ```
+The grammar filename has a repository policy exception because Tree-sitter
+requires `grammar.js`. The scanner is C; only the Node binding needs C++20.
+The Node entry point and declarations use `.cjs` and `.d.cts`.
 
-**Real-world Impact**: Minimal - most files have trailing newlines and content after comments.
+## Native bindings
 
-#### Nested CCL Structure - Two-Pass Parsing
-**Architecture**: Content within nested blocks uses a **two-pass injection system** for proper syntax highlighting:
+The Node loader uses `node-gyp-build` to select a local build or compatible
+prebuild. Package archives include `binding.gyp` and native sources so installs
+can compile when no prebuild matches.
 
-**First Pass**: Grammar parses nested content as raw text (`content_line` nodes within `nested_content_block`)
-
-**Second Pass**: Injection query (`queries/injections.scm`) re-parses the content as full CCL syntax
-
-**Result**: Modern editors with injection support (Neovim, VSCode, Helix, Zed) get complete syntax highlighting throughout nested structures. Basic tools show nested content as plain text but all parsing works correctly.
-
-**See**: ARCHITECTURE.md for detailed explanation of why this injection-based approach is necessary.
-
-## Grammar Architecture
-
-### Comment Implementation
-Comments are implemented following CCL's core principle that they are regular key-value entries:
-- **Key**: `/` (comment marker)
-- **Value**: Comment text (single-line or multiline with indentation)
-
-```javascript
-comment: $ => choice(
-  // Multiline comment - higher precedence when INDENT follows
-  prec.dynamic(2, seq(
-    alias('/=', $.comment_marker),
-    alias(/[^\r\n]*/, $.comment_text),
-    $.multiline_comment_content
-  )),
-  // Single line comment - fallback
-  seq(
-    alias('/=', $.comment_marker),
-    alias(/[^\r\n]*/, $.comment_text)
-  )
-)
+```bash
+pnpm pack --pack-destination ./_temp
+cargo test
 ```
 
-### Conflict Resolution
-The grammar declares conflicts for ambiguous parsing contexts:
-```javascript
-conflicts: $ => [
-  [$.comment],  // Multiline vs single-line comment disambiguation
-  [$.entry]     // Empty value vs newline-prefixed value disambiguation
-]
+Use a Rust toolchain supported by the resolved dependencies. The Rust test and
+documentation example both pass a borrowed language to Tree-sitter 0.25.
+
+## Debugging
+
+```bash
+pnpm exec tree-sitter test --debug-build --rebuild
+pnpm exec tree-sitter parse --debug sample.ccl
 ```
 
-## Testing
+Multiline comments may end at EOF without a final newline. Nested content uses
+the two-pass injection model described in [ARCHITECTURE.md](ARCHITECTURE.md).
+Base-tree output alone does not show the injected entries.
 
-Run the native corpus tests with `pnpm test`. Tree-sitter does not provide a
-coverage command, so this package is excluded from the repository's JavaScript
-coverage requirements. The other package policies still apply.
-
-The grammar must keep the name `grammar.js` for Tree-sitter. This file has a
-specific exception to the `.js` extension policy. The CommonJS Node binding uses
-`bindings/node/index.cjs`.
-
-Run `pnpm run release:license` to generate the third-party license file.
-
-### Test Files
-- `simple_multiline_comment_test.ccl` - Basic multiline comment functionality
-- `comprehensive_comment_test.ccl` - All comment types with syntax highlighting
-- `eof_comment_test.ccl` - Demonstrates EOF limitation
-- `multiline_comment_complete.ccl` - Working multiline comments with content after
-
-### Syntax Highlighting
-Use `node show_highlight.js <file.ccl>` to test color-coded output:
-- **Comment markers** (`/=`): Purple/magenta (35m)
-- **Comment text**: White (37m)
-- **Indentation**: Cyan (36m)
-- **Keys**: Blue (34m)
-- **Assignments** (`=`): Yellow (33m)
-- **Values**: Green (32m)
-
-## Production Readiness
-
-The current implementation is **production-ready** for:
-- ✅ Editor syntax highlighting and navigation
-- ✅ Language server integration
-- ✅ Build tools and CCL processing  
-- ✅ Developer tooling and IDE support
-- ✅ All core CCL language features including multiline comments
-
-The known limitations are cosmetic edge cases that don't affect core functionality.
+The native corpus has no coverage command, so this package retains its
+repository coverage-policy exception. Run `pnpm run release:license` to
+generate the third-party license file.

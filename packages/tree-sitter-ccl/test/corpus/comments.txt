@@ -73,18 +73,14 @@ config =
   (entry
     (key
         (single_line_key))
-    (assignment))
-  (newline)
-  (comment
-    (comment_marker)
-    (comment_text)
-    (multiline_comment_content
-      (newline)
+    (assignment)
+    (newline)
+    (nested_content_block
       (indent)
-      (comment_content_line
-        (comment_text)
-        (newline))
-      (comment_content_line
-        (comment_text)
-        (newline))
+      (content_line)
+      (newline)
+      (content_line)
+      (newline)
+      (content_line)
+      (newline)
       (dedent))))

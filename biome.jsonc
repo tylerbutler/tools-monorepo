@@ -80,6 +80,7 @@
 				"packages/repopo/**",
 				"packages/sail/**",
 				"packages/sort-tsconfig/**",
+				"packages/tree-sitter-ccl/**",
 			],
 			"linter": {
 				"rules": {

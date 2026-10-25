@@ -8,21 +8,10 @@ fn main() {
         .flag_if_supported("-Wno-unused-but-set-variable")
         .flag_if_supported("-Wno-trigraphs");
     let parser_path = src_dir.join("parser.c");
+    let scanner_path = src_dir.join("scanner.c");
     c_config.file(&parser_path);
+    c_config.file(&scanner_path);
     c_config.compile("parser");
     println!("cargo:rerun-if-changed={}", parser_path.to_str().unwrap());
-
-    // External scanner written in C++
-    let mut cpp_config = cc::Build::new();
-    cpp_config.cpp(true);
-    cpp_config.include(&src_dir);
-    cpp_config
-        .flag_if_supported("-std=c++20")
-        .flag_if_supported("-stdlib=libc++")
-        .flag_if_supported("-Wno-unused-parameter")
-        .flag_if_supported("-Wno-unused-but-set-variable");
-    let scanner_path = src_dir.join("scanner.cc");
-    cpp_config.file(&scanner_path);
-    cpp_config.compile("scanner");
     println!("cargo:rerun-if-changed={}", scanner_path.to_str().unwrap());
 }

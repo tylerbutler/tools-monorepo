@@ -1764,19 +1764,31 @@ importers:
       node-gyp-build:
         specifier: ^4.8.4
         version: 4.8.4
-      tree-sitter:
-        specifier: ^0.25.0
-        version: 0.25.1
+      pathe:
+        specifier: ^2.0.3
+        version: 2.0.3
     devDependencies:
+      '@types/node':
+        specifier: ^26.6.5
+        version: 26.6.5
       prebuildify:
         specifier: ^6.0.1
         version: 6.0.1
-      run-script-os:
-        specifier: ^1.1.6
-        version: 1.1.6
+      rimraf:
+        specifier: ^6.1.3
+        version: 6.1.3
+      tree-sitter:
+        specifier: ^0.25.0
+        version: 0.25.1
       tree-sitter-cli:
         specifier: ^0.25.10
         version: 0.25.10
+      typescript:
+        specifier: ~6.0.3
+        version: 6.0.3
+      vitest:
+        specifier: ^5.0.5
+        version: 5.0.5(@opentelemetry/api@1.9.1)(@types/node@26.6.5)(@vitest/coverage-v8@5.0.5)(msw@2.15.0(@types/node@26.6.5)(typescript@6.0.3))(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
 
   packages/xkcd2-api:
     devDependencies:
@@ -10271,10 +10283,6 @@ packages:
 
   run-parallel@1.2.0:
     resolution: {integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==}
-
-  run-script-os@1.1.6:
-    resolution: {integrity: sha512-ql6P2LzhBTTDfzKts+Qo4H94VUKpxKDFz6QxxwaUZN0mwvi7L3lpOI7BqPCq7lgDh3XLl0dpeXwfcVIitlrYrw==}
-    hasBin: true
 
   rxjs@7.8.2:
     resolution: {integrity: sha512-dhKf903U/PQZY6boNNtAGdWbG85WAbjT/1xYoZIC7FAY0yWapOBQVsVrDl58W86//e1VpMNBtRV4MaXfdMySFA==}
@@ -23961,8 +23969,6 @@ snapshots:
   run-parallel@1.2.0:
     dependencies:
       queue-microtask: 1.2.3
-
-  run-script-os@1.1.6: {}
 
   rxjs@7.8.2:
     dependencies:

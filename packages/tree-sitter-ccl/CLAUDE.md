@@ -1,270 +1,69 @@
-# CLAUDE.md
+# Tree-sitter CCL Agent Guide
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+## Components
 
-## Project Overview
+- `grammar.js`: grammar source; its filename has a repository policy exception.
+- `src/scanner.c`: C external scanner, discovered directly by Tree-sitter 0.25.
+- `src/parser.c`, `src/grammar.json`, `src/node-types.json`: generated output.
+- `queries/`: highlighting and whole-block CCL injections.
+- `bindings/node/`: C++ N-API binding, CommonJS loader, and `.d.cts` declarations.
+- `bindings/rust/`: Rust binding and build script.
+- `test/corpus/`: Tree-sitter base-tree tests.
+- `test/*.test.ts`: Vitest regressions, injections, and Node loading tests.
 
-Tree-sitter grammar for CCL (Categorical Configuration Language) - a minimalist indentation-based configuration language with Python-like block structure.
+## Commands
 
-**Key Components:**
-- **grammar.js**: Tree-sitter grammar definition with conflict resolution and precedence rules
-- **src/scanner.cc**: C++20 external scanner implementing semantic indentation (INDENT/DEDENT tokens)
-- **queries/**: Syntax highlighting (`highlights.scm`) and language injection (`injections.scm`)
-- **test/corpus/**: Tree-sitter test corpus files (`.txt` format)
-- **bindings/**: Node.js and Rust bindings for language integration
-
-## Essential Commands
-
-### Development Workflow
+From the workspace root:
 
 ```bash
-# Generate parser from grammar.js
-pnpm run build
-# OR: tree-sitter generate
+pnpm nx run tree-sitter-ccl:build
+pnpm nx run tree-sitter-ccl:test
+pnpm nx run tree-sitter-ccl:check:types
+```
 
-# Run test corpus
-pnpm test
-# OR: tree-sitter test
+From this package:
 
-# Parse a specific CCL file
-pnpm run parse <file.ccl>
-# OR: tree-sitter parse <file.ccl>
-
-# Build for tree-sitter CLI (platform-specific)
+```bash
+pnpm exec tree-sitter generate
+pnpm exec tree-sitter test --rebuild
+pnpm exec tree-sitter parse sample.ccl
 pnpm run build:cli
-# macOS: Compiles with clang++ and libc++
-# Linux: Compiles with g++
-# Windows: Not yet implemented
+cargo test
 ```
 
-### Testing Individual Files
+Nx builds the native module before running Vitest. The package's `test` script
+alone runs only the Tree-sitter corpus.
 
-```bash
-# Parse and show syntax tree
-tree-sitter parse example.ccl
+## Required invariants
 
-# Test specific corpus file
-tree-sitter test -f "Basic key-value"
+CCL uses the indentation of the first key as the document baseline. Lines above
+that baseline continue a value, even if their indentation decreases. Lines at or
+below it start entries. Blank lines do not close blocks.
 
-# Debug with verbose output
-tree-sitter parse --debug file.ccl
-```
+Keep `_entry_start` scanner-gated: indented lines must not become root entries
+merely because whitespace is an extra. Each injected document establishes its
+own baseline, including ranges that start at nonzero columns.
 
-### Clean Build
+The base grammar keeps nested values as raw content. Injection queries capture
+the entire block with its children and indentation. Plain text uses the same
+raw block representation; do not add a competing plain-text grammar branch.
 
-```bash
-# Remove all build artifacts
-pnpm run clean
-# Removes: build/, prebuilds/, ~/.cache/tree-sitter/lib/ccl.so, temp objects
-```
+All keys, including empty list keys, use the same value rule. Inline values can
+have indented continuations. Keys may span more than two lines; only the `/` key
+is a comment. Comment continuations need no final newline.
 
-## Architecture
+Serialize and restore all scanner state. The scanner has a baseline and a block
+flag, not an indentation stack or pending DEDENT queue. Use `mark_end` so
+lookahead does not consume the following entry's indentation.
 
-### Grammar Design
+## Validation
 
-The grammar implements **two-tier parsing** for nested CCL content:
+Regenerate parser output after grammar changes. Check both base trees and
+injected trees when changing nesting, and compare incremental parses with fresh
+parses when changing scanner state. Include EOF and LF/CRLF cases.
 
-1. **Base Grammar**: Fast, deterministic parsing treating nested content as `content_line` nodes
-2. **Injection Queries**: Modern editors re-parse `content_line` as structured CCL via `injections.scm`
+The Node package must load from prebuilds without a `build/` directory and must
+include the sources needed for a fallback build. Its public export is a language
+object, not a `language()` function.
 
-**Why this design?**
-- Universal compatibility (all tree-sitter tools work immediately)
-- No parsing conflicts (grammar remains deterministic)
-- Progressive enhancement (basic vs enhanced highlighting based on tool capabilities)
-
-### External Scanner (scanner.cc)
-
-**Critical for indentation handling:**
-- Maintains indentation stack for nested block tracking
-- Generates INDENT tokens when indentation increases
-- Generates DEDENT tokens when indentation decreases (queued, one per scan)
-- Handles cross-platform newlines (`\n`, `\r\n`)
-- Implements lookahead DEDENT detection for complex parser states
-- Tab width: 8 spaces (standard terminal convention)
-
-**Compilation requirements:**
-- C++20 compatible compiler (GCC 10+, Clang 12+, MSVC 2019+)
-- Python 3.x (for node-gyp)
-- Native build tools
-
-**Debug build:**
-```bash
-# Enable comprehensive debug logging
-CXXFLAGS="-std=c++20 -DDEBUG_SCANNER -g -O0" tree-sitter generate
-
-# Parse with scanner debug output
-tree-sitter parse --debug file.ccl
-```
-
-### Grammar Rules Structure
-
-```javascript
-// grammar.js key patterns:
-externals: [newline, indent, dedent]  // External scanner tokens
-conflicts: [[comment], [entry]]        // Resolved via precedence
-extras: [/[ \t]/]                      // NOT newlines (significant for indentation)
-
-rules: {
-  document              // Root: sequence of entries/comments
-  entry                 // Key-value assignment
-  key                   // single_line_key OR multiline_key
-  value                 // single_line_value, multiline_value_block, OR nested_content_block
-  nested_content_block  // Nested CCL re-parsed via injection (two-pass parsing)
-  content_line          // Raw text line in nested block (first pass)
-  comment               // Single-line OR multiline with `/=` marker
-}
-```
-
-**Precedence patterns:**
-- `prec.right()`: Right-associative (used for optional continuations)
-- `prec.left()`: Left-associative (default for sequences)
-- Dynamic precedence: Resolves conflicts between comment types and entry forms
-
-### Test Corpus Format
-
-Tree-sitter test files in `test/corpus/*.txt` use special format:
-
-```
-================================================================================
-Test name
-================================================================================
-
-input CCL code here
-
---------------------------------------------------------------------------------
-
-(expected_syntax_tree
-  (nodes))
-```
-
-**Testing guidelines:**
-- Each corpus file tests a specific feature area (basic, multiline, comments, indentation)
-- Add new tests when adding grammar features or fixing bugs
-- Run `tree-sitter test` to verify all corpus tests pass
-
-## Language Injection System
-
-**Two-level syntax highlighting:**
-
-1. **🟡 Basic** (all tools): Keys blue, values green, nested content as plain text
-2. **🌈 Enhanced** (injection-aware tools): Full recursive CCL highlighting in nested blocks
-
-**Tools with enhanced highlighting:**
-- Neovim (nvim-treesitter), VS Code, Helix, Zed, GitHub
-
-**How it works:**
-- `queries/injections.scm` tells tools to re-parse `content_line` nodes as CCL
-- No grammar complexity or conflicts
-- Future-proof: enhances automatically as editor tools improve
-
-## Common Development Tasks
-
-### Modifying the Grammar
-
-1. Edit `grammar.js`
-2. Run `pnpm run build` to regenerate parser
-3. Run `pnpm test` to verify corpus tests
-4. Add new test cases in `test/corpus/` if adding features
-
-### Modifying the External Scanner
-
-1. Edit `src/scanner.cc`
-2. Use debug build: `CXXFLAGS="-std=c++20 -DDEBUG_SCANNER -g -O0" tree-sitter generate`
-3. Test incrementally with simple cases first
-4. Validate state serialization/deserialization works
-5. Add corpus tests for edge cases
-6. Performance test: ensure no infinite loops
-
-### Adding Query Patterns
-
-**Syntax highlighting** (`queries/highlights.scm`):
-```scheme
-(single_line_key) @variable
-(assignment) @operator
-(single_line_value) @string
-(comment) @comment
-```
-
-**Language injection** (`queries/injections.scm`):
-```scheme
-((content_line) @injection.content
- (#set! injection.language "ccl"))
-```
-
-## Troubleshooting
-
-### Compilation Failures
-
-**C++20 not recognized:**
-```bash
-# Specify explicitly
-CXXFLAGS="-std=c++20" pnpm install
-
-# Or for older GCC: -std=c++2a
-CXXFLAGS="-std=c++2a" pnpm install
-```
-
-**macOS compiler issues:**
-```bash
-# Ensure Xcode Command Line Tools installed
-xcode-select --install
-
-# Use specific compiler
-export CC=clang CXX=clang++
-```
-
-**Node-gyp Python errors:**
-```bash
-# Set Python version
-npm config set python python3
-```
-
-### Grammar Conflicts
-
-If `tree-sitter generate` reports conflicts:
-
-1. Check `conflicts: []` array in grammar.js - all conflicts should be documented
-2. Use precedence (`prec.left()`, `prec.right()`) to resolve
-3. Consider dynamic precedence for semantic disambiguation
-4. Test with `tree-sitter parse --debug` to see which rule is chosen
-
-### Test Failures
-
-```bash
-# Run specific test
-tree-sitter test -f "test name pattern"
-
-# Update expected tree (only if change is intentional)
-# Edit test/corpus/*.txt with correct expected tree
-
-# Debug parse tree
-tree-sitter parse file.ccl
-```
-
-## Integration Notes
-
-### Monorepo Context
-
-This package is part of the `tools-monorepo` using pnpm workspaces. However, it operates independently:
-
-- Uses `pnpm` for package management (required by parent monorepo)
-- Does not use Turbo build orchestration (tree-sitter has its own tooling)
-- Standard tree-sitter CLI commands work directly
-
-### Native Module Build
-
-First install compiles C++ external scanner (may take a few minutes):
-
-- **Dependencies**: `node-addon-api`, `node-gyp-build`
-- **Prebuilds**: Can use `prebuildify` for distribution
-- **Platform-specific**: Separate build scripts for macOS/Linux/Windows
-
-### Editor Integration
-
-For editor/tool integration, access files directly:
-
-```javascript
-const grammarPath = require.resolve('tree-sitter-ccl/grammar.js');
-const highlightsPath = require.resolve('tree-sitter-ccl/queries/highlights.scm');
-const injectionsPath = require.resolve('tree-sitter-ccl/queries/injections.scm');
-```
+See [ARCHITECTURE.md](ARCHITECTURE.md) and [DEV.md](DEV.md) for details.
