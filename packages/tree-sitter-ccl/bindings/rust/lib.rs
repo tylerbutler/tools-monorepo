@@ -6,7 +6,7 @@
 //! ```
 //! let code = "";
 //! let mut parser = tree_sitter::Parser::new();
-//! parser.set_language(tree_sitter_ccl::language()).expect("Error loading ccl grammar");
+//! parser.set_language(&tree_sitter_ccl::language()).expect("Error loading ccl grammar");
 //! let tree = parser.parse(code, None).unwrap();
 //! ```
 //!
@@ -46,7 +46,12 @@ mod tests {
     fn test_can_load_grammar() {
         let mut parser = tree_sitter::Parser::new();
         parser
-            .set_language(super::language())
+            .set_language(&super::language())
             .expect("Error loading ccl language");
+        let tree = parser
+            .parse("parent =\n  child = value\nend = ok\n", None)
+            .unwrap();
+        assert!(!tree.root_node().has_error());
+        assert_eq!(tree.root_node().named_child(0).unwrap().kind(), "entry");
     }
 }
