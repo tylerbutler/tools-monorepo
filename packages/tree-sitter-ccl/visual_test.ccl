@@ -1,0 +1,46 @@
+/= Basic key-value entries
+key = value
+another_key = hello world
+
+/= Multiline key spanning multiple lines
+multiline key name
+spanning lines = single value
+
+/= Comment with text
+/= This is a comment
+/= Empty comment
+/=
+
+/= List entries without keys (bare list)
+= item1
+= item2
+
+/= Nested CCL structure with multiple indentation levels
+config =
+  host = localhost
+  port = 8080
+  nested =
+    user = admin
+    pass = secret
+
+/= Nested list example
+items =
+  = item 1
+  = item 2
+
+/= Multiline value (plain text content)
+description =
+  This is a long description
+  that spans multiple lines
+  for documentation purposes
+
+/= 7-level deep nesting test
+level1 =
+  level2 =
+    level3 =
+      level4 =
+        level5 =
+          level6 =
+            level7 =
+              deep_value = reached the bottom
+              another = value at level 7

@@ -1,0 +1,113 @@
+{
+	"name": "tree-sitter-ccl",
+	"version": "0.1.0",
+	"private": true,
+	"description": "Tree-sitter grammar for CCL (Categorical Configuration Language)",
+	"keywords": [
+		"tree-sitter",
+		"parser",
+		"ccl",
+		"configuration",
+		"syntax-highlighting"
+	],
+	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/tylerbutler/tools-monorepo.git",
+		"directory": "packages/tree-sitter-ccl"
+	},
+	"license": "MIT",
+	"author": "Tyler Butler <tyler@tylerbutler.com>",
+	"type": "module",
+	"exports": {
+		".": {
+			"types": "./bindings/node/index.d.cts",
+			"default": "./bindings/node/index.cjs"
+		},
+		"./*": "./*"
+	},
+	"main": "bindings/node/index.cjs",
+	"types": "bindings/node/index.d.cts",
+	"files": [
+		"grammar.js",
+		"queries/*",
+		"src/**",
+		"prebuilds/**",
+		"binding.gyp",
+		"bindings/node/binding.cc",
+		"bindings/node/index.cjs",
+		"bindings/node/index.d.cts",
+		"tree-sitter.json"
+	],
+	"scripts": {
+		"prebuild": "tree-sitter generate && prebuildify --napi --strip",
+		"build": "tree-sitter generate && node-gyp rebuild",
+		"build:cli": "tree-sitter build",
+		"build-wasm": "tree-sitter build --wasm",
+		"check:types": "tsc --project tsconfig.test.json",
+		"clean": "rimraf build prebuilds ccl.so ccl.dylib ccl.dll ccl.wasm tree-sitter-ccl.wasm",
+		"install": "node-gyp-build",
+		"parse": "tree-sitter parse",
+		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
+		"test": "tree-sitter test",
+		"test:rust": "cargo test"
+	},
+	"dependencies": {
+		"node-addon-api": "^8.5.0",
+		"node-gyp-build": "^4.8.4",
+		"pathe": "^2.0.3"
+	},
+	"devDependencies": {
+		"@types/node": "^26.6.5",
+		"prebuildify": "^6.0.1",
+		"rimraf": "^6.1.3",
+		"tree-sitter": "^0.25.0",
+		"tree-sitter-cli": "^0.25.10",
+		"typescript": "~6.0.3",
+		"vitest": "^5.0.5"
+	},
+	"peerDependencies": {
+		"tree-sitter": "^0.25.0"
+	},
+	"peerDependenciesMeta": {
+		"tree-sitter": {
+			"optional": true
+		}
+	},
+	"installConfig": {
+		"pnp": false
+	},
+	"nx": {
+		"targets": {
+			"build": {
+				"inputs": [
+					"production",
+					"^production",
+					{
+						"runtime": "node -p \"process.platform + '-' + process.arch + '-' + process.versions.modules\""
+					}
+				],
+				"outputs": [
+					"{projectRoot}/build",
+					"{projectRoot}/prebuilds"
+				]
+			},
+			"ci": {
+				"dependsOn": [
+					"tools-monorepo:check",
+					"tools-monorepo:lint",
+					"build",
+					"test",
+					"check:types",
+					"test:rust"
+				]
+			},
+			"ci:full": {},
+			"test:vitest": {
+				"dependsOn": [
+					"build"
+				]
+			}
+		}
+	}
+}

@@ -1,0 +1,23 @@
+/= Basic key-value pairs
+name = John Doe
+age = 30
+
+/= Multiline values
+description =
+  This is a multiline value
+  that spans multiple lines
+  with proper indentation
+
+/= Configuration with multiline
+database =
+  host = localhost
+  port = 5432
+
+/= CCL Comments
+/= This is a CCL comment
+/= Another comment
+
+/= List syntax
+features =
+  = first item
+  = second item

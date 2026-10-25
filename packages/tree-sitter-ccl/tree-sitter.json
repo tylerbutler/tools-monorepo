@@ -1,0 +1,31 @@
+{
+	"grammars": [
+		{
+			"name": "ccl",
+			"camelcase": "Ccl",
+			"scope": "source.ccl",
+			"path": ".",
+			"file-types": ["ccl"],
+			"highlights": "queries/highlights.scm",
+			"injections": "queries/injections.scm"
+		}
+	],
+	"metadata": {
+		"version": "0.1.0",
+		"license": "MIT",
+		"description": "Tree-sitter grammar for CCL (Categorical Configuration Language)",
+		"authors": [
+			{
+				"name": "Tyler Butler",
+				"email": "tyler@tylerbutler.com"
+			}
+		],
+		"links": {
+			"repository": "https://github.com/tylerbutler/tools-monorepo"
+		}
+	},
+	"bindings": {
+		"node": true,
+		"rust": true
+	}
+}
