@@ -90,6 +90,16 @@ conflicts: $ => [
 
 ## Testing
 
+Run the native corpus tests with `pnpm test`. Tree-sitter does not provide a
+coverage command, so this package is excluded from the repository's JavaScript
+coverage requirements. The other package policies still apply.
+
+The grammar must keep the name `grammar.js` for Tree-sitter. This file has a
+specific exception to the `.js` extension policy. The CommonJS Node binding uses
+`bindings/node/index.cjs`.
+
+Run `pnpm run release:license` to generate the third-party license file.
+
 ### Test Files
 - `simple_multiline_comment_test.ccl` - Basic multiline comment functionality
 - `comprehensive_comment_test.ccl` - All comment types with syntax highlighting

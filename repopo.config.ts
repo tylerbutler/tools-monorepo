@@ -25,6 +25,7 @@ import { SortTsconfigsPolicy } from "sort-tsconfig";
 // Vendored packages (git subrepo) - exclude from policies that enforce monorepo conventions
 const vendoredPackages = ["packages/btree-typescript"];
 const vendoredPackageJsons = vendoredPackages.map((p) => `${p}/package.json`);
+const treeSitterPackageJson = /^packages\/tree-sitter-ccl\/package\.json$/;
 const NoPackageProjectJson = {
 	name: "NoPackageProjectJson",
 	description:
@@ -57,6 +58,8 @@ const config: RepopoConfig = {
 				".lighthouserc.js",
 				"svelte.config.js",
 				"tailwind.config.js",
+				// Tree-sitter requires this grammar filename.
+				/^packages\/tree-sitter-ccl\/grammar\.js$/,
 				...vendoredPackages,
 			],
 		}),
@@ -79,9 +82,16 @@ const config: RepopoConfig = {
 			exclude: vendoredPackageJsons,
 		}),
 		makePolicy(PackageScripts, {
+			instanceId: "maintenance",
 			config: {
 				must: ["clean", "release:license"],
 				mutuallyExclusive: [["test:unit", "test:vitest"]],
+			},
+			exclude: ["packages/.*-docs/package.json", ...vendoredPackageJsons],
+		}),
+		makePolicy(PackageScripts, {
+			instanceId: "coverage",
+			config: {
 				conditionalRequired: [
 					{
 						ifPresent: "test",
@@ -89,7 +99,11 @@ const config: RepopoConfig = {
 					},
 				],
 			},
-			exclude: ["packages/.*-docs/package.json", ...vendoredPackageJsons],
+			exclude: [
+				"packages/.*-docs/package.json",
+				...vendoredPackageJsons,
+				treeSitterPackageJson,
+			],
 		}),
 		makePolicy(SortTsconfigsPolicy, {
 			exclude: vendoredPackages,
@@ -124,6 +138,7 @@ const config: RepopoConfig = {
 					"repopo-docs",
 					"sort-tsconfig",
 					"tools-monorepo",
+					"tree-sitter-ccl",
 				],
 			},
 			exclude: vendoredPackageJsons,
@@ -145,7 +160,11 @@ const config: RepopoConfig = {
 				testDependencies: ["vitest", "jest", "mocha"],
 				requiredScripts: ["test:coverage"],
 			},
-			exclude: [...vendoredPackageJsons, "packages/.*-docs/package.json"],
+			exclude: [
+				...vendoredPackageJsons,
+				"packages/.*-docs/package.json",
+				treeSitterPackageJson,
+			],
 		}),
 		makePolicy(RequiredGitignorePatterns, {
 			config: {
