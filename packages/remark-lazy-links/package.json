@@ -37,7 +37,7 @@
 		"test:coverage": "mkdir -p .coverage/vitest/.tmp && vitest run test --coverage"
 	},
 	"dependencies": {
-		"mdast-util-from-markdown": "^2.0.3",
+		"mdast-util-from-markdown": "^2.1.0",
 		"unified": "^11.0.5",
 		"vfile": "^6.0.3"
 	},
