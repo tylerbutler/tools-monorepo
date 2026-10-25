@@ -32,4 +32,4 @@ DESCRIPTION
   List all tbu commands.
 ```
 
-_See code: [@oclif/plugin-commands](https://github.com/oclif/plugin-commands/blob/4.2.0/src/commands/commands.ts)_
+_See code: [@oclif/plugin-commands](https://github.com/oclif/plugin-commands/blob/5.0.6/src/commands/commands.ts)_
