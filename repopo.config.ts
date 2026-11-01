@@ -117,6 +117,7 @@ const config: RepopoConfig = {
 					"rehype-footnotes",
 					"remark-lazy-links",
 					"remark-repopo-policies",
+					"remark-sentence-per-line",
 					"remark-shift-headings",
 					"remark-task-table",
 					"remark-workspace-packages",
