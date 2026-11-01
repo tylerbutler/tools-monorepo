@@ -1,5 +1,58 @@
 # repopo
 
+## 0.13.0
+
+### Minor Changes
+
+- Introduce a shared API for file and repository policies, with consistent check results and fix status reporting. _[`#811`](https://github.com/tylerbutler/tools-monorepo/pull/811) [`d76e9e7`](https://github.com/tylerbutler/tools-monorepo/commit/d76e9e72c8d75863a97517ca662001aa567207da) [@tylerbutler](https://github.com/tylerbutler)_
+
+	
+	**Breaking change:** Update custom policies and configurations together.
+	This change is released as a minor version while the packages are pre-1.0.
+	See the [migration guide](https://repopo.tylerbutler.com/usage/migration/) for replacements for removed APIs and complete examples.
+	
+	Key migration steps for `repopo`:
+	
+	- Define policies as objects with `satisfies FilePolicyDefinition<C>` or `satisfies RepositoryPolicyDefinition<C>` instead of policy classes or factory aliases. Use `definePackagePolicy` instead of `generatePackagePolicy`.
+	- Configure policies with `makePolicy(definition, { config, exclude, instanceId })` instead of positional configuration or a third argument. Instance exclusions use `exclude`; global `RepopoConfig.excludeFiles` remains supported. Repeated instances of the same policy need unique `instanceId` values.
+	- Mark required configuration with `requiresConfig: true` and supply complete settings or a complete default. Omitted or `undefined` configuration selects the default; explicit configuration replaces it without merging.
+	- Return arrays of findings instead of the previous success and failure results. An empty handler result passes. Findings use `message`, optional `manualFix`, and optional `fixStatus: "available" | "fixed" | "failed"`. Only `"fixed"` resolves a finding; `"fixed"` and `"failed"` are valid only in fix mode. Standalone resolvers must return the findings they update; returning `[]` does not resolve the original findings.
+	- Run policies with `runPolicies(options)` for Promise-based code or `new PolicyRunner(options).run()` for Effection code. Results separate `findings`, `errors`, `skipped`, and `perfStats`. Input and registration errors throw; policy execution errors are collected.
+	- Supply the full repository `inventory` or an async inventory loader when running repository policies programmatically. Use a loader to refresh the inventory after file fixes and between repository fixes. `LicenseFileExists` and `SharedDependencyVersions` now check the whole repository, even with an empty file selection or `--stdin`. Repository fixes can modify files outside the selected list.
+	
+	In fix mode, an execution error stops later work on the affected file and skips repository policies, or stops later repository policies if the error occurs in that phase.
+	Completed writes are not rolled back.
+	Both `check` and `check-native` follow these rules.
+	
+	Import the programmatic API from `repopo/api` and built-in policies from `repopo/policies`.
+	The root `repopo` entry point also exports the CLI's `run` function.
+	
+	For `sort-tsconfig`, the exported `SortTsconfigsPolicy` is now a file policy definition.
+	Configure it with the same `makePolicy` options object.
+	If you call its handler directly, update your code to handle finding arrays and fix statuses.
+	
+	For `remark-repopo-policies`, generated policy tables now read instance exclusions from `exclude`, so exclusion details remain visible after migration.
+
+### Patch Changes
+
+- Speed up read-only checks by processing up to eight files at a time and avoiding repeated parsing of `package.json`, `Cargo.toml`, and `gleam.toml` files. _[`#807`](https://github.com/tylerbutler/tools-monorepo/pull/807) [`5e6c97b`](https://github.com/tylerbutler/tools-monorepo/commit/5e6c97b9afa99c93b1728ee0e48b45fa0a130501) [@tylerbutler](https://github.com/tylerbutler)_
+
+	Each policy still receives an independent copy of the parsed data.
+	
+	Set the file limit with `--concurrency` on `repopo check` or `repopo check-native`, or with `PolicyRunnerOptions.concurrency` in the programmatic API.
+	Use `--concurrency 1` for custom policies that must process files one at a time.
+	Automatic fixes still run one at a time and read fresh file contents.
+- Correct the reported file counts so each file that passes global exclusions is counted once, regardless of how many policies run on it. _[`#779`](https://github.com/tylerbutler/tools-monorepo/pull/779) [`ca340db`](https://github.com/tylerbutler/tools-monorepo/commit/ca340dbefce4e967ecf73a043207ec13b0651213) [@tylerbutler](https://github.com/tylerbutler)_
+
+	Ignore empty entries in file lists from Git and `--stdin`, so blank records do not become file paths.
+- Show a policy's manual fix instructions when `repopo check` or `repopo check-native` reports an unresolved violation, including after a failed automatic fix. _[`#803`](https://github.com/tylerbutler/tools-monorepo/pull/803) [`c401c9c`](https://github.com/tylerbutler/tools-monorepo/commit/c401c9c7ab783222afac4df6de0b421dbe215093) [@tylerbutler](https://github.com/tylerbutler)_
+
+	If the automatic fixer does not provide instructions, keep the policy's original guidance.
+	Do not show manual fix instructions for violations that were successfully fixed.
+- Reject file paths that resolve outside the repository root in `repopo check`, including paths supplied with `--stdin`. _[`#665`](https://github.com/tylerbutler/tools-monorepo/pull/665) [`1333d28`](https://github.com/tylerbutler/tools-monorepo/commit/1333d287abdee51a01a22540914600877fe8f557) [@tylerbutler](https://github.com/tylerbutler)_
+
+	Apply the same validation to package and file-header policy helpers, so these checks and fixes reject paths such as `../outside.txt`.
+
 ## 0.12.0
 
 ### Minor Changes
