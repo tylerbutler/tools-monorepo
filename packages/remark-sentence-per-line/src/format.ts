@@ -109,6 +109,9 @@ function visibleText(node: PhrasingContent): string {
 	if (node.type === "text") {
 		return node.value.replace(textWhitespacePattern, " ");
 	}
+	if (node.type === "footnoteReference") {
+		return "";
+	}
 	if ("children" in node) {
 		return node.children.map(visibleText).join("");
 	}
@@ -133,7 +136,7 @@ function projectInline(
 		append(projection, "\n", start, end);
 		return;
 	}
-	if (node.type === "html") {
+	if (node.type === "html" || node.type === "footnoteReference") {
 		if (projection.ends.length > 0) {
 			projection.ends[projection.ends.length - 1] = end;
 		}
@@ -313,18 +316,21 @@ export function getMarkdownEdits(
 		return [];
 	}
 	const originalStructure = structure(source);
-	if (structure(applyEdits(source, proposed)) === originalStructure) {
-		return proposed;
-	}
+	let safe: MarkdownEdit[] = [];
 
 	// A new line can turn prose into a heading, list, or other Markdown block.
-	const safe: MarkdownEdit[] = [];
-	for (const edit of proposed) {
-		const candidate = [...safe, edit];
+	// Bisect rejected batches rather than reparsing for every safe edit.
+	function acceptSafeEdits(edits: MarkdownEdit[]): void {
+		const candidate = [...safe, ...edits];
 		if (structure(applyEdits(source, candidate)) === originalStructure) {
-			safe.push(edit);
+			safe = candidate;
+		} else if (edits.length > 1) {
+			const middle = Math.floor(edits.length / 2);
+			acceptSafeEdits(edits.slice(0, middle));
+			acceptSafeEdits(edits.slice(middle));
 		}
 	}
+	acceptSafeEdits(proposed);
 	return safe;
 }
 

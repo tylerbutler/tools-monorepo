@@ -3,7 +3,7 @@ import { remark } from "remark";
 import remarkParse from "remark-parse";
 import remarkStringify from "remark-stringify";
 import { unified } from "unified";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import {
 	formatMarkdown,
 	getMarkdownEdits,
@@ -86,6 +86,29 @@ describe("source-preserving formatting", () => {
 		expect(formatMarkdown(expected)).toBe(expected);
 	});
 
+	it.each([
+		[
+			"First sentence.[^a] Second sentence.",
+			"First sentence.[^a]\nSecond sentence.",
+		],
+		[
+			"- **First sentence.[^a][^b]** Second sentence.",
+			"- **First sentence.[^a][^b]**\n  Second sentence.",
+		],
+		[
+			"[First sentence.[^a]](https://example.com) Second sentence.",
+			"[First sentence.[^a]](https://example.com)\nSecond sentence.",
+		],
+		[
+			"One sentence[^a]\ncontinues here. Next sentence.",
+			"One sentence[^a] continues here.\nNext sentence.",
+		],
+	])("keeps footnote references attached to sentences in %j", (input, expected) => {
+		const definitions = "\n\n[^a]: A footnote.\n[^b]: Another footnote.";
+		expect(formatMarkdown(input + definitions)).toBe(expected + definitions);
+		expect(formatMarkdown(expected + definitions)).toBe(expected + definitions);
+	});
+
 	it("leaves non-prose blocks and inline syntax unchanged", () => {
 		const input = [
 			"---",
@@ -145,6 +168,25 @@ describe("source-preserving formatting", () => {
 		);
 	});
 
+	it("isolates unsafe edits without reparsing once per safe edit", () => {
+		const inputBlock = "First sentence. Second sentence.\n\n".repeat(64);
+		const expectedBlock = "First sentence.\nSecond sentence.\n\n".repeat(64);
+		const parse = vi.spyOn(Object.getPrototypeOf(unified()), "parse");
+		try {
+			expect(
+				formatMarkdown(
+					`${inputBlock}First. # Not a heading. Last.\n\n${inputBlock}`,
+				),
+			).toBe(
+				`${expectedBlock}First. # Not a heading.\nLast.\n\n${expectedBlock}`,
+			);
+			// Bound parse work without depending on machine speed.
+			expect(parse.mock.calls.length).toBeLessThan(40);
+		} finally {
+			parse.mockRestore();
+		}
+	});
+
 	it.each([
 		[{ locale: "en-GB" }, "Dr. Smith left. Next.", "Dr. Smith left.\nNext."],
 		[
@@ -182,6 +224,18 @@ describe("source-preserving formatting", () => {
 				result.slice(0, edit.start) + edit.newText + result.slice(edit.end);
 		}
 		expect(result).toBe(formatMarkdown(input));
+	});
+
+	it("inserts a no-space sentence boundary after its footnote reference", () => {
+		const first = "最初の文。[^a]";
+		const rest = "次の文！\n\n[^a]: 注記";
+		const options = { locale: "ja" };
+		expect(getMarkdownEdits(first + rest, options)).toEqual([
+			{ start: first.length, end: first.length, newText: "\n" },
+		]);
+		const expected = `${first}\n${rest}`;
+		expect(formatMarkdown(first + rest, options)).toBe(expected);
+		expect(formatMarkdown(expected, options)).toBe(expected);
 	});
 });
 
