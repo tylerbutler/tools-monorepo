@@ -2,7 +2,6 @@
 "repopo": patch
 ---
 
-Print manual fix guidance for unresolved policy failures in both `check` and
-`check-native`, including failed auto-fix attempts. When a standalone resolver
-fails without its own guidance, show the original handler's instructions.
-Omit guidance after a successful fix.
+Show a policy's manual fix instructions when `repopo check` or `repopo check-native` reports an unresolved violation, including after a failed automatic fix.
+If the automatic fixer does not provide instructions, keep the policy's original guidance.
+Do not show manual fix instructions for violations that were successfully fixed.
