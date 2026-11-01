@@ -2,6 +2,9 @@
 "repopo": patch
 ---
 
-Improve read-only check performance with up to 8 concurrent files and shared parsing of package.json, Cargo.toml, and gleam.toml manifests. Each policy receives an independent copy of parsed data.
+Speed up read-only checks by processing up to eight files at a time and avoiding repeated parsing of `package.json`, `Cargo.toml`, and `gleam.toml` files.
+Each policy still receives an independent copy of the parsed data.
 
-Use `--concurrency` with `check` or `check-native`, or the `PolicyRunnerOptions.concurrency` option, to set the file limit. Use 1 for custom policies that require sequential file processing. Fixes remain sequential and read fresh data.
+Set the file limit with `--concurrency` on `repopo check` or `repopo check-native`, or with `PolicyRunnerOptions.concurrency` in the programmatic API.
+Use `--concurrency 1` for custom policies that must process files one at a time.
+Automatic fixes still run one at a time and read fresh file contents.

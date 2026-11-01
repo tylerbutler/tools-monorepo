@@ -2,11 +2,8 @@
 "remark-workspace-packages": minor
 ---
 
-Add remark-workspace-packages plugin for generating workspace package tables in markdown
+Add a remark plugin that generates and updates Markdown tables of workspace packages.
+Discover packages from `pnpm-workspace.yaml` or `package.json` workspaces.
 
-Features:
-- Reads pnpm-workspace.yaml to discover packages
-- Generates markdown tables with configurable columns (name, description, version)
-- Supports glob patterns in workspace definitions
-- Preserves user-edited descriptions across runs
-- Links package names to their directories
+Choose columns for package names, descriptions, paths, and private status, and filter packages with include or exclude glob patterns.
+Package names link to their directories by default, and descriptions edited in the table are preserved when it is regenerated.
