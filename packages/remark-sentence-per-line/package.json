@@ -1,6 +1,6 @@
 {
 	"name": "remark-sentence-per-line",
-	"version": "0.0.0",
+	"version": "0.1.0",
 	"description": "Source-preserving Markdown formatter that puts each sentence on its own line",
 	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/remark-sentence-per-line#remark-sentence-per-line",
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",

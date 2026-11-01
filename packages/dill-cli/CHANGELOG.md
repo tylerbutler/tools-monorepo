@@ -1,5 +1,13 @@
 # dill-cli
 
+## 0.4.3
+
+### Patch Changes
+
+- Reject tar and zip archives with entry paths that could write outside the extraction directory. _[`#769`](https://github.com/tylerbutler/tools-monorepo/pull/769) [`c8574a0`](https://github.com/tylerbutler/tools-monorepo/commit/c8574a08292c0a3d051a5eb6ca66bf3aba209ba8) [@bm1016bm-svg](https://github.com/bm1016bm-svg)_
+
+	Validate all entry paths before writing extracted files, so an unsafe entry causes extraction to fail before any archive contents are written.
+
 ## 0.4.2
 
 ### Patch Changes
