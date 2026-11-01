@@ -1,0 +1,12 @@
+{
+	"extends": "../../config/tsconfig.strict.json",
+	"compilerOptions": {
+		"composite": false,
+		"incremental": false,
+		"noEmit": true,
+		"rootDir": ".",
+		"checkJs": false,
+		"types": ["node"],
+	},
+	"include": ["test/**/*.ts"],
+}
