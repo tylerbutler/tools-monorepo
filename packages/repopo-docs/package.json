@@ -44,7 +44,7 @@
 	"devDependencies": {
 		"@fec/remark-a11y-emoji": "^4.0.2",
 		"@hashicorp/platform-remark-plugins": "^0.2.1",
-		"wrangler": "^4.152.0"
+		"wrangler": "^4.156.0"
 	},
 	"nx": {
 		"targets": {
