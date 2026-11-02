@@ -43,7 +43,7 @@
 	"devDependencies": {
 		"@biomejs/biome": "2.3.8",
 		"@types/hast": "^3.0.5",
-		"@types/node": "^26.6.5",
+		"@types/node": "^26.6.6",
 		"@vitest/coverage-v8": "^5.0.5",
 		"rehype": "^13.0.2",
 		"rehype-parse": "^9.0.1",
