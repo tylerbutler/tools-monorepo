@@ -46,7 +46,7 @@
 		"@biomejs/biome": "2.3.8",
 		"@microsoft/api-documenter": "^7.30.18",
 		"@microsoft/api-extractor": "^7.59.4",
-		"@types/node": "^26.6.5",
+		"@types/node": "^26.6.6",
 		"concurrently": "^10.0.6",
 		"generate-license-file": "^4.2.5",
 		"rimraf": "^6.1.3",
