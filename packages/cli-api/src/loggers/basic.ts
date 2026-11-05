@@ -19,24 +19,28 @@ function log(msg?: string): void {
 }
 
 function success(msg?: string) {
-	log(`${chalk.green("SUCCESS")}: ${msg ?? ""}`);
+	diagnostic(`${chalk.green("SUCCESS")}: ${msg ?? ""}`);
 }
 
 function info(msg: string | Error | undefined) {
-	log(`INFO: ${formatError(msg)}`);
+	diagnostic(`INFO: ${formatError(msg)}`);
 }
 
 function verbose(msg: string | Error | undefined) {
-	log(`VERBOSE: ${formatError(msg)}`);
+	diagnostic(`VERBOSE: ${formatError(msg)}`);
 }
 
 function warning(msg: string | Error | undefined) {
-	log(`${chalk.yellow("WARNING")}: ${formatError(msg)}`);
+	diagnostic(`${chalk.yellow("WARNING")}: ${formatError(msg)}`);
+}
+
+function diagnostic(message: string): void {
+	// biome-ignore lint/suspicious/noConsole: logging is the purpose of this function
+	console.error(message);
 }
 
 function error(msg: string | Error | undefined) {
-	// biome-ignore lint/suspicious/noConsole: logging is the purpose of this function
-	console.error(`${chalk.red("ERROR")}: ${formatError(msg)}`);
+	diagnostic(`${chalk.red("ERROR")}: ${formatError(msg)}`);
 }
 
 /**
@@ -44,7 +48,7 @@ function error(msg: string | Error | undefined) {
  *
  * @remarks
  * This factory function returns a logger that outputs to the console with
- * colored prefixes for different severity levels:
+ * colored prefixes on stderr. Only `log` writes to stdout:
  * - SUCCESS: green prefix
  * - WARNING: yellow prefix
  * - ERROR: red prefix (to stderr)

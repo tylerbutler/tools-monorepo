@@ -22,7 +22,17 @@ describe("TypeScript check/list CLI", () => {
 	});
 	async function invoke(
 		policies: string,
-		{ stdin = "one.txt\n", fix = false, exclude = "[]" } = {},
+		{
+			stdin = "one.txt\n",
+			fix = false,
+			exclude = "[]",
+			flags = [],
+		}: {
+			stdin?: string;
+			fix?: boolean;
+			exclude?: string;
+			flags?: string[];
+		} = {},
 		command = "check",
 	) {
 		const config = join(root, "repopo.config.mjs");
@@ -30,31 +40,106 @@ describe("TypeScript check/list CLI", () => {
 			config,
 			`export default { policies: ${policies}, excludeFiles: ${exclude} };`,
 		);
-		return new Promise<{ output: string; code: string | number | undefined }>(
-			(resolve) => {
-				const child = execFile(
-					process.execPath,
-					[
-						fileURLToPath(new URL("../bin/run.js", import.meta.url)),
-						command,
-						"--config",
-						config,
-						...(command === "check" ? ["--stdin"] : []),
-						...(fix ? ["--fix"] : []),
-					],
-					{ cwd: root, timeout: 15000 },
-					(error, stdout, stderr) => {
-						resolve({ output: stdout + stderr, code: error?.code });
-					},
-				);
-				child.stdin?.end(stdin);
-			},
-		);
+		return new Promise<{
+			output: string;
+			stdout: string;
+			stderr: string;
+			code: string | number | undefined;
+		}>((resolve) => {
+			const child = execFile(
+				process.execPath,
+				[
+					fileURLToPath(new URL("../bin/run.js", import.meta.url)),
+					command,
+					"--config",
+					config,
+					...(command === "check" ? ["--stdin"] : []),
+					...(fix ? ["--fix"] : []),
+					...flags,
+				],
+				{ cwd: root, timeout: 15000 },
+				(error, stdout, stderr) => {
+					resolve({
+						output: stdout + stderr,
+						stdout,
+						stderr,
+						code: error?.code,
+					});
+				},
+			);
+			child.stdin?.end(stdin);
+		});
 	}
 	const file = 'name: "File", description: "File check", match: /\\.txt$/';
 	const repository =
 		'name: "Repository", description: "Repository check", scope: "repository"';
 
+	const modes = [
+		{ flags: [], quiet: false, verbose: false },
+		{ flags: ["--verbose"], quiet: false, verbose: true },
+		{ flags: ["--quiet"], quiet: true, verbose: false },
+		{ flags: ["--quiet", "--verbose"], quiet: true, verbose: false },
+	];
+	it.each(modes)("reports successful completion on stderr: $flags", async ({
+		flags,
+		quiet,
+		verbose,
+	}) => {
+		const result = await invoke(`[{ ${file}, handler: async () => [] }]`, {
+			flags,
+		});
+		expect(result.code).toBeUndefined();
+		expect(result.stdout).toBe("");
+		expect(result.stderr.includes("All policies passed.")).toBe(!quiet);
+		expect(
+			result.stderr.includes(
+				"Completed: 0 fixed, 0 unresolved, 0 execution errors.",
+			),
+		).toBe(!quiet);
+		expect(result.stderr.includes("1 policies loaded.")).toBe(verbose);
+		expect(result.stderr.includes("Statistics:")).toBe(verbose);
+		expect(result.stderr.includes('Performance for "handle":')).toBe(verbose);
+		expect(result.stderr).not.toContain("Checking policies...");
+		if (quiet) {
+			expect(result.stderr).toBe("");
+		}
+	});
+	it.each(
+		modes,
+	)("retains failures and exit status while controlling detail: $flags", async ({
+		flags,
+		quiet,
+		verbose,
+	}) => {
+		const result = await invoke(
+			`[
+					{ ${file}, handler: async () => [
+						{ message: "corrected", fixStatus: "fixed" },
+						{ message: "unresolved", manualFix: "Edit manually." }
+					] },
+					{ name: "Broken", description: "Broken check", match: /\\.txt$/,
+						handler: async () => { throw new Error("execution failed"); } },
+					{ ${repository}, handler: async () => [] }
+				]`,
+			{ flags, fix: true },
+		);
+		expect(result.code).toBe(1);
+		expect(result.stdout).toBe("");
+		expect(result.stderr).toContain("one.txt: unresolved");
+		expect(result.stderr).toContain("Manual fix: Edit manually.");
+		expect(result.stderr).toContain("Execution error (exception, handle)");
+		expect(result.stderr).toContain("execution failed");
+		expect(result.stderr.includes("Resolved File: one.txt: corrected")).toBe(
+			!quiet,
+		);
+		expect(
+			result.stderr.includes(
+				"Completed: 1 fixed, 1 unresolved, 1 execution errors.",
+			),
+		).toBe(!quiet);
+		expect(result.stderr.includes("Skipped Repository:")).toBe(verbose);
+		expect(result.stderr).not.toContain("All policies passed");
+	});
 	it("reports independent file findings with manual guidance and a failing status", async () => {
 		const result = await invoke(`[{ ${file}, handler: async () => [
 			{ message: "first issue", manualFix: "Use the shared helper." },

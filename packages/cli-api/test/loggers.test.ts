@@ -56,8 +56,8 @@ describe("BasicLogger", () => {
 	describe("success", () => {
 		it("should log success messages with SUCCESS prefix", () => {
 			BasicLogger.success("operation completed");
-			expect(logSpy).toHaveBeenCalledTimes(1);
-			const call = logSpy.mock.calls[0][0] as string;
+			expect(errorSpy).toHaveBeenCalledTimes(1);
+			const call = errorSpy.mock.calls[0][0] as string;
 			expect(call).toContain("SUCCESS");
 			expect(call).toContain("operation completed");
 		});
@@ -65,8 +65,8 @@ describe("BasicLogger", () => {
 		it("should handle Error objects", () => {
 			const error = new Error("test error");
 			BasicLogger.success(error);
-			expect(logSpy).toHaveBeenCalledTimes(1);
-			const call = logSpy.mock.calls[0][0] as string;
+			expect(errorSpy).toHaveBeenCalledTimes(1);
+			const call = errorSpy.mock.calls[0][0] as string;
 			expect(call).toContain("SUCCESS");
 			expect(call).toContain("test error");
 		});
@@ -75,8 +75,8 @@ describe("BasicLogger", () => {
 	describe("info", () => {
 		it("should log info messages with INFO prefix", () => {
 			BasicLogger.info("information");
-			expect(logSpy).toHaveBeenCalledTimes(1);
-			const call = logSpy.mock.calls[0][0] as string;
+			expect(errorSpy).toHaveBeenCalledTimes(1);
+			const call = errorSpy.mock.calls[0][0] as string;
 			expect(call).toContain("INFO");
 			expect(call).toContain("information");
 		});
@@ -85,8 +85,8 @@ describe("BasicLogger", () => {
 			const error = new Error("info error");
 			error.stack = "stack trace";
 			BasicLogger.info(error);
-			expect(logSpy).toHaveBeenCalledTimes(1);
-			const call = logSpy.mock.calls[0][0] as string;
+			expect(errorSpy).toHaveBeenCalledTimes(1);
+			const call = errorSpy.mock.calls[0][0] as string;
 			expect(call).toContain("info error");
 			expect(call).toContain("stack trace");
 		});
@@ -95,15 +95,15 @@ describe("BasicLogger", () => {
 	describe("warning", () => {
 		it("should log warning messages with WARNING prefix", () => {
 			BasicLogger.warning("caution");
-			expect(logSpy).toHaveBeenCalledTimes(1);
-			const call = logSpy.mock.calls[0][0] as string;
+			expect(errorSpy).toHaveBeenCalledTimes(1);
+			const call = errorSpy.mock.calls[0][0] as string;
 			expect(call).toContain("WARNING");
 			expect(call).toContain("caution");
 		});
 
 		it("should use yellow color for WARNING prefix", () => {
 			BasicLogger.warning("test");
-			const call = logSpy.mock.calls[0][0] as string;
+			const call = errorSpy.mock.calls[0][0] as string;
 			// picocolors adds ANSI codes, check for WARNING text
 			expect(call).toMatch(/WARNING/);
 		});
@@ -139,8 +139,8 @@ describe("BasicLogger", () => {
 	describe("verbose", () => {
 		it("should log verbose messages with VERBOSE prefix", () => {
 			BasicLogger.verbose("debug info");
-			expect(logSpy).toHaveBeenCalledTimes(1);
-			const call = logSpy.mock.calls[0][0] as string;
+			expect(errorSpy).toHaveBeenCalledTimes(1);
+			const call = errorSpy.mock.calls[0][0] as string;
 			expect(call).toContain("VERBOSE");
 			expect(call).toContain("debug info");
 		});
@@ -148,7 +148,7 @@ describe("BasicLogger", () => {
 		it("should handle Error objects", () => {
 			const error = new Error("debug error");
 			BasicLogger.verbose(error);
-			const call = logSpy.mock.calls[0][0] as string;
+			const call = errorSpy.mock.calls[0][0] as string;
 			expect(call).toContain("debug error");
 		});
 	});
@@ -159,7 +159,7 @@ describe("BasicLogger", () => {
 			error.stack = "at something";
 
 			BasicLogger.info(error);
-			const call = logSpy.mock.calls[0][0] as string;
+			const call = errorSpy.mock.calls[0][0] as string;
 
 			expect(call).toContain("test message");
 			expect(call).toContain("at something");
@@ -170,14 +170,14 @@ describe("BasicLogger", () => {
 			delete error.stack;
 
 			BasicLogger.info(error);
-			const call = logSpy.mock.calls[0][0] as string;
+			const call = errorSpy.mock.calls[0][0] as string;
 
 			expect(call).toContain("no stack");
 		});
 
 		it("should handle undefined message", () => {
 			BasicLogger.info(undefined);
-			const call = logSpy.mock.calls[0][0] as string;
+			const call = errorSpy.mock.calls[0][0] as string;
 
 			expect(call).toContain("INFO:");
 			// formatError returns empty string for undefined
@@ -186,7 +186,7 @@ describe("BasicLogger", () => {
 
 		it("should handle undefined in warning", () => {
 			BasicLogger.warning(undefined);
-			const call = logSpy.mock.calls[0][0] as string;
+			const call = errorSpy.mock.calls[0][0] as string;
 
 			expect(call).toContain("WARNING");
 		});
@@ -200,7 +200,7 @@ describe("BasicLogger", () => {
 
 		it("should handle undefined in verbose", () => {
 			BasicLogger.verbose(undefined);
-			const call = logSpy.mock.calls[0][0] as string;
+			const call = errorSpy.mock.calls[0][0] as string;
 
 			expect(call).toContain("VERBOSE");
 		});
@@ -209,14 +209,14 @@ describe("BasicLogger", () => {
 	describe("Color formatting", () => {
 		it("should apply green color to SUCCESS", () => {
 			BasicLogger.success("test");
-			const output = logSpy.mock.calls[0][0] as string;
+			const output = errorSpy.mock.calls[0][0] as string;
 			// Check that SUCCESS is present (picocolors will wrap it)
 			expect(output).toContain("SUCCESS");
 		});
 
 		it("should apply yellow color to WARNING", () => {
 			BasicLogger.warning("test");
-			const output = logSpy.mock.calls[0][0] as string;
+			const output = errorSpy.mock.calls[0][0] as string;
 			expect(output).toContain("WARNING");
 		});
 
@@ -235,12 +235,12 @@ describe("BasicLogger", () => {
 			BasicLogger.error("message 4");
 			BasicLogger.verbose("message 5");
 
-			expect(logSpy).toHaveBeenCalledTimes(4);
-			expect(errorSpy).toHaveBeenCalledTimes(1);
+			expect(logSpy).toHaveBeenCalledTimes(1);
+			expect(errorSpy).toHaveBeenCalledTimes(4);
 		});
 
 		it("should maintain separate stdout/stderr streams", () => {
-			BasicLogger.info("stdout message");
+			BasicLogger.log("stdout message");
 			BasicLogger.error("stderr message");
 
 			expect(logSpy).toHaveBeenCalledTimes(1);
@@ -256,6 +256,46 @@ describe("BasicLogger", () => {
 });
 
 describe("ConsolaLogger", () => {
+	it.each([
+		{ name: "basic", create: () => BasicLogger },
+		{ name: "consola", create: () => createConsolaLogger() },
+		{ name: "styled", create: () => createConsolaLogger("capsule") },
+		{ name: "extended", create: () => createExtendedConsolaLogger("tape") },
+	])("routes all $name diagnostics to stderr, including verbose", ({
+		create,
+	}) => {
+		const stdout = vi
+			.spyOn(process.stdout, "write")
+			.mockImplementation(() => true);
+		const stderr = vi
+			.spyOn(process.stderr, "write")
+			.mockImplementation(() => true);
+		try {
+			const logger = create();
+			logger.log("command-output");
+			for (const method of [
+				"success",
+				"info",
+				"warning",
+				"error",
+				"verbose",
+			] as const) {
+				logger[method](`diagnostic-${method}`);
+			}
+			const output = stdout.mock.calls.map(([chunk]) => String(chunk)).join("");
+			const diagnostics = stderr.mock.calls
+				.map(([chunk]) => String(chunk))
+				.join("");
+			expect(output).toBe("command-output\n");
+			for (const method of ["success", "info", "warning", "error", "verbose"]) {
+				expect(diagnostics).toContain(`diagnostic-${method}`);
+			}
+		} finally {
+			stdout.mockRestore();
+			stderr.mockRestore();
+		}
+	});
+
 	it("should have all required Logger methods", () => {
 		expect(ConsolaLogger.log).toBeDefined();
 		expect(typeof ConsolaLogger.log).toBe("function");
@@ -376,6 +416,19 @@ describe("createPrefixReporter", () => {
 		vi.clearAllMocks();
 	});
 
+	it("keeps explicit command output unformatted on stdout", () => {
+		const reporter = createPrefixReporter({ style: "capsule" });
+		reporter.log({
+			type: "log",
+			args: ["command output"],
+			level: 3,
+			tag: "",
+			date: new Date(),
+		});
+		expect(logSpy).toHaveBeenCalledWith("command output");
+		expect(errorSpy).not.toHaveBeenCalled();
+	});
+
 	describe("capsule style", () => {
 		it("should format success as [NOTE]", () => {
 			const reporter = createPrefixReporter({ style: "capsule" });
@@ -386,8 +439,8 @@ describe("createPrefixReporter", () => {
 				tag: "",
 				date: new Date(),
 			});
-			expect(logSpy).toHaveBeenCalledTimes(1);
-			const output = logSpy.mock.calls[0][0] as string;
+			expect(errorSpy).toHaveBeenCalledTimes(1);
+			const output = errorSpy.mock.calls[0][0] as string;
 			expect(output).toContain("[NOTE]");
 			expect(output).toContain("task completed");
 		});
@@ -401,8 +454,8 @@ describe("createPrefixReporter", () => {
 				tag: "",
 				date: new Date(),
 			});
-			expect(logSpy).toHaveBeenCalledTimes(1);
-			const output = logSpy.mock.calls[0][0] as string;
+			expect(errorSpy).toHaveBeenCalledTimes(1);
+			const output = errorSpy.mock.calls[0][0] as string;
 			expect(output).toContain("[INFO]");
 			expect(output).toContain("information message");
 		});
@@ -416,8 +469,8 @@ describe("createPrefixReporter", () => {
 				tag: "",
 				date: new Date(),
 			});
-			expect(logSpy).toHaveBeenCalledTimes(1);
-			const output = logSpy.mock.calls[0][0] as string;
+			expect(errorSpy).toHaveBeenCalledTimes(1);
+			const output = errorSpy.mock.calls[0][0] as string;
 			expect(output).toContain("[WARNING]");
 			expect(output).toContain("warning message");
 		});
@@ -446,8 +499,8 @@ describe("createPrefixReporter", () => {
 				tag: "",
 				date: new Date(),
 			});
-			expect(logSpy).toHaveBeenCalledTimes(1);
-			const output = logSpy.mock.calls[0][0] as string;
+			expect(errorSpy).toHaveBeenCalledTimes(1);
+			const output = errorSpy.mock.calls[0][0] as string;
 			expect(output).toContain("[VERBOSE]");
 			expect(output).toContain("verbose message");
 		});
@@ -476,8 +529,8 @@ describe("createPrefixReporter", () => {
 				tag: "",
 				date: new Date(),
 			});
-			expect(logSpy).toHaveBeenCalledTimes(1);
-			const output = logSpy.mock.calls[0][0] as string;
+			expect(errorSpy).toHaveBeenCalledTimes(1);
+			const output = errorSpy.mock.calls[0][0] as string;
 			expect(output).toContain("[DEBUG]");
 			expect(output).toContain("debug info");
 		});
@@ -491,8 +544,8 @@ describe("createPrefixReporter", () => {
 				tag: "",
 				date: new Date(),
 			});
-			expect(logSpy).toHaveBeenCalledTimes(1);
-			const output = logSpy.mock.calls[0][0] as string;
+			expect(errorSpy).toHaveBeenCalledTimes(1);
+			const output = errorSpy.mock.calls[0][0] as string;
 			expect(output).toContain("[TRACE]");
 			expect(output).toContain("trace info");
 		});
@@ -508,7 +561,7 @@ describe("createPrefixReporter", () => {
 				tag: "",
 				date: new Date(),
 			});
-			const output = logSpy.mock.calls[0][0] as string;
+			const output = errorSpy.mock.calls[0][0] as string;
 			expect(output).toContain("# NOTE");
 			expect(output).toContain("task completed");
 		});
@@ -522,7 +575,7 @@ describe("createPrefixReporter", () => {
 				tag: "",
 				date: new Date(),
 			});
-			const output = logSpy.mock.calls[0][0] as string;
+			const output = errorSpy.mock.calls[0][0] as string;
 			expect(output).toContain("# WARNING");
 		});
 	});
@@ -537,7 +590,7 @@ describe("createPrefixReporter", () => {
 				tag: "",
 				date: new Date(),
 			});
-			const output = logSpy.mock.calls[0][0] as string;
+			const output = errorSpy.mock.calls[0][0] as string;
 			expect(output).toContain("// NOTE");
 			expect(output).toContain("task completed");
 		});
@@ -566,7 +619,7 @@ describe("createPrefixReporter", () => {
 				tag: "",
 				date: new Date(),
 			});
-			const output = logSpy.mock.calls[0][0] as string;
+			const output = errorSpy.mock.calls[0][0] as string;
 			// With colors enabled, ANSI codes should be present
 			// NOTE prefix should still be there
 			expect(output).toContain("NOTE");
@@ -584,7 +637,7 @@ describe("createPrefixReporter", () => {
 				tag: "",
 				date: new Date(),
 			});
-			const output = logSpy.mock.calls[0][0] as string;
+			const output = errorSpy.mock.calls[0][0] as string;
 			// Without colors, the output should be plain text
 			expect(output).toBe("[NOTE] test");
 		});
@@ -616,7 +669,7 @@ describe("createPrefixReporter", () => {
 				tag: "",
 				date: new Date(),
 			});
-			const output = logSpy.mock.calls[0][0] as string;
+			const output = errorSpy.mock.calls[0][0] as string;
 			expect(output).toContain("first second third");
 		});
 	});

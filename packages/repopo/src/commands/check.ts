@@ -1,5 +1,6 @@
-import process from "node:process";
+import process, { env } from "node:process";
 import { Flags } from "@oclif/core";
+import { createSpinner } from "nanospinner";
 import { BaseRepopoCommand } from "../baseCommand.js";
 import { DEFAULT_CONCURRENCY, validateConcurrency } from "../concurrency.js";
 import { parseFilePaths } from "../filePaths.js";
@@ -8,6 +9,7 @@ import { readRepositoryFiles } from "../repositoryFiles.js";
 import {
 	type PolicyExecutionError,
 	type PolicyRunFinding,
+	type PolicyRunResults,
 	runPolicies,
 } from "../runner.js";
 import { normalizeRepoRelativeFilePath } from "../utils/safePaths.js";
@@ -32,7 +34,7 @@ export class CheckPolicy<
 	},
 > extends BaseRepopoCommand<T> {
 	public static override readonly summary =
-		"Checks and applies policies to the files in the repository.";
+		"Checks and applies repository policies using the stable TypeScript engine.";
 
 	public static override readonly description =
 		"File policies check selected files. Repository policies always run with the full repository file inventory, " +
@@ -68,15 +70,31 @@ export class CheckPolicy<
 		for (const policy of context.policies) {
 			this.verbose(policy.instanceId);
 		}
-		const results = await runPolicies({
-			policies: context.policies,
-			root: context.gitRoot,
-			files,
-			inventory: () => this.collectRepositoryFiles(),
-			exclude: context.excludeFromAll,
-			fix: this.flags.fix,
-			concurrency: this.flags.concurrency,
-		});
+		const progress =
+			process.stdout.isTTY &&
+			process.stderr.isTTY &&
+			env.CI === undefined &&
+			env.TERM !== "dumb" &&
+			!this.flags.quiet &&
+			!this.flags.verbose
+				? createSpinner("Checking policies...", {
+						stream: process.stderr,
+					}).start()
+				: undefined;
+		let results: PolicyRunResults;
+		try {
+			results = await runPolicies({
+				policies: context.policies,
+				root: context.gitRoot,
+				files,
+				inventory: () => this.collectRepositoryFiles(),
+				exclude: context.excludeFromAll,
+				fix: this.flags.fix,
+				concurrency: this.flags.concurrency,
+			});
+		} finally {
+			progress?.stop();
+		}
 		for (const finding of results.findings) {
 			this.reportFinding(finding);
 		}
@@ -90,8 +108,21 @@ export class CheckPolicy<
 			);
 		}
 
-		if (!this.flags.quiet) {
-			logStats(results.perfStats, this.logger);
+		const fixed = results.findings.filter(
+			(finding) => finding.fixStatus === "fixed",
+		).length;
+		const unresolved = results.findings.length - fixed;
+		const summary = `Completed: ${fixed} fixed, ${unresolved} unresolved, ${results.errors.length} execution errors.`;
+		if (unresolved === 0 && results.errors.length === 0) {
+			this.success(`All policies passed. ${summary}`);
+		} else {
+			this.info(summary);
+		}
+		if (this.flags.verbose && !this.flags.quiet) {
+			logStats(results.perfStats, {
+				...this.logger,
+				log: (message) => this.verbose(message),
+			});
 		}
 	}
 

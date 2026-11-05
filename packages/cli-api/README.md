@@ -10,6 +10,16 @@ an overview of the API. Public APIs should all be documented, but the docs aren'
 
 Commands extending `BaseCommand` have access to a pluggable logger architecture with methods like `log()`, `success()`, `info()`, `warning()`, `logError()`, and `verbose()`.
 
+Use `log()` for command output on stdout. Built-in loggers send success messages,
+information, warnings, errors, and verbose details to stderr.
+`--quiet` suppresses success, information, and verbose messages but retains
+warnings and errors. `--verbose` adds detail to normal output. If you supply both
+flags, quiet wins. Neither flag suppresses `log()` output.
+
+Override `_logger` to customize formatting or output streams. Override the
+protected `suppressLogging` getter or the logging methods to change suppression
+rules for a command.
+
 **Built-in loggers:**
 
 - `BasicLogger` (default) - Simple console output with colored prefixes

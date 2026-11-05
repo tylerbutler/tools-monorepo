@@ -25,8 +25,8 @@ export type LoggingFunction = (message?: string, ...args: unknown[]) => void;
  *
  * @remarks
  * The Logger interface provides a consistent API for logging at different severity levels.
- * Implementations can customize output formatting (colors, icons, prefixes) while commands
- * use the same logging methods.
+ * Built-in loggers send diagnostics to stderr and reserve stdout for `log`.
+ * Implementations can customize formatting and streams while commands use the same methods.
  *
  * Built-in implementations:
  * - {@link createBasicLogger} - Simple console output with colored prefixes (default)
@@ -55,17 +55,17 @@ export interface Logger {
 	log: (message?: string, ...args: unknown[]) => void;
 
 	/**
-	 * Logs a success message (typically with green/positive formatting).
+	 * Logs a success message to stderr (typically with green/positive formatting).
 	 */
 	success: LoggingFunction;
 
 	/**
-	 * Logs an informational message.
+	 * Logs an informational message to stderr.
 	 */
 	info: ErrorLoggingFunction;
 
 	/**
-	 * Logs a warning message (typically with yellow/caution formatting).
+	 * Logs a warning to stderr, including in quiet mode.
 	 */
 	warning: ErrorLoggingFunction;
 
@@ -75,7 +75,7 @@ export interface Logger {
 	error: ErrorLoggingFunction;
 
 	/**
-	 * Logs a verbose/debug message. In commands, only shown when --verbose flag is enabled.
+	 * Logs a verbose/debug message to stderr. Commands show it only with --verbose and without --quiet.
 	 */
 	verbose: ErrorLoggingFunction;
 
