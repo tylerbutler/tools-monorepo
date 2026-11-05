@@ -37,16 +37,15 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
 	public static override baseFlags = {
 		verbose: OclifFlags.boolean({
 			char: "v",
-			description: "Enable verbose logging.",
+			description: "Show detailed diagnostics in addition to normal output.",
 			helpGroup: "LOGGING",
-			exclusive: ["quiet"],
 			required: false,
 			default: false,
 		}),
 		quiet: OclifFlags.boolean({
-			description: "Disable all logging.",
+			description:
+				"Suppress informational output; retain warnings and errors. Overrides --verbose.",
 			helpGroup: "LOGGING",
-			exclusive: ["verbose"],
 			required: false,
 			default: false,
 		}),
@@ -56,9 +55,12 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
 	protected args!: Args<T>;
 
 	/**
-	 * If true, all logs except those sent using the .log function will be suppressed.
+	 * Suppresses informational logging, but not command output or diagnostics.
+	 * Subclasses may override this to customize quiet behavior.
 	 */
-	private suppressLogging = false;
+	protected get suppressLogging(): boolean {
+		return this.flags?.quiet ?? false;
+	}
 
 	/**
 	 * The Logger instance that the command uses for output formatting.
@@ -154,8 +156,6 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
 		});
 		this.flags = flags as Flags<T>;
 		this.args = args as Args<T>;
-
-		this.suppressLogging = this.flags.quiet;
 	}
 
 	/**
@@ -200,9 +200,7 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
 		message: string | Error | undefined,
 		..._args: unknown[]
 	): void {
-		if (!this.suppressLogging) {
-			this._logger.error(message);
-		}
+		this._logger.error(message);
 	}
 
 	/**
@@ -228,10 +226,7 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
 		}
 
 		if (messageOrCode) {
-			// Log the error if logging is enabled
-			if (!this.suppressLogging) {
-				this._logger.error(messageOrCode);
-			}
+			this._logger.error(messageOrCode);
 			// Use OCLIF's error method to properly exit with message (captured by test framework)
 			// We call the parent's error method directly to bypass our override
 			return Command.prototype.error.call(this, messageOrCode, {
@@ -248,7 +243,7 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
 		message: string | Error | undefined,
 		..._args: unknown[]
 	): void {
-		if (!(this.suppressLogging || this.redirectLogToTrace)) {
+		if (!this.redirectLogToTrace) {
 			this._logger.warning(message);
 		}
 		if (this.redirectLogToTrace) {
@@ -260,9 +255,6 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
 	 * Logs a warning with a stack trace in debug mode.
 	 */
 	public warningWithDebugTrace(message: string | Error | undefined): void {
-		if (this.suppressLogging && !this.redirectLogToTrace) {
-			return;
-		}
 		if (this.redirectLogToTrace) {
 			this.traceWarning?.(message);
 		}
@@ -285,7 +277,10 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
 		message: string | Error | undefined,
 		..._args: unknown[]
 	): void {
-		if (this.flags.verbose || this.redirectLogToTrace) {
+		if (
+			(!this.suppressLogging && this.flags.verbose) ||
+			this.redirectLogToTrace
+		) {
 			if (this.redirectLogToTrace) {
 				this.traceVerbose?.(message);
 			} else {

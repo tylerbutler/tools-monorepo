@@ -179,12 +179,12 @@ export function createPrefixReporter(
 			const coloredPrefix = colorize(level, prefix, colors);
 			const message = formatMessage(logObj);
 
-			if (logObj.type === "error" || logObj.type === "fatal") {
+			if (logObj.type === "log") {
 				// biome-ignore lint/suspicious/noConsole: logging is the purpose of this function
-				console.error(`${coloredPrefix} ${message}`);
+				console.log(message);
 			} else {
 				// biome-ignore lint/suspicious/noConsole: logging is the purpose of this function
-				console.log(`${coloredPrefix} ${message}`);
+				console.error(`${coloredPrefix} ${message}`);
 			}
 		},
 	};

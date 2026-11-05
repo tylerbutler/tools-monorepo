@@ -1,5 +1,7 @@
+import process from "node:process";
 import { createConsola, LogLevels } from "consola";
 import type { ExtendedLogger, Logger } from "../logger.js";
+import { BasicLogger } from "./basic.js";
 import { createPrefixReporter, type PrefixStyle } from "./prefixReporter.js";
 
 /**
@@ -15,7 +17,9 @@ export interface ConsolaLoggerOptions {
 }
 
 const consola = createConsola({
-	level: LogLevels.info,
+	level: LogLevels.verbose,
+	stdout: process.stderr,
+	stderr: process.stderr,
 	fancy: true,
 	formatOptions: {
 		// columns: 80,
@@ -57,7 +61,7 @@ const consola = createConsola({
  * @alpha
  */
 export const ConsolaLogger: Logger = {
-	log: consola.log,
+	log: BasicLogger.log,
 	success: consola.success,
 	info: consola.info,
 	warning: consola.warn,
@@ -128,7 +132,7 @@ export function createConsolaLogger(
 	});
 
 	return {
-		log: (msg?: string) => styledConsola.log(msg ?? ""),
+		log: BasicLogger.log,
 		success: (msg?: string) => styledConsola.success(msg ?? ""),
 		info: (msg) => styledConsola.info(formatError(msg)),
 		warning: (msg) => styledConsola.warn(formatError(msg)),
@@ -172,12 +176,12 @@ export function createExtendedConsolaLogger(
 	const { colors = true } = options ?? {};
 
 	const styledConsola = createConsola({
-		level: LogLevels.trace,
+		level: LogLevels.verbose,
 		reporters: [createPrefixReporter({ style, colors })],
 	});
 
 	return {
-		log: (msg?: string) => styledConsola.log(msg ?? ""),
+		log: BasicLogger.log,
 		success: (msg?: string) => styledConsola.success(msg ?? ""),
 		info: (msg) => styledConsola.info(formatError(msg)),
 		warning: (msg) => styledConsola.warn(formatError(msg)),

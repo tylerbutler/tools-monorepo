@@ -14,9 +14,10 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
  */
 export class CheckNative extends Command {
 	public static override readonly summary =
-		"Checks and applies policies using the Rust engine.";
+		"Checks and applies policies using the experimental Rust engine.";
 
 	public static override readonly description =
+		"Experimental alternative to the stable TypeScript 'check' command; support and output parity are not guaranteed. " +
 		"Runs the Rust-based repopo-core engine with the Node.js sidecar. " +
 		"Rust handles file matching, scheduling and reporting; the sidecar shares per-policy contracts with 'check'. " +
 		"Repository policies always run with the full repository inventory, including with --stdin. " +
