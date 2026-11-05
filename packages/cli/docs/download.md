@@ -11,7 +11,7 @@ Downloads a file from a URL and optionally extracts its contents.
 
 ```
 USAGE
-  $ tbu download URL [-v | --quiet] [-o <value>] [--filename <value> | -e]
+  $ tbu download URL [-v] [--quiet] [-o <value>] [--filename <value> | -e]
 
 ARGUMENTS
   URL  URL of the file to download.
@@ -22,8 +22,8 @@ FLAGS
       --filename=<value>  Name to use for the downloaded file. Cannot be used with --extract.
 
 LOGGING FLAGS
-  -v, --verbose  Enable verbose logging.
-      --quiet    Disable all logging.
+  -v, --verbose  Show detailed diagnostics in addition to normal output.
+      --quiet    Suppress informational output; retain warnings and errors. Overrides --verbose.
 
 DESCRIPTION
   Downloads a file from a URL and optionally extracts its contents.

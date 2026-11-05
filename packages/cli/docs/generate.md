@@ -11,15 +11,15 @@ Generate cliff.toml and commitlint config from commit-types.ccl
 
 ```
 USAGE
-  $ tbu generate commit-config [-v | --quiet] [-n] [--cwd <value>]
+  $ tbu generate commit-config [-v] [--quiet] [-n] [--cwd <value>]
 
 FLAGS
   -n, --dry-run      Preview generated files without writing
       --cwd=<value>  [default: .] Target directory containing commit-types.ccl
 
 LOGGING FLAGS
-  -v, --verbose  Enable verbose logging.
-      --quiet    Disable all logging.
+  -v, --verbose  Show detailed diagnostics in addition to normal output.
+      --quiet    Suppress informational output; retain warnings and errors. Overrides --verbose.
 
 DESCRIPTION
   Generate cliff.toml and commitlint config from commit-types.ccl

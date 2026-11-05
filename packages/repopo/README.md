@@ -62,11 +62,11 @@ repopo check --fix
 
 ## `repopo check`
 
-Checks and applies policies to the files in the repository.
+Checks and applies repository policies using the stable TypeScript engine.
 
 ```
 USAGE
-  $ repopo check [-v | --quiet] [--concurrency <value>] [-f] [--stdin]
+  $ repopo check [-v] [--quiet] [--concurrency <value>] [-f] [--stdin]
 
 FLAGS
   -f, --fix                  Fix errors if possible.
@@ -74,11 +74,11 @@ FLAGS
       --stdin                Read list of files from stdin.
 
 LOGGING FLAGS
-  -v, --verbose  Enable verbose logging.
-      --quiet    Disable all logging.
+  -v, --verbose  Show detailed diagnostics in addition to normal output.
+      --quiet    Suppress informational output; retain warnings and errors. Overrides --verbose.
 
 DESCRIPTION
-  Checks and applies policies to the files in the repository.
+  Checks and applies repository policies using the stable TypeScript engine.
 
   File policies check selected files. Repository policies always run with the full repository file inventory, including
   with --stdin. With --fix, repository policies can modify files outside the stdin selection.
@@ -88,7 +88,7 @@ _See code: [src/commands/check.ts](https://github.com/tylerbutler/tools-monorepo
 
 ## `repopo check-native`
 
-Checks and applies policies using the Rust engine.
+Checks and applies policies using the experimental Rust engine.
 
 ```
 USAGE
@@ -108,11 +108,12 @@ FLAGS
       --stdin                 Read list of files from stdin.
 
 DESCRIPTION
-  Checks and applies policies using the Rust engine.
+  Checks and applies policies using the experimental Rust engine.
 
-  Runs the Rust-based repopo-core engine with the Node.js sidecar. Rust handles file matching, scheduling and reporting;
-  the sidecar shares per-policy contracts with 'check'. Repository policies always run with the full repository
-  inventory, including with --stdin. With --fix, repository policies can modify files outside the stdin selection.
+  Experimental alternative to the stable TypeScript 'check' command; support and output parity are not guaranteed. Runs
+  the Rust-based repopo-core engine with the Node.js sidecar. Rust handles file matching, scheduling and reporting; the
+  sidecar shares per-policy contracts with 'check'. Repository policies always run with the full repository inventory,
+  including with --stdin. With --fix, repository policies can modify files outside the stdin selection.
 ```
 
 _See code: [src/commands/check-native.ts](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/commands/check-native.ts)_
@@ -123,11 +124,11 @@ Lists the policies configured to run.
 
 ```
 USAGE
-  $ repopo list [-v | --quiet]
+  $ repopo list [-v] [--quiet]
 
 LOGGING FLAGS
-  -v, --verbose  Enable verbose logging.
-      --quiet    Disable all logging.
+  -v, --verbose  Show detailed diagnostics in addition to normal output.
+      --quiet    Suppress informational output; retain warnings and errors. Overrides --verbose.
 ```
 
 _See code: [src/commands/list.ts](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/commands/list.ts)_

@@ -11,7 +11,7 @@ Squash-merge a branch with another branch, and reset the source branch to the sq
 
 ```
 USAGE
-  $ tbu git squish TARGET [SOURCE] [-v | --quiet] [--dry-run]
+  $ tbu git squish TARGET [SOURCE] [-v] [--quiet] [--dry-run]
 
 ARGUMENTS
   TARGET    [default: main] Branch to rebase on top of.
@@ -21,8 +21,8 @@ FLAGS
   --dry-run  Don't make any changes.
 
 LOGGING FLAGS
-  -v, --verbose  Enable verbose logging.
-      --quiet    Disable all logging.
+  -v, --verbose  Show detailed diagnostics in addition to normal output.
+      --quiet    Suppress informational output; retain warnings and errors. Overrides --verbose.
 
 DESCRIPTION
   Squash-merge a branch with another branch, and reset the source branch to the squash-merged HEAD. This process results

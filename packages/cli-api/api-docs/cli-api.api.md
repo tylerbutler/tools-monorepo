@@ -41,6 +41,7 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
     protected _logger: Logger;
     protected redirectLogToTrace: boolean;
     success(message?: string, ..._args: unknown[]): void;
+    protected get suppressLogging(): boolean;
     // (undocumented)
     protected trace: Debugger | undefined;
     verbose(message: string | Error | undefined, ..._args: unknown[]): void;

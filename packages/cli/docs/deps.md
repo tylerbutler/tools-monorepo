@@ -11,7 +11,7 @@ Sync package.json dependency versions to match what's installed in the lockfile.
 
 ```
 USAGE
-  $ tbu deps sync [--json] [-v | --quiet] [-x] [-l <value> | --package-manager npm|pnpm|yarn|bun] [--cwd
+  $ tbu deps sync [--json] [-v] [--quiet] [-x] [-l <value> | --package-manager npm|pnpm|yarn|bun] [--cwd
     <value>]
 
 FLAGS
@@ -23,8 +23,8 @@ FLAGS
                                   <options: npm|pnpm|yarn|bun>
 
 LOGGING FLAGS
-  -v, --verbose  Enable verbose logging.
-      --quiet    Disable all logging.
+  -v, --verbose  Show detailed diagnostics in addition to normal output.
+      --quiet    Suppress informational output; retain warnings and errors. Overrides --verbose.
 
 GLOBAL FLAGS
   --json  Format output as json.

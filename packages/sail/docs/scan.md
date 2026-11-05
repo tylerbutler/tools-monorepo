@@ -11,7 +11,7 @@ Scan a path to see it the way Sail sees it.
 
 ```
 USAGE
-  $ sail scan [SCAN_DIR] [-v | --quiet] [--infer]
+  $ sail scan [SCAN_DIR] [-v] [--quiet] [--infer]
 
 ARGUMENTS
   [SCAN_DIR]  [default: .] Directory to scan.
@@ -20,8 +20,8 @@ FLAGS
   --infer  Skip loading configuration from files. Instead the configuration will be inferred.
 
 LOGGING FLAGS
-  -v, --verbose  Enable verbose logging.
-      --quiet    Disable all logging.
+  -v, --verbose  Show detailed diagnostics in addition to normal output.
+      --quiet    Suppress informational output; retain warnings and errors. Overrides --verbose.
 
 DESCRIPTION
   Scan a path to see it the way Sail sees it.

@@ -25,7 +25,7 @@ Sorts a tsconfig file in place or checks that one is sorted.
 
 ```
 USAGE
-  $ sort-tsconfig  TSCONFIG [-v | --quiet] [-w] [-c <value>]
+  $ sort-tsconfig  TSCONFIG [-v] [--quiet] [-w] [-c <value>]
 
 ARGUMENTS
   TSCONFIG  A path to the tsconfig file to sort, or a glob pattern to select multiple tsconfigs. The node_modules folder
@@ -39,8 +39,8 @@ CONFIGURATION FLAGS
   -c, --config=<value>  Path to configuration file.
 
 LOGGING FLAGS
-  -v, --verbose  Enable verbose logging.
-      --quiet    Disable all logging.
+  -v, --verbose  Show detailed diagnostics in addition to normal output.
+      --quiet    Suppress informational output; retain warnings and errors. Overrides --verbose.
 
 DESCRIPTION
   Sorts a tsconfig file in place or checks that one is sorted.

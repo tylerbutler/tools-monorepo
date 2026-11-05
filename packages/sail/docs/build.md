@@ -11,7 +11,7 @@ Build stuff.
 
 ```
 USAGE
-  $ sail build [PARTIAL_NAME] [-v | --quiet] [--all | -g <value> | -w <value>] [--cacheDir <value>]
+  $ sail build [PARTIAL_NAME] [-v] [--quiet] [--all | -g <value> | -w <value>] [--cacheDir <value>]
     [--skipCacheWrite] [--verifyCacheIntegrity] [-t <value>...] [-c | -r] [--force] [--vscode] [--workerMemoryLimitMB
     <value> --worker] [--concurrency <value>]
 
@@ -34,8 +34,8 @@ OTHER TASK FLAGS
   -r, --rebuild  Same as '--task clean --task build'.
 
 LOGGING FLAGS
-  -v, --verbose  Enable verbose logging.
-      --quiet    Disable all logging.
+  -v, --verbose  Show detailed diagnostics in addition to normal output.
+      --quiet    Suppress informational output; retain warnings and errors. Overrides --verbose.
 
 RUN FLAGS
   --concurrency=<value>          How many tasks can execute at a time. Defaults to 'os.cpus().length'.

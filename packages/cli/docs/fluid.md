@@ -12,7 +12,7 @@ Apply overlay configurations to the FluidFramework repository
 
 ```
 USAGE
-  $ tbu fluid repo-overlay TYPE [-v | --quiet] [--repo-dir <value>] [--dry-run]
+  $ tbu fluid repo-overlay TYPE [-v] [--quiet] [--repo-dir <value>] [--dry-run]
 
 ARGUMENTS
   TYPE  (nx|turbo) Type of overlay to apply
@@ -22,8 +22,8 @@ FLAGS
   --repo-dir=<value>  Path to the repository directory (defaults to current working directory)
 
 LOGGING FLAGS
-  -v, --verbose  Enable verbose logging.
-      --quiet    Disable all logging.
+  -v, --verbose  Show detailed diagnostics in addition to normal output.
+      --quiet    Suppress informational output; retain warnings and errors. Overrides --verbose.
 
 DESCRIPTION
   Apply overlay configurations to the FluidFramework repository
@@ -37,7 +37,7 @@ Rename package.json scripts to follow three-tier naming principles (Phase 1 of N
 
 ```
 USAGE
-  $ tbu fluid task-rename --repo-dir <value> [-v | --quiet] [--dry-run] [--validate-only] [--skip-cross-refs]
+  $ tbu fluid task-rename --repo-dir <value> [-v] [--quiet] [--dry-run] [--validate-only] [--skip-cross-refs]
 
 FLAGS
   --dry-run           Show changes without applying them
@@ -46,8 +46,8 @@ FLAGS
   --validate-only     Check for naming issues without renaming
 
 LOGGING FLAGS
-  -v, --verbose  Enable verbose logging.
-      --quiet    Disable all logging.
+  -v, --verbose  Show detailed diagnostics in addition to normal output.
+      --quiet    Suppress informational output; retain warnings and errors. Overrides --verbose.
 
 DESCRIPTION
   Rename package.json scripts to follow three-tier naming principles (Phase 1 of Nx/Turbo migration)

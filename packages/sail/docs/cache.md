@@ -15,15 +15,15 @@ Remove all cache entries. Use --force to confirm.
 
 ```
 USAGE
-  $ sail cache clean -f [-v | --quiet] [--cacheDir <value>]
+  $ sail cache clean -f [-v] [--quiet] [--cacheDir <value>]
 
 FLAGS
   -f, --force             (required) Confirm removal of all cache entries.
       --cacheDir=<value>  [env: SAIL_CACHE_DIR] Path to shared cache directory.
 
 LOGGING FLAGS
-  -v, --verbose  Enable verbose logging.
-      --quiet    Disable all logging.
+  -v, --verbose  Show detailed diagnostics in addition to normal output.
+      --quiet    Suppress informational output; retain warnings and errors. Overrides --verbose.
 
 DESCRIPTION
   Remove all cache entries. Use --force to confirm.
@@ -42,14 +42,14 @@ Display cache configuration and location information.
 
 ```
 USAGE
-  $ sail cache info [-v | --quiet] [--cacheDir <value>]
+  $ sail cache info [-v] [--quiet] [--cacheDir <value>]
 
 FLAGS
   --cacheDir=<value>  [env: SAIL_CACHE_DIR] Path to shared cache directory.
 
 LOGGING FLAGS
-  -v, --verbose  Enable verbose logging.
-      --quiet    Disable all logging.
+  -v, --verbose  Show detailed diagnostics in addition to normal output.
+      --quiet    Suppress informational output; retain warnings and errors. Overrides --verbose.
 
 DESCRIPTION
   Display cache configuration and location information.
@@ -68,14 +68,14 @@ Prune old cache entries based on age and size limits.
 
 ```
 USAGE
-  $ sail cache prune [-v | --quiet] [--cacheDir <value>]
+  $ sail cache prune [-v] [--quiet] [--cacheDir <value>]
 
 FLAGS
   --cacheDir=<value>  [env: SAIL_CACHE_DIR] Path to shared cache directory.
 
 LOGGING FLAGS
-  -v, --verbose  Enable verbose logging.
-      --quiet    Disable all logging.
+  -v, --verbose  Show detailed diagnostics in addition to normal output.
+      --quiet    Suppress informational output; retain warnings and errors. Overrides --verbose.
 
 DESCRIPTION
   Prune old cache entries based on age and size limits.
@@ -94,14 +94,14 @@ Display cache statistics.
 
 ```
 USAGE
-  $ sail cache stats [-v | --quiet] [--cacheDir <value>]
+  $ sail cache stats [-v] [--quiet] [--cacheDir <value>]
 
 FLAGS
   --cacheDir=<value>  [env: SAIL_CACHE_DIR] Path to shared cache directory.
 
 LOGGING FLAGS
-  -v, --verbose  Enable verbose logging.
-      --quiet    Disable all logging.
+  -v, --verbose  Show detailed diagnostics in addition to normal output.
+      --quiet    Suppress informational output; retain warnings and errors. Overrides --verbose.
 
 DESCRIPTION
   Display cache statistics.
@@ -120,7 +120,7 @@ Verify cache integrity (check for corruption).
 
 ```
 USAGE
-  $ sail cache verify [-v | --quiet] [--cacheDir <value>] [--fix] [-f]
+  $ sail cache verify [-v] [--quiet] [--cacheDir <value>] [--fix] [-f]
 
 FLAGS
   -f, --force             Confirm fixing corrupted cache entries when using --fix.
@@ -128,8 +128,8 @@ FLAGS
       --fix               Fix corrupted cache entries. Requires --force to confirm.
 
 LOGGING FLAGS
-  -v, --verbose  Enable verbose logging.
-      --quiet    Disable all logging.
+  -v, --verbose  Show detailed diagnostics in addition to normal output.
+      --quiet    Suppress informational output; retain warnings and errors. Overrides --verbose.
 
 DESCRIPTION
   Verify cache integrity (check for corruption).

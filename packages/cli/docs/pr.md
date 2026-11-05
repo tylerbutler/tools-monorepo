@@ -12,7 +12,7 @@ Collect GitHub PR data to JSON Lines files.
 
 ```
 USAGE
-  $ tbu pr collect REPO [-v | --quiet] [-o <value>] [-s <value>]
+  $ tbu pr collect REPO [-v] [--quiet] [-o <value>] [-s <value>]
 
 ARGUMENTS
   REPO  GitHub repository in owner/repo format.
@@ -23,8 +23,8 @@ FLAGS
                         order, so collection stops when a PR older than this date is encountered.
 
 LOGGING FLAGS
-  -v, --verbose  Enable verbose logging.
-      --quiet    Disable all logging.
+  -v, --verbose  Show detailed diagnostics in addition to normal output.
+      --quiet    Suppress informational output; retain warnings and errors. Overrides --verbose.
 
 DESCRIPTION
   Collect GitHub PR data to JSON Lines files.
@@ -62,7 +62,7 @@ Generate contributor metrics report from collected PR data.
 
 ```
 USAGE
-  $ tbu pr report -s <value> -e <value> [-v | --quiet] [-d <value>] [--csv]
+  $ tbu pr report -s <value> -e <value> [-v] [--quiet] [-d <value>] [--csv]
 
 FLAGS
   -d, --data=<value>   [default: pr-data] Data directory containing JSON Lines files.
@@ -71,8 +71,8 @@ FLAGS
       --csv            Output as CSV format.
 
 LOGGING FLAGS
-  -v, --verbose  Enable verbose logging.
-      --quiet    Disable all logging.
+  -v, --verbose  Show detailed diagnostics in addition to normal output.
+      --quiet    Suppress informational output; retain warnings and errors. Overrides --verbose.
 
 DESCRIPTION
   Generate contributor metrics report from collected PR data.
