@@ -17,6 +17,10 @@ import { ParsedFileCache } from "../esm/fileCache.js";
 import { identifyPolicyInstances, makePolicy } from "../esm/makePolicy.js";
 import { newPerfStats } from "../esm/perf.js";
 import { executionMessage, PolicyExecutor } from "../esm/policyExecution.js";
+import {
+	collectRepositoryChanges,
+	validateChangeOptions,
+} from "../esm/repositoryChanges.js";
 
 // Policy logging must not corrupt the JSON response stream.
 globalThis.console = new Console(process.stderr);
@@ -219,6 +223,7 @@ async function loadConfig(params) {
 		policies,
 		root: params.gitRoot ?? process.cwd(),
 		exclude: config.excludeFiles ?? [],
+		changes: config.changes,
 	};
 	options.exclude.forEach(exclusionRegex);
 	createExcludedPolicyFileMap(policies);
@@ -240,12 +245,31 @@ async function loadConfig(params) {
 	return metadata;
 }
 
-function beginRun(params) {
+async function beginRun(params) {
 	if (!registration)
 		throw new Error("Load configuration before running policies.");
 	session?.cache?.clear();
+	session = undefined;
+	const options = {
+		...registration.changes,
+		...(params.changeMode == null ? {} : { mode: params.changeMode }),
+		...(params.changeBase == null ? {} : { base: params.changeBase }),
+	};
+	validateChangeOptions(options);
+	const changes =
+		registration.policies.some(
+			(policy) => policy.scope === "repository" && policy.requiresChanges,
+		) ||
+		params.changeMode != null ||
+		params.changeBase != null
+			? await collectRepositoryChanges(registration.root, options)
+			: undefined;
 	session = {
-		executor: new PolicyExecutor(registration.root, params.fix ?? false),
+		executor: new PolicyExecutor(
+			registration.root,
+			params.fix ?? false,
+			changes,
+		),
 		cache: params.fix ? undefined : new ParsedFileCache(),
 	};
 	return {};
@@ -358,7 +382,7 @@ async function main() {
 					data = await loadConfig(params);
 					break;
 				case "begin_run":
-					data = beginRun(params);
+					data = await beginRun(params);
 					break;
 				case "execute_units":
 					try {

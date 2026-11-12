@@ -26,6 +26,26 @@ export default {
 The 1.0 API replaced `policy()` and positional arguments with a single `makePolicy()` options object. See [Migrate to the 1.0 API](/usage/migration/).
 :::
 
+## Change context defaults
+
+Configure change collection independently of file selection:
+
+```ts
+export default {
+	changes: {
+		mode: "pr",
+		defaultBranch: "main",
+	},
+	policies: [
+		// Add a change-aware repository policy here.
+	],
+} satisfies RepopoConfig;
+```
+
+`changes.mode` accepts `pr`, `local`, or `staged`. An optional `changes.base` overrides CI target information; `defaultBranch` supplies the fallback target. CLI change flags override their matching configuration fields. See [change modes and base resolution](/usage/cli-usage/#check-rules-about-related-changes).
+
+Global and per-policy exclusions filter selected files and repository inventory. They do not redact the complete `changes` snapshot. Use explicit trigger and companion regexes to scope a change-aware rule.
+
 ## Choosing policies
 
 If you omit `policies`, `check` and `check-native` run the [default policies](/policies/built-in/#default-policies). Set `policies: []` to run none. Other built-in policies run only when you add them.

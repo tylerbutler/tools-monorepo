@@ -5,7 +5,7 @@ prev: false
 title: "RepositoryPolicyDefinition"
 ---
 
-Defined in: [policy.ts:57](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L57)
+Defined in: [policy.ts:60](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L60)
 
 Repository scope is explicit; repository fixers are inline only.
 
@@ -21,7 +21,7 @@ Repository scope is explicit; repository fixers are inline only.
 
 > `optional` **defaultConfig?**: `C`
 
-Defined in: [policy.ts:65](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L65)
+Defined in: [policy.ts:69](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L69)
 
 ***
 
@@ -29,7 +29,7 @@ Defined in: [policy.ts:65](https://github.com/tylerbutler/tools-monorepo/blob/ma
 
 > **description**: `string`
 
-Defined in: [policy.ts:59](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L59)
+Defined in: [policy.ts:62](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L62)
 
 ***
 
@@ -37,7 +37,15 @@ Defined in: [policy.ts:59](https://github.com/tylerbutler/tools-monorepo/blob/ma
 
 > **name**: `string`
 
-Defined in: [policy.ts:58](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L58)
+Defined in: [policy.ts:61](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L61)
+
+***
+
+### requiresChanges?
+
+> `optional` **requiresChanges?**: `boolean`
+
+Defined in: [policy.ts:64](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L64)
 
 ***
 
@@ -45,7 +53,7 @@ Defined in: [policy.ts:58](https://github.com/tylerbutler/tools-monorepo/blob/ma
 
 > `optional` **requiresConfig?**: `boolean`
 
-Defined in: [policy.ts:66](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L66)
+Defined in: [policy.ts:70](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L70)
 
 ***
 
@@ -53,7 +61,7 @@ Defined in: [policy.ts:66](https://github.com/tylerbutler/tools-monorepo/blob/ma
 
 > `optional` **resolver?**: `undefined`
 
-Defined in: [policy.ts:64](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L64)
+Defined in: [policy.ts:68](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L68)
 
 ***
 
@@ -61,7 +69,7 @@ Defined in: [policy.ts:64](https://github.com/tylerbutler/tools-monorepo/blob/ma
 
 > **scope**: `"repository"`
 
-Defined in: [policy.ts:60](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L60)
+Defined in: [policy.ts:63](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L63)
 
 ## Methods
 
@@ -69,7 +77,7 @@ Defined in: [policy.ts:60](https://github.com/tylerbutler/tools-monorepo/blob/ma
 
 > **handler**(`args`): [`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<[`PolicyResult`](/api/index/type-aliases/policyresult/)\> \| `Operation`\<[`PolicyResult`](/api/index/type-aliases/policyresult/)\>
 
-Defined in: [policy.ts:61](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L61)
+Defined in: [policy.ts:65](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L65)
 
 #### Parameters
 

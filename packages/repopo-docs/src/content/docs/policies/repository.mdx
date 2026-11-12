@@ -58,3 +58,35 @@ Checks that the root `.gitignore` contains required entries.
 When `patterns` isn't set, the policy requires `node_modules/`, `.env`, `.env.*`, `!.env.example`, `dist/`, `build/`, `.DS_Store`, and `Thumbs.db`.
 
 **Auto-fixable:** Yes. `--fix` appends missing entries.
+
+### RequireCompanionChanges
+
+**Repository policy.** Requires a related file update when a trigger path changes. For example, require a documentation change with source changes:
+
+```ts title="repopo.config.ts"
+import { makePolicy, type RepopoConfig } from "repopo/api";
+import { RequireCompanionChanges } from "repopo/policies";
+
+export default {
+	changes: { defaultBranch: "main" },
+	policies: [
+		makePolicy(RequireCompanionChanges, {
+			instanceId: "source-needs-docs",
+			config: {
+				trigger: /^packages\/repopo\/src\//,
+				companion: /^packages\/repopo-docs\//,
+			},
+		}),
+	],
+} satisfies RepopoConfig;
+```
+
+Both `trigger` and `companion` are required. Strings are case-insensitive regular expressions; `RegExp` values preserve their flags. Paths are relative to the repository root.
+
+If any trigger path changes, at least one companion path must have an addition, modification, type change, or rename into its pattern. Deletions and both rename endpoints can trigger the rule. Deleting a companion or renaming it out of the pattern does not satisfy the requirement.
+
+One instance expresses one requirement across the repository. Add separate instances with unique IDs for tests, docs, or changesets, or use package-specific patterns to restrict a rule to one package. Repopo does not infer package relationships. Overlapping trigger/companion patterns permit the same change to satisfy both.
+
+The policy runs with empty stdin and uses the complete pre-run change snapshot, independent of file/inventory exclusions. See [change context options](/usage/cli-usage/#check-rules-about-related-changes).
+
+**Auto-fixable:** No. Repopo reports matching trigger paths and guidance for the required update.

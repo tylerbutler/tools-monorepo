@@ -1307,6 +1307,7 @@ describe("Native canonical sidecar", () => {
 				command: "check" | "check-native",
 				fix: boolean,
 				stdin = "",
+				args: string[] = [],
 			) {
 				return new Promise<{ code: number; output: string }>(
 					(resolvePromise, reject) => {
@@ -1319,6 +1320,7 @@ describe("Native canonical sidecar", () => {
 								"--config",
 								configPath,
 								...(fix ? ["--fix"] : []),
+								...args,
 								...(command === "check-native"
 									? [
 											"--binary-path",
@@ -1346,6 +1348,100 @@ describe("Native canonical sidecar", () => {
 					},
 				);
 			}
+
+			it.each([
+				"check",
+				"check-native",
+			] as const)("shares staged/local/PR rule behavior with empty stdin: %s", async (command) => {
+				const git = simpleGit(testDir);
+				await git.addConfig("user.name", "Test");
+				await git.addConfig("user.email", "test@example.invalid");
+				await writeFile(join(testDir, "source.txt"), "original");
+				await git.add("source.txt");
+				await git.commit("initial");
+				await git.raw(["branch", "comparison"]);
+				await writeFile(
+					configPath,
+					`import {makePolicy} from ${JSON.stringify(factoryUrl)};
+					import {RequireCompanionChanges} from ${JSON.stringify(policiesUrl)};
+					export default {changes:{defaultBranch:"comparison"}, policies:[
+						makePolicy(RequireCompanionChanges,{config:{trigger:/^source/,companion:/^docs/}})
+					]};`,
+				);
+				await writeFile(join(testDir, "source.txt"), "staged update");
+				await git.add("source.txt");
+				await writeFile(join(testDir, "docs.txt"), "untracked docs");
+				const staged = await cli(command, false, "", [
+					"--change-mode",
+					"staged",
+				]);
+				expect(staged.code).toBe(1);
+				expect(staged.output).toContain("require a companion change");
+				expect(
+					(await cli(command, false, "", ["--change-mode", "local"])).code,
+				).toBe(0);
+				expect((await cli(command, false)).code).toBe(0);
+				await git.commit("source update");
+				const pr = await cli(command, false);
+				expect(pr.code).toBe(1);
+				expect(pr.output).toContain("require a companion change");
+				await git.add("docs.txt");
+				await git.commit("docs update");
+				expect(
+					(await cli(command, false, "", ["--change-base", "comparison"])).code,
+				).toBe(0);
+			});
+
+			it.each([
+				"check",
+				"check-native",
+			] as const)("captures changes before fixes and keeps inventory separate: %s", async (command) => {
+				await writeFile(join(testDir, "source.txt"), "source");
+				await writeFile(
+					configPath,
+					`import {writeFile} from "node:fs/promises";
+					import {makePolicy} from ${JSON.stringify(factoryUrl)};
+					import {RequireCompanionChanges} from ${JSON.stringify(policiesUrl)};
+					export default {changes:{mode:"local"},policies:[
+						{name:"Create",description:"fixture",scope:"repository",handler:async({root})=>{
+							await writeFile(root+"/docs.txt","docs");return [];
+						}},
+						makePolicy(RequireCompanionChanges,{config:{trigger:/^source/,companion:/^docs/}})
+					]};`,
+				);
+				const first = await cli(command, true);
+				expect(first.code).toBe(1);
+				expect(first.output).toContain("require a companion change");
+				expect((await cli(command, true)).code).toBe(0);
+			});
+
+			it.each([
+				"check",
+				"check-native",
+			] as const)("fails change setup before executing any fixer: %s", async (command) => {
+				await writeFile(
+					configPath,
+					`export default {policies:[{
+					name:"MustNotRun",description:"fixture",scope:"repository",requiresChanges:true,
+					handler:async()=>{throw new Error("HANDLER RAN")}
+				}]};`,
+				);
+				const result = await cli(command, true, "", [
+					"--change-base",
+					"missing",
+				]);
+				expect(result.code).toBe(1);
+				expect(result.output).toContain("HEAD commit");
+				expect(result.output).not.toContain("HANDLER RAN");
+				const invalid = await cli(command, false, "", [
+					"--change-mode",
+					"local",
+					"--change-base",
+					"main",
+				]);
+				expect(invalid.code).toBe(1);
+				expect(invalid.output).toContain("only valid in pr mode");
+			});
 
 			it.each([
 				"check",

@@ -4,6 +4,10 @@ import { BaseRepopoCommand } from "../baseCommand.js";
 import { DEFAULT_CONCURRENCY, validateConcurrency } from "../concurrency.js";
 import { parseFilePaths } from "../filePaths.js";
 import { logStats } from "../perf.js";
+import {
+	collectRepositoryChanges,
+	validateChangeOptions,
+} from "../repositoryChanges.js";
 import { readRepositoryFiles } from "../repositoryFiles.js";
 import {
 	type PolicyExecutionError,
@@ -39,6 +43,14 @@ export class CheckPolicy<
 		"including with --stdin. With --fix, repository policies can modify files outside the stdin selection.";
 
 	public static override readonly flags = {
+		"change-mode": Flags.option({
+			description:
+				"Change context: pr (default), local, or staged. Does not select file-policy paths.",
+			options: ["pr", "local", "staged"] as const,
+		})(),
+		"change-base": Flags.string({
+			description: "Override the PR change context base ref.",
+		}),
 		concurrency: Flags.integer({
 			description:
 				"Maximum concurrent files in read-only checks. Fixes remain sequential.",
@@ -64,6 +76,24 @@ export class CheckPolicy<
 		}
 		const context = await this.getContext();
 		const files = await this.collectFilePaths(context.gitRoot);
+		const changeOptions = {
+			...this.commandConfig?.changes,
+			...(this.flags["change-mode"] === undefined
+				? {}
+				: { mode: this.flags["change-mode"] }),
+			...(this.flags["change-base"] === undefined
+				? {}
+				: { base: this.flags["change-base"] }),
+		};
+		validateChangeOptions(changeOptions);
+		const changes =
+			context.policies.some(
+				(policy) => policy.scope === "repository" && policy.requiresChanges,
+			) ||
+			this.flags["change-mode"] !== undefined ||
+			this.flags["change-base"] !== undefined
+				? await collectRepositoryChanges(context.gitRoot, changeOptions)
+				: undefined;
 		this.verbose(`${context.policies.length} policies loaded.`);
 		for (const policy of context.policies) {
 			this.verbose(policy.instanceId);
@@ -72,6 +102,7 @@ export class CheckPolicy<
 			policies: context.policies,
 			root: context.gitRoot,
 			files,
+			changes,
 			inventory: () => this.collectRepositoryFiles(),
 			exclude: context.excludeFromAll,
 			fix: this.flags.fix,

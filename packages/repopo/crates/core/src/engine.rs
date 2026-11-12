@@ -25,6 +25,8 @@ pub struct CheckOptions<'a> {
     pub quiet: bool,
     pub concurrency: usize,
     pub json: bool,
+    pub change_mode: Option<&'a str>,
+    pub change_base: Option<&'a str>,
 }
 
 /// Compile the shared ASCII subset. Advanced JS syntax and Unicode/line-ending
@@ -160,7 +162,7 @@ pub fn run_check(sidecar: &mut Sidecar, options: CheckOptions<'_>) -> Result<boo
     if options.fix && !options.quiet {
         eprintln!("Resolving errors if possible.");
     }
-    sidecar.begin_run(options.fix)?;
+    sidecar.begin_run(options.fix, options.change_mode, options.change_base)?;
     let files = &options.files;
     let globally_excluded = exclusions(sidecar, &config.exclude_files, files)?;
     let mut result = RunResults::default();

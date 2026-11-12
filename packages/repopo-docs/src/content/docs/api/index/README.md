@@ -67,8 +67,11 @@ Import `repopo/api` for the programmatic API without the CLI entry point.
 - [PolicyRunResults](/api/index/interfaces/policyrunresults/)
 - [PublicApiDocumentedConfig](/api/index/interfaces/publicapidocumentedconfig/)
 - [RepopoConfig](/api/index/interfaces/repopoconfig/)
+- [RepositoryChangeOptions](/api/index/interfaces/repositorychangeoptions/)
+- [RepositoryChangeSet](/api/index/interfaces/repositorychangeset/)
 - [RepositoryPolicyArgs](/api/index/interfaces/repositorypolicyargs/)
 - [RepositoryPolicyDefinition](/api/index/interfaces/repositorypolicydefinition/)
+- [RequireCompanionChangesConfig](/api/index/interfaces/requirecompanionchangesconfig/)
 - [RequiredGitignorePatternsSettings](/api/index/interfaces/requiredgitignorepatternssettings/)
 - [RequiredScriptsConfig](/api/index/interfaces/requiredscriptsconfig/)
 - [RustDocExistsConfig](/api/index/interfaces/rustdocexistsconfig/)
@@ -85,6 +88,7 @@ Import `repopo/api` for the programmatic API without the CLI entry point.
 
 - [CargoToml](/api/index/type-aliases/cargotoml/)
 - [CargoTomlHandler](/api/index/type-aliases/cargotomlhandler/)
+- [ChangeMode](/api/index/type-aliases/changemode/)
 - [ConditionalScriptEntry](/api/index/type-aliases/conditionalscriptentry/)
 - [ConfiguredFilePolicy](/api/index/type-aliases/configuredfilepolicy/)
 - [ConfiguredPolicy](/api/index/type-aliases/configuredpolicy/)
@@ -103,12 +107,14 @@ Import `repopo/api` for the programmatic API without the CLI entry point.
 - [PolicyResult](/api/index/type-aliases/policyresult/)
 - [PolicyRunFinding](/api/index/type-aliases/policyrunfinding/)
 - [PolicySkippedWork](/api/index/type-aliases/policyskippedwork/)
+- [RepositoryChange](/api/index/type-aliases/repositorychange/)
 - [RepositoryInventory](/api/index/type-aliases/repositoryinventory/)
 - [RepositoryPolicyHandler](/api/index/type-aliases/repositorypolicyhandler/)
 - [RequiredScriptEntry](/api/index/type-aliases/requiredscriptentry/)
 
 ## Functions
 
+- [collectRepositoryChanges](/api/index/functions/collectrepositorychanges/)
 - [defineCargoPolicy](/api/index/functions/definecargopolicy/)
 - [defineFileHeaderPolicy](/api/index/functions/definefileheaderpolicy/)
 - [defineGleamPolicy](/api/index/functions/definegleampolicy/)

@@ -45,6 +45,7 @@ If your code already uses [Effection](https://frontside.com/effection), use `Pol
 | `root` | Absolute path of the repository root. |
 | `files` | Repo-relative paths that file policies check. Defaults to `inventory`. |
 | `inventory` | The full repository file list for repository policies. See below. |
+| `changes` | A fixed change snapshot for repository handlers; required by policies with `requiresChanges: true`. |
 | `exclude` | Patterns that exclude repo-relative paths from every policy, like `excludeFiles` in a configuration file. |
 | `fix` | `true` to apply fixes, like `check --fix`. |
 | `concurrency` | Maximum files processed at once in read-only runs. Defaults to 8. Fixes always run one file at a time. |
@@ -72,6 +73,37 @@ await runPolicies({
 ```
 
 `listAllRepositoryFiles` stands for your own function, such as one that runs `git ls-files`. The CLI loads the full Git inventory this way regardless of `--stdin`.
+
+## Change-aware repository policies
+
+Collect a snapshot before executing policies:
+
+```ts
+import { collectRepositoryChanges, makePolicy, runPolicies } from "repopo/api";
+import { RequireCompanionChanges } from "repopo/policies";
+
+const changes = await collectRepositoryChanges(root, {
+	mode: "pr",
+	base: "main",
+});
+const results = await runPolicies({
+	root,
+	files: [],
+	inventory: allRepositoryFiles,
+	changes,
+	policies: [
+		makePolicy(RequireCompanionChanges, {
+			config: { trigger: /^src\//, companion: /^docs\// },
+		}),
+	],
+});
+```
+
+The collector uses the same [modes and base resolution](/usage/cli-usage/#check-rules-about-related-changes) as the CLI. `changes.entries` contains `added`, `modified`, `deleted`, `type-changed`, and `renamed` records. Each record has `path`; renames also have `oldPath`. PR snapshots include resolved `head`, `base`, and `mergeBase` commit IDs. Local/staged snapshots omit `head` before the first commit.
+
+A custom `RepositoryPolicyDefinition` can declare `requiresChanges: true` and inspect `changes` in its handler. The runner requires an explicit snapshot; it does not collect Git data on behalf of programmatic callers. It freezes a copy before policy execution, so fixes or mutations to the caller's array cannot change the run's snapshot.
+
+File selection, inventory, and changes have separate roles. Existing exclusions affect file/inventory paths; they do not filter raw change records. Policies can report deleted trigger paths in their findings even though those paths are absent from inventory.
 
 ## Results
 

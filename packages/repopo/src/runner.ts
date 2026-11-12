@@ -4,6 +4,7 @@ import {
 	createExcludedPolicyFileMap,
 	type ExcludedPolicyFileMap,
 	exclusionRegex,
+	matchesPath,
 } from "./context.js";
 import { ParsedFileCache } from "./fileCache.js";
 import { identifyPolicyInstances } from "./makePolicy.js";
@@ -14,6 +15,10 @@ import type {
 	PolicyFinding,
 } from "./policy.js";
 import { PolicyExecutor } from "./policyExecution.js";
+import {
+	type RepositoryChangeSet,
+	snapshotChanges,
+} from "./repositoryChanges.js";
 
 /** A finding with runner-owned identity and scope-safe location. @public */
 export type PolicyRunFinding =
@@ -69,6 +74,7 @@ export interface PolicyRunnerOptions {
 	policies: readonly ConfiguredPolicy[];
 	root: string;
 	inventory?: RepositoryInventory | undefined;
+	changes?: RepositoryChangeSet | undefined;
 	/** Selection limits only file policies. Defaults to inventory when supplied. */
 	files?: readonly string[] | undefined;
 	exclude?: readonly (string | RegExp)[] | undefined;
@@ -77,22 +83,13 @@ export interface PolicyRunnerOptions {
 	signal?: AbortSignal | undefined;
 }
 
-function matches(regex: RegExp, file: string): boolean {
-	const index = regex.lastIndex;
-	try {
-		regex.lastIndex = 0;
-		return regex.test(file);
-	} finally {
-		regex.lastIndex = index;
-	}
-}
-
 /** Effection runner; cancellation unwinds active generator handlers and resolvers. @public */
 export class PolicyRunner {
 	private readonly policies: IdentifiedPolicy[];
 	private readonly exclusions: RegExp[];
 	private readonly policyExclusions: ExcludedPolicyFileMap;
 	private readonly concurrency: number;
+	private readonly changes: RepositoryChangeSet | undefined;
 
 	public constructor(private readonly options: PolicyRunnerOptions) {
 		this.policies = identifyPolicyInstances(
@@ -107,6 +104,10 @@ export class PolicyRunner {
 		this.concurrency = validateConcurrency(
 			options.concurrency ?? DEFAULT_CONCURRENCY,
 		);
+		this.changes =
+			options.changes === undefined
+				? undefined
+				: snapshotChanges(options.changes);
 		if (
 			this.policies.some((policy) => policy.scope === "repository") &&
 			options.inventory === undefined
@@ -116,6 +117,15 @@ export class PolicyRunner {
 			);
 		}
 		for (const policy of this.policies) {
+			if (
+				policy.scope === "repository" &&
+				policy.requiresChanges &&
+				!this.changes
+			) {
+				throw new TypeError(
+					`Policy '${policy.name}' requires an explicit changes snapshot.`,
+				);
+			}
 			if (policy.scope === "repository" && policy.resolver !== undefined) {
 				throw new TypeError(
 					"Repository policies support inline fixes only; remove resolver.",
@@ -251,6 +261,7 @@ export class PolicyRunner {
 			repositoryFixError = yield* new PolicyExecutor(
 				this.options.root,
 				fix,
+				this.changes,
 			).repository(policy, eligible, result);
 		}
 	}
@@ -262,9 +273,9 @@ export class PolicyRunner {
 
 	private excluded(file: string, policy: IdentifiedPolicy): boolean {
 		return (
-			this.exclusions.some((regex) => matches(regex, file)) ||
+			this.exclusions.some((regex) => matchesPath(regex, file)) ||
 			(this.policyExclusions.get(policy.instanceId) ?? []).some((regex) =>
-				matches(regex, file),
+				matchesPath(regex, file),
 			)
 		);
 	}
@@ -276,14 +287,14 @@ export class PolicyRunner {
 	): Operation<boolean> {
 		output.perfStats.count++;
 		const globallyExcluded = this.exclusions.some((regex) =>
-			matches(regex, file),
+			matchesPath(regex, file),
 		);
 		if (!globallyExcluded) {
 			output.perfStats.processed++;
 		}
 		let stopped = false;
 		for (const policy of this.policies) {
-			if (policy.scope === "repository" || !matches(policy.match, file)) {
+			if (policy.scope === "repository" || !matchesPath(policy.match, file)) {
 				continue;
 			}
 			if (stopped || this.excluded(file, policy)) {

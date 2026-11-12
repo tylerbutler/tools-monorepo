@@ -34,6 +34,40 @@ git diff --name-only main | repopo check --stdin
 
 Only file policies are limited to the piped paths. Repository policies still run with the full repository file inventory, including when stdin is empty. With `--fix`, a repository policy can change files outside the piped selection.
 
+## Check rules about related changes
+
+Use [RequireCompanionChanges](/policies/repository/#requirecompanionchanges) to require a related update, such as a documentation change when source files change. Both engines accept the same change options:
+
+```sh
+# Committed branch changes since the merge base with the target branch
+repopo check --change-mode pr --change-base main
+
+# Index compared with HEAD
+repopo check --change-mode staged
+
+# Net working-tree changes compared with HEAD, plus nonignored untracked files
+repopo check-native --change-mode local
+```
+
+The default mode is `pr`. You do not need a GitHub pull request. Repopo determines the PR target in this order:
+
+1. `--change-base`, or `changes.base` in the configuration.
+2. `GITHUB_BASE_REF`, then `CI_MERGE_REQUEST_TARGET_BRANCH_NAME`, when nonempty.
+3. `changes.defaultBranch` in the configuration.
+4. The default remote's symbolic HEAD.
+
+The default remote is `origin`, or the sole configured remote. For short branch names, Repopo uses a local branch first, then the default remote's tracking branch. Use a full ref such as `refs/remotes/origin/main` to choose a specific ref. Repopo does not fetch branches; missing target refs or merge-base history stop the check with guidance. Set an explicit base or fetch the missing history.
+
+Change modes provide **path metadata**. They do not select file-policy paths, change repository inventory, or make existing content-reading policies read index/commit blobs. Those policies still read working-tree files. Combine `--stdin` with change options when you also want a restricted file-policy selection.
+
+Repopo captures changes once before any policy handlers or fixes. A fix cannot satisfy a related-change requirement in the same run. Run the check again to capture the new state. Repository inventory still refreshes between fixes.
+
+Unmerged Git conflicts stop change collection. Staged and local modes support repositories without a first commit; PR mode requires commit history. Git rename detection supplies both rename paths. A move to an untracked destination can appear as a deletion plus an addition instead of a rename.
+
+Local mode includes both records if a path has a staged deletion but still exists as an untracked file. Tracked ignored files remain part of the tracked comparison.
+
+Ordinary checks without change-aware policies do not need a PR target. Repopo collects changes only when a policy declares `requiresChanges` or you supply a change flag. `list` does not collect changes. A base override is valid only in PR mode.
+
 ## Concurrency
 
 Read-only checks process up to 8 files at a time. Change the limit with `--concurrency`:

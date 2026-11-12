@@ -100,8 +100,17 @@ impl Sidecar {
         serde_json::from_value(data).context("Failed to parse load_config response")
     }
 
-    pub fn begin_run(&mut self, fix: bool) -> Result<()> {
-        self.request(&IpcRequest::BeginRun(BeginRunParams { fix }))?;
+    pub fn begin_run(
+        &mut self,
+        fix: bool,
+        change_mode: Option<&str>,
+        change_base: Option<&str>,
+    ) -> Result<()> {
+        self.request(&IpcRequest::BeginRun(BeginRunParams {
+            fix,
+            change_mode: change_mode.map(String::from),
+            change_base: change_base.map(String::from),
+        }))?;
         Ok(())
     }
 

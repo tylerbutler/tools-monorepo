@@ -489,6 +489,28 @@ export interface PublicApiDocumentedConfig {
 }
 
 // @public
+export const RequireCompanionChanges: {
+    name: string;
+    description: string;
+    scope: "repository";
+    requiresChanges: true;
+    requiresConfig: true;
+    handler: (input: RepositoryPolicyArgs<RequireCompanionChangesConfig>) => Promise<{
+        message: string;
+        files: string[];
+        manualFix: string;
+    }[]>;
+};
+
+// @public
+export interface RequireCompanionChangesConfig {
+    // (undocumented)
+    companion: string | RegExp;
+    // (undocumented)
+    trigger: string | RegExp;
+}
+
+// @public
 export const RequiredGitignorePatterns: {
     name: string;
     description: string;

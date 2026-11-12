@@ -23,6 +23,14 @@ export class CheckNative extends Command {
 		"With --fix, repository policies can modify files outside the stdin selection.";
 
 	public static override readonly flags = {
+		"change-mode": Flags.option({
+			description:
+				"Change context: pr (default), local, or staged. Does not select file-policy paths.",
+			options: ["pr", "local", "staged"] as const,
+		})(),
+		"change-base": Flags.string({
+			description: "Override the PR change context base ref.",
+		}),
 		concurrency: Flags.integer({
 			description:
 				"Maximum concurrent files in read-only checks. Fixes remain sequential.",
@@ -79,6 +87,12 @@ export class CheckNative extends Command {
 		const sidecarPath = this.resolveSidecarPath(flags["sidecar-path"]);
 
 		const args: string[] = ["check", "--sidecar-path", sidecarPath];
+		if (flags["change-mode"] !== undefined) {
+			args.push("--change-mode", flags["change-mode"]);
+		}
+		if (flags["change-base"] !== undefined) {
+			args.push("--change-base", flags["change-base"]);
+		}
 		args.push("--concurrency", String(flags.concurrency));
 
 		if (flags.fix) {

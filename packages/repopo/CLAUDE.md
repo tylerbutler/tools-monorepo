@@ -108,6 +108,21 @@ Unresolved/failed findings do not trigger these boundaries. CLI errors and
 unresolved findings fail; excluded work does not. Cancellation releases owned
 resources before propagating, without rollback of writes.
 
+## Change-aware policies
+
+Repository definitions may declare `requiresChanges: true`. Their handlers receive
+an optional `changes` snapshot, distinct from full `files` inventory. Programmatic
+callers supply `PolicyRunnerOptions.changes`, usually through
+`collectRepositoryChanges(root, options)`. The CLI and native sidecar share that
+collector and capture once before any handlers/fixes. Inventory exclusions do not
+filter raw change records.
+
+Modes are `pr` (committed merge-base-to-HEAD, default), `local` (net working changes
+plus nonignored untracked files), and `staged` (index-to-HEAD). `--change-mode` and
+`--change-base` override `RepopoConfig.changes`. Ordinary policies do not force
+change collection. `RequireCompanionChanges` uses explicit trigger/companion
+regexes; no automatic package mapping.
+
 ## Execution engines
 
 `check` uses the TypeScript runner. `check-native` retains Rust matching,

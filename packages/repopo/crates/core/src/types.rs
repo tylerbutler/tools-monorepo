@@ -179,8 +179,11 @@ pub struct LoadConfigParams {
 }
 
 #[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct BeginRunParams {
     pub fix: bool,
+    pub change_mode: Option<String>,
+    pub change_base: Option<String>,
 }
 
 #[derive(Debug, Serialize)]

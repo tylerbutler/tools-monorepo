@@ -128,6 +128,8 @@ const resolver: PolicyResolver = async ({ findings }) => {
 
 Repository policies can't have a resolver; they fix inline in the handler.
 
+A repository definition can declare `requiresChanges: true` to request Git change context. Its handler receives `changes` alongside `files`. The CLI captures changes before handlers/fixes; programmatic callers must supply a snapshot. See [change-aware repository policies](/usage/programmatic-api/#change-aware-repository-policies) for the public types and collection example.
+
 ## Repository policies
 
 Use a repository policy for checks that involve several files or a file that's missing. Set `scope: "repository"` and omit `match`.

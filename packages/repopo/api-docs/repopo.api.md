@@ -47,6 +47,12 @@ export interface CargoTomlSortedConfig {
 }
 
 // @public
+export type ChangeMode = "pr" | "local" | "staged";
+
+// @public
+export function collectRepositoryChanges(root: string, options?: RepositoryChangeOptions): Promise<RepositoryChangeSet>;
+
+// @public
 export type ConditionalScriptEntry = string | Record<string, string>;
 
 // @public
@@ -533,6 +539,8 @@ export class PolicyRunner {
 // @public
 export interface PolicyRunnerOptions {
     // (undocumented)
+    changes?: RepositoryChangeSet | undefined;
+    // (undocumented)
     concurrency?: number | undefined;
     // (undocumented)
     exclude?: readonly (string | RegExp)[] | undefined;
@@ -581,9 +589,44 @@ export interface PublicApiDocumentedConfig {
 
 // @public
 export interface RepopoConfig {
+    changes?: RepositoryChangeOptions | undefined;
     excludeFiles?: (string | RegExp)[];
     // (undocumented)
     policies?: ConfiguredPolicy[];
+}
+
+// @public
+export type RepositoryChange = {
+    readonly status: "added" | "modified" | "deleted" | "type-changed";
+    readonly path: string;
+} | {
+    readonly status: "renamed";
+    readonly path: string;
+    readonly oldPath: string;
+};
+
+// @public
+export interface RepositoryChangeOptions {
+    // (undocumented)
+    base?: string | undefined;
+    // (undocumented)
+    defaultBranch?: string | undefined;
+    // (undocumented)
+    mode?: ChangeMode | undefined;
+}
+
+// @public
+export interface RepositoryChangeSet {
+    // (undocumented)
+    readonly base?: string | undefined;
+    // (undocumented)
+    readonly entries: readonly RepositoryChange[];
+    // (undocumented)
+    readonly head?: string | undefined;
+    // (undocumented)
+    readonly mergeBase?: string | undefined;
+    // (undocumented)
+    readonly mode: ChangeMode;
 }
 
 // @public
@@ -591,6 +634,7 @@ export type RepositoryInventory = readonly string[] | (() => Promise<readonly st
 
 // @public
 export interface RepositoryPolicyArgs<C = void> extends Omit<PolicyArgs<C>, "file"> {
+    changes?: RepositoryChangeSet | undefined;
     // (undocumented)
     files: readonly string[];
 }
@@ -606,6 +650,8 @@ export interface RepositoryPolicyDefinition<C = void> {
     // (undocumented)
     name: PolicyName;
     // (undocumented)
+    requiresChanges?: boolean | undefined;
+    // (undocumented)
     requiresConfig?: boolean | undefined;
     // (undocumented)
     resolver?: never;
@@ -615,6 +661,14 @@ export interface RepositoryPolicyDefinition<C = void> {
 
 // @public
 export type RepositoryPolicyHandler<C = void> = RepositoryPolicyDefinition<C>["handler"];
+
+// @public
+export interface RequireCompanionChangesConfig {
+    // (undocumented)
+    companion: string | RegExp;
+    // (undocumented)
+    trigger: string | RegExp;
+}
 
 // @public
 export interface RequiredGitignorePatternsSettings {

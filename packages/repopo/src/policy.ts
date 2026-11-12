@@ -2,6 +2,7 @@ import type { Operation } from "effection";
 import { NoJsFileExtensions } from "./policies/NoJsFileExtensions.js";
 import { PackageJsonRepoDirectoryProperty } from "./policies/PackageJsonRepoDirectoryProperty.js";
 import { PackageJsonSorted } from "./policies/PackageJsonSorted.js";
+import type { RepositoryChangeSet } from "./repositoryChanges.js";
 
 /** Display name of a policy. @public */
 export type PolicyName = string;
@@ -20,6 +21,8 @@ export interface PolicyArgs<C = void> {
 export interface RepositoryPolicyArgs<C = void>
 	extends Omit<PolicyArgs<C>, "file"> {
 	files: readonly string[];
+	/** Complete pre-run change snapshot, independent of selection and inventory exclusions. */
+	changes?: RepositoryChangeSet | undefined;
 }
 
 /** A single independently actionable violation or recorded fix. @public */
@@ -58,6 +61,7 @@ export interface RepositoryPolicyDefinition<C = void> {
 	name: PolicyName;
 	description: string;
 	scope: "repository";
+	requiresChanges?: boolean | undefined;
 	handler(
 		args: RepositoryPolicyArgs<C>,
 	): Promise<PolicyResult> | Operation<PolicyResult>;
