@@ -5,7 +5,8 @@ import { DEFAULT_CONCURRENCY, validateConcurrency } from "../concurrency.js";
 import { parseFilePaths } from "../filePaths.js";
 import { logStats } from "../perf.js";
 import {
-	collectRepositoryChanges,
+	annotateInventory,
+	collectRepositoryInventory,
 	validateChangeOptions,
 } from "../repositoryChanges.js";
 import { readRepositoryFiles } from "../repositoryFiles.js";
@@ -86,14 +87,14 @@ export class CheckPolicy<
 				: { base: this.flags["change-base"] }),
 		};
 		validateChangeOptions(changeOptions);
-		const changes =
+		const inventory =
 			context.policies.some(
 				(policy) => policy.scope === "repository" && policy.requiresChanges,
 			) ||
 			this.flags["change-mode"] !== undefined ||
 			this.flags["change-base"] !== undefined
-				? await collectRepositoryChanges(context.gitRoot, changeOptions)
-				: undefined;
+				? await collectRepositoryInventory(context.gitRoot, changeOptions)
+				: [];
 		this.verbose(`${context.policies.length} policies loaded.`);
 		for (const policy of context.policies) {
 			this.verbose(policy.instanceId);
@@ -102,8 +103,8 @@ export class CheckPolicy<
 			policies: context.policies,
 			root: context.gitRoot,
 			files,
-			changes,
-			inventory: () => this.collectRepositoryFiles(),
+			inventory: async () =>
+				annotateInventory(await this.collectRepositoryFiles(), inventory),
 			exclude: context.excludeFromAll,
 			fix: this.flags.fix,
 			concurrency: this.flags.concurrency,

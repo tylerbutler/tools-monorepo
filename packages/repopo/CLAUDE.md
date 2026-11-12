@@ -110,12 +110,15 @@ resources before propagating, without rollback of writes.
 
 ## Change-aware policies
 
-Repository definitions may declare `requiresChanges: true`. Their handlers receive
-an optional `changes` snapshot, distinct from full `files` inventory. Programmatic
-callers supply `PolicyRunnerOptions.changes`, usually through
-`collectRepositoryChanges(root, options)`. The CLI and native sidecar share that
-collector and capture once before any handlers/fixes. Inventory exclusions do not
-filter raw change records.
+Repository handlers receive a full annotated inventory as `entries` and a derived
+live string-path view as `files`. Records have `path`, `status` (including
+`unchanged`), and `previousPath` for renames. Optional `exists` preserves working-tree
+presence independently of comparison status. Legacy string inventories remain valid.
+Definitions may declare `requiresChanges: true` to request Git annotation in the CLI;
+programmatic callers pass annotated inventory, usually from
+`collectRepositoryInventory(root, options)`. Both engines capture statuses before
+handlers/fixes. Loaders refresh live paths without changing those statuses.
+Inventory exclusions apply to annotated entries, including deleted paths.
 
 Modes are `pr` (committed merge-base-to-HEAD, default), `local` (net working changes
 plus nonignored untracked files), and `staged` (index-to-HEAD). `--change-mode` and

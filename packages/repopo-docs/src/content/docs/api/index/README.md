@@ -68,7 +68,6 @@ Import `repopo/api` for the programmatic API without the CLI entry point.
 - [PublicApiDocumentedConfig](/api/index/interfaces/publicapidocumentedconfig/)
 - [RepopoConfig](/api/index/interfaces/repopoconfig/)
 - [RepositoryChangeOptions](/api/index/interfaces/repositorychangeoptions/)
-- [RepositoryChangeSet](/api/index/interfaces/repositorychangeset/)
 - [RepositoryPolicyArgs](/api/index/interfaces/repositorypolicyargs/)
 - [RepositoryPolicyDefinition](/api/index/interfaces/repositorypolicydefinition/)
 - [RequireCompanionChangesConfig](/api/index/interfaces/requirecompanionchangesconfig/)
@@ -107,14 +106,14 @@ Import `repopo/api` for the programmatic API without the CLI entry point.
 - [PolicyResult](/api/index/type-aliases/policyresult/)
 - [PolicyRunFinding](/api/index/type-aliases/policyrunfinding/)
 - [PolicySkippedWork](/api/index/type-aliases/policyskippedwork/)
-- [RepositoryChange](/api/index/type-aliases/repositorychange/)
+- [RepositoryFile](/api/index/type-aliases/repositoryfile/)
 - [RepositoryInventory](/api/index/type-aliases/repositoryinventory/)
 - [RepositoryPolicyHandler](/api/index/type-aliases/repositorypolicyhandler/)
 - [RequiredScriptEntry](/api/index/type-aliases/requiredscriptentry/)
 
 ## Functions
 
-- [collectRepositoryChanges](/api/index/functions/collectrepositorychanges/)
+- [collectRepositoryInventory](/api/index/functions/collectrepositoryinventory/)
 - [defineCargoPolicy](/api/index/functions/definecargopolicy/)
 - [defineFileHeaderPolicy](/api/index/functions/definefileheaderpolicy/)
 - [defineGleamPolicy](/api/index/functions/definegleampolicy/)

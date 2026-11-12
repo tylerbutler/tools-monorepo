@@ -10,9 +10,12 @@ import { tmpdir } from "node:os";
 import { join } from "pathe";
 import { simpleGit } from "simple-git";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { collectRepositoryChanges } from "../src/repositoryChanges.js";
+import {
+	collectRepositoryInventory,
+	type RepositoryChangeOptions,
+} from "../src/repositoryChanges.js";
 
-describe("repository change snapshots", () => {
+describe("annotated repository inventory", () => {
 	let root: string;
 	let git: ReturnType<typeof simpleGit>;
 	beforeEach(async () => {
@@ -33,6 +36,42 @@ describe("repository change snapshots", () => {
 		await git.add(".");
 		await git.commit("fixture");
 	}
+	async function changes(
+		options: RepositoryChangeOptions = {},
+		directory = root,
+	) {
+		return (await collectRepositoryInventory(directory, options))
+			.filter((entry) => entry.status !== "unchanged")
+			.map(({ exists: _exists, ...entry }) => entry);
+	}
+
+	it("includes unchanged files and keeps working-tree presence distinct from Git status", async () => {
+		await commit();
+		await git.checkoutLocalBranch("feature");
+		await commit("feature.txt");
+		await rm(join(root, "feature.txt"));
+		const entries = await collectRepositoryInventory(root, { base: "main" });
+		expect(entries).toEqual([
+			{ path: "source.txt", status: "unchanged" },
+			{ path: "feature.txt", status: "added", exists: false },
+		]);
+		expect(Object.isFrozen(entries)).toBe(true);
+		expect(entries.every(Object.isFrozen)).toBe(true);
+	});
+
+	it.skipIf(process.platform === "win32")(
+		"does not normalize literal backslashes in Git inventory names",
+		async () => {
+			const path = `${root}/literal\\name.txt`;
+			await writeFile(path, "original");
+			await git.add(".");
+			await git.commit("fixture");
+			await writeFile(path, "modified");
+			expect(await collectRepositoryInventory(root, { mode: "local" })).toEqual(
+				[{ path: "literal\\name.txt", status: "modified", exists: true }],
+			);
+		},
+	);
 
 	it("distinguishes staged, net local, and untracked changes", async () => {
 		await commit();
@@ -42,12 +81,10 @@ describe("repository change snapshots", () => {
 		await writeFile(join(root, "new\ncafé.txt"), "new");
 		await writeFile(join(root, ".gitignore"), "ignored\n");
 		await writeFile(join(root, "ignored"), "ignored");
-		expect(
-			(await collectRepositoryChanges(root, { mode: "staged" })).entries,
-		).toEqual([{ status: "modified", path: "source.txt" }]);
-		expect(
-			(await collectRepositoryChanges(root, { mode: "local" })).entries,
-		).toEqual([
+		expect(await changes({ mode: "staged" })).toEqual([
+			{ status: "modified", path: "source.txt" },
+		]);
+		expect(await changes({ mode: "local" })).toEqual([
 			{ status: "added", path: ".gitignore" },
 			{ status: "added", path: "new\ncafé.txt" },
 		]);
@@ -62,27 +99,24 @@ describe("repository change snapshots", () => {
 		await rm(join(root, "type.txt"));
 		await symlink("renamed source.txt", join(root, "type.txt"));
 		await git.add("-A");
-		const snapshot = await collectRepositoryChanges(root, { mode: "staged" });
-		expect(snapshot.entries).toEqual(
+		const entries = await changes({ mode: "staged" });
+		expect(entries).toEqual(
 			expect.arrayContaining([
 				{
 					status: "renamed",
-					oldPath: "source.txt",
+					previousPath: "source.txt",
 					path: "renamed source.txt",
 				},
 				{ status: "deleted", path: "deleted.txt" },
 				{ status: "type-changed", path: "type.txt" },
 			]),
 		);
-		expect(Object.isFrozen(snapshot.entries)).toBe(true);
 	});
 
 	it("retains untracked files even when their paths have staged deletions", async () => {
 		await commit();
 		await git.rm(["--cached", "source.txt"]);
-		expect(
-			(await collectRepositoryChanges(root, { mode: "local" })).entries,
-		).toEqual([
+		expect(await changes({ mode: "local" })).toEqual([
 			{ status: "deleted", path: "source.txt" },
 			{ status: "added", path: "source.txt" },
 		]);
@@ -93,9 +127,9 @@ describe("repository change snapshots", () => {
 		await commit(".gitignore", "source.txt\nignored\n");
 		await writeFile(join(root, "source.txt"), "changed");
 		await writeFile(join(root, "ignored"), "ignored");
-		expect(
-			(await collectRepositoryChanges(root, { mode: "local" })).entries,
-		).toEqual([{ status: "modified", path: "source.txt" }]);
+		expect(await changes({ mode: "local" })).toEqual([
+			{ status: "modified", path: "source.txt" },
+		]);
 	});
 
 	it("uses merge base, not target tip or uncommitted changes", async () => {
@@ -106,36 +140,24 @@ describe("repository change snapshots", () => {
 		await commit("target-only.txt");
 		await git.checkout("feature");
 		await writeFile(join(root, "source.txt"), "dirty");
-		const snapshot = await collectRepositoryChanges(root, { base: "main" });
-		expect(snapshot.mode).toBe("pr");
-		expect(snapshot.entries).toEqual([
+		expect(await changes({ base: "main" })).toEqual([
 			{ status: "added", path: "feature.txt" },
 		]);
-		expect(snapshot.base).not.toBe(snapshot.mergeBase);
 	});
 
 	it("resolves explicit base before CI and CI before configured default", async () => {
 		await commit();
 		vi.stubEnv("GITHUB_BASE_REF", "missing");
-		await expect(
-			collectRepositoryChanges(root, { defaultBranch: "main" }),
-		).rejects.toThrow("missing");
-		expect(
-			(await collectRepositoryChanges(root, { base: "main" })).entries,
-		).toEqual([]);
+		await expect(changes({ defaultBranch: "main" })).rejects.toThrow("missing");
+		expect(await changes({ base: "main" })).toEqual([]);
 		vi.stubEnv("GITHUB_BASE_REF", "");
 		vi.stubEnv("CI_MERGE_REQUEST_TARGET_BRANCH_NAME", "main");
-		expect(
-			(await collectRepositoryChanges(root, { defaultBranch: "missing" }))
-				.entries,
-		).toEqual([]);
+		expect(await changes({ defaultBranch: "missing" })).toEqual([]);
 	});
 
 	it("uses configured default or default remote HEAD without assuming main", async () => {
 		await commit();
-		expect(
-			(await collectRepositoryChanges(root, { defaultBranch: "main" })).entries,
-		).toEqual([]);
+		expect(await changes({ defaultBranch: "main" })).toEqual([]);
 		await git.addRemote("origin", root);
 		const head = await git.revparse("HEAD");
 		await git.raw(["update-ref", "refs/remotes/origin/trunk", head.trim()]);
@@ -144,38 +166,28 @@ describe("repository change snapshots", () => {
 			"refs/remotes/origin/HEAD",
 			"refs/remotes/origin/trunk",
 		]);
-		expect((await collectRepositoryChanges(root)).base).toBe(head.trim());
-		expect((await collectRepositoryChanges(root, { base: "trunk" })).base).toBe(
-			head.trim(),
-		);
+		expect(await changes()).toEqual([]);
+		expect(await changes({ base: "trunk" })).toEqual([]);
 	});
 
 	it("fails on unknown targets, absent target defaults and unrelated history", async () => {
 		await commit();
-		await expect(collectRepositoryChanges(root)).rejects.toThrow(
-			"Cannot determine PR target",
-		);
-		await expect(
-			collectRepositoryChanges(root, { base: "missing" }),
-		).rejects.toThrow("fetch");
+		await expect(changes()).rejects.toThrow("Cannot determine PR target");
+		await expect(changes({ base: "missing" })).rejects.toThrow("fetch");
 		await git.checkout(["--orphan", "other"]);
 		await git.commit("unrelated");
-		await expect(
-			collectRepositoryChanges(root, { base: "main" }),
-		).rejects.toThrow("merge base");
+		await expect(changes({ base: "main" })).rejects.toThrow("merge base");
 	});
 
 	it("handles unborn local/staged state but requires history for PR mode", async () => {
 		await writeFile(join(root, "staged.txt"), "staged");
 		await git.add("staged.txt");
 		await writeFile(join(root, "untracked.txt"), "untracked");
-		expect(
-			(await collectRepositoryChanges(root, { mode: "staged" })).entries,
-		).toEqual([{ status: "added", path: "staged.txt" }]);
-		expect(
-			(await collectRepositoryChanges(root, { mode: "local" })).entries,
-		).toHaveLength(2);
-		await expect(collectRepositoryChanges(root)).rejects.toThrow("HEAD commit");
+		expect(await changes({ mode: "staged" })).toEqual([
+			{ status: "added", path: "staged.txt" },
+		]);
+		expect(await changes({ mode: "local" })).toHaveLength(2);
+		await expect(changes()).rejects.toThrow("HEAD commit");
 	});
 
 	it("rejects conflicts instead of treating them as ordinary changes", async () => {
@@ -185,18 +197,14 @@ describe("repository change snapshots", () => {
 		await git.checkout("main");
 		await commit("source.txt", "main");
 		await expect(git.merge(["feature"])).rejects.toThrow();
-		await expect(
-			collectRepositoryChanges(root, { mode: "local" }),
-		).rejects.toThrow("conflicts");
+		await expect(changes({ mode: "local" })).rejects.toThrow("conflicts");
 	});
 
 	it("rejects mode/base conflicts and empty refs", async () => {
-		await expect(
-			collectRepositoryChanges(root, { mode: "local", base: "main" }),
-		).rejects.toThrow("only valid");
-		await expect(collectRepositoryChanges(root, { base: "" })).rejects.toThrow(
-			"nonempty",
+		await expect(changes({ mode: "local", base: "main" })).rejects.toThrow(
+			"only valid",
 		);
+		await expect(changes({ base: "" })).rejects.toThrow("nonempty");
 	});
 
 	it("reports missing shallow history without switching modes", async () => {
@@ -212,8 +220,6 @@ describe("repository change snapshots", () => {
 		await simpleGit(clone).fetch("origin", "main:refs/remotes/origin/main", [
 			"--depth=1",
 		]);
-		await expect(
-			collectRepositoryChanges(clone, { base: "main" }),
-		).rejects.toThrow("fetch");
+		await expect(changes({ base: "main" }, clone)).rejects.toThrow("fetch");
 	});
 });

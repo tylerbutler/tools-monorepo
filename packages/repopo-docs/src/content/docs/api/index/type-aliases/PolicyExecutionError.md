@@ -7,7 +7,7 @@ title: "PolicyExecutionError"
 
 > **PolicyExecutionError** = `object` & (\{ `file`: `string`; `files?`: `never`; `scope`: `"file"`; \} \| \{ `file?`: `never`; `files`: readonly `string`[]; `scope`: `"repository"`; \})
 
-Defined in: [runner.ts:40](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L40)
+Defined in: [runner.ts:42](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L42)
 
 An execution failure, separate from ordinary policy findings.
 

@@ -4,7 +4,7 @@ import { ExecutionContractError } from "./executionContractError.js";
 import { fileCache, type ParsedFileCache } from "./fileCache.js";
 import { runWithPerf } from "./perf.js";
 import type { IdentifiedPolicy, PolicyResult } from "./policy.js";
-import type { RepositoryChangeSet } from "./repositoryChanges.js";
+import { inventoryPaths, type RepositoryFile } from "./repositoryChanges.js";
 import type { PolicyRunResults } from "./runner.js";
 import { settlePolicyPromise } from "./settlePolicyPromise.js";
 
@@ -168,20 +168,15 @@ export class PolicyExecutor {
 	public constructor(
 		private readonly root: string,
 		private readonly fix: boolean,
-		private readonly changes?: RepositoryChangeSet,
 	) {}
 
 	public *repository(
 		policy: Extract<IdentifiedPolicy, { scope: "repository" }>,
-		eligible: readonly string[],
+		entries: readonly RepositoryFile[],
 		output: PolicyRunResults,
 	): Operation<boolean> {
+		const eligible = inventoryPaths(entries);
 		try {
-			if (policy.requiresChanges && !this.changes) {
-				throw new TypeError(
-					`Policy '${policy.name}' requires a changes snapshot.`,
-				);
-			}
 			const findings = yield* runWithPerf(
 				policy.instanceId,
 				"handle",
@@ -190,7 +185,7 @@ export class PolicyExecutor {
 					execute(() =>
 						policy.handler({
 							files: eligible,
-							changes: this.changes,
+							entries,
 							root: this.root,
 							resolve: this.fix,
 							config: policy.config,

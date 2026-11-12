@@ -1,5 +1,6 @@
 import { env } from "node:process";
 import { simpleGit } from "simple-git";
+import { readRepositoryFiles, splitGitPaths } from "./repositoryFiles.js";
 
 type Git = ReturnType<typeof simpleGit>;
 
@@ -7,25 +8,25 @@ type Git = ReturnType<typeof simpleGit>;
 export type ChangeMode = "pr" | "local" | "staged";
 
 /** Repo-relative Git paths; renames retain both endpoints. @public */
-export type RepositoryChange =
+export type RepositoryFile = (
 	| {
-			readonly status: "added" | "modified" | "deleted" | "type-changed";
+			readonly status:
+				| "unchanged"
+				| "added"
+				| "modified"
+				| "deleted"
+				| "type-changed";
 			readonly path: string;
 	  }
 	| {
 			readonly status: "renamed";
 			readonly path: string;
-			readonly oldPath: string;
-	  };
-
-/** A fixed path snapshot, not a source of index or commit file contents. @public */
-export interface RepositoryChangeSet {
-	readonly mode: ChangeMode;
-	readonly head?: string | undefined;
-	readonly base?: string | undefined;
-	readonly mergeBase?: string | undefined;
-	readonly entries: readonly RepositoryChange[];
-}
+			readonly previousPath: string;
+	  }
+) & {
+	/** Working-tree presence when it differs from status (for example an unstaged deletion in PR mode). */
+	readonly exists?: boolean | undefined;
+};
 
 /** PR comparison defaults; explicit base takes precedence over CI targets. @public */
 export interface RepositoryChangeOptions {
@@ -55,13 +56,9 @@ export function validateChangeOptions(options: RepositoryChangeOptions): void {
 	}
 }
 
-function paths(output: string): string[] {
-	return output.split("\0").filter((path) => path !== "");
-}
-
-function parseChanges(output: string): RepositoryChange[] {
-	const tokens = paths(output);
-	const entries: RepositoryChange[] = [];
+function parseChanges(output: string): RepositoryFile[] {
+	const tokens = splitGitPaths(output);
+	const entries: RepositoryFile[] = [];
 	for (let index = 0; index < tokens.length; ) {
 		const status = tokens[index++];
 		const path = tokens[index++];
@@ -73,7 +70,11 @@ function parseChanges(output: string): RepositoryChange[] {
 			if (!destination) {
 				throw new Error("Invalid Git rename output: missing destination.");
 			}
-			entries.push({ status: "renamed", oldPath: path, path: destination });
+			entries.push({
+				status: "renamed",
+				previousPath: path,
+				path: destination,
+			});
 		} else {
 			switch (status) {
 				case "A":
@@ -96,23 +97,56 @@ function parseChanges(output: string): RepositoryChange[] {
 	return entries;
 }
 
-/** Copy and freeze a caller's snapshot before policies can observe it. @internal */
-export function snapshotChanges(
-	changes: RepositoryChangeSet,
-): RepositoryChangeSet {
-	return Object.freeze({
-		...changes,
-		entries: Object.freeze(
-			changes.entries.map((entry) => Object.freeze({ ...entry })),
+/** Normalize legacy paths and copy records before policies can observe them. @internal */
+export function snapshotInventory(
+	files: readonly (string | RepositoryFile)[],
+): readonly RepositoryFile[] {
+	return Object.freeze(
+		files.map((file) =>
+			Object.freeze(
+				typeof file === "string"
+					? { path: file, status: "unchanged" as const }
+					: { ...file },
+			),
 		),
-	});
+	);
 }
 
-/** Collect changes once; does not fetch or require an actual pull request. @public */
-export async function collectRepositoryChanges(
+/** Derive the legacy working-tree inventory, excluding absent paths. @internal */
+export function inventoryPaths(entries: readonly RepositoryFile[]): string[] {
+	return [
+		...new Set(
+			entries
+				.filter((entry) => entry.exists ?? entry.status !== "deleted")
+				.map((entry) => entry.path),
+		),
+	];
+}
+
+/** Refresh live paths without changing the statuses captured before fixes. @internal */
+export function annotateInventory(
+	files: readonly string[],
+	snapshot: readonly RepositoryFile[],
+): readonly RepositoryFile[] {
+	const present = new Set(files);
+	const changed = snapshot.filter((entry) => entry.status !== "unchanged");
+	const changedPaths = new Set(changed.map((entry) => entry.path));
+	return snapshotInventory([
+		...files
+			.filter((path) => !changedPaths.has(path))
+			.map((path) => ({ path, status: "unchanged" as const })),
+		...changed.map((entry) => ({
+			...entry,
+			exists: present.has(entry.path),
+		})),
+	]);
+}
+
+/** Collect the full inventory with Git statuses; does not fetch or require an actual pull request. @public */
+export async function collectRepositoryInventory(
 	root: string,
 	options: RepositoryChangeOptions = {},
-): Promise<RepositoryChangeSet> {
+): Promise<readonly RepositoryFile[]> {
 	validateChangeOptions(options);
 	const mode = options.mode ?? "pr";
 	const git = simpleGit({ baseDir: root });
@@ -132,10 +166,13 @@ export async function collectRepositoryChanges(
 				"PR changes require a HEAD commit. Use staged/local mode for an unborn repository.",
 			);
 		}
-		return collectPrChanges(git, head, options);
+		return annotateInventory(
+			await readRepositoryFiles(git),
+			await collectPrChanges(git, head, options),
+		);
 	}
 	const entries = await collectWorkingChanges(git, mode, head);
-	return snapshotChanges({ mode, head, entries });
+	return annotateInventory(await readRepositoryFiles(git), entries);
 }
 
 async function resolveTarget(
@@ -186,7 +223,7 @@ async function collectPrChanges(
 	git: Git,
 	head: string,
 	options: RepositoryChangeOptions,
-): Promise<RepositoryChangeSet> {
+): Promise<RepositoryFile[]> {
 	const target = await resolveTarget(git, options);
 	let base: string;
 	let mergeBase: string;
@@ -216,15 +253,15 @@ async function collectPrChanges(
 			"--",
 		]),
 	);
-	return snapshotChanges({ mode: "pr", head, base, mergeBase, entries });
+	return entries;
 }
 
 async function collectWorkingChanges(
 	git: Git,
 	mode: "local" | "staged",
 	head: string | undefined,
-): Promise<RepositoryChange[]> {
-	let entries: RepositoryChange[];
+): Promise<RepositoryFile[]> {
+	let entries: RepositoryFile[];
 	if (mode === "staged") {
 		entries = parseChanges(
 			await git.raw([
@@ -252,14 +289,14 @@ async function collectWorkingChanges(
 		);
 	} else {
 		const deleted = new Set(
-			paths(await git.raw(["ls-files", "--deleted", "-z"])),
+			splitGitPaths(await git.raw(["ls-files", "--deleted", "-z"])),
 		);
-		entries = paths(await git.raw(["ls-files", "--cached", "-z"]))
+		entries = splitGitPaths(await git.raw(["ls-files", "--cached", "-z"]))
 			.filter((path) => !deleted.has(path))
 			.map((path) => ({ status: "added", path }));
 	}
 	if (mode === "local") {
-		for (const path of paths(
+		for (const path of splitGitPaths(
 			await git.raw(["ls-files", "--others", "--exclude-standard", "-z"]),
 		)) {
 			entries.push({ status: "added", path });

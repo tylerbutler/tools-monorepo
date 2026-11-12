@@ -12,13 +12,18 @@ import { TypeScriptLoader } from "@tylerbu/lilconfig-loader-ts";
 import { all, run } from "effection";
 import { lilconfig } from "lilconfig";
 import { DefaultPolicyConfig } from "../esm/config.js";
-import { createExcludedPolicyFileMap, exclusionRegex } from "../esm/context.js";
+import {
+	createExcludedPolicyFileMap,
+	exclusionRegex,
+	matchesPath,
+} from "../esm/context.js";
 import { ParsedFileCache } from "../esm/fileCache.js";
 import { identifyPolicyInstances, makePolicy } from "../esm/makePolicy.js";
 import { newPerfStats } from "../esm/perf.js";
 import { executionMessage, PolicyExecutor } from "../esm/policyExecution.js";
 import {
-	collectRepositoryChanges,
+	annotateInventory,
+	collectRepositoryInventory,
 	validateChangeOptions,
 } from "../esm/repositoryChanges.js";
 
@@ -256,20 +261,17 @@ async function beginRun(params) {
 		...(params.changeBase == null ? {} : { base: params.changeBase }),
 	};
 	validateChangeOptions(options);
-	const changes =
+	const inventory =
 		registration.policies.some(
 			(policy) => policy.scope === "repository" && policy.requiresChanges,
 		) ||
 		params.changeMode != null ||
 		params.changeBase != null
-			? await collectRepositoryChanges(registration.root, options)
-			: undefined;
+			? await collectRepositoryInventory(registration.root, options)
+			: [];
 	session = {
-		executor: new PolicyExecutor(
-			registration.root,
-			params.fix ?? false,
-			changes,
-		),
+		inventory,
+		executor: new PolicyExecutor(registration.root, params.fix ?? false),
 		cache: params.fix ? undefined : new ParsedFileCache(),
 	};
 	return {};
@@ -299,7 +301,18 @@ async function executeUnits(params) {
 					if (policy.scope === "repository") {
 						if (!Array.isArray(unit.files))
 							throw new Error("Repository units require explicit inventory.");
-						yield* session.executor.repository(policy, unit.files, result);
+						const exclusions = [
+							...registration.exclude,
+							...(policy.exclude ?? []),
+						].map(exclusionRegex);
+						const entries = annotateInventory(
+							unit.files,
+							session.inventory,
+						).filter(
+							(entry) =>
+								!exclusions.some((regex) => matchesPath(regex, entry.path)),
+						);
+						yield* session.executor.repository(policy, entries, result);
 					} else {
 						if (typeof unit.file !== "string")
 							throw new Error("File units require a file.");

@@ -44,8 +44,7 @@ If your code already uses [Effection](https://frontside.com/effection), use `Pol
 | `policies` | Policies configured with `makePolicy()`. |
 | `root` | Absolute path of the repository root. |
 | `files` | Repo-relative paths that file policies check. Defaults to `inventory`. |
-| `inventory` | The full repository file list for repository policies. See below. |
-| `changes` | A fixed change snapshot for repository handlers; required by policies with `requiresChanges: true`. |
+| `inventory` | The full repository list, as string paths or annotated records. See below. |
 | `exclude` | Patterns that exclude repo-relative paths from every policy, like `excludeFiles` in a configuration file. |
 | `fix` | `true` to apply fixes, like `check --fix`. |
 | `concurrency` | Maximum files processed at once in read-only runs. Defaults to 8. Fixes always run one file at a time. |
@@ -76,21 +75,20 @@ await runPolicies({
 
 ## Change-aware repository policies
 
-Collect a snapshot before executing policies:
+Pass the full inventory with a status on each file:
 
 ```ts
-import { collectRepositoryChanges, makePolicy, runPolicies } from "repopo/api";
+import { collectRepositoryInventory, makePolicy, runPolicies } from "repopo/api";
 import { RequireCompanionChanges } from "repopo/policies";
 
-const changes = await collectRepositoryChanges(root, {
+const inventory = await collectRepositoryInventory(root, {
 	mode: "pr",
 	base: "main",
 });
 const results = await runPolicies({
 	root,
 	files: [],
-	inventory: allRepositoryFiles,
-	changes,
+	inventory,
 	policies: [
 		makePolicy(RequireCompanionChanges, {
 			config: { trigger: /^src\//, companion: /^docs\// },
@@ -99,11 +97,13 @@ const results = await runPolicies({
 });
 ```
 
-The collector uses the same [modes and base resolution](/usage/cli-usage/#check-rules-about-related-changes) as the CLI. `changes.entries` contains `added`, `modified`, `deleted`, `type-changed`, and `renamed` records. Each record has `path`; renames also have `oldPath`. PR snapshots include resolved `head`, `base`, and `mergeBase` commit IDs. Local/staged snapshots omit `head` before the first commit.
+The collector uses the same [modes and base resolution](/usage/cli-usage/#check-rules-about-related-changes) as the CLI. It returns `RepositoryFile[]`: unchanged files plus `added`, `modified`, `deleted`, `type-changed`, and `renamed` entries. Each entry has `path` and `status`; renames also have `previousPath`. Optional `exists` records working-tree presence when status alone is not enough: for example, a committed addition can be absent from the working tree after an unstaged deletion.
 
-A custom `RepositoryPolicyDefinition` can declare `requiresChanges: true` and inspect `changes` in its handler. The runner requires an explicit snapshot; it does not collect Git data on behalf of programmatic callers. It freezes a copy before policy execution, so fixes or mutations to the caller's array cannot change the run's snapshot.
+Repository handlers receive this list as `entries`. Existing handlers can keep using `files`, the derived string-path view of files present in the working tree. Legacy string inventories remain supported and produce `unchanged` entries. File selection stays separate. Absent inventory entries are not used as the default selection; an explicit `files` selection retains its existing behavior.
 
-File selection, inventory, and changes have separate roles. Existing exclusions affect file/inventory paths; they do not filter raw change records. Policies can report deleted trigger paths in their findings even though those paths are absent from inventory.
+Declare `requiresChanges: true` on a repository definition to request Git statuses in the CLI. Programmatic callers supply annotated inventory themselves; these policies require a status on every entry. An empty inventory is valid.
+
+The runner copies and freezes the initial inventory before handlers run. An inventory loader can refresh live paths between fixes, but statuses stay fixed for the run: files created by fixes appear as `unchanged` and cannot satisfy a companion-change requirement. Global and per-policy exclusions filter `entries` by `path`, including deleted entries, just as they filter `files`.
 
 ## Results
 

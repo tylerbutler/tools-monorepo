@@ -21,16 +21,6 @@ Arguments supplied to a repository handler; selection never limits files.
 
 ## Properties
 
-### changes?
-
-> `optional` **changes?**: [`RepositoryChangeSet`](/api/index/interfaces/repositorychangeset/)
-
-Defined in: [policy.ts:25](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L25)
-
-Complete pre-run change snapshot, independent of selection and inventory exclusions.
-
-***
-
 ### config?
 
 > `optional` **config?**: `C`
@@ -40,6 +30,16 @@ Defined in: [policy.ts:17](https://github.com/tylerbutler/tools-monorepo/blob/ma
 #### Inherited from
 
 `Omit.config`
+
+***
+
+### entries
+
+> **entries**: readonly [`RepositoryFile`](/api/index/type-aliases/repositoryfile/)[]
+
+Defined in: [policy.ts:25](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L25)
+
+Full eligible inventory, including unchanged files and deleted paths.
 
 ***
 

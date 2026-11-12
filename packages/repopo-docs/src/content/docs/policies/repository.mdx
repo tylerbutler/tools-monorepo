@@ -87,6 +87,6 @@ If any trigger path changes, at least one companion path must have an addition, 
 
 One instance expresses one requirement across the repository. Add separate instances with unique IDs for tests, docs, or changesets, or use package-specific patterns to restrict a rule to one package. Repopo does not infer package relationships. Overlapping trigger/companion patterns permit the same change to satisfy both.
 
-The policy runs with empty stdin and uses the complete pre-run change snapshot, independent of file/inventory exclusions. See [change context options](/usage/cli-usage/#check-rules-about-related-changes).
+The policy runs with empty stdin and checks changed statuses in the full annotated inventory. Unchanged companions do not satisfy the rule. Global and per-policy inventory exclusions apply, including to deleted entries. See [change mode options](/usage/cli-usage/#check-rules-about-related-changes).
 
 **Auto-fixable:** No. Repopo reports matching trigger paths and guidance for the required update.

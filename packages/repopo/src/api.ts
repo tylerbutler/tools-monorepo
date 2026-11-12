@@ -119,10 +119,9 @@ export {
 } from "./policyDefiners/definePackagePolicy.js";
 export {
 	type ChangeMode,
-	collectRepositoryChanges,
-	type RepositoryChange,
+	collectRepositoryInventory,
 	type RepositoryChangeOptions,
-	type RepositoryChangeSet,
+	type RepositoryFile,
 } from "./repositoryChanges.js";
 export {
 	type PolicyExecutionError,

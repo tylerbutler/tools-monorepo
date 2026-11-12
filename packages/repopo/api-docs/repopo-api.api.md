@@ -49,7 +49,7 @@ export interface CargoTomlSortedConfig {
 export type ChangeMode = "pr" | "local" | "staged";
 
 // @public
-export function collectRepositoryChanges(root: string, options?: RepositoryChangeOptions): Promise<RepositoryChangeSet>;
+export function collectRepositoryInventory(root: string, options?: RepositoryChangeOptions): Promise<readonly RepositoryFile[]>;
 
 // @public
 export type ConditionalScriptEntry = string | Record<string, string>;
@@ -538,8 +538,6 @@ export class PolicyRunner {
 // @public
 export interface PolicyRunnerOptions {
     // (undocumented)
-    changes?: RepositoryChangeSet | undefined;
-    // (undocumented)
     concurrency?: number | undefined;
     // (undocumented)
     exclude?: readonly (string | RegExp)[] | undefined;
@@ -595,16 +593,6 @@ export interface RepopoConfig {
 }
 
 // @public
-export type RepositoryChange = {
-    readonly status: "added" | "modified" | "deleted" | "type-changed";
-    readonly path: string;
-} | {
-    readonly status: "renamed";
-    readonly path: string;
-    readonly oldPath: string;
-};
-
-// @public
 export interface RepositoryChangeOptions {
     // (undocumented)
     base?: string | undefined;
@@ -615,25 +603,23 @@ export interface RepositoryChangeOptions {
 }
 
 // @public
-export interface RepositoryChangeSet {
-    // (undocumented)
-    readonly base?: string | undefined;
-    // (undocumented)
-    readonly entries: readonly RepositoryChange[];
-    // (undocumented)
-    readonly head?: string | undefined;
-    // (undocumented)
-    readonly mergeBase?: string | undefined;
-    // (undocumented)
-    readonly mode: ChangeMode;
-}
+export type RepositoryFile = ({
+    readonly status: "unchanged" | "added" | "modified" | "deleted" | "type-changed";
+    readonly path: string;
+} | {
+    readonly status: "renamed";
+    readonly path: string;
+    readonly previousPath: string;
+}) & {
+    readonly exists?: boolean | undefined;
+};
 
 // @public
-export type RepositoryInventory = readonly string[] | (() => Promise<readonly string[]>);
+export type RepositoryInventory = readonly (string | RepositoryFile)[] | (() => Promise<readonly (string | RepositoryFile)[]>);
 
 // @public
 export interface RepositoryPolicyArgs<C = void> extends Omit<PolicyArgs<C>, "file"> {
-    changes?: RepositoryChangeSet | undefined;
+    entries: readonly RepositoryFile[];
     // (undocumented)
     files: readonly string[];
 }
@@ -648,7 +634,6 @@ export interface RepositoryPolicyDefinition<C = void> {
     handler(args: RepositoryPolicyArgs<C>): Promise<PolicyResult> | Operation<PolicyResult>;
     // (undocumented)
     name: PolicyName;
-    // (undocumented)
     requiresChanges?: boolean | undefined;
     // (undocumented)
     requiresConfig?: boolean | undefined;

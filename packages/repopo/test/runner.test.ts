@@ -675,6 +675,7 @@ describe("inventory, selection and regex semantics", () => {
 		});
 		expect(result.errors).toEqual([]);
 		expect(events).toEqual([
+			"load",
 			"file",
 			"load",
 			"a.txt,b.txt",

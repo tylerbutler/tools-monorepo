@@ -23,29 +23,31 @@ export const RequireCompanionChanges = {
 	scope: "repository",
 	requiresChanges: true,
 	requiresConfig: true,
-	handler: async ({ changes, config }) => {
-		if (!(changes && config)) {
-			throw new TypeError(
-				"RequireCompanionChanges requires config and a changes snapshot.",
-			);
+	handler: async ({ entries, config }) => {
+		if (!config) {
+			throw new TypeError("RequireCompanionChanges requires config.");
 		}
 		const trigger = compilePattern(config.trigger);
 		const companion = compilePattern(config.companion);
 		const triggers = [
 			...new Set(
-				changes.entries.flatMap((entry) =>
-					(entry.status === "renamed"
-						? [entry.oldPath, entry.path]
-						: [entry.path]
-					).filter((path) => matchesPath(trigger, path)),
-				),
+				entries
+					.filter((entry) => entry.status !== "unchanged")
+					.flatMap((entry) =>
+						(entry.status === "renamed"
+							? [entry.previousPath, entry.path]
+							: [entry.path]
+						).filter((path) => matchesPath(trigger, path)),
+					),
 			),
 		];
 		if (
 			triggers.length === 0 ||
-			changes.entries.some(
+			entries.some(
 				(entry) =>
-					entry.status !== "deleted" && matchesPath(companion, entry.path),
+					entry.status !== "unchanged" &&
+					entry.status !== "deleted" &&
+					matchesPath(companion, entry.path),
 			)
 		) {
 			return [];

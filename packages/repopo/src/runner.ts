@@ -16,8 +16,10 @@ import type {
 } from "./policy.js";
 import { PolicyExecutor } from "./policyExecution.js";
 import {
-	type RepositoryChangeSet,
-	snapshotChanges,
+	annotateInventory,
+	inventoryPaths,
+	type RepositoryFile,
+	snapshotInventory,
 } from "./repositoryChanges.js";
 
 /** A finding with runner-owned identity and scope-safe location. @public */
@@ -66,15 +68,14 @@ export interface PolicyRunResults {
 
 /** Full repository inventory, never inferred from a file selection. @public */
 export type RepositoryInventory =
-	| readonly string[]
-	| (() => Promise<readonly string[]>);
+	| readonly (string | RepositoryFile)[]
+	| (() => Promise<readonly (string | RepositoryFile)[]>);
 
 /** Shared Promise and Effection runner options. @public */
 export interface PolicyRunnerOptions {
 	policies: readonly ConfiguredPolicy[];
 	root: string;
 	inventory?: RepositoryInventory | undefined;
-	changes?: RepositoryChangeSet | undefined;
 	/** Selection limits only file policies. Defaults to inventory when supplied. */
 	files?: readonly string[] | undefined;
 	exclude?: readonly (string | RegExp)[] | undefined;
@@ -89,7 +90,6 @@ export class PolicyRunner {
 	private readonly exclusions: RegExp[];
 	private readonly policyExclusions: ExcludedPolicyFileMap;
 	private readonly concurrency: number;
-	private readonly changes: RepositoryChangeSet | undefined;
 
 	public constructor(private readonly options: PolicyRunnerOptions) {
 		this.policies = identifyPolicyInstances(
@@ -104,10 +104,6 @@ export class PolicyRunner {
 		this.concurrency = validateConcurrency(
 			options.concurrency ?? DEFAULT_CONCURRENCY,
 		);
-		this.changes =
-			options.changes === undefined
-				? undefined
-				: snapshotChanges(options.changes);
 		if (
 			this.policies.some((policy) => policy.scope === "repository") &&
 			options.inventory === undefined
@@ -117,15 +113,6 @@ export class PolicyRunner {
 			);
 		}
 		for (const policy of this.policies) {
-			if (
-				policy.scope === "repository" &&
-				policy.requiresChanges &&
-				!this.changes
-			) {
-				throw new TypeError(
-					`Policy '${policy.name}' requires an explicit changes snapshot.`,
-				);
-			}
 			if (policy.scope === "repository" && policy.resolver !== undefined) {
 				throw new TypeError(
 					"Repository policies support inline fixes only; remove resolver.",
@@ -171,11 +158,19 @@ export class PolicyRunner {
 		};
 		const fix = this.options.fix ?? false;
 		const cache = fix ? undefined : new ParsedFileCache();
-		let inventory: readonly string[] | undefined;
-		if (this.options.files === undefined) {
-			inventory = yield* this.loadInventory();
+		const rawInventory = yield* this.loadInventory();
+		if (
+			rawInventory.some((entry) => typeof entry === "string") &&
+			this.policies.some(
+				(policy) => policy.scope === "repository" && policy.requiresChanges,
+			)
+		) {
+			throw new TypeError(
+				"Change-aware policies require inventory entries with Git statuses, not string paths.",
+			);
 		}
-		const files = this.options.files ?? inventory ?? [];
+		const inventory = snapshotInventory(rawInventory);
+		const files = this.options.files ?? inventoryPaths(inventory);
 		let fileFixError = false;
 		try {
 			if (fix) {
@@ -233,7 +228,7 @@ export class PolicyRunner {
 
 	private *runRepositories(
 		result: PolicyRunResults,
-		initialInventory: readonly string[] | undefined,
+		initialInventory: readonly RepositoryFile[],
 		fileFixError: boolean,
 	): Operation<void> {
 		let inventory = initialInventory;
@@ -252,23 +247,29 @@ export class PolicyRunner {
 				});
 				continue;
 			}
-			if (inventory === undefined || fix) {
-				inventory = yield* this.loadInventory();
+			if (fix) {
+				const refreshed = yield* this.loadInventory();
+				inventory = annotateInventory(
+					inventoryPaths(snapshotInventory(refreshed)),
+					initialInventory,
+				);
 			}
-			const eligible = (inventory ?? []).filter(
-				(file) => !this.excluded(file, policy),
+			const eligible = inventory.filter(
+				(entry) => !this.excluded(entry.path, policy),
 			);
 			repositoryFixError = yield* new PolicyExecutor(
 				this.options.root,
 				fix,
-				this.changes,
 			).repository(policy, eligible, result);
 		}
 	}
 
-	private *loadInventory(): Operation<readonly string[] | undefined> {
+	private *loadInventory(): Operation<readonly (string | RepositoryFile)[]> {
 		const inventory = this.options.inventory;
-		return typeof inventory === "function" ? yield* call(inventory) : inventory;
+		return (
+			(typeof inventory === "function" ? yield* call(inventory) : inventory) ??
+			[]
+		);
 	}
 
 	private excluded(file: string, policy: IdentifiedPolicy): boolean {

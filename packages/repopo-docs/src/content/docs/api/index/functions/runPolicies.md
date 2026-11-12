@@ -7,7 +7,7 @@ title: "runPolicies"
 
 > **runPolicies**(`options`): [`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<[`PolicyRunResults`](/api/index/interfaces/policyrunresults/)\>
 
-Defined in: [runner.ts:320](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L320)
+Defined in: [runner.ts:321](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L321)
 
 Promise entry point sharing the Effection runner's contracts and cancellation.
 

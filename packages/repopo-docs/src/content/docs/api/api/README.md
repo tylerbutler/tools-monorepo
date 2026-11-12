@@ -63,9 +63,9 @@ Re-exports [ChangeMode](/api/index/type-aliases/changemode/)
 
 ***
 
-### collectRepositoryChanges
+### collectRepositoryInventory
 
-Re-exports [collectRepositoryChanges](/api/index/functions/collectrepositorychanges/)
+Re-exports [collectRepositoryInventory](/api/index/functions/collectrepositoryinventory/)
 
 ***
 
@@ -501,21 +501,15 @@ Re-exports [RepopoConfig](/api/index/interfaces/repopoconfig/)
 
 ***
 
-### RepositoryChange
-
-Re-exports [RepositoryChange](/api/index/type-aliases/repositorychange/)
-
-***
-
 ### RepositoryChangeOptions
 
 Re-exports [RepositoryChangeOptions](/api/index/interfaces/repositorychangeoptions/)
 
 ***
 
-### RepositoryChangeSet
+### RepositoryFile
 
-Re-exports [RepositoryChangeSet](/api/index/interfaces/repositorychangeset/)
+Re-exports [RepositoryFile](/api/index/type-aliases/repositoryfile/)
 
 ***
 

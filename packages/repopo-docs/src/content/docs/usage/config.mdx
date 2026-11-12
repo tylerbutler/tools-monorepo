@@ -44,7 +44,7 @@ export default {
 
 `changes.mode` accepts `pr`, `local`, or `staged`. An optional `changes.base` overrides CI target information; `defaultBranch` supplies the fallback target. CLI change flags override their matching configuration fields. See [change modes and base resolution](/usage/cli-usage/#check-rules-about-related-changes).
 
-Global and per-policy exclusions filter selected files and repository inventory. They do not redact the complete `changes` snapshot. Use explicit trigger and companion regexes to scope a change-aware rule.
+Global and per-policy exclusions filter selected files and repository inventory, including annotated and deleted entries. Use explicit trigger and companion regexes to scope a change-aware rule.
 
 ## Choosing policies
 

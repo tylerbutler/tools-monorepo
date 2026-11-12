@@ -7,7 +7,7 @@ title: "PolicySkippedWork"
 
 > **PolicySkippedWork** = `object` & (\{ `file`: `string`; `scope`: `"file"`; \} \| \{ `file?`: `never`; `scope`: `"repository"`; \})
 
-Defined in: [runner.ts:53](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L53)
+Defined in: [runner.ts:55](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L55)
 
 A unit that was not executed.
 

@@ -7,7 +7,7 @@ title: "IdentifiedPolicy"
 
 > **IdentifiedPolicy**\<`C`\> = [`ConfiguredPolicy`](/api/index/type-aliases/configuredpolicy/)\<`C`\> & `object`
 
-Defined in: [policy.ts:105](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L105)
+Defined in: [policy.ts:106](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L106)
 
 A configured policy with a validated stable identity.
 

@@ -1395,7 +1395,51 @@ describe("Native canonical sidecar", () => {
 			it.each([
 				"check",
 				"check-native",
-			] as const)("captures changes before fixes and keeps inventory separate: %s", async (command) => {
+			] as const)("shares full annotated inventory and exclusions: %s", async (command) => {
+				const git = simpleGit(testDir);
+				await git.addConfig("user.name", "Test");
+				await git.addConfig("user.email", "test@example.invalid");
+				for (const file of [
+					"source.txt",
+					"README.md",
+					"deleted.txt",
+					"old.txt",
+				]) {
+					await writeFile(join(testDir, file), `${file}\n`);
+				}
+				await git.add(".");
+				await git.commit("initial");
+				await git.mv("old.txt", "renamed.txt");
+				await git.rm("deleted.txt");
+				await writeFile(join(testDir, "source.txt"), "modified");
+				await writeFile(
+					configPath,
+					`export default {changes:{mode:"local"},policies:[
+					{name:"Inventory",description:"fixture",scope:"repository",requiresChanges:true,
+					handler:async({files,entries})=>{
+						const has=(path,status)=>entries.some(e=>e.path===path&&e.status===status);
+						if(!has("README.md","unchanged")||!has("source.txt","modified")||
+							!has("deleted.txt","deleted")||
+							!entries.some(e=>e.path==="renamed.txt"&&e.previousPath==="old.txt")||
+							files.includes("deleted.txt")||files.includes("old.txt")||
+							!files.includes("README.md")) throw new Error("BAD INVENTORY");
+						return [];
+					}},
+					{name:"Excluded",description:"fixture",scope:"repository",exclude:["^deleted"],
+					handler:async({entries})=>{
+						if(entries.some(e=>e.path==="deleted.txt")) throw new Error("BAD EXCLUSION");
+						return [];
+					}}
+				]};`,
+				);
+				const result = await cli(command, false);
+				expect(result.code, result.output).toBe(0);
+			});
+
+			it.each([
+				"check",
+				"check-native",
+			] as const)("captures statuses before fixes while refreshing inventory: %s", async (command) => {
 				await writeFile(join(testDir, "source.txt"), "source");
 				await writeFile(
 					configPath,
@@ -1405,6 +1449,11 @@ describe("Native canonical sidecar", () => {
 					export default {changes:{mode:"local"},policies:[
 						{name:"Create",description:"fixture",scope:"repository",handler:async({root})=>{
 							await writeFile(root+"/docs.txt","docs");return [];
+						}},
+						{name:"Inspect",description:"fixture",scope:"repository",handler:async({files,entries})=>{
+							if(!files.includes("docs.txt")||!entries.some(e=>e.path==="docs.txt"))
+								throw new Error("BAD REFRESH");
+							return [];
 						}},
 						makePolicy(RequireCompanionChanges,{config:{trigger:/^source/,companion:/^docs/}})
 					]};`,

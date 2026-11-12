@@ -128,7 +128,7 @@ const resolver: PolicyResolver = async ({ findings }) => {
 
 Repository policies can't have a resolver; they fix inline in the handler.
 
-A repository definition can declare `requiresChanges: true` to request Git change context. Its handler receives `changes` alongside `files`. The CLI captures changes before handlers/fixes; programmatic callers must supply a snapshot. See [change-aware repository policies](/usage/programmatic-api/#change-aware-repository-policies) for the public types and collection example.
+A repository definition can declare `requiresChanges: true` to request Git status annotation. Its handler receives the full inventory as `entries`, with `path`, `status`, and `previousPath` for renames. The string-path `files` view remains available. The CLI captures statuses before handlers/fixes; programmatic callers pass annotated inventory. See [change-aware repository policies](/usage/programmatic-api/#change-aware-repository-policies) for an example.
 
 ## Repository policies
 
