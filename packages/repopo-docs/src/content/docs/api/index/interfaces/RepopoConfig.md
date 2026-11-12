@@ -5,7 +5,7 @@ prev: false
 title: "RepopoConfig"
 ---
 
-Defined in: [config.ts:6](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/config.ts#L6)
+Defined in: [config.ts:5](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/config.ts#L5)
 
 Repository-wide policy configuration.
 
@@ -13,11 +13,19 @@ Repository-wide policy configuration.
 
 ### changes?
 
-> `optional` **changes?**: [`RepositoryChangeOptions`](/api/index/interfaces/repositorychangeoptions/)
+> `optional` **changes?**: `object`
 
-Defined in: [config.ts:11](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/config.ts#L11)
+Defined in: [config.ts:10](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/config.ts#L10)
 
-Options used when a CLI check requests a change snapshot.
+Git comparison defaults; CLI base overrides CI, which overrides this base.
+
+#### base?
+
+> `optional` **base?**: `string`
+
+#### mode?
+
+> `optional` **mode?**: `"pr"` \| `"local"` \| `"staged"`
 
 ***
 
@@ -25,7 +33,7 @@ Options used when a CLI check requests a change snapshot.
 
 > `optional` **excludeFiles?**: (`string` \| [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp))[]
 
-Defined in: [config.ts:9](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/config.ts#L9)
+Defined in: [config.ts:8](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/config.ts#L8)
 
 Repo-relative regex exclusions. Strings are case-insensitive.
 
@@ -35,4 +43,4 @@ Repo-relative regex exclusions. Strings are case-insensitive.
 
 > `optional` **policies?**: [`ConfiguredPolicy`](/api/index/type-aliases/configuredpolicy/)[]
 
-Defined in: [config.ts:7](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/config.ts#L7)
+Defined in: [config.ts:6](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/config.ts#L6)

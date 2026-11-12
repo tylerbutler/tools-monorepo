@@ -34,7 +34,7 @@ Configure change collection independently of file selection:
 export default {
 	changes: {
 		mode: "pr",
-		defaultBranch: "main",
+		base: "main",
 	},
 	policies: [
 		// Add a change-aware repository policy here.
@@ -42,7 +42,7 @@ export default {
 } satisfies RepopoConfig;
 ```
 
-`changes.mode` accepts `pr`, `local`, or `staged`. An optional `changes.base` overrides CI target information; `defaultBranch` supplies the fallback target. CLI change flags override their matching configuration fields. See [change modes and base resolution](/usage/cli-usage/#check-rules-about-related-changes).
+`changes.mode` accepts `pr`, `local`, or `staged`. `changes.base` supplies the PR target when CI does not specify one; local and staged modes ignore this default. `--change-base` overrides both CI and configuration. See [change modes and base resolution](/usage/cli-usage/#check-rules-about-related-changes).
 
 Global and per-policy exclusions filter selected files and repository inventory, including annotated and deleted entries. Use explicit trigger and companion regexes to scope a change-aware rule.
 

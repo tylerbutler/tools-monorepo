@@ -7,7 +7,7 @@ title: "RequireCompanionChanges"
 
 > `const` **RequireCompanionChanges**: `object`
 
-Defined in: [policies/RequireCompanionChanges.ts:20](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/RequireCompanionChanges.ts#L20)
+Defined in: [policies/RequireCompanionChanges.ts:14](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/RequireCompanionChanges.ts#L14)
 
 Require a related update when trigger paths change.
 
@@ -25,7 +25,7 @@ Require a related update when trigger paths change.
 
 ##### \_\_namedParameters
 
-[`RepositoryPolicyArgs`](/api/index/interfaces/repositorypolicyargs/)\<[`RequireCompanionChangesConfig`](/api/index/interfaces/requirecompanionchangesconfig/)\>
+[`RepositoryPolicyArgs`](/api/index/interfaces/repositorypolicyargs/)\<\{ `companion`: `string` \| [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp); `trigger`: `string` \| [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp); \}\>
 
 #### Returns
 

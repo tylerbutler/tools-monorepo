@@ -68,7 +68,7 @@ import { makePolicy, type RepopoConfig } from "repopo/api";
 import { RequireCompanionChanges } from "repopo/policies";
 
 export default {
-	changes: { defaultBranch: "main" },
+	changes: { base: "main" },
 	policies: [
 		makePolicy(RequireCompanionChanges, {
 			instanceId: "source-needs-docs",

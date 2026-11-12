@@ -6,6 +6,7 @@
  */
 import { Console } from "node:console";
 import { stat } from "node:fs/promises";
+import { env } from "node:process";
 import { createInterface } from "node:readline";
 import { types } from "node:util";
 import { TypeScriptLoader } from "@tylerbu/lilconfig-loader-ts";
@@ -255,10 +256,16 @@ async function beginRun(params) {
 		throw new Error("Load configuration before running policies.");
 	session?.cache?.clear();
 	session = undefined;
+	const mode = params.changeMode ?? registration.changes?.mode;
 	const options = {
-		...registration.changes,
-		...(params.changeMode == null ? {} : { mode: params.changeMode }),
-		...(params.changeBase == null ? {} : { base: params.changeBase }),
+		mode,
+		base:
+			params.changeBase ??
+			((mode ?? "pr") === "pr"
+				? env.GITHUB_BASE_REF ||
+					env.CI_MERGE_REQUEST_TARGET_BRANCH_NAME ||
+					registration.changes?.base
+				: undefined),
 	};
 	validateChangeOptions(options);
 	const inventory =

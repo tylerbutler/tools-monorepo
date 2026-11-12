@@ -311,12 +311,6 @@ Re-exports [PublicApiDocumentedConfig](/api/index/interfaces/publicapidocumented
 
 ***
 
-### RequireCompanionChangesConfig
-
-Re-exports [RequireCompanionChangesConfig](/api/index/interfaces/requirecompanionchangesconfig/)
-
-***
-
 ### RequiredGitignorePatternsSettings
 
 Re-exports [RequiredGitignorePatternsSettings](/api/index/interfaces/requiredgitignorepatternssettings/)

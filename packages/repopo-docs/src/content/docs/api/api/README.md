@@ -57,12 +57,6 @@ Re-exports [CargoTomlSortedConfig](/api/index/interfaces/cargotomlsortedconfig/)
 
 ***
 
-### ChangeMode
-
-Re-exports [ChangeMode](/api/index/type-aliases/changemode/)
-
-***
-
 ### collectRepositoryInventory
 
 Re-exports [collectRepositoryInventory](/api/index/functions/collectrepositoryinventory/)
@@ -501,12 +495,6 @@ Re-exports [RepopoConfig](/api/index/interfaces/repopoconfig/)
 
 ***
 
-### RepositoryChangeOptions
-
-Re-exports [RepositoryChangeOptions](/api/index/interfaces/repositorychangeoptions/)
-
-***
-
 ### RepositoryFile
 
 Re-exports [RepositoryFile](/api/index/type-aliases/repositoryfile/)
@@ -534,12 +522,6 @@ Re-exports [RepositoryPolicyDefinition](/api/index/interfaces/repositorypolicyde
 ### RepositoryPolicyHandler
 
 Re-exports [RepositoryPolicyHandler](/api/index/type-aliases/repositorypolicyhandler/)
-
-***
-
-### RequireCompanionChangesConfig
-
-Re-exports [RequireCompanionChangesConfig](/api/index/interfaces/requirecompanionchangesconfig/)
 
 ***
 

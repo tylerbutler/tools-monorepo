@@ -10,10 +10,8 @@ import { tmpdir } from "node:os";
 import { join } from "pathe";
 import { simpleGit } from "simple-git";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import {
-	collectRepositoryInventory,
-	type RepositoryChangeOptions,
-} from "../src/repositoryChanges.js";
+import type { RepopoConfig } from "../src/config.js";
+import { collectRepositoryInventory } from "../src/repositoryChanges.js";
 
 describe("annotated repository inventory", () => {
 	let root: string;
@@ -37,7 +35,7 @@ describe("annotated repository inventory", () => {
 		await git.commit("fixture");
 	}
 	async function changes(
-		options: RepositoryChangeOptions = {},
+		options: NonNullable<RepopoConfig["changes"]> = {},
 		directory = root,
 	) {
 		return (await collectRepositoryInventory(directory, options))
@@ -145,35 +143,43 @@ describe("annotated repository inventory", () => {
 		]);
 	});
 
-	it("resolves explicit base before CI and CI before configured default", async () => {
+	it("resolves explicit base before CI and uses CI when no base is supplied", async () => {
 		await commit();
 		vi.stubEnv("GITHUB_BASE_REF", "missing");
-		await expect(changes({ defaultBranch: "main" })).rejects.toThrow("missing");
+		await expect(changes()).rejects.toThrow("missing");
 		expect(await changes({ base: "main" })).toEqual([]);
 		vi.stubEnv("GITHUB_BASE_REF", "");
 		vi.stubEnv("CI_MERGE_REQUEST_TARGET_BRANCH_NAME", "main");
-		expect(await changes({ defaultBranch: "missing" })).toEqual([]);
+		expect(await changes()).toEqual([]);
 	});
 
-	it("uses configured default or default remote HEAD without assuming main", async () => {
+	it("resolves local/origin refs and explicit other-remote refs without guessing a target", async () => {
 		await commit();
-		expect(await changes({ defaultBranch: "main" })).toEqual([]);
-		await git.addRemote("origin", root);
 		const head = await git.revparse("HEAD");
+		await git.checkoutLocalBranch("feature");
+		await commit("feature.txt");
 		await git.raw(["update-ref", "refs/remotes/origin/trunk", head.trim()]);
+		await git.raw(["update-ref", "refs/remotes/upstream/trunk", head.trim()]);
 		await git.raw([
 			"symbolic-ref",
 			"refs/remotes/origin/HEAD",
 			"refs/remotes/origin/trunk",
 		]);
-		expect(await changes()).toEqual([]);
-		expect(await changes({ base: "trunk" })).toEqual([]);
+		await expect(changes()).rejects.toThrow("Cannot determine PR target");
+		for (const base of ["main", "trunk", "refs/remotes/upstream/trunk"]) {
+			expect(await changes({ base })).toEqual([
+				{ status: "added", path: "feature.txt" },
+			]);
+		}
 	});
 
 	it("fails on unknown targets, absent target defaults and unrelated history", async () => {
 		await commit();
 		await expect(changes()).rejects.toThrow("Cannot determine PR target");
 		await expect(changes({ base: "missing" })).rejects.toThrow("fetch");
+		await expect(changes({ base: "--exit-code" })).rejects.toThrow(
+			"Cannot resolve PR base",
+		);
 		await git.checkout(["--orphan", "other"]);
 		await git.commit("unrelated");
 		await expect(changes({ base: "main" })).rejects.toThrow("merge base");
@@ -187,6 +193,13 @@ describe("annotated repository inventory", () => {
 			{ status: "added", path: "staged.txt" },
 		]);
 		expect(await changes({ mode: "local" })).toHaveLength(2);
+		await rm(join(root, "staged.txt"));
+		await writeFile(join(root, ".gitignore"), "ignored\n");
+		await writeFile(join(root, "ignored"), "ignored");
+		expect(await changes({ mode: "local" })).toEqual([
+			{ status: "added", path: ".gitignore" },
+			{ status: "added", path: "untracked.txt" },
+		]);
 		await expect(changes()).rejects.toThrow("HEAD commit");
 	});
 

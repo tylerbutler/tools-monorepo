@@ -1,11 +1,11 @@
 import { env } from "node:process";
 import { simpleGit } from "simple-git";
+import type { RepopoConfig } from "./config.js";
 import { readRepositoryFiles, splitGitPaths } from "./repositoryFiles.js";
 
 type Git = ReturnType<typeof simpleGit>;
 
-/** Git states supported by change-aware policies. @public */
-export type ChangeMode = "pr" | "local" | "staged";
+type ChangeOptions = NonNullable<RepopoConfig["changes"]>;
 
 /** Repo-relative Git paths; renames retain both endpoints. @public */
 export type RepositoryFile = (
@@ -28,15 +28,8 @@ export type RepositoryFile = (
 	readonly exists?: boolean | undefined;
 };
 
-/** PR comparison defaults; explicit base takes precedence over CI targets. @public */
-export interface RepositoryChangeOptions {
-	mode?: ChangeMode | undefined;
-	base?: string | undefined;
-	defaultBranch?: string | undefined;
-}
-
 /** Validate options independently of whether a policy requests changes. @internal */
-export function validateChangeOptions(options: RepositoryChangeOptions): void {
+export function validateChangeOptions(options: ChangeOptions): void {
 	if (
 		options.mode !== undefined &&
 		!["pr", "local", "staged"].includes(options.mode)
@@ -46,13 +39,11 @@ export function validateChangeOptions(options: RepositoryChangeOptions): void {
 	if (options.base !== undefined && (options.mode ?? "pr") !== "pr") {
 		throw new TypeError("A change base is only valid in pr mode.");
 	}
-	for (const value of [options.base, options.defaultBranch]) {
-		if (
-			value !== undefined &&
-			(typeof value !== "string" || value.trim() === "")
-		) {
-			throw new TypeError("Change branch references must be nonempty strings.");
-		}
+	if (
+		options.base !== undefined &&
+		(typeof options.base !== "string" || options.base.trim() === "")
+	) {
+		throw new TypeError("Change branch references must be nonempty strings.");
 	}
 }
 
@@ -145,7 +136,7 @@ export function annotateInventory(
 /** Collect the full inventory with Git statuses; does not fetch or require an actual pull request. @public */
 export async function collectRepositoryInventory(
 	root: string,
-	options: RepositoryChangeOptions = {},
+	options: NonNullable<RepopoConfig["changes"]> = {},
 ): Promise<readonly RepositoryFile[]> {
 	validateChangeOptions(options);
 	const mode = options.mode ?? "pr";
@@ -177,32 +168,14 @@ export async function collectRepositoryInventory(
 
 async function resolveTarget(
 	git: Git,
-	options: RepositoryChangeOptions,
+	options: ChangeOptions,
 ): Promise<string> {
-	const remotes = await git.getRemotes();
-	const remote = remotes.some(
-		(entry: { name: string }) => entry.name === "origin",
-	)
-		? "origin"
-		: remotes.length === 1
-			? remotes[0]?.name
-			: undefined;
-	let target =
+	const target =
 		options.base ??
-		(env.GITHUB_BASE_REF ||
-			env.CI_MERGE_REQUEST_TARGET_BRANCH_NAME ||
-			options.defaultBranch);
-	if (!target && remote) {
-		const remoteHead = await git.raw([
-			"for-each-ref",
-			"--format=%(symref)",
-			`refs/remotes/${remote}/HEAD`,
-		]);
-		target = remoteHead.trim() || undefined;
-	}
+		(env.GITHUB_BASE_REF || env.CI_MERGE_REQUEST_TARGET_BRANCH_NAME);
 	if (!target) {
 		throw new Error(
-			"Cannot determine PR target. Set changes.defaultBranch or --change-base, or configure the default remote HEAD.",
+			"Cannot determine PR target. Set changes.base or --change-base.",
 		);
 	}
 	// Enumerate refs rather than masking errors from failed Git subprocesses.
@@ -212,34 +185,49 @@ async function resolveTarget(
 	if (target.startsWith("refs/")) {
 		return target;
 	}
-	const candidates = [
-		`refs/heads/${target}`,
-		...(remote ? [`refs/remotes/${remote}/${target}`] : []),
-	];
+	const candidates = [`refs/heads/${target}`, `refs/remotes/origin/${target}`];
 	return candidates.find((candidate) => refs.includes(candidate)) ?? target;
 }
 
 async function collectPrChanges(
 	git: Git,
 	head: string,
-	options: RepositoryChangeOptions,
+	options: ChangeOptions,
 ): Promise<RepositoryFile[]> {
 	const target = await resolveTarget(git, options);
-	let base: string;
-	let mergeBase: string;
+	let output: string;
 	try {
-		base = (
-			await git.revparse(["--verify", "--end-of-options", `${target}^{commit}`])
-		).trim();
-		mergeBase = (await git.raw(["merge-base", base, head])).trim();
-		if (!mergeBase) {
-			throw new Error("No common ancestor is available.");
-		}
+		output = await git.raw([
+			"diff",
+			"--merge-base",
+			"--name-status",
+			"-z",
+			"--find-renames",
+			"--no-ext-diff",
+			"--end-of-options",
+			target,
+			head,
+			"--",
+		]);
 	} catch (cause) {
 		throw new Error(
 			`Cannot resolve PR base '${target}' and its merge base with HEAD. Set --change-base or fetch the missing branch/history.`,
 			{ cause },
 		);
+	}
+	return parseChanges(output);
+}
+
+async function collectWorkingChanges(
+	git: Git,
+	mode: "local" | "staged",
+	head: string | undefined,
+): Promise<RepositoryFile[]> {
+	if (!head && mode === "local") {
+		return (await readRepositoryFiles(git)).map((path) => ({
+			status: "added",
+			path,
+		}));
 	}
 	const entries = parseChanges(
 		await git.raw([
@@ -248,53 +236,11 @@ async function collectPrChanges(
 			"-z",
 			"--find-renames",
 			"--no-ext-diff",
-			mergeBase,
-			head,
+			...(mode === "staged" ? ["--cached"] : []),
+			...(head ? [head] : []),
 			"--",
 		]),
 	);
-	return entries;
-}
-
-async function collectWorkingChanges(
-	git: Git,
-	mode: "local" | "staged",
-	head: string | undefined,
-): Promise<RepositoryFile[]> {
-	let entries: RepositoryFile[];
-	if (mode === "staged") {
-		entries = parseChanges(
-			await git.raw([
-				"diff",
-				"--cached",
-				"--name-status",
-				"-z",
-				"--find-renames",
-				"--no-ext-diff",
-				...(head ? [head] : []),
-				"--",
-			]),
-		);
-	} else if (head) {
-		entries = parseChanges(
-			await git.raw([
-				"diff",
-				"--name-status",
-				"-z",
-				"--find-renames",
-				"--no-ext-diff",
-				head,
-				"--",
-			]),
-		);
-	} else {
-		const deleted = new Set(
-			splitGitPaths(await git.raw(["ls-files", "--deleted", "-z"])),
-		);
-		entries = splitGitPaths(await git.raw(["ls-files", "--cached", "-z"]))
-			.filter((path) => !deleted.has(path))
-			.map((path) => ({ status: "added", path }));
-	}
 	if (mode === "local") {
 		for (const path of splitGitPaths(
 			await git.raw(["ls-files", "--others", "--exclude-standard", "-z"]),

@@ -97,7 +97,7 @@ const results = await runPolicies({
 });
 ```
 
-The collector uses the same [modes and base resolution](/usage/cli-usage/#check-rules-about-related-changes) as the CLI. It returns `RepositoryFile[]`: unchanged files plus `added`, `modified`, `deleted`, `type-changed`, and `renamed` entries. Each entry has `path` and `status`; renames also have `previousPath`. Optional `exists` records working-tree presence when status alone is not enough: for example, a committed addition can be absent from the working tree after an unstaged deletion.
+The collector accepts `{ mode?, base? }`; an explicit `base` overrides CI target information. The CLI uses [CI before its configured base](/usage/cli-usage/#check-rules-about-related-changes). The collector returns `RepositoryFile[]`: unchanged files plus `added`, `modified`, `deleted`, `type-changed`, and `renamed` entries. Each entry has `path` and `status`; renames also have `previousPath`. Optional `exists` records working-tree presence when status alone is not enough: for example, a committed addition can be absent from the working tree after an unstaged deletion.
 
 Repository handlers receive this list as `entries`. Existing handlers can keep using `files`, the derived string-path view of files present in the working tree. Legacy string inventories remain supported and produce `unchanged` entries. File selection stays separate. Absent inventory entries are not used as the default selection; an explicit `files` selection retains its existing behavior.
 

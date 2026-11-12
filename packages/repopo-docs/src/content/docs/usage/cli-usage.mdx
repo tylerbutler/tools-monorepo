@@ -51,12 +51,11 @@ repopo check-native --change-mode local
 
 The default mode is `pr`. You do not need a GitHub pull request. Repopo determines the PR target in this order:
 
-1. `--change-base`, or `changes.base` in the configuration.
+1. `--change-base`.
 2. `GITHUB_BASE_REF`, then `CI_MERGE_REQUEST_TARGET_BRANCH_NAME`, when nonempty.
-3. `changes.defaultBranch` in the configuration.
-4. The default remote's symbolic HEAD.
+3. `changes.base` in the configuration.
 
-The default remote is `origin`, or the sole configured remote. For short branch names, Repopo uses a local branch first, then the default remote's tracking branch. Use a full ref such as `refs/remotes/origin/main` to choose a specific ref. Repopo does not fetch branches; missing target refs or merge-base history stop the check with guidance. Set an explicit base or fetch the missing history.
+For short branch names, Repopo uses a local branch first, then `origin`'s tracking branch. Use a full ref such as `refs/remotes/upstream/main` for another remote. Outside CI, configure `changes.base` or supply `--change-base`; Repopo does not infer a target from remote HEAD or fetch branches. Missing target refs or merge-base history stop the check with guidance.
 
 Change modes provide **path metadata**. They do not select file-policy paths, change repository inventory, or make existing content-reading policies read index/commit blobs. Those policies still read working-tree files. Combine `--stdin` with change options when you also want a restricted file-policy selection.
 

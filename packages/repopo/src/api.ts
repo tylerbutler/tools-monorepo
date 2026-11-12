@@ -59,7 +59,6 @@ export type {
 } from "./policies/PackageScripts.js";
 export type { PackageTestScriptsConfig } from "./policies/PackageTestScripts.js";
 export type { PublicApiDocumentedConfig } from "./policies/PublicApiDocumented.js";
-export type { RequireCompanionChangesConfig } from "./policies/RequireCompanionChanges.js";
 export type { RequiredGitignorePatternsSettings } from "./policies/RequiredGitignorePatterns.js";
 export type {
 	RequiredScriptEntry,
@@ -118,9 +117,7 @@ export {
 	type PackageJsonHandler,
 } from "./policyDefiners/definePackagePolicy.js";
 export {
-	type ChangeMode,
 	collectRepositoryInventory,
-	type RepositoryChangeOptions,
 	type RepositoryFile,
 } from "./repositoryChanges.js";
 export {

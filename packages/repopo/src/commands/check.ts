@@ -1,4 +1,4 @@
-import process from "node:process";
+import process, { env } from "node:process";
 import { Flags } from "@oclif/core";
 import { BaseRepopoCommand } from "../baseCommand.js";
 import { DEFAULT_CONCURRENCY, validateConcurrency } from "../concurrency.js";
@@ -77,14 +77,16 @@ export class CheckPolicy<
 		}
 		const context = await this.getContext();
 		const files = await this.collectFilePaths(context.gitRoot);
+		const mode = this.flags["change-mode"] ?? this.commandConfig?.changes?.mode;
 		const changeOptions = {
-			...this.commandConfig?.changes,
-			...(this.flags["change-mode"] === undefined
-				? {}
-				: { mode: this.flags["change-mode"] }),
-			...(this.flags["change-base"] === undefined
-				? {}
-				: { base: this.flags["change-base"] }),
+			mode,
+			base:
+				this.flags["change-base"] ??
+				((mode ?? "pr") === "pr"
+					? env.GITHUB_BASE_REF ||
+						env.CI_MERGE_REQUEST_TARGET_BRANCH_NAME ||
+						this.commandConfig?.changes?.base
+					: undefined),
 		};
 		validateChangeOptions(changeOptions);
 		const inventory =

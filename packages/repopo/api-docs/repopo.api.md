@@ -47,10 +47,7 @@ export interface CargoTomlSortedConfig {
 }
 
 // @public
-export type ChangeMode = "pr" | "local" | "staged";
-
-// @public
-export function collectRepositoryInventory(root: string, options?: RepositoryChangeOptions): Promise<readonly RepositoryFile[]>;
+export function collectRepositoryInventory(root: string, options?: NonNullable<RepopoConfig["changes"]>): Promise<readonly RepositoryFile[]>;
 
 // @public
 export type ConditionalScriptEntry = string | Record<string, string>;
@@ -587,20 +584,13 @@ export interface PublicApiDocumentedConfig {
 
 // @public
 export interface RepopoConfig {
-    changes?: RepositoryChangeOptions | undefined;
+    changes?: {
+        mode?: "pr" | "local" | "staged" | undefined;
+        base?: string | undefined;
+    } | undefined;
     excludeFiles?: (string | RegExp)[];
     // (undocumented)
     policies?: ConfiguredPolicy[];
-}
-
-// @public
-export interface RepositoryChangeOptions {
-    // (undocumented)
-    base?: string | undefined;
-    // (undocumented)
-    defaultBranch?: string | undefined;
-    // (undocumented)
-    mode?: ChangeMode | undefined;
 }
 
 // @public
@@ -646,14 +636,6 @@ export interface RepositoryPolicyDefinition<C = void> {
 
 // @public
 export type RepositoryPolicyHandler<C = void> = RepositoryPolicyDefinition<C>["handler"];
-
-// @public
-export interface RequireCompanionChangesConfig {
-    // (undocumented)
-    companion: string | RegExp;
-    // (undocumented)
-    trigger: string | RegExp;
-}
 
 // @public
 export interface RequiredGitignorePatternsSettings {

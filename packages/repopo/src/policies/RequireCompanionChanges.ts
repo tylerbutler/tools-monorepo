@@ -1,12 +1,6 @@
 import { exclusionRegex, matchesPath } from "../context.js";
 import type { RepositoryPolicyDefinition } from "../policy.js";
 
-/** Explicit repo-relative regexes for one change implication. @public */
-export interface RequireCompanionChangesConfig {
-	trigger: string | RegExp;
-	companion: string | RegExp;
-}
-
 function compilePattern(value: unknown): RegExp {
 	if (typeof value !== "string" && !(value instanceof RegExp)) {
 		throw new TypeError(
@@ -61,4 +55,7 @@ export const RequireCompanionChanges = {
 			},
 		];
 	},
-} satisfies RepositoryPolicyDefinition<RequireCompanionChangesConfig>;
+} satisfies RepositoryPolicyDefinition<{
+	trigger: string | RegExp;
+	companion: string | RegExp;
+}>;

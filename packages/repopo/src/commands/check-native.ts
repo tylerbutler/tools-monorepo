@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import { Command, Flags } from "@oclif/core";
 import { dirname, resolve } from "pathe";
 import { DEFAULT_CONCURRENCY, validateConcurrency } from "../concurrency.js";
+import { CheckPolicy } from "./check.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -23,14 +24,8 @@ export class CheckNative extends Command {
 		"With --fix, repository policies can modify files outside the stdin selection.";
 
 	public static override readonly flags = {
-		"change-mode": Flags.option({
-			description:
-				"Change context: pr (default), local, or staged. Does not select file-policy paths.",
-			options: ["pr", "local", "staged"] as const,
-		})(),
-		"change-base": Flags.string({
-			description: "Override the PR change context base ref.",
-		}),
+		"change-mode": CheckPolicy.flags["change-mode"],
+		"change-base": CheckPolicy.flags["change-base"],
 		concurrency: Flags.integer({
 			description:
 				"Maximum concurrent files in read-only checks. Fixes remain sequential.",

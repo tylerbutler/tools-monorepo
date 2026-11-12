@@ -1364,7 +1364,7 @@ describe("Native canonical sidecar", () => {
 					configPath,
 					`import {makePolicy} from ${JSON.stringify(factoryUrl)};
 					import {RequireCompanionChanges} from ${JSON.stringify(policiesUrl)};
-					export default {changes:{defaultBranch:"comparison"}, policies:[
+					export default {changes:{base:"comparison"}, policies:[
 						makePolicy(RequireCompanionChanges,{config:{trigger:/^source/,companion:/^docs/}})
 					]};`,
 				);
@@ -1390,6 +1390,22 @@ describe("Native canonical sidecar", () => {
 				expect(
 					(await cli(command, false, "", ["--change-base", "comparison"])).code,
 				).toBe(0);
+				await writeFile(
+					configPath,
+					`process.env.GITHUB_BASE_REF="missing";
+					export default {changes:{base:"comparison"},policies:[]};`,
+				);
+				const ci = await cli(command, false, "", ["--change-mode", "pr"]);
+				expect(ci.code).toBe(1);
+				expect(ci.output).toContain("missing");
+				expect(
+					(await cli(command, false, "", ["--change-base", "comparison"])).code,
+				).toBe(0);
+				for (const mode of ["local", "staged"]) {
+					expect(
+						(await cli(command, false, "", ["--change-mode", mode])).code,
+					).toBe(0);
+				}
 			});
 
 			it.each([
