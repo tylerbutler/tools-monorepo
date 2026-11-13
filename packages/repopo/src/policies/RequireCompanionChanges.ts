@@ -14,8 +14,7 @@ function compilePattern(value: unknown): RegExp {
 export const RequireCompanionChanges = {
 	name: "RequireCompanionChanges",
 	description: "Requires a related file change when trigger paths change.",
-	scope: "repository",
-	requiresChanges: true,
+	scope: "changes",
 	requiresConfig: true,
 	handler: async ({ entries, config }) => {
 		if (!config) {

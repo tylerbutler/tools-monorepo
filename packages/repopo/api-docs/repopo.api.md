@@ -460,7 +460,7 @@ export type PolicyExecutionError = {
     file: string;
     files?: never;
 } | {
-    scope: "repository";
+    scope: "repository" | "changes";
     files: readonly string[];
     file?: never;
 });
@@ -520,7 +520,7 @@ export type PolicyRunFinding = (Omit<PolicyFinding, "files"> & {
     policy: string;
     policyId: string;
 }) | (PolicyFinding & {
-    scope: "repository";
+    scope: "repository" | "changes";
     file?: never;
     policy: string;
     policyId: string;
@@ -573,7 +573,7 @@ export type PolicySkippedWork = {
     scope: "file";
     file: string;
 } | {
-    scope: "repository";
+    scope: "repository" | "changes";
     file?: never;
 });
 
@@ -623,15 +623,14 @@ export interface RepositoryPolicyDefinition<C = void> {
     description: string;
     // (undocumented)
     handler(args: RepositoryPolicyArgs<C>): Promise<PolicyResult> | Operation<PolicyResult>;
+    match?: RegExp | undefined;
     // (undocumented)
     name: PolicyName;
-    requiresChanges?: boolean | undefined;
     // (undocumented)
     requiresConfig?: boolean | undefined;
     // (undocumented)
     resolver?: never;
-    // (undocumented)
-    scope: "repository";
+    scope: "repository" | "changes";
 }
 
 // @public

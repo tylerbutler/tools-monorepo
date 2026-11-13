@@ -5,7 +5,7 @@ prev: false
 title: "PolicyExecutionError"
 ---
 
-> **PolicyExecutionError** = `object` & (\{ `file`: `string`; `files?`: `never`; `scope`: `"file"`; \} \| \{ `file?`: `never`; `files`: readonly `string`[]; `scope`: `"repository"`; \})
+> **PolicyExecutionError** = `object` & (\{ `file`: `string`; `files?`: `never`; `scope`: `"file"`; \} \| \{ `file?`: `never`; `files`: readonly `string`[]; `scope`: `"repository"` \| `"changes"`; \})
 
 Defined in: [runner.ts:42](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L42)
 

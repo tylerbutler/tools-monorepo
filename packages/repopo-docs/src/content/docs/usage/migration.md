@@ -124,7 +124,7 @@ per-field defaults still apply to explicitly supplied configuration.
 
 ## Findings, not booleans or result wrappers
 
-Both handler scopes return `Promise<PolicyResult>` or an Effection
+All handler scopes return `Promise<PolicyResult>` or an Effection
 `Operation<PolicyResult>`, where `PolicyResult = readonly PolicyFinding[]`.
 Keep async functions or generator handlers; synchronous result functions are
 not supported.

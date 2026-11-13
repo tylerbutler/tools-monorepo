@@ -37,7 +37,7 @@ export default {
 		base: "main",
 	},
 	policies: [
-		// Add a change-aware repository policy here.
+		// Add a policy with scope: "changes" here.
 	],
 } satisfies RepopoConfig;
 ```
@@ -45,6 +45,8 @@ export default {
 `changes.mode` accepts `pr`, `local`, or `staged`. `changes.base` supplies the PR target when CI does not specify one; local and staged modes ignore this default. `--change-base` overrides both CI and configuration. See [change modes and base resolution](/usage/cli-usage/#check-rules-about-related-changes).
 
 Global and per-policy exclusions filter selected files and repository inventory, including annotated and deleted entries. Use explicit trigger and companion regexes to scope a change-aware rule.
+
+Repository and change definitions can also set one `match` regex to filter their inventory. It matches either rename endpoint and keeps the full record. This does not change the inventory seen by other policies or prevent a handler from running with no matching entries.
 
 ## Choosing policies
 

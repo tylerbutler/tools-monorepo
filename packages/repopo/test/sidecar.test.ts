@@ -176,6 +176,7 @@ describe("Native canonical sidecar", () => {
 		`[0,1].map(() => ({name:"Duplicate",description:"duplicate",match:/./,handler:async()=>[]}))`,
 		`["a","b"].map(name => ({name,instanceId:"same",description:"collision",match:/./,handler:async()=>[]}))`,
 		`[{name:"Repo",description:"resolver",scope:"repository",handler:async()=>[],resolver:async()=>[]}]`,
+		`[{name:"Changes",description:"resolver",scope:"changes",handler:async()=>[],resolver:async()=>[]}]`,
 		`[makePolicy({name:"Old",description:"alias",match:/./,handler:async()=>[]}, {excludeFiles:[]})]`,
 		`[{name:"Old",description:"alias",match:/./,excludeFiles:[],handler:async()=>[]}]`,
 	])("rejects invalid registration before any work: %s", async (policies) => {
@@ -1393,8 +1394,11 @@ describe("Native canonical sidecar", () => {
 				await writeFile(
 					configPath,
 					`process.env.GITHUB_BASE_REF="missing";
-					export default {changes:{base:"comparison"},policies:[]};`,
+					export default {changes:{base:"comparison"},policies:[
+						{name:"Ordinary",description:"fixture",scope:"repository",handler:async()=>[]}
+					]};`,
 				);
+				expect((await cli(command, false)).code).toBe(0);
 				const ci = await cli(command, false, "", ["--change-mode", "pr"]);
 				expect(ci.code).toBe(1);
 				expect(ci.output).toContain("missing");
@@ -1431,7 +1435,7 @@ describe("Native canonical sidecar", () => {
 				await writeFile(
 					configPath,
 					`export default {changes:{mode:"local"},policies:[
-					{name:"Inventory",description:"fixture",scope:"repository",requiresChanges:true,
+					{name:"Inventory",description:"fixture",scope:"changes",
 					handler:async({files,entries})=>{
 						const has=(path,status)=>entries.some(e=>e.path===path&&e.status===status);
 						if(!has("README.md","unchanged")||!has("source.txt","modified")||
@@ -1439,6 +1443,20 @@ describe("Native canonical sidecar", () => {
 							!entries.some(e=>e.path==="renamed.txt"&&e.previousPath==="old.txt")||
 							files.includes("deleted.txt")||files.includes("old.txt")||
 							!files.includes("README.md")) throw new Error("BAD INVENTORY");
+						return [];
+					}},
+					{name:"Matched",description:"fixture",scope:"changes",match:/^(README|source|deleted|old)/g,
+					handler:async({files,entries})=>{
+						if(entries.length!==4||!entries.some(e=>e.status==="deleted")||
+							!entries.some(e=>e.path==="renamed.txt"&&e.previousPath==="old.txt")||
+							files.length!==3||!files.includes("renamed.txt"))
+							throw new Error("BAD MATCH");
+						return [];
+					}},
+					{name:"Empty",description:"fixture",scope:"repository",match:/^absent/,
+					handler:async({files,entries})=>{
+						if(files.length||entries.length) throw new Error("BAD EMPTY MATCH");
+						console.log("EMPTY MATCH RAN");
 						return [];
 					}},
 					{name:"Excluded",description:"fixture",scope:"repository",exclude:["^deleted"],
@@ -1450,6 +1468,7 @@ describe("Native canonical sidecar", () => {
 				);
 				const result = await cli(command, false);
 				expect(result.code, result.output).toBe(0);
+				expect(result.output).toContain("EMPTY MATCH RAN");
 			});
 
 			it.each([
@@ -1487,14 +1506,11 @@ describe("Native canonical sidecar", () => {
 				await writeFile(
 					configPath,
 					`export default {policies:[{
-					name:"MustNotRun",description:"fixture",scope:"repository",requiresChanges:true,
+					name:"MustNotRun",description:"fixture",scope:"changes",
 					handler:async()=>{throw new Error("HANDLER RAN")}
 				}]};`,
 				);
-				const result = await cli(command, true, "", [
-					"--change-base",
-					"missing",
-				]);
+				const result = await cli(command, true);
 				expect(result.code).toBe(1);
 				expect(result.output).toContain("HEAD commit");
 				expect(result.output).not.toContain("HANDLER RAN");

@@ -5,7 +5,7 @@ prev: false
 title: "PolicyRunner"
 ---
 
-Defined in: [runner.ts:88](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L88)
+Defined in: [runner.ts:91](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L91)
 
 Effection runner; cancellation unwinds active generator handlers and resolvers.
 
@@ -15,7 +15,7 @@ Effection runner; cancellation unwinds active generator handlers and resolvers.
 
 > **new PolicyRunner**(`options`): `PolicyRunner`
 
-Defined in: [runner.ts:94](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L94)
+Defined in: [runner.ts:97](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L97)
 
 #### Parameters
 
@@ -33,7 +33,7 @@ Defined in: [runner.ts:94](https://github.com/tylerbutler/tools-monorepo/blob/ma
 
 > **run**(): `Operation`\<[`PolicyRunResults`](/api/index/interfaces/policyrunresults/)\>
 
-Defined in: [runner.ts:131](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L131)
+Defined in: [runner.ts:139](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L139)
 
 #### Returns
 

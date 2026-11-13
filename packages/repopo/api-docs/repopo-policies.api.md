@@ -492,8 +492,7 @@ export interface PublicApiDocumentedConfig {
 export const RequireCompanionChanges: {
     name: string;
     description: string;
-    scope: "repository";
-    requiresChanges: true;
+    scope: "changes";
     requiresConfig: true;
     handler: (input: RepositoryPolicyArgs<    {
     trigger: string | RegExp;

@@ -146,11 +146,15 @@ fn skip(policy: &PolicyMeta, file: Option<&str>, reason: SkipReason) -> SkippedW
         policy: policy.name.clone(),
         policy_id: policy.instance_id.clone(),
         reason,
-        location: file.map_or(Location::Repository { files: None }, |file| {
-            Location::File {
+        location: file.map_or_else(
+            || match policy.scope {
+                Scope::Changes => Location::Changes { files: None },
+                _ => Location::Repository { files: None },
+            },
+            |file| Location::File {
                 file: file.to_string(),
-            }
-        }),
+            },
+        ),
     }
 }
 
@@ -241,7 +245,7 @@ pub fn run_check(sidecar: &mut Sidecar, options: CheckOptions<'_>) -> Result<boo
     for policy in config
         .policies
         .iter()
-        .filter(|policy| policy.scope == Scope::Repository)
+        .filter(|policy| policy.scope != Scope::File)
     {
         if file_error || repository_error {
             result.skipped.push(skip(
@@ -365,9 +369,7 @@ pub fn run_list(
         );
         if verbose {
             println!("    scope: {:?}", policy.scope);
-            if policy.scope == Scope::File
-                && let Some(pattern) = &policy.r#match
-            {
+            if let Some(pattern) = &policy.r#match {
                 println!("    match: {pattern}");
             }
             println!("    excludes: {:?}", policy.exclude);

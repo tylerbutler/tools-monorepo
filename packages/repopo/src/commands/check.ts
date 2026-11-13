@@ -90,9 +90,7 @@ export class CheckPolicy<
 		};
 		validateChangeOptions(changeOptions);
 		const inventory =
-			context.policies.some(
-				(policy) => policy.scope === "repository" && policy.requiresChanges,
-			) ||
+			context.policies.some((policy) => policy.scope === "changes") ||
 			this.flags["change-mode"] !== undefined ||
 			this.flags["change-base"] !== undefined
 				? await collectRepositoryInventory(context.gitRoot, changeOptions)

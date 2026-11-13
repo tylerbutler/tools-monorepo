@@ -61,7 +61,7 @@ When `patterns` isn't set, the policy requires `node_modules/`, `.env`, `.env.*`
 
 ### RequireCompanionChanges
 
-**Repository policy.** Requires a related file update when a trigger path changes. For example, require a documentation change with source changes:
+**Change policy** (`scope: "changes"`). Requires a related file update when a trigger path changes. For example, require a documentation change with source changes:
 
 ```ts title="repopo.config.ts"
 import { makePolicy, type RepopoConfig } from "repopo/api";

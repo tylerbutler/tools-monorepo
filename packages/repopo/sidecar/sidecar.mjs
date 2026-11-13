@@ -239,9 +239,7 @@ async function loadConfig(params) {
 			instanceId: policy.instanceId,
 			description: policy.description,
 			scope: policy.scope ?? "file",
-			...(policy.scope === "repository"
-				? {}
-				: { match: serializeRegex(policy.match) }),
+			...(policy.match ? { match: serializeRegex(policy.match) } : {}),
 			hasResolver: typeof policy.resolver === "function",
 			exclude: (policy.exclude ?? []).map(serializeExclusion),
 		})),
@@ -269,9 +267,7 @@ async function beginRun(params) {
 	};
 	validateChangeOptions(options);
 	const inventory =
-		registration.policies.some(
-			(policy) => policy.scope === "repository" && policy.requiresChanges,
-		) ||
+		registration.policies.some((policy) => policy.scope === "changes") ||
 		params.changeMode != null ||
 		params.changeBase != null
 			? await collectRepositoryInventory(registration.root, options)
@@ -305,7 +301,7 @@ async function executeUnits(params) {
 						skipped: [],
 						perfStats: newPerfStats(),
 					};
-					if (policy.scope === "repository") {
+					if (policy.scope === "repository" || policy.scope === "changes") {
 						if (!Array.isArray(unit.files))
 							throw new Error("Repository units require explicit inventory.");
 						const exclusions = [

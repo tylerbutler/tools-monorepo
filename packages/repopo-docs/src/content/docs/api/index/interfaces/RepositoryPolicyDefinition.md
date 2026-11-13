@@ -7,7 +7,7 @@ title: "RepositoryPolicyDefinition"
 
 Defined in: [policy.ts:60](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L60)
 
-Repository scope is explicit; repository fixers are inline only.
+Repository/change scopes run once over matching inventory; fixers are inline only.
 
 ## Type Parameters
 
@@ -21,7 +21,7 @@ Repository scope is explicit; repository fixers are inline only.
 
 > `optional` **defaultConfig?**: `C`
 
-Defined in: [policy.ts:70](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L70)
+Defined in: [policy.ts:71](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L71)
 
 ***
 
@@ -33,6 +33,16 @@ Defined in: [policy.ts:62](https://github.com/tylerbutler/tools-monorepo/blob/ma
 
 ***
 
+### match?
+
+> `optional` **match?**: [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp)
+
+Defined in: [policy.ts:66](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L66)
+
+Match repo-relative paths, including either rename endpoint; omitted means all entries.
+
+***
+
 ### name
 
 > **name**: `string`
@@ -41,21 +51,11 @@ Defined in: [policy.ts:61](https://github.com/tylerbutler/tools-monorepo/blob/ma
 
 ***
 
-### requiresChanges?
-
-> `optional` **requiresChanges?**: `boolean`
-
-Defined in: [policy.ts:65](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L65)
-
-Request Git status annotation in the CLI (PR mode by default).
-
-***
-
 ### requiresConfig?
 
 > `optional` **requiresConfig?**: `boolean`
 
-Defined in: [policy.ts:71](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L71)
+Defined in: [policy.ts:72](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L72)
 
 ***
 
@@ -63,15 +63,17 @@ Defined in: [policy.ts:71](https://github.com/tylerbutler/tools-monorepo/blob/ma
 
 > `optional` **resolver?**: `undefined`
 
-Defined in: [policy.ts:69](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L69)
+Defined in: [policy.ts:70](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L70)
 
 ***
 
 ### scope
 
-> **scope**: `"repository"`
+> **scope**: `"repository"` \| `"changes"`
 
-Defined in: [policy.ts:63](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L63)
+Defined in: [policy.ts:64](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L64)
+
+Changes scope requests Git status annotation (PR mode by default).
 
 ## Methods
 
@@ -79,7 +81,7 @@ Defined in: [policy.ts:63](https://github.com/tylerbutler/tools-monorepo/blob/ma
 
 > **handler**(`args`): [`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<[`PolicyResult`](/api/index/type-aliases/policyresult/)\> \| `Operation`\<[`PolicyResult`](/api/index/type-aliases/policyresult/)\>
 
-Defined in: [policy.ts:66](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L66)
+Defined in: [policy.ts:67](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L67)
 
 #### Parameters
 

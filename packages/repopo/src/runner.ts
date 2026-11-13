@@ -32,7 +32,7 @@ export type PolicyRunFinding =
 			policyId: string;
 	  })
 	| (PolicyFinding & {
-			scope: "repository";
+			scope: "repository" | "changes";
 			file?: never;
 			policy: string;
 			policyId: string;
@@ -48,7 +48,7 @@ export type PolicyExecutionError = {
 	cause: unknown;
 } & (
 	| { scope: "file"; file: string; files?: never }
-	| { scope: "repository"; files: readonly string[]; file?: never }
+	| { scope: "repository" | "changes"; files: readonly string[]; file?: never }
 );
 
 /** A unit that was not executed. @public */
@@ -56,7 +56,10 @@ export type PolicySkippedWork = {
 	policy: string;
 	policyId: string;
 	reason: "excluded" | "file-fix-error" | "repository-fix-error";
-} & ({ scope: "file"; file: string } | { scope: "repository"; file?: never });
+} & (
+	| { scope: "file"; file: string }
+	| { scope: "repository" | "changes"; file?: never }
+);
 
 /** Findings, failures, skipped units, and file/per-instance timing statistics. @public */
 export interface PolicyRunResults {
@@ -105,7 +108,9 @@ export class PolicyRunner {
 			options.concurrency ?? DEFAULT_CONCURRENCY,
 		);
 		if (
-			this.policies.some((policy) => policy.scope === "repository") &&
+			this.policies.some(
+				(policy) => policy.scope === "repository" || policy.scope === "changes",
+			) &&
 			options.inventory === undefined
 		) {
 			throw new TypeError(
@@ -113,7 +118,10 @@ export class PolicyRunner {
 			);
 		}
 		for (const policy of this.policies) {
-			if (policy.scope === "repository" && policy.resolver !== undefined) {
+			if (
+				(policy.scope === "repository" || policy.scope === "changes") &&
+				policy.resolver !== undefined
+			) {
 				throw new TypeError(
 					"Repository policies support inline fixes only; remove resolver.",
 				);
@@ -161,9 +169,7 @@ export class PolicyRunner {
 		const rawInventory = yield* this.loadInventory();
 		if (
 			rawInventory.some((entry) => typeof entry === "string") &&
-			this.policies.some(
-				(policy) => policy.scope === "repository" && policy.requiresChanges,
-			)
+			this.policies.some((policy) => policy.scope === "changes")
 		) {
 			throw new TypeError(
 				"Change-aware policies require inventory entries with Git statuses, not string paths.",
@@ -235,12 +241,12 @@ export class PolicyRunner {
 		const fix = this.options.fix ?? false;
 		let repositoryFixError = false;
 		for (const policy of this.policies) {
-			if (policy.scope !== "repository") {
+			if (policy.scope !== "repository" && policy.scope !== "changes") {
 				continue;
 			}
 			if (fileFixError || repositoryFixError) {
 				result.skipped.push({
-					scope: "repository",
+					scope: policy.scope,
 					policy: policy.name,
 					policyId: policy.instanceId,
 					reason: fileFixError ? "file-fix-error" : "repository-fix-error",
@@ -295,7 +301,10 @@ export class PolicyRunner {
 		}
 		let stopped = false;
 		for (const policy of this.policies) {
-			if (policy.scope === "repository" || !matchesPath(policy.match, file)) {
+			if (policy.scope !== undefined && policy.scope !== "file") {
+				continue;
+			}
+			if (!matchesPath(policy.match, file)) {
 				continue;
 			}
 			if (stopped || this.excluded(file, policy)) {

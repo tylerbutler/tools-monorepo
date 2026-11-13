@@ -35,14 +35,10 @@ Require a related update when trigger paths change.
 
 > **name**: `string` = `"RequireCompanionChanges"`
 
-### requiresChanges
-
-> **requiresChanges**: `true` = `true`
-
 ### requiresConfig
 
 > **requiresConfig**: `true` = `true`
 
 ### scope
 
-> **scope**: `"repository"` = `"repository"`
+> **scope**: `"changes"` = `"changes"`

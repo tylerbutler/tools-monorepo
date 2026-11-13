@@ -9,10 +9,11 @@ Linters and formatters check the contents of individual source files. Many repos
 
 ## Policies
 
-A policy is a named check with a handler function. repopo has two kinds:
+A policy is a named check with a handler function. repopo supports these scopes:
 
 - **File policies** match repo-relative paths with a regular expression and run once for each matching file. Most built-in policies are file policies.
-- **Repository policies** run once per check with the full list of files in the repository. Use them for rules that involve several files or a missing file, such as "the repository has a LICENSE".
+- **Repository policies** run once per check with the repository inventory, optionally filtered by a `match` regex. Use them for rules that involve several files or a missing file, such as "the repository has a LICENSE".
+- **Change policies** use `scope: "changes"` to receive that inventory with Git change statuses. Use them for rules about additions, modifications, deletions, or renames.
 
 repopo includes [over 50 built-in policies](/policies/built-in/) for JavaScript and package.json, Rust and Cargo, Gleam, and general repository hygiene. You can also [write your own](/policies/custom/) in your configuration file or import them from other packages.
 
@@ -22,7 +23,7 @@ When your configuration doesn't list any policies, repopo runs three defaults: `
 
 1. repopo lists the files Git knows about: tracked files and untracked files that are not ignored. With `--stdin`, file policies check only the paths you pipe in.
 2. It removes [excluded](/usage/config/#excluding-files) files.
-3. It runs each file policy on every matching file, then runs each repository policy once.
+3. It captures Git statuses if change policies are configured, runs each file policy on every matching file, then runs repository and change policies once each over their matching inventory.
 4. With `--fix`, policies fix what they can. repopo reports everything else, with instructions for manual fixes when a policy provides them.
 
 ## Engines

@@ -17,11 +17,11 @@ export interface PolicyArgs<C = void> {
 	config?: C | undefined;
 }
 
-/** Arguments supplied to a repository handler; selection never limits files. @public */
+/** Arguments supplied to a repository/change handler; stdin selection never limits entries. @public */
 export interface RepositoryPolicyArgs<C = void>
 	extends Omit<PolicyArgs<C>, "file"> {
 	files: readonly string[];
-	/** Full eligible inventory, including unchanged files and deleted paths. */
+	/** Matching eligible inventory, including unchanged files and deleted paths. */
 	entries: readonly RepositoryFile[];
 }
 
@@ -56,13 +56,14 @@ export interface FilePolicyDefinition<C = void> {
 	requiresConfig?: boolean | undefined;
 }
 
-/** Repository scope is explicit; repository fixers are inline only. @public */
+/** Repository/change scopes run once over matching inventory; fixers are inline only. @public */
 export interface RepositoryPolicyDefinition<C = void> {
 	name: PolicyName;
 	description: string;
-	scope: "repository";
-	/** Request Git status annotation in the CLI (PR mode by default). */
-	requiresChanges?: boolean | undefined;
+	/** Changes scope requests Git status annotation (PR mode by default). */
+	scope: "repository" | "changes";
+	/** Match repo-relative paths, including either rename endpoint; omitted means all entries. */
+	match?: RegExp | undefined;
 	handler(
 		args: RepositoryPolicyArgs<C>,
 	): Promise<PolicyResult> | Operation<PolicyResult>;

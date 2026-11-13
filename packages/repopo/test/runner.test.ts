@@ -6,6 +6,7 @@ import type {
 	PolicyResult,
 	RepositoryPolicyDefinition,
 } from "../src/policy.js";
+import type { RepositoryFile } from "../src/repositoryChanges.js";
 import { PolicyRunner, runPolicies } from "../src/runner.js";
 
 const fileDefinition = {
@@ -513,7 +514,10 @@ describe("canonical policy execution", () => {
 		}
 	});
 
-	it("does not stop after ordinary failed findings but skips repository policies after repository fixer exceptions", async () => {
+	it.each([
+		"repository",
+		"changes",
+	] as const)("does not stop after ordinary failed findings but skips later work after %s fixer exceptions", async (scope) => {
 		const after = vi.fn(async () => []);
 		const result = await runPolicies({
 			root,
@@ -537,19 +541,26 @@ describe("canonical policy execution", () => {
 				makePolicy({
 					...repositoryDefinition,
 					name: "Throws",
+					scope,
 					handler: async () => {
 						throw new Error("bad fixer");
 					},
 				}),
-				makePolicy({ ...repositoryDefinition, name: "After", handler: after }),
+				makePolicy({
+					...repositoryDefinition,
+					scope,
+					name: "After",
+					handler: after,
+				}),
 			],
 		});
 		expect(result.findings).toHaveLength(2);
 		expect(result.errors).toHaveLength(1);
+		expect(result.errors[0]?.scope).toBe(scope);
 		expect(after).not.toHaveBeenCalled();
 		expect(result.skipped).toMatchObject([
 			{
-				scope: "repository",
+				scope,
 				policyId: "After",
 				reason: "repository-fix-error",
 			},
@@ -589,15 +600,104 @@ describe("inventory, selection and regex semantics", () => {
 		).toThrow("inline fixes only");
 	});
 
-	it("requires an explicit inventory even when files is provided", () => {
+	it.each([
+		"repository",
+		"changes",
+	] as const)("requires an explicit inventory for %s even when files is provided", (scope) => {
 		expect(
 			() =>
 				new PolicyRunner({
 					root,
 					files: ["a.txt"],
-					policies: [makePolicy(repositoryDefinition)],
+					policies: [makePolicy({ ...repositoryDefinition, scope })],
 				}),
 		).toThrow("explicit inventory");
+	});
+	it.each([
+		"repository",
+		"changes",
+	] as const)("filters %s entries once by match, preserving statuses, rename endpoints and exclusions", async (scope) => {
+		const match = /^(?:src|docs)\//gy;
+		match.lastIndex = 2;
+		const inventory: RepositoryFile[] = [
+			{ status: "unchanged", path: "README.md" },
+			{ status: "unchanged", path: "src/unchanged.ts" },
+			{ status: "modified", path: "src/main.ts" },
+			{ status: "deleted", path: "docs/old.md" },
+			{
+				status: "renamed",
+				path: "archive/moved.ts",
+				previousPath: "src/moved.ts",
+			},
+			{ status: "renamed", path: "docs/new.md", previousPath: "draft/new.md" },
+			{ status: "added", path: "src/missing.ts", exists: false },
+			{ status: "modified", path: "src/vendor.ts" },
+			{ status: "deleted", path: "docs/excluded.md" },
+		];
+		const handler = vi.fn(async () => [{ message: "inspected" }]);
+		const other = vi.fn(async () => []);
+		const result = await runPolicies({
+			root,
+			files: [],
+			inventory,
+			exclude: [/^src\/vendor/],
+			policies: [
+				makePolicy(
+					{ ...repositoryDefinition, scope, match, handler },
+					{
+						exclude: [/^docs\/excluded/],
+					},
+				),
+				makePolicy({ ...repositoryDefinition, name: "Other", handler: other }),
+			],
+		});
+		expect(result.errors).toEqual([]);
+		expect(result.findings).toMatchObject([{ scope, message: "inspected" }]);
+		expect(handler).toHaveBeenCalledExactlyOnceWith(
+			expect.objectContaining({
+				entries: inventory.slice(1, 7),
+				files: [
+					"src/unchanged.ts",
+					"src/main.ts",
+					"archive/moved.ts",
+					"docs/new.md",
+				],
+			}),
+		);
+		expect(other).toHaveBeenCalledWith(
+			expect.objectContaining({
+				entries: expect.arrayContaining([inventory[0], inventory[8]]),
+			}),
+		);
+		expect(match.lastIndex).toBe(2);
+	});
+	it.each([
+		"repository",
+		"changes",
+	] as const)("runs a %s handler once with no regex matches", async (scope) => {
+		const handler = vi.fn(async () => [{ message: "Missing matching files" }]);
+		const result = await runPolicies({
+			root,
+			files: [],
+			inventory: [{ status: "modified", path: "README.md" }],
+			policies: [
+				makePolicy({
+					...repositoryDefinition,
+					scope,
+					match: /^src\//,
+					handler,
+				}),
+			],
+		});
+		expect(handler).toHaveBeenCalledExactlyOnceWith(
+			expect.objectContaining({
+				files: [],
+				entries: [],
+			}),
+		);
+		expect(result.findings).toMatchObject([
+			{ scope, message: "Missing matching files" },
+		]);
 	});
 	it("limits only file policies by selection and runs repository policies with an empty eligible inventory", async () => {
 		const seen: readonly string[][] = [];

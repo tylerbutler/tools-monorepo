@@ -65,7 +65,7 @@ Unmerged Git conflicts stop change collection. Staged and local modes support re
 
 Local mode includes both records if a path has a staged deletion but still exists as an untracked file. Tracked ignored files remain part of the tracked comparison.
 
-Ordinary checks without change-aware policies do not need a PR target. Repopo collects changes only when a policy declares `requiresChanges` or you supply a change flag. `list` does not collect changes. A base override is valid only in PR mode.
+Ordinary file and repository policies do not need a PR target. Repopo collects changes only when a policy uses `scope: "changes"` or you supply a change flag. Repository and change policies can use one optional `match` regex to filter their inventory before the handler runs; an empty match still runs the handler once. `list` does not collect changes. A base override is valid only in PR mode.
 
 ## Concurrency
 

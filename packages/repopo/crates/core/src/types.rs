@@ -18,6 +18,7 @@ pub struct PolicyMeta {
 pub enum Scope {
     File,
     Repository,
+    Changes,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -38,13 +39,17 @@ pub enum Location {
         #[serde(skip_serializing_if = "Option::is_none")]
         files: Option<Vec<String>>,
     },
+    Changes {
+        #[serde(skip_serializing_if = "Option::is_none")]
+        files: Option<Vec<String>>,
+    },
 }
 
 impl Location {
     pub fn display(&self) -> String {
         match self {
             Self::File { file } => file.clone(),
-            Self::Repository { files } => files
+            Self::Repository { files } | Self::Changes { files } => files
                 .as_ref()
                 .filter(|files| !files.is_empty())
                 .map(|files| files.join(", "))
@@ -241,11 +246,14 @@ mod tests {
 
     #[test]
     fn canonical_results_round_trip_without_losing_findings_or_guidance() {
-        let value = results();
-        let result: RunResults = serde_json::from_value(value.clone()).unwrap();
-        assert!(!result.success());
-        assert_eq!(serde_json::to_value(&result).unwrap(), value);
-        assert_eq!(result.findings[1].location.display(), "a.txt, b.txt");
+        for scope in ["repository", "changes"] {
+            let mut value = results();
+            value["findings"][1]["scope"] = json!(scope);
+            let result: RunResults = serde_json::from_value(value.clone()).unwrap();
+            assert!(!result.success());
+            assert_eq!(serde_json::to_value(&result).unwrap(), value);
+            assert_eq!(result.findings[1].location.display(), "a.txt, b.txt");
+        }
     }
 
     #[test]
@@ -272,6 +280,7 @@ mod tests {
                 .success()
         );
         value["skipped"][0]["reason"] = json!("excluded");
+        value["skipped"][0]["scope"] = json!("changes");
         assert!(
             serde_json::from_value::<RunResults>(value)
                 .unwrap()
@@ -287,9 +296,12 @@ mod tests {
             "phase":"resolve","kind":"exception","message":"broken",
             "cause":{"name":"Error","message":"broken","cause":{"code":"EIO"}}
         }]);
-        let result: RunResults = serde_json::from_value(value.clone()).unwrap();
-        assert!(!result.success());
-        assert_eq!(serde_json::to_value(result).unwrap(), value);
+        for scope in ["repository", "changes"] {
+            value["errors"][0]["scope"] = json!(scope);
+            let result: RunResults = serde_json::from_value(value.clone()).unwrap();
+            assert!(!result.success());
+            assert_eq!(serde_json::to_value(result).unwrap(), value);
+        }
     }
 
     #[test]

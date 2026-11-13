@@ -7,3 +7,5 @@ Add a full repository inventory annotated with added, modified, deleted, renamed
 Use `RequireCompanionChanges` to require related path updates, such as documentation changes alongside source changes. Existing file selection and full repository inventory retain their behavior.
 
 Configure comparisons with `changes: { mode?, base? }`. The CLI uses its explicit base override first, then CI's target, then the configured base.
+
+Use `scope: "changes"` to request change statuses without making ordinary repository policies depend on Git comparison history. Both scopes accept one optional `match` regex that filters the handler's inventory, including either rename endpoint.

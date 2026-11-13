@@ -7,7 +7,7 @@ title: "ConfiguredPolicy"
 
 > **ConfiguredPolicy**\<`C`\> = [`ConfiguredFilePolicy`](/api/index/type-aliases/configuredfilepolicy/)\<`C`\> \| [`ConfiguredRepositoryPolicy`](/api/index/type-aliases/configuredrepositorypolicy/)\<`C`\>
 
-Defined in: [policy.ts:102](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L102)
+Defined in: [policy.ts:103](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L103)
 
 A configured policy, retaining scope discrimination.
 

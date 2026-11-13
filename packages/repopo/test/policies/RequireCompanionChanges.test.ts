@@ -23,7 +23,7 @@ describe("RequireCompanionChanges", () => {
 		expect(result.errors).toEqual([]);
 		expect(result.findings).toMatchObject([
 			{
-				scope: "repository",
+				scope: "changes",
 				files: ["src/a.ts"],
 				manualFix: expect.stringContaining("companion pattern"),
 			},

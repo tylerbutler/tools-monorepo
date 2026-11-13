@@ -104,11 +104,18 @@ const config = { threshold: 1, label: "test" };
 const a: ConfiguredFilePolicy<Settings> = makePolicy(file, { config });
 const b: ConfiguredRepositoryPolicy<Settings> = apiFactory(repository, { config });
 a.match.test("a");
-b.scope satisfies "repository";
+b.scope satisfies "repository" | "changes";
 // @ts-expect-error Repository policies support inline fixes, not standalone resolvers.
 makePolicy({ ...repository, resolver }, { config });
-// @ts-expect-error Factory retains precise repository return type.
-b.match;
+b.match?.test("src/file.ts");
+const changes = {
+	name: "Changes", description: "Changes", scope: "changes", match: /^src\\//,
+	handler: async ({ entries }) => entries.filter(entry => entry.status === "deleted")
+		.map(entry => ({ message: "Deleted file", files: [entry.path] })),
+} satisfies RepositoryPolicyDefinition;
+apiFactory(changes);
+// @ts-expect-error Change scope replaces the requiresChanges flag.
+const retiredChanges = { ...changes, requiresChanges: true } satisfies RepositoryPolicyDefinition;
 // @ts-expect-error File handlers cannot receive inventory arguments.
 file.handler({ root: "/", files: [], resolve: false, config });
 // @ts-expect-error Repository handlers cannot receive a synthetic file argument.

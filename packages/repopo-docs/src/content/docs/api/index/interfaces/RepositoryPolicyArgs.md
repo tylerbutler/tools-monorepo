@@ -7,7 +7,7 @@ title: "RepositoryPolicyArgs"
 
 Defined in: [policy.ts:21](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L21)
 
-Arguments supplied to a repository handler; selection never limits files.
+Arguments supplied to a repository/change handler; stdin selection never limits entries.
 
 ## Extends
 
@@ -39,7 +39,7 @@ Defined in: [policy.ts:17](https://github.com/tylerbutler/tools-monorepo/blob/ma
 
 Defined in: [policy.ts:25](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L25)
 
-Full eligible inventory, including unchanged files and deleted paths.
+Matching eligible inventory, including unchanged files and deleted paths.
 
 ***
 
