@@ -44,7 +44,7 @@ If your code already uses [Effection](https://frontside.com/effection), use `Pol
 | `policies` | Policies configured with `makePolicy()`. |
 | `root` | Absolute path of the repository root. |
 | `files` | Repo-relative paths that file policies check. Defaults to `inventory`. |
-| `inventory` | The full repository file list for repository policies. See below. |
+| `inventory` | The full repository list, as string paths or annotated records. See below. |
 | `exclude` | Patterns that exclude repo-relative paths from every policy, like `excludeFiles` in a configuration file. |
 | `fix` | `true` to apply fixes, like `check --fix`. |
 | `concurrency` | Maximum files processed at once in read-only runs. Defaults to 8. Fixes always run one file at a time. |
@@ -55,9 +55,9 @@ If your code already uses [Effection](https://frontside.com/effection), use `Pol
 The two file lists do different jobs:
 
 - `files` is the selection that file policies check.
-- `inventory` is the full list of repository files that repository policies receive.
+- `inventory` is the full list of repository files, filtered by each repository/change policy's optional `match` and exclusions.
 
-When any repository policy is configured, you **must** pass `inventory`. repopo never uses `files` as a substitute: a repository policy that checks for a missing README would give the wrong answer if it saw only the changed files. Repository policies run once each, even when the selection or the inventory is empty.
+When any repository or change policy is configured, you **must** pass `inventory`. repopo never uses `files` as a substitute: a repository policy that checks for a missing README would give the wrong answer if it saw only the changed files. These policies run once each, even when the selection, inventory, or regex match is empty.
 
 An array is a fixed snapshot. When fixes can create or remove files, pass an async function instead; repopo calls it again after file fixes and before each repository policy:
 
@@ -73,13 +73,47 @@ await runPolicies({
 
 `listAllRepositoryFiles` stands for your own function, such as one that runs `git ls-files`. The CLI loads the full Git inventory this way regardless of `--stdin`.
 
+## Change-aware repository policies
+
+Pass the full inventory with a status on each file:
+
+```ts
+import { collectRepositoryInventory, makePolicy, runPolicies } from "repopo/api";
+import { RequireCompanionChanges } from "repopo/policies";
+
+const inventory = await collectRepositoryInventory(root, {
+	mode: "pr",
+	base: "main",
+});
+const results = await runPolicies({
+	root,
+	files: [],
+	inventory,
+	policies: [
+		makePolicy(RequireCompanionChanges, {
+			config: { trigger: /^src\//, companion: /^docs\// },
+		}),
+	],
+});
+```
+
+The collector accepts `{ mode?, base? }`; an explicit `base` overrides CI target information. The CLI uses [CI before its configured base](/usage/cli-usage/#check-rules-about-related-changes). The collector returns `RepositoryFile[]`: unchanged files plus `added`, `modified`, `deleted`, `type-changed`, and `renamed` entries. Each entry has `path` and `status`; renames also have `previousPath`. Optional `exists` records working-tree presence when status alone is not enough: for example, a committed addition can be absent from the working tree after an unstaged deletion.
+
+Repository handlers receive this list as `entries`. Existing handlers can keep using `files`, the derived string-path view of files present in the working tree. Legacy string inventories remain supported and produce `unchanged` entries. File selection stays separate. Absent inventory entries are not used as the default selection; an explicit `files` selection retains its existing behavior.
+
+Set `scope: "changes"` to request Git statuses in the CLI. Both `"repository"` and `"changes"` use `RepositoryPolicyDefinition`; no separate handler or configuration API is needed. Programmatic callers supply annotated inventory themselves; change policies require a status on every entry. An empty inventory is valid.
+
+An optional `match` regex filters `entries` before either handler runs, matching either rename endpoint without discarding its metadata. Omit it to receive the full eligible inventory. The `files` view derives from those same matching entries, and the shared inventory remains unchanged for other policies.
+
+The runner copies and freezes the initial inventory before handlers run. An inventory loader can refresh live paths between fixes, but statuses stay fixed for the run: files created by fixes appear as `unchanged` and cannot satisfy a companion-change requirement. Global and per-policy exclusions filter `entries` by `path`, including deleted entries, just as they filter `files`.
+
 ## Results
 
 The results have four parts:
 
 | Field | Contents |
 | --- | --- |
-| `findings` | Every finding, including fixed ones. Each has the `policy` name, the `policyId`, the `scope`, and a `file` (file policies) or optional `files` (repository policies). |
+| `findings` | Every finding, including fixed ones. Each has the `policy` name, the `policyId`, the `scope` (`file`, `repository`, or `changes`), and a `file` (file policies) or optional `files` (repository/change policies). |
 | `errors` | Execution errors: a policy threw or broke the result contract. Each has the `phase` (`"handle"` or `"resolve"`), the `kind` (`"exception"` or `"contract"`), a `message`, and the original `cause`. |
 | `skipped` | Work that didn't run, with a `reason`: `"excluded"`, `"file-fix-error"`, or `"repository-fix-error"`. |
 | `perfStats` | Counts and per-policy timings in milliseconds. |
@@ -90,7 +124,7 @@ A run has failed if there are any errors or any finding whose `fixStatus` isn't 
 
 - Invalid input, such as a bad exclusion pattern or a policy missing required configuration, throws before any policy runs.
 - In read-only runs, execution errors are collected and the run continues.
-- In fix runs, an error stops the remaining work on that file, but other files continue and repository policies are skipped. An error in a repository policy skips the repository policies after it.
+- In fix runs, an error stops the remaining work on that file, but other files continue and repository/change policies are skipped. An error in either scope skips the repository/change policies after it.
 - Cancelling with `signal` releases resources before the run rejects. Fixes that were already written aren't rolled back.
 
 ## Standalone resolvers

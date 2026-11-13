@@ -5,7 +5,7 @@ prev: false
 title: "PolicyRunResults"
 ---
 
-Defined in: [runner.ts:55](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L55)
+Defined in: [runner.ts:65](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L65)
 
 Findings, failures, skipped units, and file/per-instance timing statistics.
 
@@ -15,7 +15,7 @@ Findings, failures, skipped units, and file/per-instance timing statistics.
 
 > **errors**: [`PolicyExecutionError`](/api/index/type-aliases/policyexecutionerror/)[]
 
-Defined in: [runner.ts:57](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L57)
+Defined in: [runner.ts:67](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L67)
 
 ***
 
@@ -23,7 +23,7 @@ Defined in: [runner.ts:57](https://github.com/tylerbutler/tools-monorepo/blob/ma
 
 > **findings**: [`PolicyRunFinding`](/api/index/type-aliases/policyrunfinding/)[]
 
-Defined in: [runner.ts:56](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L56)
+Defined in: [runner.ts:66](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L66)
 
 ***
 
@@ -31,7 +31,7 @@ Defined in: [runner.ts:56](https://github.com/tylerbutler/tools-monorepo/blob/ma
 
 > **perfStats**: [`PolicyHandlerPerfStats`](/api/index/interfaces/policyhandlerperfstats/)
 
-Defined in: [runner.ts:59](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L59)
+Defined in: [runner.ts:69](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L69)
 
 ***
 
@@ -39,4 +39,4 @@ Defined in: [runner.ts:59](https://github.com/tylerbutler/tools-monorepo/blob/ma
 
 > **skipped**: [`PolicySkippedWork`](/api/index/type-aliases/policyskippedwork/)[]
 
-Defined in: [runner.ts:58](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L58)
+Defined in: [runner.ts:68](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L68)

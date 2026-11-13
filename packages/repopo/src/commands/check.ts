@@ -1,9 +1,14 @@
-import process from "node:process";
+import process, { env } from "node:process";
 import { Flags } from "@oclif/core";
 import { BaseRepopoCommand } from "../baseCommand.js";
 import { DEFAULT_CONCURRENCY, validateConcurrency } from "../concurrency.js";
 import { parseFilePaths } from "../filePaths.js";
 import { logStats } from "../perf.js";
+import {
+	annotateInventory,
+	collectRepositoryInventory,
+	validateChangeOptions,
+} from "../repositoryChanges.js";
 import { readRepositoryFiles } from "../repositoryFiles.js";
 import {
 	type PolicyExecutionError,
@@ -39,6 +44,14 @@ export class CheckPolicy<
 		"including with --stdin. With --fix, repository policies can modify files outside the stdin selection.";
 
 	public static override readonly flags = {
+		"change-mode": Flags.option({
+			description:
+				"Change context: pr (default), local, or staged. Does not select file-policy paths.",
+			options: ["pr", "local", "staged"] as const,
+		})(),
+		"change-base": Flags.string({
+			description: "Override the PR change context base ref.",
+		}),
 		concurrency: Flags.integer({
 			description:
 				"Maximum concurrent files in read-only checks. Fixes remain sequential.",
@@ -64,6 +77,24 @@ export class CheckPolicy<
 		}
 		const context = await this.getContext();
 		const files = await this.collectFilePaths(context.gitRoot);
+		const mode = this.flags["change-mode"] ?? this.commandConfig?.changes?.mode;
+		const changeOptions = {
+			mode,
+			base:
+				this.flags["change-base"] ??
+				((mode ?? "pr") === "pr"
+					? env.GITHUB_BASE_REF ||
+						env.CI_MERGE_REQUEST_TARGET_BRANCH_NAME ||
+						this.commandConfig?.changes?.base
+					: undefined),
+		};
+		validateChangeOptions(changeOptions);
+		const inventory =
+			context.policies.some((policy) => policy.scope === "changes") ||
+			this.flags["change-mode"] !== undefined ||
+			this.flags["change-base"] !== undefined
+				? await collectRepositoryInventory(context.gitRoot, changeOptions)
+				: [];
 		this.verbose(`${context.policies.length} policies loaded.`);
 		for (const policy of context.policies) {
 			this.verbose(policy.instanceId);
@@ -72,7 +103,8 @@ export class CheckPolicy<
 			policies: context.policies,
 			root: context.gitRoot,
 			files,
-			inventory: () => this.collectRepositoryFiles(),
+			inventory: async () =>
+				annotateInventory(await this.collectRepositoryFiles(), inventory),
 			exclude: context.excludeFromAll,
 			fix: this.flags.fix,
 			concurrency: this.flags.concurrency,

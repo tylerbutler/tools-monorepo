@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import { Command, Flags } from "@oclif/core";
 import { dirname, resolve } from "pathe";
 import { DEFAULT_CONCURRENCY, validateConcurrency } from "../concurrency.js";
+import { CheckPolicy } from "./check.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -23,6 +24,8 @@ export class CheckNative extends Command {
 		"With --fix, repository policies can modify files outside the stdin selection.";
 
 	public static override readonly flags = {
+		"change-mode": CheckPolicy.flags["change-mode"],
+		"change-base": CheckPolicy.flags["change-base"],
 		concurrency: Flags.integer({
 			description:
 				"Maximum concurrent files in read-only checks. Fixes remain sequential.",
@@ -79,6 +82,12 @@ export class CheckNative extends Command {
 		const sidecarPath = this.resolveSidecarPath(flags["sidecar-path"]);
 
 		const args: string[] = ["check", "--sidecar-path", sidecarPath];
+		if (flags["change-mode"] !== undefined) {
+			args.push("--change-mode", flags["change-mode"]);
+		}
+		if (flags["change-base"] !== undefined) {
+			args.push("--change-base", flags["change-base"]);
+		}
 		args.push("--concurrency", String(flags.concurrency));
 
 		if (flags.fix) {

@@ -19,9 +19,7 @@ export class ListCommand<
 			this.log(configuredPolicy.instanceId);
 			this.log(`  ${configuredPolicy.description}`);
 			this.log(`  scope: ${configuredPolicy.scope ?? "file"}`);
-			this.log(
-				`  resolver: ${configuredPolicy.scope !== "repository" && configuredPolicy.resolver !== undefined}\n`,
-			);
+			this.log(`  resolver: ${configuredPolicy.resolver !== undefined}\n`);
 		}
 		this.log(`${policies.length} TOTAL POLICY HANDLERS`);
 	}

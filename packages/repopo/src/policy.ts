@@ -2,6 +2,7 @@ import type { Operation } from "effection";
 import { NoJsFileExtensions } from "./policies/NoJsFileExtensions.js";
 import { PackageJsonRepoDirectoryProperty } from "./policies/PackageJsonRepoDirectoryProperty.js";
 import { PackageJsonSorted } from "./policies/PackageJsonSorted.js";
+import type { RepositoryFile } from "./repositoryChanges.js";
 
 /** Display name of a policy. @public */
 export type PolicyName = string;
@@ -16,10 +17,12 @@ export interface PolicyArgs<C = void> {
 	config?: C | undefined;
 }
 
-/** Arguments supplied to a repository handler; selection never limits files. @public */
+/** Arguments supplied to a repository/change handler; stdin selection never limits entries. @public */
 export interface RepositoryPolicyArgs<C = void>
 	extends Omit<PolicyArgs<C>, "file"> {
 	files: readonly string[];
+	/** Matching eligible inventory, including unchanged files and deleted paths. */
+	entries: readonly RepositoryFile[];
 }
 
 /** A single independently actionable violation or recorded fix. @public */
@@ -53,11 +56,14 @@ export interface FilePolicyDefinition<C = void> {
 	requiresConfig?: boolean | undefined;
 }
 
-/** Repository scope is explicit; repository fixers are inline only. @public */
+/** Repository/change scopes run once over matching inventory; fixers are inline only. @public */
 export interface RepositoryPolicyDefinition<C = void> {
 	name: PolicyName;
 	description: string;
-	scope: "repository";
+	/** Changes scope requests Git status annotation (PR mode by default). */
+	scope: "repository" | "changes";
+	/** Match repo-relative paths, including either rename endpoint; omitted means all entries. */
+	match?: RegExp | undefined;
 	handler(
 		args: RepositoryPolicyArgs<C>,
 	): Promise<PolicyResult> | Operation<PolicyResult>;

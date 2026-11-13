@@ -5,9 +5,9 @@ prev: false
 title: "RepositoryPolicyArgs"
 ---
 
-Defined in: [policy.ts:20](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L20)
+Defined in: [policy.ts:21](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L21)
 
-Arguments supplied to a repository handler; selection never limits files.
+Arguments supplied to a repository/change handler; stdin selection never limits entries.
 
 ## Extends
 
@@ -25,7 +25,7 @@ Arguments supplied to a repository handler; selection never limits files.
 
 > `optional` **config?**: `C`
 
-Defined in: [policy.ts:16](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L16)
+Defined in: [policy.ts:17](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L17)
 
 #### Inherited from
 
@@ -33,11 +33,21 @@ Defined in: [policy.ts:16](https://github.com/tylerbutler/tools-monorepo/blob/ma
 
 ***
 
+### entries
+
+> **entries**: readonly [`RepositoryFile`](/api/index/type-aliases/repositoryfile/)[]
+
+Defined in: [policy.ts:25](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L25)
+
+Matching eligible inventory, including unchanged files and deleted paths.
+
+***
+
 ### files
 
 > **files**: readonly `string`[]
 
-Defined in: [policy.ts:22](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L22)
+Defined in: [policy.ts:23](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L23)
 
 ***
 
@@ -45,7 +55,7 @@ Defined in: [policy.ts:22](https://github.com/tylerbutler/tools-monorepo/blob/ma
 
 > **resolve**: `boolean`
 
-Defined in: [policy.ts:15](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L15)
+Defined in: [policy.ts:16](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L16)
 
 #### Inherited from
 
@@ -57,7 +67,7 @@ Defined in: [policy.ts:15](https://github.com/tylerbutler/tools-monorepo/blob/ma
 
 > **root**: `string`
 
-Defined in: [policy.ts:14](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L14)
+Defined in: [policy.ts:15](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L15)
 
 #### Inherited from
 

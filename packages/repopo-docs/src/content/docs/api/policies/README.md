@@ -64,6 +64,7 @@ Use `makePolicy()` from `repopo` or `repopo/api` to configure these definitions.
 - [PackageScripts](/api/policies/variables/packagescripts/)
 - [PackageTestScripts](/api/policies/variables/packagetestscripts/)
 - [PublicApiDocumented](/api/policies/variables/publicapidocumented/)
+- [RequireCompanionChanges](/api/policies/variables/requirecompanionchanges/)
 - [RequiredGitignorePatterns](/api/policies/variables/requiredgitignorepatterns/)
 - [RequiredScripts](/api/policies/variables/requiredscripts/)
 - [RustDocExists](/api/policies/variables/rustdocexists/)

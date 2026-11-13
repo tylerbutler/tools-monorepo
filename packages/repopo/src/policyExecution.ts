@@ -1,9 +1,11 @@
 import { types } from "node:util";
 import type { Operation } from "effection";
+import { matchesPath } from "./context.js";
 import { ExecutionContractError } from "./executionContractError.js";
 import { fileCache, type ParsedFileCache } from "./fileCache.js";
 import { runWithPerf } from "./perf.js";
 import type { IdentifiedPolicy, PolicyResult } from "./policy.js";
+import { inventoryPaths, type RepositoryFile } from "./repositoryChanges.js";
 import type { PolicyRunResults } from "./runner.js";
 import { settlePolicyPromise } from "./settlePolicyPromise.js";
 
@@ -170,10 +172,20 @@ export class PolicyExecutor {
 	) {}
 
 	public *repository(
-		policy: Extract<IdentifiedPolicy, { scope: "repository" }>,
-		eligible: readonly string[],
+		policy: Extract<IdentifiedPolicy, { scope: "repository" | "changes" }>,
+		entries: readonly RepositoryFile[],
 		output: PolicyRunResults,
 	): Operation<boolean> {
+		const { match } = policy;
+		const matching = match
+			? entries.filter(
+					(entry) =>
+						matchesPath(match, entry.path) ||
+						(entry.status === "renamed" &&
+							matchesPath(match, entry.previousPath)),
+				)
+			: entries;
+		const eligible = inventoryPaths(matching);
 		try {
 			const findings = yield* runWithPerf(
 				policy.instanceId,
@@ -183,6 +195,7 @@ export class PolicyExecutor {
 					execute(() =>
 						policy.handler({
 							files: eligible,
+							entries: matching,
 							root: this.root,
 							resolve: this.fix,
 							config: policy.config,
@@ -193,14 +206,14 @@ export class PolicyExecutor {
 			for (const finding of findings) {
 				output.findings.push({
 					...finding,
-					scope: "repository",
+					scope: policy.scope,
 					policy: policy.name,
 					policyId: policy.instanceId,
 				});
 			}
 		} catch (cause: unknown) {
 			output.errors.push({
-				scope: "repository",
+				scope: policy.scope,
 				files: eligible,
 				policy: policy.name,
 				policyId: policy.instanceId,
@@ -216,7 +229,7 @@ export class PolicyExecutor {
 
 	public *file(
 		file: string,
-		policy: Exclude<IdentifiedPolicy, { scope: "repository" }>,
+		policy: Exclude<IdentifiedPolicy, { scope: "repository" | "changes" }>,
 		output: PolicyRunResults,
 		cache: ParsedFileCache | undefined,
 	): Operation<boolean> {

@@ -103,12 +103,14 @@ Import `repopo/api` for the programmatic API without the CLI entry point.
 - [PolicyResult](/api/index/type-aliases/policyresult/)
 - [PolicyRunFinding](/api/index/type-aliases/policyrunfinding/)
 - [PolicySkippedWork](/api/index/type-aliases/policyskippedwork/)
+- [RepositoryFile](/api/index/type-aliases/repositoryfile/)
 - [RepositoryInventory](/api/index/type-aliases/repositoryinventory/)
 - [RepositoryPolicyHandler](/api/index/type-aliases/repositorypolicyhandler/)
 - [RequiredScriptEntry](/api/index/type-aliases/requiredscriptentry/)
 
 ## Functions
 
+- [collectRepositoryInventory](/api/index/functions/collectrepositoryinventory/)
 - [defineCargoPolicy](/api/index/functions/definecargopolicy/)
 - [defineFileHeaderPolicy](/api/index/functions/definefileheaderpolicy/)
 - [defineGleamPolicy](/api/index/functions/definegleampolicy/)

@@ -189,6 +189,7 @@ export {
 	PublicApiDocumented,
 	type PublicApiDocumentedConfig,
 } from "./policies/PublicApiDocumented.js";
+export { RequireCompanionChanges } from "./policies/RequireCompanionChanges.js";
 // Gitignore policies
 export {
 	RequiredGitignorePatterns,

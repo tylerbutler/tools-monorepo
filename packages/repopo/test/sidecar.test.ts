@@ -176,6 +176,7 @@ describe("Native canonical sidecar", () => {
 		`[0,1].map(() => ({name:"Duplicate",description:"duplicate",match:/./,handler:async()=>[]}))`,
 		`["a","b"].map(name => ({name,instanceId:"same",description:"collision",match:/./,handler:async()=>[]}))`,
 		`[{name:"Repo",description:"resolver",scope:"repository",handler:async()=>[],resolver:async()=>[]}]`,
+		`[{name:"Changes",description:"resolver",scope:"changes",handler:async()=>[],resolver:async()=>[]}]`,
 		`[makePolicy({name:"Old",description:"alias",match:/./,handler:async()=>[]}, {excludeFiles:[]})]`,
 		`[{name:"Old",description:"alias",match:/./,excludeFiles:[],handler:async()=>[]}]`,
 	])("rejects invalid registration before any work: %s", async (policies) => {
@@ -1307,6 +1308,7 @@ describe("Native canonical sidecar", () => {
 				command: "check" | "check-native",
 				fix: boolean,
 				stdin = "",
+				args: string[] = [],
 			) {
 				return new Promise<{ code: number; output: string }>(
 					(resolvePromise, reject) => {
@@ -1319,6 +1321,7 @@ describe("Native canonical sidecar", () => {
 								"--config",
 								configPath,
 								...(fix ? ["--fix"] : []),
+								...args,
 								...(command === "check-native"
 									? [
 											"--binary-path",
@@ -1346,6 +1349,180 @@ describe("Native canonical sidecar", () => {
 					},
 				);
 			}
+
+			it.each([
+				"check",
+				"check-native",
+			] as const)("shares staged/local/PR rule behavior with empty stdin: %s", async (command) => {
+				const git = simpleGit(testDir);
+				await git.addConfig("user.name", "Test");
+				await git.addConfig("user.email", "test@example.invalid");
+				await writeFile(join(testDir, "source.txt"), "original");
+				await git.add("source.txt");
+				await git.commit("initial");
+				await git.raw(["branch", "comparison"]);
+				await writeFile(
+					configPath,
+					`import {makePolicy} from ${JSON.stringify(factoryUrl)};
+					import {RequireCompanionChanges} from ${JSON.stringify(policiesUrl)};
+					export default {changes:{base:"comparison"}, policies:[
+						makePolicy(RequireCompanionChanges,{config:{trigger:/^source/,companion:/^docs/}})
+					]};`,
+				);
+				await writeFile(join(testDir, "source.txt"), "staged update");
+				await git.add("source.txt");
+				await writeFile(join(testDir, "docs.txt"), "untracked docs");
+				const staged = await cli(command, false, "", [
+					"--change-mode",
+					"staged",
+				]);
+				expect(staged.code).toBe(1);
+				expect(staged.output).toContain("require a companion change");
+				expect(
+					(await cli(command, false, "", ["--change-mode", "local"])).code,
+				).toBe(0);
+				expect((await cli(command, false)).code).toBe(0);
+				await git.commit("source update");
+				const pr = await cli(command, false);
+				expect(pr.code).toBe(1);
+				expect(pr.output).toContain("require a companion change");
+				await git.add("docs.txt");
+				await git.commit("docs update");
+				expect(
+					(await cli(command, false, "", ["--change-base", "comparison"])).code,
+				).toBe(0);
+				await writeFile(
+					configPath,
+					`process.env.GITHUB_BASE_REF="missing";
+					export default {changes:{base:"comparison"},policies:[
+						{name:"Ordinary",description:"fixture",scope:"repository",handler:async()=>[]}
+					]};`,
+				);
+				expect((await cli(command, false)).code).toBe(0);
+				const ci = await cli(command, false, "", ["--change-mode", "pr"]);
+				expect(ci.code).toBe(1);
+				expect(ci.output).toContain("missing");
+				expect(
+					(await cli(command, false, "", ["--change-base", "comparison"])).code,
+				).toBe(0);
+				for (const mode of ["local", "staged"]) {
+					expect(
+						(await cli(command, false, "", ["--change-mode", mode])).code,
+					).toBe(0);
+				}
+			});
+
+			it.each([
+				"check",
+				"check-native",
+			] as const)("shares full annotated inventory and exclusions: %s", async (command) => {
+				const git = simpleGit(testDir);
+				await git.addConfig("user.name", "Test");
+				await git.addConfig("user.email", "test@example.invalid");
+				for (const file of [
+					"source.txt",
+					"README.md",
+					"deleted.txt",
+					"old.txt",
+				]) {
+					await writeFile(join(testDir, file), `${file}\n`);
+				}
+				await git.add(".");
+				await git.commit("initial");
+				await git.mv("old.txt", "renamed.txt");
+				await git.rm("deleted.txt");
+				await writeFile(join(testDir, "source.txt"), "modified");
+				await writeFile(
+					configPath,
+					`export default {changes:{mode:"local"},policies:[
+					{name:"Inventory",description:"fixture",scope:"changes",
+					handler:async({files,entries})=>{
+						const has=(path,status)=>entries.some(e=>e.path===path&&e.status===status);
+						if(!has("README.md","unchanged")||!has("source.txt","modified")||
+							!has("deleted.txt","deleted")||
+							!entries.some(e=>e.path==="renamed.txt"&&e.previousPath==="old.txt")||
+							files.includes("deleted.txt")||files.includes("old.txt")||
+							!files.includes("README.md")) throw new Error("BAD INVENTORY");
+						return [];
+					}},
+					{name:"Matched",description:"fixture",scope:"changes",match:/^(README|source|deleted|old)/g,
+					handler:async({files,entries})=>{
+						if(entries.length!==4||!entries.some(e=>e.status==="deleted")||
+							!entries.some(e=>e.path==="renamed.txt"&&e.previousPath==="old.txt")||
+							files.length!==3||!files.includes("renamed.txt"))
+							throw new Error("BAD MATCH");
+						return [];
+					}},
+					{name:"Empty",description:"fixture",scope:"repository",match:/^absent/,
+					handler:async({files,entries})=>{
+						if(files.length||entries.length) throw new Error("BAD EMPTY MATCH");
+						console.log("EMPTY MATCH RAN");
+						return [];
+					}},
+					{name:"Excluded",description:"fixture",scope:"repository",exclude:["^deleted"],
+					handler:async({entries})=>{
+						if(entries.some(e=>e.path==="deleted.txt")) throw new Error("BAD EXCLUSION");
+						return [];
+					}}
+				]};`,
+				);
+				const result = await cli(command, false);
+				expect(result.code, result.output).toBe(0);
+				expect(result.output).toContain("EMPTY MATCH RAN");
+			});
+
+			it.each([
+				"check",
+				"check-native",
+			] as const)("captures statuses before fixes while refreshing inventory: %s", async (command) => {
+				await writeFile(join(testDir, "source.txt"), "source");
+				await writeFile(
+					configPath,
+					`import {writeFile} from "node:fs/promises";
+					import {makePolicy} from ${JSON.stringify(factoryUrl)};
+					import {RequireCompanionChanges} from ${JSON.stringify(policiesUrl)};
+					export default {changes:{mode:"local"},policies:[
+						{name:"Create",description:"fixture",scope:"repository",handler:async({root})=>{
+							await writeFile(root+"/docs.txt","docs");return [];
+						}},
+						{name:"Inspect",description:"fixture",scope:"repository",handler:async({files,entries})=>{
+							if(!files.includes("docs.txt")||!entries.some(e=>e.path==="docs.txt"))
+								throw new Error("BAD REFRESH");
+							return [];
+						}},
+						makePolicy(RequireCompanionChanges,{config:{trigger:/^source/,companion:/^docs/}})
+					]};`,
+				);
+				const first = await cli(command, true);
+				expect(first.code).toBe(1);
+				expect(first.output).toContain("require a companion change");
+				expect((await cli(command, true)).code).toBe(0);
+			});
+
+			it.each([
+				"check",
+				"check-native",
+			] as const)("fails change setup before executing any fixer: %s", async (command) => {
+				await writeFile(
+					configPath,
+					`export default {policies:[{
+					name:"MustNotRun",description:"fixture",scope:"changes",
+					handler:async()=>{throw new Error("HANDLER RAN")}
+				}]};`,
+				);
+				const result = await cli(command, true);
+				expect(result.code).toBe(1);
+				expect(result.output).toContain("HEAD commit");
+				expect(result.output).not.toContain("HANDLER RAN");
+				const invalid = await cli(command, false, "", [
+					"--change-mode",
+					"local",
+					"--change-base",
+					"main",
+				]);
+				expect(invalid.code).toBe(1);
+				expect(invalid.output).toContain("only valid in pr mode");
+			});
 
 			it.each([
 				"check",

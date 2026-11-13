@@ -57,6 +57,12 @@ Re-exports [CargoTomlSortedConfig](/api/index/interfaces/cargotomlsortedconfig/)
 
 ***
 
+### collectRepositoryInventory
+
+Re-exports [collectRepositoryInventory](/api/index/functions/collectrepositoryinventory/)
+
+***
+
 ### ConditionalScriptEntry
 
 Re-exports [ConditionalScriptEntry](/api/index/type-aliases/conditionalscriptentry/)
@@ -486,6 +492,12 @@ Re-exports [PublicApiDocumentedConfig](/api/index/interfaces/publicapidocumented
 ### RepopoConfig
 
 Re-exports [RepopoConfig](/api/index/interfaces/repopoconfig/)
+
+***
+
+### RepositoryFile
+
+Re-exports [RepositoryFile](/api/index/type-aliases/repositoryfile/)
 
 ***
 

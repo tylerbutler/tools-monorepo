@@ -5,7 +5,7 @@ prev: false
 title: "FilePolicyDefinition"
 ---
 
-Defined in: [policy.ts:45](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L45)
+Defined in: [policy.ts:48](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L48)
 
 File scope is the default.
 
@@ -21,7 +21,7 @@ File scope is the default.
 
 > `optional` **defaultConfig?**: `C`
 
-Defined in: [policy.ts:52](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L52)
+Defined in: [policy.ts:55](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L55)
 
 ***
 
@@ -29,7 +29,7 @@ Defined in: [policy.ts:52](https://github.com/tylerbutler/tools-monorepo/blob/ma
 
 > **description**: `string`
 
-Defined in: [policy.ts:47](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L47)
+Defined in: [policy.ts:50](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L50)
 
 ***
 
@@ -37,7 +37,7 @@ Defined in: [policy.ts:47](https://github.com/tylerbutler/tools-monorepo/blob/ma
 
 > **match**: [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp)
 
-Defined in: [policy.ts:49](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L49)
+Defined in: [policy.ts:52](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L52)
 
 ***
 
@@ -45,7 +45,7 @@ Defined in: [policy.ts:49](https://github.com/tylerbutler/tools-monorepo/blob/ma
 
 > **name**: `string`
 
-Defined in: [policy.ts:46](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L46)
+Defined in: [policy.ts:49](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L49)
 
 ***
 
@@ -53,7 +53,7 @@ Defined in: [policy.ts:46](https://github.com/tylerbutler/tools-monorepo/blob/ma
 
 > `optional` **requiresConfig?**: `boolean`
 
-Defined in: [policy.ts:53](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L53)
+Defined in: [policy.ts:56](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L56)
 
 ***
 
@@ -61,7 +61,7 @@ Defined in: [policy.ts:53](https://github.com/tylerbutler/tools-monorepo/blob/ma
 
 > `optional` **resolver?**: (`args`) => [`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<[`PolicyResult`](/api/index/type-aliases/policyresult/)\> \| `Operation`\<[`PolicyResult`](/api/index/type-aliases/policyresult/)\>
 
-Defined in: [policy.ts:51](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L51)
+Defined in: [policy.ts:54](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L54)
 
 #### Parameters
 
@@ -79,7 +79,7 @@ Defined in: [policy.ts:51](https://github.com/tylerbutler/tools-monorepo/blob/ma
 
 > `optional` **scope?**: `"file"`
 
-Defined in: [policy.ts:48](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L48)
+Defined in: [policy.ts:51](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L51)
 
 ## Methods
 
@@ -87,7 +87,7 @@ Defined in: [policy.ts:48](https://github.com/tylerbutler/tools-monorepo/blob/ma
 
 > **handler**(`args`): [`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<[`PolicyResult`](/api/index/type-aliases/policyresult/)\> \| `Operation`\<[`PolicyResult`](/api/index/type-aliases/policyresult/)\>
 
-Defined in: [policy.ts:50](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L50)
+Defined in: [policy.ts:53](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L53)
 
 #### Parameters
 

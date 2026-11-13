@@ -27,6 +27,7 @@ describe("SharedDependencyVersions", () => {
 				await runHandler(SharedDependencyVersions.handler, {
 					root: testDir,
 					files: [],
+					entries: [],
 					resolve: false,
 				}),
 			).toEqual([]);
@@ -65,6 +66,7 @@ describe("SharedDependencyVersions", () => {
 
 			const result = await runHandler(SharedDependencyVersions.handler, {
 				files: ["Cargo.toml", "crates/foo/Cargo.toml", "crates/bar/Cargo.toml"],
+				entries: [],
 				root: testDir,
 				resolve: false,
 			});
@@ -79,6 +81,7 @@ describe("SharedDependencyVersions", () => {
 
 			const result = await runHandler(SharedDependencyVersions.handler, {
 				files: ["Cargo.toml"],
+				entries: [],
 				root: testDir,
 				resolve: false,
 			});
@@ -105,6 +108,7 @@ describe("SharedDependencyVersions", () => {
 			const args = {
 				root: testDir,
 				files: ["Cargo.toml", "crates/foo/Cargo.toml", "crates/bar/Cargo.toml"],
+				entries: [],
 				resolve: false,
 				config: { requireWorkspaceDeps: ["serde"] },
 			};
@@ -154,6 +158,7 @@ describe("SharedDependencyVersions", () => {
 
 			const result = await runHandler(SharedDependencyVersions.handler, {
 				files: ["Cargo.toml", "crates/foo/Cargo.toml", "crates/bar/Cargo.toml"],
+				entries: [],
 				root: testDir,
 				resolve: false,
 			});
@@ -204,6 +209,7 @@ describe("SharedDependencyVersions", () => {
 
 			const result = await runHandler(SharedDependencyVersions.handler, {
 				files: ["Cargo.toml", "crates/foo/Cargo.toml", "crates/bar/Cargo.toml"],
+				entries: [],
 				root: testDir,
 				resolve: false,
 			});
@@ -237,6 +243,7 @@ describe("SharedDependencyVersions", () => {
 
 			const result = await runHandler(SharedDependencyVersions.handler, {
 				files: ["Cargo.toml", "crates/foo/Cargo.toml"],
+				entries: [],
 				root: testDir,
 				resolve: false,
 				config: { requireWorkspaceDeps: ["serde"] },
@@ -258,6 +265,7 @@ describe("SharedDependencyVersions", () => {
 
 			const result = await runHandler(SharedDependencyVersions.handler, {
 				files: ["Cargo.toml", "crates/foo/Cargo.toml"],
+				entries: [],
 				root: testDir,
 				resolve: false,
 				config: { requireWorkspaceDeps: ["serde"] },
@@ -306,6 +314,7 @@ describe("SharedDependencyVersions", () => {
 
 			const result = await runHandler(SharedDependencyVersions.handler, {
 				files: ["Cargo.toml", "crates/foo/Cargo.toml", "crates/bar/Cargo.toml"],
+				entries: [],
 				root: testDir,
 				resolve: false,
 				config: { detectMismatches: false },

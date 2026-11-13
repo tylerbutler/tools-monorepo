@@ -9,8 +9,9 @@ Configuration is `repopo.config.ts` (or `.cjs`/`.mjs`) at the repository root.
 - Write object literals with `satisfies FilePolicyDefinition<C>` or
   `satisfies RepositoryPolicyDefinition<C>`. `PolicyDefinition` is their union.
 - File definitions have `name`, `description`, `match`, and `handler`.
-  Repository definitions require `scope: "repository"` and have no standalone
-  resolver. File scope is the default.
+  Repository definitions use `scope: "repository"` or `scope: "changes"`, with
+  optional `match` and no standalone resolver. Changes scope requests Git
+  statuses; ordinary repository scope does not. File scope is the default.
 - Configure with **only** `makePolicy(definition, { config, exclude, instanceId })`.
   Options can be omitted. The result is a `ConfiguredPolicy`.
 - Keep `requiresConfig: true` literal metadata. Required configuration needs
@@ -60,7 +61,8 @@ check mode. File findings cannot supply `files`; repository findings may supply
 repo-relative forward-slash locations.
 
 File handlers receive `{ file, root, resolve, config }`; repository handlers
-receive `{ files, root, resolve, config }`. Gate inline writes on `resolve`.
+receive `{ files, entries, root, resolve, config }`. `match` filters entries
+before the handler, including either rename endpoint. Gate inline writes on `resolve`.
 Standalone file resolvers receive `{ file, root, config, findings }` and return
 findings. Any inline fixed/failed status suppresses standalone resolution.
 Preserve messages and duplicate-message order to update findings. Omitted
@@ -96,7 +98,7 @@ Both APIs share `policies`, `root`, `files`, `inventory`, `exclude`, `fix`,
 Findings and errors have explicit scope, stable identity, and scope-safe
 locations; execution errors preserve original causes.
 
-Repository policies require explicit full inventory or an async loader.
+Repository/change policies require explicit full inventory or an async loader.
 Selection limits file policies only. Empty selection/inventory still runs
 repository checks. Arrays are snapshots; loaders refresh after file fixes and
 between repository fixers. The CLI loads full Git inventory independently of stdin.
@@ -107,6 +109,12 @@ and skip repository work. Repository errors skip subsequent repository fixers.
 Unresolved/failed findings do not trigger these boundaries. CLI errors and
 unresolved findings fail; excluded work does not. Cancellation releases owned
 resources before propagating, without rollback of writes.
+
+## Change-aware policies
+
+Capture Git statuses before any handlers/fixes; inventory refreshes must not turn
+same-run fixes into qualifying changes. See
+[the change-policy guide](../repopo-docs/src/content/docs/usage/cli-usage.mdx#check-rules-about-related-changes).
 
 ## Execution engines
 

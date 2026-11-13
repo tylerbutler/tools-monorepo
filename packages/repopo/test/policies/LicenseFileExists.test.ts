@@ -33,6 +33,7 @@ describe("LicenseFileExists", () => {
 			await LicenseFileExists.handler({
 				root,
 				files: [name],
+				entries: [{ path: name, status: "unchanged" }],
 				resolve: false,
 			}),
 		).toEqual([]);
@@ -62,11 +63,14 @@ describe("LicenseFileExists", () => {
 		const args = {
 			root,
 			files: ["COPYING"],
+			entries: [{ path: "COPYING", status: "unchanged" as const }],
 			resolve: false,
 			config: { acceptedNames: ["COPYING"] },
 		};
 		expect(await LicenseFileExists.handler(args)).toEqual([]);
-		expect(await LicenseFileExists.handler({ ...args, files: [] })).toEqual([
+		expect(
+			await LicenseFileExists.handler({ ...args, files: [], entries: [] }),
+		).toEqual([
 			expect.objectContaining({ message: expect.stringContaining("COPYING") }),
 		]);
 	});
@@ -77,6 +81,10 @@ describe("LicenseFileExists", () => {
 			await LicenseFileExists.handler({
 				root,
 				files: ["LICENSE", "LICENSE.txt"],
+				entries: [
+					{ path: "LICENSE", status: "unchanged" },
+					{ path: "LICENSE.txt", status: "unchanged" },
+				],
 				resolve: false,
 			}),
 		).toEqual([

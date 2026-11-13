@@ -46,6 +46,9 @@ export interface CargoTomlSortedConfig {
 }
 
 // @public
+export function collectRepositoryInventory(root: string, options?: NonNullable<RepopoConfig["changes"]>): Promise<readonly RepositoryFile[]>;
+
+// @public
 export type ConditionalScriptEntry = string | Record<string, string>;
 
 // @public
@@ -456,7 +459,7 @@ export type PolicyExecutionError = {
     file: string;
     files?: never;
 } | {
-    scope: "repository";
+    scope: "repository" | "changes";
     files: readonly string[];
     file?: never;
 });
@@ -516,7 +519,7 @@ export type PolicyRunFinding = (Omit<PolicyFinding, "files"> & {
     policy: string;
     policyId: string;
 }) | (PolicyFinding & {
-    scope: "repository";
+    scope: "repository" | "changes";
     file?: never;
     policy: string;
     policyId: string;
@@ -569,7 +572,7 @@ export type PolicySkippedWork = {
     scope: "file";
     file: string;
 } | {
-    scope: "repository";
+    scope: "repository" | "changes";
     file?: never;
 });
 
@@ -580,16 +583,33 @@ export interface PublicApiDocumentedConfig {
 
 // @public
 export interface RepopoConfig {
+    changes?: {
+        mode?: "pr" | "local" | "staged" | undefined;
+        base?: string | undefined;
+    } | undefined;
     excludeFiles?: (string | RegExp)[];
     // (undocumented)
     policies?: ConfiguredPolicy[];
 }
 
 // @public
-export type RepositoryInventory = readonly string[] | (() => Promise<readonly string[]>);
+export type RepositoryFile = ({
+    readonly status: "unchanged" | "added" | "modified" | "deleted" | "type-changed";
+    readonly path: string;
+} | {
+    readonly status: "renamed";
+    readonly path: string;
+    readonly previousPath: string;
+}) & {
+    readonly exists?: boolean | undefined;
+};
+
+// @public
+export type RepositoryInventory = readonly (string | RepositoryFile)[] | (() => Promise<readonly (string | RepositoryFile)[]>);
 
 // @public
 export interface RepositoryPolicyArgs<C = void> extends Omit<PolicyArgs<C>, "file"> {
+    entries: readonly RepositoryFile[];
     // (undocumented)
     files: readonly string[];
 }
@@ -602,14 +622,14 @@ export interface RepositoryPolicyDefinition<C = void> {
     description: string;
     // (undocumented)
     handler(args: RepositoryPolicyArgs<C>): Promise<PolicyResult> | Operation<PolicyResult>;
+    match?: RegExp | undefined;
     // (undocumented)
     name: PolicyName;
     // (undocumented)
     requiresConfig?: boolean | undefined;
     // (undocumented)
     resolver?: never;
-    // (undocumented)
-    scope: "repository";
+    scope: "repository" | "changes";
 }
 
 // @public

@@ -33,7 +33,7 @@ Defined in: [runner.ts:97](https://github.com/tylerbutler/tools-monorepo/blob/ma
 
 > **run**(): `Operation`\<[`PolicyRunResults`](/api/index/interfaces/policyrunresults/)\>
 
-Defined in: [runner.ts:134](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L134)
+Defined in: [runner.ts:139](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L139)
 
 #### Returns
 

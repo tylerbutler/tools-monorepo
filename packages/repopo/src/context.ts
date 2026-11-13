@@ -17,6 +17,17 @@ export function exclusionRegex(pattern: string | RegExp): RegExp {
 	return typeof pattern === "string" ? new RegExp(pattern, "i") : pattern;
 }
 
+/** Match without leaking global/sticky regex state between paths. @internal */
+export function matchesPath(regex: RegExp, file: string): boolean {
+	const index = regex.lastIndex;
+	try {
+		regex.lastIndex = 0;
+		return regex.test(file);
+	} finally {
+		regex.lastIndex = index;
+	}
+}
+
 /**
  * Creates the per-instance exclusion map used by policy runners.
  *

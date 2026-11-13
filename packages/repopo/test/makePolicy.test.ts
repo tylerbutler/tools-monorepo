@@ -126,13 +126,16 @@ describe("canonical makePolicy", () => {
 		expect(configured.exclude).toBeUndefined();
 	});
 
-	it("rejects repository resolvers at the JavaScript registration boundary", () => {
+	it.each([
+		"repository",
+		"changes",
+	] as const)("rejects %s resolvers at the JavaScript registration boundary", (scope) => {
 		expect(() =>
 			Reflect.apply(makePolicy, undefined, [
 				{
 					name: "Repository",
 					description: "Inline fixes only",
-					scope: "repository",
+					scope,
 					handler: async () => [],
 					resolver: async () => [],
 				},

@@ -6,17 +6,27 @@
  */
 import { Console } from "node:console";
 import { stat } from "node:fs/promises";
+import { env } from "node:process";
 import { createInterface } from "node:readline";
 import { types } from "node:util";
 import { TypeScriptLoader } from "@tylerbu/lilconfig-loader-ts";
 import { all, run } from "effection";
 import { lilconfig } from "lilconfig";
 import { DefaultPolicyConfig } from "../esm/config.js";
-import { createExcludedPolicyFileMap, exclusionRegex } from "../esm/context.js";
+import {
+	createExcludedPolicyFileMap,
+	exclusionRegex,
+	matchesPath,
+} from "../esm/context.js";
 import { ParsedFileCache } from "../esm/fileCache.js";
 import { identifyPolicyInstances, makePolicy } from "../esm/makePolicy.js";
 import { newPerfStats } from "../esm/perf.js";
 import { executionMessage, PolicyExecutor } from "../esm/policyExecution.js";
+import {
+	annotateInventory,
+	collectRepositoryInventory,
+	validateChangeOptions,
+} from "../esm/repositoryChanges.js";
 
 // Policy logging must not corrupt the JSON response stream.
 globalThis.console = new Console(process.stderr);
@@ -219,6 +229,7 @@ async function loadConfig(params) {
 		policies,
 		root: params.gitRoot ?? process.cwd(),
 		exclude: config.excludeFiles ?? [],
+		changes: config.changes,
 	};
 	options.exclude.forEach(exclusionRegex);
 	createExcludedPolicyFileMap(policies);
@@ -228,9 +239,7 @@ async function loadConfig(params) {
 			instanceId: policy.instanceId,
 			description: policy.description,
 			scope: policy.scope ?? "file",
-			...(policy.scope === "repository"
-				? {}
-				: { match: serializeRegex(policy.match) }),
+			...(policy.match ? { match: serializeRegex(policy.match) } : {}),
 			hasResolver: typeof policy.resolver === "function",
 			exclude: (policy.exclude ?? []).map(serializeExclusion),
 		})),
@@ -240,11 +249,31 @@ async function loadConfig(params) {
 	return metadata;
 }
 
-function beginRun(params) {
+async function beginRun(params) {
 	if (!registration)
 		throw new Error("Load configuration before running policies.");
 	session?.cache?.clear();
+	session = undefined;
+	const mode = params.changeMode ?? registration.changes?.mode;
+	const options = {
+		mode,
+		base:
+			params.changeBase ??
+			((mode ?? "pr") === "pr"
+				? env.GITHUB_BASE_REF ||
+					env.CI_MERGE_REQUEST_TARGET_BRANCH_NAME ||
+					registration.changes?.base
+				: undefined),
+	};
+	validateChangeOptions(options);
+	const inventory =
+		registration.policies.some((policy) => policy.scope === "changes") ||
+		params.changeMode != null ||
+		params.changeBase != null
+			? await collectRepositoryInventory(registration.root, options)
+			: [];
 	session = {
+		inventory,
 		executor: new PolicyExecutor(registration.root, params.fix ?? false),
 		cache: params.fix ? undefined : new ParsedFileCache(),
 	};
@@ -272,10 +301,21 @@ async function executeUnits(params) {
 						skipped: [],
 						perfStats: newPerfStats(),
 					};
-					if (policy.scope === "repository") {
+					if (policy.scope === "repository" || policy.scope === "changes") {
 						if (!Array.isArray(unit.files))
 							throw new Error("Repository units require explicit inventory.");
-						yield* session.executor.repository(policy, unit.files, result);
+						const exclusions = [
+							...registration.exclude,
+							...(policy.exclude ?? []),
+						].map(exclusionRegex);
+						const entries = annotateInventory(
+							unit.files,
+							session.inventory,
+						).filter(
+							(entry) =>
+								!exclusions.some((regex) => matchesPath(regex, entry.path)),
+						);
+						yield* session.executor.repository(policy, entries, result);
 					} else {
 						if (typeof unit.file !== "string")
 							throw new Error("File units require a file.");
@@ -358,7 +398,7 @@ async function main() {
 					data = await loadConfig(params);
 					break;
 				case "begin_run":
-					data = beginRun(params);
+					data = await beginRun(params);
 					break;
 				case "execute_units":
 					try {

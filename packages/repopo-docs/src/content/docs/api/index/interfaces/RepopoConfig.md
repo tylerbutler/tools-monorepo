@@ -11,6 +11,24 @@ Repository-wide policy configuration.
 
 ## Properties
 
+### changes?
+
+> `optional` **changes?**: `object`
+
+Defined in: [config.ts:10](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/config.ts#L10)
+
+Git comparison defaults; CLI base overrides CI, which overrides this base.
+
+#### base?
+
+> `optional` **base?**: `string`
+
+#### mode?
+
+> `optional` **mode?**: `"pr"` \| `"local"` \| `"staged"`
+
+***
+
 ### excludeFiles?
 
 > `optional` **excludeFiles?**: (`string` \| [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp))[]

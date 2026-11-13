@@ -5,7 +5,7 @@ prev: false
 title: "PolicyOptions"
 ---
 
-Defined in: [policy.ts:84](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L84)
+Defined in: [policy.ts:90](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L90)
 
 Instance configuration and repo-relative regex exclusions.
 
@@ -21,7 +21,7 @@ Instance configuration and repo-relative regex exclusions.
 
 > `optional` **config?**: `C`
 
-Defined in: [policy.ts:85](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L85)
+Defined in: [policy.ts:91](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L91)
 
 ***
 
@@ -29,7 +29,7 @@ Defined in: [policy.ts:85](https://github.com/tylerbutler/tools-monorepo/blob/ma
 
 > `optional` **exclude?**: readonly (`string` \| [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp))[]
 
-Defined in: [policy.ts:86](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L86)
+Defined in: [policy.ts:92](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L92)
 
 ***
 
@@ -37,4 +37,4 @@ Defined in: [policy.ts:86](https://github.com/tylerbutler/tools-monorepo/blob/ma
 
 > `optional` **instanceId?**: `string`
 
-Defined in: [policy.ts:87](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L87)
+Defined in: [policy.ts:93](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L93)

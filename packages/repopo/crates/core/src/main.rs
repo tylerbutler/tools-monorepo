@@ -39,6 +39,14 @@ enum Commands {
         #[arg(long)]
         stdin: bool,
 
+        /// Change context mode (does not select file-policy paths).
+        #[arg(long, value_parser = ["pr", "local", "staged"])]
+        change_mode: Option<String>,
+
+        /// Override the PR change context base ref.
+        #[arg(long)]
+        change_base: Option<String>,
+
         /// Show verbose output including per-policy timing.
         #[arg(short, long)]
         verbose: bool,
@@ -187,6 +195,8 @@ fn execute() -> Result<i32> {
             concurrency,
             fix,
             stdin,
+            change_mode,
+            change_base,
             verbose,
             quiet,
             config,
@@ -236,6 +246,8 @@ fn execute() -> Result<i32> {
                     verbose,
                     quiet,
                     concurrency,
+                    change_mode: change_mode.as_deref(),
+                    change_base: change_base.as_deref(),
                 },
             )?;
 

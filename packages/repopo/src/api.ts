@@ -117,6 +117,10 @@ export {
 	type PackageJsonHandler,
 } from "./policyDefiners/definePackagePolicy.js";
 export {
+	collectRepositoryInventory,
+	type RepositoryFile,
+} from "./repositoryChanges.js";
+export {
 	type PolicyExecutionError,
 	type PolicyRunFinding,
 	PolicyRunner,

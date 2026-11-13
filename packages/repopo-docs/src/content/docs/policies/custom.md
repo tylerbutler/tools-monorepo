@@ -5,12 +5,13 @@ sidebar:
   order: 7
 ---
 
-A policy is an object with a name, a description, and a handler function. There are two kinds:
+A policy is an object with a name, a description, and a handler function. Its scope controls when it runs:
 
 - **File policies** have a `match` regular expression. They run once for each selected file whose repo-relative path matches.
 - **Repository policies** set `scope: "repository"`. They run once per check, after all file policies.
+- **Change policies** set `scope: "changes"`. They run once like repository policies, but require Git change statuses.
 
-Write a policy as an object literal with `satisfies FilePolicyDefinition<C>` or `satisfies RepositoryPolicyDefinition<C>`, where `C` is the type of its configuration. `PolicyDefinition` is the union of both. Using `satisfies` rather than a type annotation keeps literal metadata such as `requiresConfig: true`. Configure both kinds with `makePolicy()` in the same `policies` array.
+Write a policy as an object literal with `satisfies FilePolicyDefinition<C>` or `satisfies RepositoryPolicyDefinition<C>`, where `C` is the type of its configuration. The latter supports both repository and changes scopes. `PolicyDefinition` is the union of both types. Using `satisfies` rather than a type annotation keeps literal metadata such as `requiresConfig: true`. Configure all scopes with `makePolicy()` in the same `policies` array.
 
 ## File policies
 
@@ -126,11 +127,11 @@ const resolver: PolicyResolver = async ({ findings }) => {
 - If the handler already returned a finding with `"fixed"` or `"failed"`, the resolver isn't called for that file.
 - If the resolver throws, the handler's findings are kept and the error is reported.
 
-Repository policies can't have a resolver; they fix inline in the handler.
+Repository and change policies can't have a resolver; they fix inline in the handler.
 
 ## Repository policies
 
-Use a repository policy for checks that involve several files or a file that's missing. Set `scope: "repository"` and omit `match`.
+Use a repository policy for checks that involve several files or a file that's missing. Set `scope: "repository"`. An optional `match` regex filters its inventory; omit it to receive all eligible entries.
 
 ```ts title="repopo.config.ts"
 import { makePolicy, type RepopoConfig, type RepositoryPolicyDefinition } from "repopo/api";
@@ -150,18 +151,50 @@ export default {
 } satisfies RepopoConfig;
 ```
 
-Repository handlers receive `{ root, files, resolve, config }`:
+Repository handlers receive `{ root, files, entries, resolve, config }`:
 
 - `root` is the absolute Git root.
-- `files` contains repo-relative paths from `git ls-files -co --exclude-standard --full-name`, after global and per-instance exclusions. This includes tracked and untracked files, but not ignored untracked files. A path doesn't guarantee the file still exists on disk.
+- `files` contains matching live repo-relative paths after global and per-instance exclusions. This includes tracked and untracked files, but not ignored untracked files.
+- `entries` contains the same eligible inventory as annotated records, including deleted paths when a change comparison is requested.
 
 Repository findings can set `files` to the repo-relative paths a violation concerns, using forward slashes and no `.` or `..` segments. Omit `files` for a repository-level violation. Repository policies fix inline: check `resolve`, apply the fix, and return the finding with `fixStatus: "fixed"`.
 
 ### Partial runs and fixes
 
-With `--stdin`, file policies check only the supplied paths. Repository policies still run, even with empty stdin, and receive the full eligible repository inventory. Exclusions filter their inventory; they don't prevent the policy from running when the inventory is empty.
+With `--stdin`, file policies check only the supplied paths. Repository policies still run, even with empty stdin. Their `match` regex and exclusions filter the full repository inventory; they don't prevent the policy from running when there are no matching entries.
 
 Repository policies run one at a time in configuration order after file policies finish. In fix mode, the inventory is refreshed before each repository policy, and a repository fixer can modify files outside the stdin selection. These rules apply to both `check` and `check-native`. To run repository policies from your own code, pass the full inventory explicitly; see the [programmatic API](/usage/programmatic-api/#selected-files-and-the-repository-inventory).
+
+## Change policies
+
+Use `scope: "changes"` when the handler needs Git statuses. The same optional `match` regex selects entries before the handler runs. A rename matches either endpoint and retains both paths. Unchanged and deleted entries remain available; the handler decides which statuses matter.
+
+```ts title="repopo.config.ts"
+import { makePolicy, type RepopoConfig, type RepositoryPolicyDefinition } from "repopo/api";
+
+const NoSourceOrDocsDeletions = {
+	name: "NoSourceOrDocsDeletions",
+	description: "Prevent deletion of source and documentation files.",
+	scope: "changes",
+	match: /^packages\/(?:repopo\/src|repopo-docs)\//,
+	handler: async ({ entries }) =>
+		entries
+			.filter(({ status }) => status === "deleted")
+			.map(({ path }) => ({
+				message: "Source and documentation files must not be deleted.",
+				files: [path],
+			})),
+} satisfies RepositoryPolicyDefinition;
+
+export default {
+	changes: { mode: "pr", base: "main" },
+	policies: [makePolicy(NoSourceOrDocsDeletions)],
+} satisfies RepopoConfig;
+```
+
+Only change policies or explicit CLI change flags request a Git comparison. Ordinary repository policies do not need a PR target. Change handlers use the same arguments, findings, ordering, and inline-fix rules as repository handlers, including running once with no matching entries.
+
+The CLI captures statuses before any handlers or fixes. Programmatic callers supply annotated inventory themselves; see [change-aware repository policies](/usage/programmatic-api/#change-aware-repository-policies).
 
 ## Concurrency and manifest snapshots
 
