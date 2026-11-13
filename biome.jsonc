@@ -43,6 +43,10 @@
 			// test data files used for testing (sail-infrastructure)
 			"!**/packages/sail-infrastructure/src/test/data",
 
+			// tree-sitter generated files
+			"!**/packages/tree-sitter-ccl/src/grammar.json",
+			"!**/packages/tree-sitter-ccl/src/node-types.json",
+
 			"!**/FluidFramework",
 
 			// vendored packages (git subrepo) - exclude all except package.json
@@ -76,6 +80,7 @@
 				"packages/repopo/**",
 				"packages/sail/**",
 				"packages/sort-tsconfig/**",
+				"packages/tree-sitter-ccl/**",
 			],
 			"linter": {
 				"rules": {
