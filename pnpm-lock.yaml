@@ -169,8 +169,8 @@ importers:
   .:
     devDependencies:
       '@biomejs/biome':
-        specifier: 2.3.8
-        version: 2.3.8
+        specifier: 2.6.6
+        version: 2.6.6
       '@changesets/cli':
         specifier: ^3.0.3
         version: 3.0.3
@@ -284,8 +284,8 @@ importers:
         specifier: ^0.9.12
         version: 0.9.12(@emnapi/runtime@1.11.3)(prettier@3.9.10)(typescript@6.0.3)
       '@biomejs/biome':
-        specifier: 2.3.8
-        version: 2.3.8
+        specifier: 2.6.6
+        version: 2.6.6
       '@vitest/coverage-v8':
         specifier: ^5.0.5
         version: 5.0.5(vitest@5.0.5)
@@ -429,8 +429,8 @@ importers:
         version: 0.2.17
     devDependencies:
       '@biomejs/biome':
-        specifier: 2.3.8
-        version: 2.3.8
+        specifier: 2.6.6
+        version: 2.6.6
       '@oclif/plugin-command-snapshot':
         specifier: ^6.0.7
         version: 6.0.7
@@ -520,8 +520,8 @@ importers:
         version: 7.2.0
     devDependencies:
       '@biomejs/biome':
-        specifier: 2.3.8
-        version: 2.3.8
+        specifier: 2.6.6
+        version: 2.6.6
       '@microsoft/api-documenter':
         specifier: ^7.30.18
         version: 7.30.18(@types/node@26.6.5)
@@ -617,8 +617,8 @@ importers:
         version: 5.0.0
     devDependencies:
       '@biomejs/biome':
-        specifier: 2.3.8
-        version: 2.3.8
+        specifier: 2.6.6
+        version: 2.6.6
       '@microsoft/api-extractor':
         specifier: ^7.59.4
         version: 7.59.4(@types/node@26.6.5)
@@ -774,8 +774,8 @@ importers:
   packages/fundamentals:
     devDependencies:
       '@biomejs/biome':
-        specifier: 2.3.8
-        version: 2.3.8
+        specifier: 2.6.6
+        version: 2.6.6
       '@microsoft/api-documenter':
         specifier: ^7.30.18
         version: 7.30.18(@types/node@26.6.5)
@@ -826,8 +826,8 @@ importers:
         version: 2.0.3
     devDependencies:
       '@biomejs/biome':
-        specifier: 2.3.8
-        version: 2.3.8
+        specifier: 2.6.6
+        version: 2.6.6
       '@microsoft/api-extractor':
         specifier: ^7.59.4
         version: 7.59.4(@types/node@26.6.5)
@@ -869,8 +869,8 @@ importers:
         version: 3.1.4
     devDependencies:
       '@biomejs/biome':
-        specifier: 2.3.8
-        version: 2.3.8
+        specifier: 2.6.6
+        version: 2.6.6
       '@microsoft/api-documenter':
         specifier: ^7.30.18
         version: 7.30.18(@types/node@26.6.5)
@@ -903,8 +903,8 @@ importers:
         version: 5.2.0
     devDependencies:
       '@biomejs/biome':
-        specifier: 2.3.8
-        version: 2.3.8
+        specifier: 2.6.6
+        version: 2.6.6
       '@types/hast':
         specifier: ^3.0.5
         version: 3.0.5
@@ -958,8 +958,8 @@ importers:
         version: 6.0.3
     devDependencies:
       '@biomejs/biome':
-        specifier: 2.3.8
-        version: 2.3.8
+        specifier: 2.6.6
+        version: 2.6.6
       '@types/mdast':
         specifier: ^4.0.4
         version: 4.0.4
@@ -1001,8 +1001,8 @@ importers:
         version: 6.0.3
     devDependencies:
       '@biomejs/biome':
-        specifier: 2.3.8
-        version: 2.3.8
+        specifier: 2.6.6
+        version: 2.6.6
       '@types/mdast':
         specifier: ^4.0.4
         version: 4.0.4
@@ -1056,8 +1056,8 @@ importers:
         version: 11.0.5
     devDependencies:
       '@biomejs/biome':
-        specifier: 2.3.8
-        version: 2.3.8
+        specifier: 2.6.6
+        version: 2.6.6
       '@types/mdast':
         specifier: ^4.0.4
         version: 4.0.4
@@ -1096,8 +1096,8 @@ importers:
         version: 6.0.3
     devDependencies:
       '@biomejs/biome':
-        specifier: 2.3.8
-        version: 2.3.8
+        specifier: 2.6.6
+        version: 2.6.6
       '@types/mdast':
         specifier: ^4.0.4
         version: 4.0.4
@@ -1145,8 +1145,8 @@ importers:
         version: 6.0.3
     devDependencies:
       '@biomejs/biome':
-        specifier: 2.3.8
-        version: 2.3.8
+        specifier: 2.6.6
+        version: 2.6.6
       '@types/mdast':
         specifier: ^4.0.4
         version: 4.0.4
@@ -1203,8 +1203,8 @@ importers:
         version: 6.0.3
     devDependencies:
       '@biomejs/biome':
-        specifier: 2.3.8
-        version: 2.3.8
+        specifier: 2.6.6
+        version: 2.6.6
       '@types/mdast':
         specifier: ^4.0.4
         version: 4.0.4
@@ -1303,8 +1303,8 @@ importers:
         version: 5.10.0
     devDependencies:
       '@biomejs/biome':
-        specifier: 2.3.8
-        version: 2.3.8
+        specifier: 2.6.6
+        version: 2.6.6
       '@microsoft/api-documenter':
         specifier: ^7.30.18
         version: 7.30.18(@types/node@26.6.5)
@@ -1554,8 +1554,8 @@ importers:
         version: 2.9.1
     devDependencies:
       '@biomejs/biome':
-        specifier: 2.3.8
-        version: 2.3.8
+        specifier: 2.6.6
+        version: 2.6.6
       '@microsoft/api-extractor':
         specifier: ^7.59.4
         version: 7.59.4(@types/node@26.6.5)
@@ -1678,8 +1678,8 @@ importers:
         version: 6.0.3
     devDependencies:
       '@biomejs/biome':
-        specifier: 2.3.8
-        version: 2.3.8
+        specifier: 2.6.6
+        version: 2.6.6
       '@microsoft/api-extractor':
         specifier: ^7.59.4
         version: 7.59.4(@types/node@26.6.5)
@@ -1751,8 +1751,8 @@ importers:
         version: 0.2.17
     devDependencies:
       '@biomejs/biome':
-        specifier: 2.3.8
-        version: 2.3.8
+        specifier: 2.6.6
+        version: 2.6.6
       '@microsoft/api-extractor':
         specifier: ^7.59.4
         version: 7.59.4(@types/node@26.6.5)
@@ -1808,8 +1808,8 @@ importers:
   packages/xkcd2-api:
     devDependencies:
       '@biomejs/biome':
-        specifier: 2.3.8
-        version: 2.3.8
+        specifier: 2.6.6
+        version: 2.6.6
       '@microsoft/api-documenter':
         specifier: ^7.30.18
         version: 7.30.18(@types/node@26.6.5)
@@ -2716,8 +2716,31 @@ packages:
     engines: {node: '>=14.21.3'}
     hasBin: true
 
+  '@biomejs/biome@2.6.6':
+    resolution: {integrity: sha512-NCgVJRyrU1+hsW1ILNaRqNAb9fRL4n49bwyef+wjVJQ488/bXbp0BfnNqTTExkiNQT3ugkgYKR1vK8NxsjlNSQ==}
+    engines: {node: '>=14.21.3'}
+    hasBin: true
+
+  '@biomejs/cli-android-arm64@2.6.6':
+    resolution: {integrity: sha512-bicnqNNxEX7pjkDQaptYvPRIWDfgXJLl/Ok7iZjC+F1AhfReor3FSS7SgPYnOvUy/jf++5U/KYN4T8OKH5rrNA==}
+    engines: {node: '>=14.21.3'}
+    cpu: [arm64]
+    os: [android]
+
+  '@biomejs/cli-android-x64@2.6.6':
+    resolution: {integrity: sha512-N443kDSElF4kDMKjarsL+ymj/ewLA5R9VAdawA7fJ7pwgN3JVDZp0K+xhKBglH8EwsKi2+K8xC6WxXSkgziFfw==}
+    engines: {node: '>=14.21.3'}
+    cpu: [x64]
+    os: [android]
+
   '@biomejs/cli-darwin-arm64@2.3.8':
     resolution: {integrity: sha512-HM4Zg9CGQ3txTPflxD19n8MFPrmUAjaC7PQdLkugeeC0cQ+PiVrd7i09gaBS/11QKsTDBJhVg85CEIK9f50Qww==}
+    engines: {node: '>=14.21.3'}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@biomejs/cli-darwin-arm64@2.6.6':
+    resolution: {integrity: sha512-/vSAqWx3by3p8w5ew+HVJDgguuaTK3U6Fb5gk/oDUH21iWOopm3gOlhT6tZfy5mTaM5R4CVc3uFWkxBtEDrKyw==}
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [darwin]
@@ -2728,8 +2751,21 @@ packages:
     cpu: [x64]
     os: [darwin]
 
+  '@biomejs/cli-darwin-x64@2.6.6':
+    resolution: {integrity: sha512-lLdOAJKbrAoDs+3GvTyVmMW345D9IhrIE3GgoL2eeHwO1boN4VhrSlALtFYsP0p+Jy4udUp4bTguij0qjKrH8w==}
+    engines: {node: '>=14.21.3'}
+    cpu: [x64]
+    os: [darwin]
+
   '@biomejs/cli-linux-arm64-musl@2.3.8':
     resolution: {integrity: sha512-PShR4mM0sjksUMyxbyPNMxoKFPVF48fU8Qe8Sfx6w6F42verbwRLbz+QiKNiDPRJwUoMG1nPM50OBL3aOnTevA==}
+    engines: {node: '>=14.21.3'}
+    cpu: [arm64]
+    os: [linux]
+    libc: [musl]
+
+  '@biomejs/cli-linux-arm64-musl@2.6.6':
+    resolution: {integrity: sha512-rw2Vsoi/WZGDyRjMXx9KZH9zsHe79LIzkdWHkLqsIkeKZm6qiGxtiIApxn7cmJSoEPaSvHaH5pRj1FhTcyL/XA==}
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [linux]
@@ -2742,8 +2778,22 @@ packages:
     os: [linux]
     libc: [glibc]
 
+  '@biomejs/cli-linux-arm64@2.6.6':
+    resolution: {integrity: sha512-UzJdUCg9dbEGpZOuZRyehEPrnwKjx9z4Um7sWLG5x6txu7UjeWdJZuBXVGlyAdD39w2Hx0nZeK1jKC4NFUTCNQ==}
+    engines: {node: '>=14.21.3'}
+    cpu: [arm64]
+    os: [linux]
+    libc: [glibc]
+
   '@biomejs/cli-linux-x64-musl@2.3.8':
     resolution: {integrity: sha512-YGLkqU91r1276uwSjiUD/xaVikdxgV1QpsicT0bIA1TaieM6E5ibMZeSyjQ/izBn4tKQthUSsVZacmoJfa3pDA==}
+    engines: {node: '>=14.21.3'}
+    cpu: [x64]
+    os: [linux]
+    libc: [musl]
+
+  '@biomejs/cli-linux-x64-musl@2.6.6':
+    resolution: {integrity: sha512-DiKejs+GnFbOVQsBnukUpiB+T13tqUDFGwwjsTq51vatAsaflzFzVD0BOgjVUGRrqKgE0K0Xf+wNtkcmdN2chw==}
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [linux]
@@ -2756,14 +2806,33 @@ packages:
     os: [linux]
     libc: [glibc]
 
+  '@biomejs/cli-linux-x64@2.6.6':
+    resolution: {integrity: sha512-l8/aPXc1cz8VpUyd4hb5Pm5zx+X3voQBks4aLYbp5pC8KSchuHyvqDfY5xax39qCHomI/2xn6NKEot+zebG38g==}
+    engines: {node: '>=14.21.3'}
+    cpu: [x64]
+    os: [linux]
+    libc: [glibc]
+
   '@biomejs/cli-win32-arm64@2.3.8':
     resolution: {integrity: sha512-H4IoCHvL1fXKDrTALeTKMiE7GGWFAraDwBYFquE/L/5r1927Te0mYIGseXi4F+lrrwhSWbSGt5qPFswNoBaCxg==}
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [win32]
 
+  '@biomejs/cli-win32-arm64@2.6.6':
+    resolution: {integrity: sha512-DjVXwQAQeHrO1JEZAEus54k40Tnh4glyU3VFLcDBKwoz0xnxCEnqw6TCMXoujcQMQynWd3AY8bLrbR1o0XNqow==}
+    engines: {node: '>=14.21.3'}
+    cpu: [arm64]
+    os: [win32]
+
   '@biomejs/cli-win32-x64@2.3.8':
     resolution: {integrity: sha512-RguzimPoZWtBapfKhKjcWXBVI91tiSprqdBYu7tWhgN8pKRZhw24rFeNZTNf6UiBfjCYCi9eFQs/JzJZIhuK4w==}
+    engines: {node: '>=14.21.3'}
+    cpu: [x64]
+    os: [win32]
+
+  '@biomejs/cli-win32-x64@2.6.6':
+    resolution: {integrity: sha512-B7KMG26A4I9lAuxwBGMmiVcjMGAeJRoz+pzFt9brRvOAsIrgOu8ptJld5rUWui6tM1uiJwxeJhhDPuAiZtxXdw==}
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [win32]
@@ -13568,28 +13637,71 @@ snapshots:
       '@biomejs/cli-win32-arm64': 2.3.8
       '@biomejs/cli-win32-x64': 2.3.8
 
+  '@biomejs/biome@2.6.6':
+    optionalDependencies:
+      '@biomejs/cli-android-arm64': 2.6.6
+      '@biomejs/cli-android-x64': 2.6.6
+      '@biomejs/cli-darwin-arm64': 2.6.6
+      '@biomejs/cli-darwin-x64': 2.6.6
+      '@biomejs/cli-linux-arm64': 2.6.6
+      '@biomejs/cli-linux-arm64-musl': 2.6.6
+      '@biomejs/cli-linux-x64': 2.6.6
+      '@biomejs/cli-linux-x64-musl': 2.6.6
+      '@biomejs/cli-win32-arm64': 2.6.6
+      '@biomejs/cli-win32-x64': 2.6.6
+
+  '@biomejs/cli-android-arm64@2.6.6':
+    optional: true
+
+  '@biomejs/cli-android-x64@2.6.6':
+    optional: true
+
   '@biomejs/cli-darwin-arm64@2.3.8':
+    optional: true
+
+  '@biomejs/cli-darwin-arm64@2.6.6':
     optional: true
 
   '@biomejs/cli-darwin-x64@2.3.8':
     optional: true
 
+  '@biomejs/cli-darwin-x64@2.6.6':
+    optional: true
+
   '@biomejs/cli-linux-arm64-musl@2.3.8':
+    optional: true
+
+  '@biomejs/cli-linux-arm64-musl@2.6.6':
     optional: true
 
   '@biomejs/cli-linux-arm64@2.3.8':
     optional: true
 
+  '@biomejs/cli-linux-arm64@2.6.6':
+    optional: true
+
   '@biomejs/cli-linux-x64-musl@2.3.8':
+    optional: true
+
+  '@biomejs/cli-linux-x64-musl@2.6.6':
     optional: true
 
   '@biomejs/cli-linux-x64@2.3.8':
     optional: true
 
+  '@biomejs/cli-linux-x64@2.6.6':
+    optional: true
+
   '@biomejs/cli-win32-arm64@2.3.8':
     optional: true
 
+  '@biomejs/cli-win32-arm64@2.6.6':
+    optional: true
+
   '@biomejs/cli-win32-x64@2.3.8':
+    optional: true
+
+  '@biomejs/cli-win32-x64@2.6.6':
     optional: true
 
   '@borewit/text-codec@0.2.2': {}
