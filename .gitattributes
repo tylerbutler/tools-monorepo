@@ -16,3 +16,14 @@ tsconfig*.json                 linguist-language=JSON-with-Comments
 # Hide docs from GitHub's language detection
 **/api-docs/**                     linguist-documentation
 **/docs/**                     linguist-documentation
+
+# Treat Claude and Copilot support files as vendored
+.agents/**                     linguist-vendored
+.claude/**                     linguist-vendored
+.copilot/**                    linguist-vendored
+**/AGENTS.md                   linguist-vendored
+**/CLAUDE.md                   linguist-vendored
+.github/copilot-instructions.md linguist-vendored
+.github/hooks/**               linguist-vendored
+.github/instructions/**        linguist-vendored
+.github/prompts/**             linguist-vendored
