@@ -245,7 +245,7 @@ importers:
         version: 7.8.5
       sort-package-json:
         specifier: '*'
-        version: 2.14.0
+        version: 4.1.0
       sort-tsconfig:
         specifier: workspace:^
         version: link:packages/sort-tsconfig
@@ -300,7 +300,7 @@ importers:
         version: 6.1.3
       sort-package-json:
         specifier: '*'
-        version: 2.14.0
+        version: 4.1.0
       typescript:
         specifier: ~6.0.3
         version: 6.0.3
@@ -466,7 +466,7 @@ importers:
         version: 6.1.3
       sort-package-json:
         specifier: '*'
-        version: 2.14.0
+        version: 4.1.0
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@26.6.5)(typescript@6.0.3)
@@ -514,7 +514,7 @@ importers:
         version: 4.0.2(supports-color@8.1.1)
       sort-package-json:
         specifier: '*'
-        version: 2.14.0
+        version: 4.1.0
       strip-ansi:
         specifier: ^7.2.0
         version: 7.2.0
@@ -678,7 +678,7 @@ importers:
         version: 6.1.7
       sort-package-json:
         specifier: '*'
-        version: 2.14.0
+        version: 4.1.0
       start-server-and-test:
         specifier: ^3.0.13
         version: 3.0.13(supports-color@8.1.1)
@@ -848,7 +848,7 @@ importers:
         version: 6.1.3
       sort-package-json:
         specifier: '*'
-        version: 2.14.0
+        version: 4.1.0
       tmp-promise:
         specifier: ^3.0.3
         version: 3.0.3
@@ -1294,7 +1294,7 @@ importers:
         version: 4.0.2(supports-color@10.2.2)
       sort-package-json:
         specifier: '*'
-        version: 2.14.0
+        version: 4.1.0
       tinyglobby:
         specifier: ^0.2.17
         version: 0.2.17
@@ -1529,8 +1529,8 @@ importers:
         specifier: ^4.0.2
         version: 4.0.2(supports-color@8.1.1)
       sort-package-json:
-        specifier: 2.14.0
-        version: 2.14.0
+        specifier: 4.1.0
+        version: 4.1.0
       std-env:
         specifier: ^4.3.0
         version: 4.3.0
@@ -1663,7 +1663,7 @@ importers:
         version: 4.0.2(supports-color@10.2.2)
       sort-package-json:
         specifier: '*'
-        version: 2.14.0
+        version: 4.1.0
       tinyexec:
         specifier: ^1.3.1
         version: 1.3.1
@@ -1785,7 +1785,7 @@ importers:
         version: 6.1.3
       sort-package-json:
         specifier: '*'
-        version: 2.14.0
+        version: 4.1.0
       start-server-and-test:
         specifier: ^3.0.13
         version: 3.0.13(supports-color@10.2.2)
@@ -1830,7 +1830,7 @@ importers:
         version: 6.1.3
       sort-package-json:
         specifier: '*'
-        version: 2.14.0
+        version: 4.1.0
       typedoc:
         specifier: ^0.28.20
         version: 0.28.20(typescript@6.0.3)
@@ -7528,10 +7528,6 @@ packages:
     resolution: {integrity: sha512-sTSfBjoXBp89JvIKIefqw7U2CCebsc74kiY6awiGogKtoSGbgjYE/G/+l9sF3MWFPNc9IcoOC4ODfKHfxFmp0g==}
     engines: {node: '>= 0.4'}
 
-  get-stdin@9.0.0:
-    resolution: {integrity: sha512-dVKBjfWisLAicarI2Sf+JuBE/DghV4UzNAVe9yhEJuzeREd3JhOTE9cUaJTeSa77fsbQUK3pcOpJfM59+VKZaA==}
-    engines: {node: '>=12'}
-
   get-stream@6.0.1:
     resolution: {integrity: sha512-ts6Wi+2j3jQjqi70w5AlN8DFnkSwC+MqmxEzdEALB2qXZYV3X/b1CTfgPLGJNMeAWxdPfU8FO1ms3NUfaHCPYg==}
     engines: {node: '>=10'}
@@ -7551,8 +7547,8 @@ packages:
   git-hooks-list@1.0.3:
     resolution: {integrity: sha512-Y7wLWcrLUXwk2noSka166byGCvhMtDRpgHdzCno1UQv/n/Hegp++a2xBWJL1lJarnKD3SWaljD+0z1ztqxuKyQ==}
 
-  git-hooks-list@3.2.0:
-    resolution: {integrity: sha512-ZHG9a1gEhUMX1TvGrLdyWb9kDopCBbTnI8z4JgRMYxsijWipgjSEYoPWqBuIB0DnRnvqlQSEeVmzpeuPm7NdFQ==}
+  git-hooks-list@4.2.1:
+    resolution: {integrity: sha512-WNvqJjOxxs/8ZP9+DWdwWJ7cDsd60NHf39XnD82pDVrKO5q7xfPqpkK6hwEAmBa/ZSEE4IOoR75EzbbIuwGlMw==}
 
   github-slugger@2.0.0:
     resolution: {integrity: sha512-IaOQ9puYtjrkq7Y0Ygl9KDZnrf/aiUJYUpVf89y8kyaxbRG7Y1SrX/jaumrv81vc61+kiMempujsM3Yw7w5qcw==}
@@ -10645,12 +10641,16 @@ packages:
   sort-object-keys@1.1.3:
     resolution: {integrity: sha512-855pvK+VkU7PaKYPc+Jjnmt4EzejQHyhhF33q31qG8x7maDzkeFhAAThdCYay11CISO+qAMwjOBP+fPZe0IPyg==}
 
+  sort-object-keys@2.1.0:
+    resolution: {integrity: sha512-SOiEnthkJKPv2L6ec6HMwhUcN0/lppkeYuN1x63PbyPRrgSPIuBJCiYxYyvWRTtjMlOi14vQUCGUJqS6PLVm8g==}
+
   sort-package-json@1.57.0:
     resolution: {integrity: sha512-FYsjYn2dHTRb41wqnv+uEqCUvBpK3jZcTp9rbz2qDTmel7Pmdtf+i2rLaaPMRZeSVM60V3Se31GyWFpmKs4Q5Q==}
     hasBin: true
 
-  sort-package-json@2.14.0:
-    resolution: {integrity: sha512-xBRdmMjFB/KW3l51mP31dhlaiFmqkHLfWTfZAno8prb/wbDxwBPWFpxB16GZbiPbYr3wL41H8Kx22QIDWRe8WQ==}
+  sort-package-json@4.1.0:
+    resolution: {integrity: sha512-CI7HgkV5rCE5dbYYJMuXkxgiSLc3uJczff9ic3kHuY5QRYKUbfsDSKN4DjTpvqejdJEkKLusQ64ykTte5ypr1A==}
+    engines: {node: '>=22'}
     hasBin: true
 
   source-map-js@1.2.2:
@@ -19542,8 +19542,6 @@ snapshots:
       dunder-proto: 1.0.1
       es-object-atoms: 1.1.2
 
-  get-stdin@9.0.0: {}
-
   get-stream@6.0.1: {}
 
   get-stream@8.0.1: {}
@@ -19560,7 +19558,7 @@ snapshots:
 
   git-hooks-list@1.0.3: {}
 
-  git-hooks-list@3.2.0: {}
+  git-hooks-list@4.2.1: {}
 
   github-slugger@2.0.0: {}
 
@@ -24745,6 +24743,8 @@ snapshots:
 
   sort-object-keys@1.1.3: {}
 
+  sort-object-keys@2.1.0: {}
+
   sort-package-json@1.57.0:
     dependencies:
       detect-indent: 6.1.0
@@ -24754,15 +24754,14 @@ snapshots:
       is-plain-obj: 2.1.0
       sort-object-keys: 1.1.3
 
-  sort-package-json@2.14.0:
+  sort-package-json@4.1.0:
     dependencies:
       detect-indent: 7.0.2
       detect-newline: 4.0.1
-      get-stdin: 9.0.0
-      git-hooks-list: 3.2.0
+      git-hooks-list: 4.2.1
       is-plain-obj: 4.1.0
       semver: 7.8.5
-      sort-object-keys: 1.1.3
+      sort-object-keys: 2.1.0
       tinyglobby: 0.2.17
 
   source-map-js@1.2.2: {}
