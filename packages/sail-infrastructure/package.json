@@ -48,7 +48,7 @@
 		"lilconfig": "^3.1.4",
 		"micromatch": "^4.0.8",
 		"oclif": "^6.0.10",
-		"package-manager-detector": "^0.2.11",
+		"package-manager-detector": "^1.9.0",
 		"pathe": "^2.0.3",
 		"picocolors": "^1.1.1",
 		"read-pkg-up": "^11.0.0",
