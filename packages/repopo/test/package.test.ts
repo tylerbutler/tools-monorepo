@@ -64,6 +64,9 @@ import { makePolicy, run as cliRun, type FilePolicyDefinition, type RepositoryPo
 import { makePolicy as apiFactory, runPolicies, PolicyRunner, definePackagePolicy, defineCargoPolicy, defineGleamPolicy, defineFileHeaderPolicy, type RepopoConfig, type PolicyResolver, type PolicyRunResults, type PolicyRunnerOptions } from "repopo/api";
 import { PackageJsonProperties, HtmlFileHeaders, JsTsFileHeaders, RequiredScripts, type PackageJsonPropertiesSettings, type NoLargeBinaryFilesSettings, type LicenseFileExistsSettings, type RequiredGitignorePatternsSettings, type NoPrivateWorkspaceDependenciesSettings } from "repopo/policies";
 import { PackageAllowedScopes, PackagePrivateField, PackageEsmType, PackageTestScripts, PackageScripts, GleamSharedDependencyVersions, GleamMonorepoConsistency } from "repopo/policies";
+import { MaxChangedFiles, type MaxChangedFilesConfig } from "repopo/policies";
+import type { MaxChangedFilesConfig as RootLimit } from "repopo";
+import type { MaxChangedFilesConfig as ApiLimit } from "repopo/api";
 import type { PackageJsonPropertiesSettings as RootSettings, NoLargeBinaryFilesSettings as RootBinary } from "repopo";
 import type { LicenseFileExistsSettings as ApiLicense, RequiredGitignorePatternsSettings as ApiGitignore, NoPrivateWorkspaceDependenciesSettings as ApiPrivate } from "repopo/api";
 // @ts-expect-error API entry point deliberately excludes OCLIF run.
@@ -75,7 +78,7 @@ import { Policy, type PolicyFailure, type PolicyFixResult, type PolicyShape } fr
 // @ts-expect-error Retired package helper alias.
 import { generatePackagePolicy } from "repopo";
 interface Settings { threshold: number; label: string }
-for (const definition of [PackageAllowedScopes, PackagePrivateField, PackageEsmType, PackageTestScripts, PackageScripts, GleamSharedDependencyVersions, GleamMonorepoConsistency]) {
+for (const definition of [PackageAllowedScopes, PackagePrivateField, PackageEsmType, PackageTestScripts, PackageScripts, GleamSharedDependencyVersions, GleamMonorepoConsistency, MaxChangedFiles]) {
 	definition.requiresConfig satisfies true;
 	// @ts-expect-error Each built-in requires an explicit config, including in unions.
 	makePolicy(definition);
@@ -85,6 +88,12 @@ for (const definition of [PackageAllowedScopes, PackagePrivateField, PackageEsmT
 	makePolicy(definition, { config: undefined });
 }
 makePolicy(PackageAllowedScopes, { config: { allowedScopes: ["@example"] } });
+const limit: MaxChangedFilesConfig & RootLimit & ApiLimit = { maxFiles: 10 };
+makePolicy(MaxChangedFiles, { config: limit });
+// @ts-expect-error The changed-file limit must be supplied.
+makePolicy(MaxChangedFiles, { config: {} });
+// @ts-expect-error The limit must be numeric.
+makePolicy(MaxChangedFiles, { config: { maxFiles: "10" } });
 makePolicy(PackagePrivateField, { config: { unmatchedPackages: "private" } });
 makePolicy(PackageEsmType, { config: { requiredType: "module" } });
 makePolicy(PackageTestScripts, { config: { testDependencies: ["vitest"], requiredScripts: ["test"] } });

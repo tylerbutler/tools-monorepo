@@ -334,6 +334,11 @@ export function makePolicy<D extends RepositoryPolicyDefinition<unknown>>(defini
 export function makePolicy<D extends PolicyDefinition<unknown>>(definition: D, ...options: OptionsFor<D>): ConfiguredPolicy<ConfigOf<D>>;
 
 // @public
+export interface MaxChangedFilesConfig {
+    maxFiles: number;
+}
+
+// @public
 export interface MutuallyExclusiveScriptsConfig {
     groups: string[][];
 }

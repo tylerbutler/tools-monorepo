@@ -289,6 +289,23 @@ export interface LicenseFileExistsSettings {
 }
 
 // @public
+export const MaxChangedFiles: {
+    name: string;
+    description: string;
+    scope: "changes";
+    requiresConfig: true;
+    handler: (input: RepositoryPolicyArgs<MaxChangedFilesConfig>) => Promise<{
+        message: string;
+        manualFix: string;
+    }[]>;
+};
+
+// @public
+export interface MaxChangedFilesConfig {
+    maxFiles: number;
+}
+
+// @public
 export const MutuallyExclusiveScripts: FilePolicyDefinition<MutuallyExclusiveScriptsConfig | undefined> & {
     requiresConfig: true;
 };

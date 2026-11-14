@@ -45,6 +45,7 @@ Import `repopo/api` for the programmatic API without the CLI entry point.
 - [GleamTomlSortedConfig](/api/index/interfaces/gleamtomlsortedconfig/)
 - [GleamVersionConstraintConfig](/api/index/interfaces/gleamversionconstraintconfig/)
 - [LicenseFileExistsSettings](/api/index/interfaces/licensefileexistssettings/)
+- [MaxChangedFilesConfig](/api/index/interfaces/maxchangedfilesconfig/)
 - [MutuallyExclusiveScriptsConfig](/api/index/interfaces/mutuallyexclusivescriptsconfig/)
 - [NoLargeBinaryFilesSettings](/api/index/interfaces/nolargebinaryfilessettings/)
 - [NoPrivateWorkspaceDependenciesSettings](/api/index/interfaces/noprivateworkspacedependenciessettings/)

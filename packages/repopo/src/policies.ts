@@ -109,6 +109,10 @@ export {
 	type LicenseFileExistsSettings,
 } from "./policies/LicenseFileExists.js";
 export {
+	MaxChangedFiles,
+	type MaxChangedFilesConfig,
+} from "./policies/MaxChangedFiles.js";
+export {
 	MutuallyExclusiveScripts,
 	type MutuallyExclusiveScriptsConfig,
 } from "./policies/MutuallyExclusiveScripts.js";
