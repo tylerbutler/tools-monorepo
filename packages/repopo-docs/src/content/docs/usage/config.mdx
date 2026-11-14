@@ -5,7 +5,9 @@ sidebar:
   order: 2
 ---
 
-repopo reads its configuration from `repopo.config.ts`, `repopo.config.mjs`, or `repopo.config.cjs` at the repository root. A TypeScript file is recommended. Its default export is a `RepopoConfig`:
+After your [first check](/installation/#your-first-check), add the policies your repository needs and configure their options.
+
+repopo reads its configuration from `repopo.config.ts`, `repopo.config.mjs`, or `repopo.config.cjs` at the repository root. Use a TypeScript file for type checking. Its default export is a `RepopoConfig`:
 
 ```ts title="repopo.config.ts"
 import { makePolicy, type RepopoConfig } from "repopo";
@@ -25,28 +27,6 @@ export default {
 :::note[Upgrading from an earlier version?]
 The 1.0 API replaced `policy()` and positional arguments with a single `makePolicy()` options object. See [Migrate to the 1.0 API](/usage/migration/).
 :::
-
-## Change context defaults
-
-Configure change collection independently of file selection:
-
-```ts
-export default {
-	changes: {
-		mode: "pr",
-		base: "main",
-	},
-	policies: [
-		// Add a policy with scope: "changes" here.
-	],
-} satisfies RepopoConfig;
-```
-
-`changes.mode` accepts `pr`, `local`, or `staged`. `changes.base` supplies the PR target when CI does not specify one; local and staged modes ignore this default. `--change-base` overrides both CI and configuration. See [change modes and base resolution](/usage/cli-usage/#check-rules-about-related-changes).
-
-Global and per-policy exclusions filter selected files and repository inventory, including annotated and deleted entries. Use explicit trigger and companion regexes to scope a change-aware rule.
-
-Repository and change definitions can also set one `match` regex to filter their inventory. It matches either rename endpoint and keeps the full record. This does not change the inventory seen by other policies or prevent a handler from running with no matching entries.
 
 ## Choosing policies
 
@@ -133,3 +113,25 @@ File policies run once per matching selected file. Policies with `scope: "reposi
 Repository policies receive the full Git file inventory after global and per-instance exclusions, even with `--stdin`. Exclusions filter that inventory, but the policy still runs when the filtered inventory is empty. With `--fix`, repository policies run one at a time in configuration order and can change files outside the stdin selection. The inventory is refreshed before each repository policy runs. These rules apply to both `check` and `check-native`.
 
 The built-in repository policies are [LicenseFileExists](/policies/repository/#licensefileexists) and [SharedDependencyVersions](/policies/rust/#shareddependencyversions). To write your own, see [Repository policies](/policies/custom/#repository-policies).
+
+## Change context defaults
+
+When a rule depends on Git changes, such as requiring a documentation update with a source change, configure change collection independently of file selection:
+
+```ts
+export default {
+	changes: {
+		mode: "pr",
+		base: "main",
+	},
+	policies: [
+		// Add a policy with scope: "changes" here.
+	],
+} satisfies RepopoConfig;
+```
+
+`changes.mode` accepts `pr`, `local`, or `staged`. `changes.base` supplies the PR target when CI does not specify one; local and staged modes ignore this default. `--change-base` overrides both CI and configuration. See [change modes and base resolution](/usage/change-policies/#choose-a-change-mode).
+
+Global and per-policy exclusions filter selected files and repository inventory, including annotated and deleted entries. Use explicit trigger and companion regexes to scope a change-aware rule.
+
+Repository and change definitions can also set one `match` regex to filter their inventory. It matches either rename endpoint and keeps the full record. This does not change the inventory seen by other policies or prevent a handler from running with no matching entries.

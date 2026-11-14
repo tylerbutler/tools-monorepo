@@ -13,7 +13,61 @@ To run repopo in a repository, from scripts, Git hooks, or CI, install it as a d
 
 <PackageManagers pkg="repopo" dev="true" />
 
-Then [create a configuration file](/usage/config/) and run `repopo check`.
+With repopo installed, choose one repository convention to check. The walkthrough below uses a required license field.
+
+## Your first check
+
+Run these steps from the root of a Git repository that has a `package.json`. The commands use pnpm; if you installed with npm, use `npx repopo` instead of `pnpm exec repopo`.
+
+### Configure one rule
+
+Suppose each `package.json` must declare an MIT license. Create `repopo.config.ts` at the repository root:
+
+```ts title="repopo.config.ts"
+import { makePolicy, type RepopoConfig } from "repopo/api";
+import { PackageJsonProperties } from "repopo/policies";
+
+export default {
+	policies: [
+		makePolicy(PackageJsonProperties, {
+			config: { verbatim: { license: "MIT" } },
+		}),
+	],
+} satisfies RepopoConfig;
+```
+
+If you already have a configuration, add this policy to its `policies` array instead of replacing the file.
+
+This configuration enables only `PackageJsonProperties`. It checks each `package.json` in the Git file inventory, including tracked files and untracked files that Git does not ignore.
+
+### Find a violation
+
+```sh
+pnpm exec repopo check
+```
+
+If a `package.json` has no `license` field, or its value differs from `"MIT"`, repopo reports `Incorrect package.json field value for 'license'.` The command exits with a non-zero status. If each matching file has the expected value, the check passes.
+
+### Fix it and check again
+
+Review the violations before you apply fixes. This rule sets the license field to `"MIT"` in each matching file; use a value that reflects your project's license.
+
+```sh
+pnpm exec repopo check --fix
+pnpm exec repopo check
+```
+
+The fix adds or updates the `license` field and preserves the other package fields. Repopo reports the fixed findings. The second check passes with no violations if the files meet the rule.
+
+### Keep the rule in CI
+
+After you install development dependencies in CI, run the same read-only command:
+
+```sh
+pnpm exec repopo check
+```
+
+A violation produces a non-zero exit status, so the CI job can fail the check without changing files. To add more rules or skip selected files, continue with [Configuration](/usage/config/). See [CLI usage](/usage/cli-usage/) for checks on selected files and other commands.
 
 ## As a library
 
