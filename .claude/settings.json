@@ -1,57 +1,57 @@
 {
-  "enabledPlugins": {
-    "typescript-lsp@claude-plugins-official": true,
-    "frontend-design@claude-plugins-official": false,
-    "playwright@claude-plugins-official": false
-  },
-  "permissions": {
-    "allow": [
-      "Bash(./packages/repopo/bin/dev.js *)",
-      "Bash(pnpm:*)",
-      "Bash(git:*)"
-    ],
-    "deny": [],
-    "ask": []
-  },
-  "hooks": {
-    "SessionStart": [
-      {
-        "matcher": "startup|resume|clear|compact",
-        "hooks": [
-          {
-            "type": "command",
-            "statusMessage": "Loading ponytail mode...",
-            "command": "node -e \"require(require('path').join(process.env.CLAUDE_PLUGIN_ROOT.split(String.fromCharCode(92)).join('/'), 'hooks/ponytail-activate.js'))\"",
-            "timeout": 15
-          }
-        ]
-      }
-    ],
-    "SubagentStart": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "statusMessage": "Loading ponytail mode...",
-            "command": "node -e \"require(require('path').join(process.env.CLAUDE_PLUGIN_ROOT.split(String.fromCharCode(92)).join('/'), 'hooks/ponytail-subagent.js'))\"",
-            "timeout": 15
-          }
-        ]
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "statusMessage": "Tracking ponytail mode...",
-            "command": "node -e \"require(require('path').join(process.env.CLAUDE_PLUGIN_ROOT.split(String.fromCharCode(92)).join('/'), 'hooks/ponytail-mode-tracker.js'))\"",
-            "timeout": 15
-          }
-        ]
-      }
-    ]
-  }
+	"enabledPlugins": {
+		"typescript-lsp@claude-plugins-official": true,
+		"frontend-design@claude-plugins-official": false,
+		"playwright@claude-plugins-official": false
+	},
+	"permissions": {
+		"allow": [
+			"Bash(./packages/repopo/bin/dev.js *)",
+			"Bash(pnpm:*)",
+			"Bash(git:*)"
+		],
+		"deny": [],
+		"ask": []
+	},
+	"hooks": {
+		"SessionStart": [
+			{
+				"matcher": "startup|resume|clear|compact",
+				"hooks": [
+					{
+						"type": "command",
+						"statusMessage": "Loading ponytail mode...",
+						"command": "node -e \"require(require('path').join(process.env.CLAUDE_PLUGIN_ROOT.split(String.fromCharCode(92)).join('/'), 'hooks/ponytail-activate.js'))\"",
+						"timeout": 15
+					}
+				]
+			}
+		],
+		"SubagentStart": [
+			{
+				"matcher": "*",
+				"hooks": [
+					{
+						"type": "command",
+						"statusMessage": "Loading ponytail mode...",
+						"command": "node -e \"require(require('path').join(process.env.CLAUDE_PLUGIN_ROOT.split(String.fromCharCode(92)).join('/'), 'hooks/ponytail-subagent.js'))\"",
+						"timeout": 15
+					}
+				]
+			}
+		],
+		"UserPromptSubmit": [
+			{
+				"matcher": "*",
+				"hooks": [
+					{
+						"type": "command",
+						"statusMessage": "Tracking ponytail mode...",
+						"command": "node -e \"require(require('path').join(process.env.CLAUDE_PLUGIN_ROOT.split(String.fromCharCode(92)).join('/'), 'hooks/ponytail-mode-tracker.js'))\"",
+						"timeout": 15
+					}
+				]
+			}
+		]
+	}
 }
