@@ -1,5 +1,22 @@
 # repopo
 
+## 0.14.0
+
+### Minor Changes
+
+- Add a full repository inventory annotated with added, modified, deleted, renamed, type-changed, or unchanged status. Support PR, local, and staged comparisons with explicit base overrides and shared TypeScript/native behavior. _[`#828`](https://github.com/tylerbutler/tools-monorepo/pull/828) [`ddf0db2`](https://github.com/tylerbutler/tools-monorepo/commit/ddf0db26c2c92c56df8954e5f81692da4a06ec13) [@tylerbutler](https://github.com/tylerbutler)_
+
+	
+	Use `RequireCompanionChanges` to require related path updates, such as documentation changes alongside source changes. Existing file selection and full repository inventory retain their behavior.
+	
+	Configure comparisons with `changes: { mode?, base? }`. The CLI uses its explicit base override first, then CI's target, then the configured base.
+	
+	Use `scope: "changes"` to request change statuses without making ordinary repository policies depend on Git comparison history. Both scopes accept one optional `match` regex that filters the handler's inventory, including either rename endpoint.
+- Add the opt-in `MaxChangedFiles` policy with required configuration `{ maxFiles: number }`. Report a violation when the eligible changed-file count exceeds the nonnegative integer limit; exactly the limit passes. _[`#829`](https://github.com/tylerbutler/tools-monorepo/pull/829) [`f02fd0a`](https://github.com/tylerbutler/tools-monorepo/commit/f02fd0ac44020272d197289215aabb561e5307e2) [@tylerbutler](https://github.com/tylerbutler)_
+
+	
+	Count additions, modifications, deletions, type changes, and renames once per change record. Honor global and per-policy exclusions, and use the existing PR/local/staged change snapshot independently of stdin selection. Findings include the count, limit, and guidance to reduce or split the change.
+
 ## 0.13.0
 
 ### Minor Changes
