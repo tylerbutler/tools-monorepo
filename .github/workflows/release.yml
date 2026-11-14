@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       actions: write # For repopo-core release workflow dispatch
-      contents: write # For changesets PR creation
+      contents: write # For changesets PR creation and version tags
       pull-requests: write # For changesets PR updates
       id-token: write # OIDC token for npm trusted publishing
       attestations: write # For GitHub build attestations
@@ -99,6 +99,32 @@ jobs:
           compact_contents=$(echo "$contents" | jq -c '.publishedPackages')
           echo "$compact_contents"
           echo "report=$compact_contents" >> $GITHUB_OUTPUT
+
+      - name: Tag published versions
+        if: |
+          steps.publish.outputs.report != null &&
+          steps.publish.outputs.report != '[]' &&
+          github.event.inputs.publish_public != 'false'
+        env:
+          PUBLISH_REPORT: ${{ steps.publish.outputs.report }}
+          RELEASE_COMMIT: ${{ github.sha }}
+        run: |
+          tags=$(jq -r '.[] | (.name | split("/") | last) + "-v" + .version' <<< "$PUBLISH_REPORT")
+          refs=()
+          while IFS= read -r tag; do
+            if git show-ref --verify --quiet "refs/tags/$tag"; then
+              if [ "$(git rev-parse "refs/tags/$tag^{commit}")" != "$RELEASE_COMMIT" ]; then
+                echo "::error::Tag $tag already points to another commit"
+                exit 1
+              fi
+              continue
+            fi
+            git tag -- "$tag" "$RELEASE_COMMIT"
+            refs+=("refs/tags/$tag")
+          done <<< "$tags"
+          if [ "${#refs[@]}" -gt 0 ]; then
+            git push --atomic origin "${refs[@]}"
+          fi
 
       - name: Output report
         if: steps.publish.outputs.report != null && steps.publish.outputs.report != '[]'
