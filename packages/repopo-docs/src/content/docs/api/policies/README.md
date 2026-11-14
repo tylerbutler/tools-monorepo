@@ -44,6 +44,7 @@ Use `makePolicy()` from `repopo` or `repopo/api` to configure these definitions.
 - [HtmlFileHeaders](/api/policies/variables/htmlfileheaders/)
 - [JsTsFileHeaders](/api/policies/variables/jstsfileheaders/)
 - [LicenseFileExists](/api/policies/variables/licensefileexists/)
+- [MaxChangedFiles](/api/policies/variables/maxchangedfiles/)
 - [MutuallyExclusiveScripts](/api/policies/variables/mutuallyexclusivescripts/)
 - [NoBuildDirectory](/api/policies/variables/nobuilddirectory/)
 - [NoJsFileExtensions](/api/policies/variables/nojsfileextensions/)
@@ -218,6 +219,12 @@ Re-exports [GleamVersionConstraintConfig](/api/index/interfaces/gleamversioncons
 ### LicenseFileExistsSettings
 
 Re-exports [LicenseFileExistsSettings](/api/index/interfaces/licensefileexistssettings/)
+
+***
+
+### MaxChangedFilesConfig
+
+Re-exports [MaxChangedFilesConfig](/api/index/interfaces/maxchangedfilesconfig/)
 
 ***
 

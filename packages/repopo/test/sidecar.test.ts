@@ -1353,6 +1353,68 @@ describe("Native canonical sidecar", () => {
 			it.each([
 				"check",
 				"check-native",
+			] as const)("shares changed-file limits, exclusions and change modes: %s", async (command) => {
+				const git = simpleGit(testDir);
+				await git.addConfig("user.name", "Test");
+				await git.addConfig("user.email", "test@example.invalid");
+				for (const file of [
+					"source.txt",
+					"old.txt",
+					"deleted.txt",
+					"global.txt",
+					"excluded.txt",
+				]) {
+					await writeFile(join(testDir, file), `${file}\n`);
+				}
+				await git.add(".");
+				await git.commit("initial");
+				await git.raw(["branch", "comparison"]);
+				await writeFile(
+					configPath,
+					`import {makePolicy} from ${JSON.stringify(factoryUrl)};
+					import {MaxChangedFiles} from ${JSON.stringify(policiesUrl)};
+					export default {changes:{base:"comparison"},excludeFiles:["^global", "^repopo.config"],policies:[
+						makePolicy(MaxChangedFiles,{config:{maxFiles:2},exclude:["^excluded"]})
+					]};`,
+				);
+				await git.mv("old.txt", "renamed.txt");
+				await git.rm("deleted.txt");
+				await writeFile(join(testDir, "source.txt"), "modified");
+				await writeFile(
+					join(testDir, "global.txt"),
+					"modified globally excluded",
+				);
+				await writeFile(
+					join(testDir, "excluded.txt"),
+					"modified locally excluded",
+				);
+				await git.add(["source.txt", "global.txt", "excluded.txt"]);
+				expect((await cli(command, false)).code).toBe(0);
+				for (const mode of ["staged", "local"]) {
+					const result = await cli(command, false, "global.txt\n", [
+						"--change-mode",
+						mode,
+					]);
+					expect(result.code, result.output).toBe(1);
+					expect(result.output).toContain(
+						"Change set contains 3 changed files; maximum allowed is 2.",
+					);
+					expect(result.output).toContain("split the change");
+				}
+				await git.commit("three eligible changes");
+				const pr = await cli(command, false);
+				expect(pr.code, pr.output).toBe(1);
+				expect(pr.output).toContain(
+					"Change set contains 3 changed files; maximum allowed is 2.",
+				);
+				expect(
+					(await cli(command, false, "", ["--change-mode", "staged"])).code,
+				).toBe(0);
+			});
+
+			it.each([
+				"check",
+				"check-native",
 			] as const)("shares staged/local/PR rule behavior with empty stdin: %s", async (command) => {
 				const git = simpleGit(testDir);
 				await git.addConfig("user.name", "Test");

@@ -41,6 +41,7 @@ export type { GleamTomlRequiredConfig } from "./policies/GleamTomlRequired.js";
 export type { GleamTomlSortedConfig } from "./policies/GleamTomlSorted.js";
 export type { GleamVersionConstraintConfig } from "./policies/GleamVersionConstraint.js";
 export type { LicenseFileExistsSettings } from "./policies/LicenseFileExists.js";
+export type { MaxChangedFilesConfig } from "./policies/MaxChangedFiles.js";
 export type { MutuallyExclusiveScriptsConfig } from "./policies/MutuallyExclusiveScripts.js";
 export type { NoLargeBinaryFilesSettings } from "./policies/NoLargeBinaryFiles.js";
 export type { NoPrivateWorkspaceDependenciesSettings } from "./policies/NoPrivateWorkspaceDependencies.js";

@@ -291,6 +291,12 @@ Re-exports [makePolicy](/api/index/functions/makepolicy/)
 
 ***
 
+### MaxChangedFilesConfig
+
+Re-exports [MaxChangedFilesConfig](/api/index/interfaces/maxchangedfilesconfig/)
+
+***
+
 ### MutuallyExclusiveScriptsConfig
 
 Re-exports [MutuallyExclusiveScriptsConfig](/api/index/interfaces/mutuallyexclusivescriptsconfig/)

@@ -35,6 +35,37 @@ export default {
 
 **Auto-fixable:** No.
 
+### MaxChangedFiles
+
+**Change policy** (`scope: "changes"`). Reports a violation when the number of changed files exceeds a configured limit.
+
+```ts title="repopo.config.ts"
+import { makePolicy, type RepopoConfig } from "repopo/api";
+import { MaxChangedFiles } from "repopo/policies";
+
+export default {
+	changes: { base: "main" },
+	policies: [
+		makePolicy(MaxChangedFiles, {
+			config: { maxFiles: 50 },
+			exclude: ["^generated/"],
+		}),
+	],
+} satisfies RepopoConfig;
+```
+
+| Option | Type | Description |
+| --- | --- | --- |
+| `maxFiles` | `number` | Required nonnegative integer. Maximum number of changed files. Invalid values produce a policy execution error. |
+
+The policy counts additions, modifications, deletions, type changes, and renames. Each rename counts once. Unchanged files do not count. Exactly `maxFiles` changes pass; a limit of zero permits an empty change set.
+
+Global and per-policy exclusions remove files from the count. For renames, exclusions apply to the destination path, as with other repository policies. Stdin and file selections do not limit the count: the policy checks the full eligible change set, including when stdin is empty.
+
+Use the existing [PR, local, and staged change modes](/usage/cli-usage/#check-rules-about-related-changes) to select the change set. The policy uses the status snapshot captured before fixes, so fixes in the same run do not increase the count.
+
+**Auto-fixable:** No. The finding reports the actual count and configured limit, with guidance to reduce or split the change. Enable the policy in your configuration; it has no default limit and does not run by default.
+
 ### NoLargeBinaryFiles
 
 Reports files larger than a size limit. Large files bloat the repository and slow down clones. Consider [Git LFS](https://git-lfs.com/) for large assets.
