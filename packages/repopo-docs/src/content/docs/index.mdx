@@ -1,9 +1,9 @@
 ---
 title: repopo
-description: Police the files in your git repo with extensible policies.
+description: Check repository conventions and fix violations with configurable policies.
 template: splash
 hero:
-  tagline: Police the files in your git repo with extensible policies.
+  tagline: Check repository conventions and fix violations.
   image:
     file: ../../assets/repopo-police.jpg
   actions:
@@ -21,6 +21,12 @@ banner:
 ---
 
 import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+## Check a repository convention
+
+Suppose your repository requires an MIT license field in each `package.json`. You can check that rule with repopo's `PackageJsonProperties` policy instead of reviewing each file by hand.
+
+Configure the policy, then run `repopo check` to find violations. Run `repopo check --fix` to correct them, and use the same check in CI to catch future violations. [Install repopo and run your first check](/installation/).
 
 ## Features
 

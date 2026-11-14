@@ -2,7 +2,7 @@
 title: Migrate to the 1.0 API
 description: Update policy definitions, configuration, results, and programmatic runners.
 sidebar:
-  order: 4
+  order: 5
 ---
 
 This is an intentional breaking API change, released as a **minor** while
