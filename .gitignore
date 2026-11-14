@@ -55,3 +55,7 @@ node_modules/
 # Windows system files
 Thumbs.db
 **/.claude/settings.local.json
+
+
+# APM dependencies
+apm_modules/
