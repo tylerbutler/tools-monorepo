@@ -84,7 +84,7 @@
     "functional-red-black-tree": "^1.0.1",
     "jest": "^30.5.2",
     "mersenne-twister": "^1.1.0",
-    "rimraf": "^6.1.3",
+    "rimraf": "^6.1.4",
     "testpack-cli": "^1.1.4",
     "ts-jest": "^29.4.15",
     "ts-node": "^10.9.2",
