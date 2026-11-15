@@ -32,4 +32,4 @@ DESCRIPTION
   List all sail commands.
 ```
 
-_See code: [@oclif/plugin-commands](https://github.com/oclif/plugin-commands/blob/5.0.6/src/commands/commands.ts)_
+_See code: [@oclif/plugin-commands](https://github.com/oclif/plugin-commands/blob/5.0.13/src/commands/commands.ts)_
