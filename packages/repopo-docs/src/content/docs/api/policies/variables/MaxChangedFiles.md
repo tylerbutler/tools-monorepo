@@ -7,7 +7,7 @@ title: "MaxChangedFiles"
 
 > `const` **MaxChangedFiles**: `object`
 
-Defined in: policies/MaxChangedFiles.ts:10
+Defined in: [policies/MaxChangedFiles.ts:10](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/MaxChangedFiles.ts#L10)
 
 Limit the number of files in the selected change set.
 
