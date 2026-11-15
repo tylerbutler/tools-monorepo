@@ -59,8 +59,8 @@ Set these build variables:
 | Variable | Value |
 | --- | --- |
 | `SKIP_DEPENDENCY_INSTALL` | `1` |
-| `NODE_VERSION` | `22.23.1`, matching `executionEnv.nodeVersion` in `pnpm-workspace.yaml` |
-| `PNPM_VERSION` | `11.11.0`, matching `packageManager` in the root `package.json` |
+| `NODE_VERSION` | `26.13.1`, matching `executionEnv.nodeVersion` in `pnpm-workspace.yaml` |
+| `PNPM_VERSION` | `12.21.0`, matching `packageManager` in the root `package.json` |
 
 Keep installation at the repository root so pnpm can resolve `workspace:^` dependencies.
 Keep the build-image versions in sync with the repository pins. Use Cloudflare's
