@@ -10,6 +10,8 @@ allowBuilds:
   msw: true
   nx: true
   sharp: true
+  tree-sitter: true
+  tree-sitter-cli: true
   unrs-resolver: true
   workerd: true
   yarn: true
